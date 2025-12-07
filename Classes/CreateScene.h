@@ -2,8 +2,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     CreateScene.h
- * File Function: CreateSceneÀàµÄ¶¨Òå
- * Author:        ¹ùÜÆÑÌ
+ * File Function: CreateSceneÅ”Å•Ä¾Ã„Å›Â¨Å‡Äº
+ * Author:        éƒ­èŠ·çƒŸ
  * Update Date:   2025/12/07
  * License:       MIT License
  ****************************************************************/
@@ -30,3 +30,4 @@ public:
 };
 
 #endif // __CREATE_SCENE_H__
+
