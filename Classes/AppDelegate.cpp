@@ -23,7 +23,6 @@
  ****************************************************************************/
 
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
 #include "InitialMenuScene.h"
 #include "CreateScene.h"
 
@@ -120,10 +119,10 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     register_all_packages();
 
-    // ´´½¨³õÊ¼²Ëµ¥³¡¾°
+    // åˆ›å»ºåˆå§‹èœå•åœºæ™¯
     auto scene = InitialMenuScene::createScene();
     
-    // ½øÈë³õÊ¼²Ëµ¥£¬¿ªÊ¼ÔËÐÐ
+    // è¿›å…¥åˆå§‹èœå•ï¼Œå¼€å§‹è¿è¡Œ
     director->runWithScene(scene);
 
     return true;
