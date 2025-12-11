@@ -102,7 +102,6 @@ bool InitialMenuScene::init()
         });
     this->addChild(loadButton, 1);
 
-
     return true;
 }
 

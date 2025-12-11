@@ -1,4 +1,13 @@
 #pragma once
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     InitialMenuScene.h
+ * File Function: InitialMenuScene类的实现
+ * Author:        郭芷烟
+ * Update Date:   2025/12/07
+ * License:       MIT License
+ ****************************************************************/
+
 #ifndef __INITIALMENU_SCENE_H__
 #define __INITIALMENU_SCENE_H__
 
