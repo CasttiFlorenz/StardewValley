@@ -8,5 +8,5 @@
 | 日期       | 开发者        | 工作内容摘要   | 备注 |
 | ---------- | ------------- | -------------- | ---- |
 | 2025-12-07 | CasttiFlorenz | ✅使用cocos2d-x-3.17.2创建项目<br>✅完成HoverButton类<br>✅完成InitialMenuScene类<br>✅完成CreateScene类 |类中尚有场景转换、音效音乐配置等未完成，需要完成后续开发后完善   |
-| 2025-12-11 | enxi-yu       | ✅完成Item类<br>✅完成InventoryGridScene类<br> | 其中MainScene仅为实验类，后期需与其他场景合并，Item也有待添加 |
+| 2025-12-11 | enxi-yu       | ✅初步实现Item类<br>✅初步实现InventoryGridScene类<br> | 其中MainScene仅为实验类，后期需与其他场景合并，Item也有待添加 |
 | 2025-12-11 | CasttiFlorenz | ✅初步实现GameScene总体游戏框架<br>✅初步完成GameMap基类<br>✅初步完成FarmHouse地图和可移动Player，具有简单的碰撞逻辑<br>||
