@@ -39,7 +39,7 @@ bool HoverButton::init(const std::string& normalImage,
     _selectedImage = selectedImage;
     _disabledImage = disabledImage;
 
-    // 注册鼠标事件监听器
+    // 注册鼠标监听事件
     auto mouseListener = EventListenerMouse::create();
     mouseListener->onMouseMove = CC_CALLBACK_1(HoverButton::onMouseMove, this);
     mouseListener->onMouseUp = CC_CALLBACK_1(HoverButton::onMouseUp, this);
@@ -49,17 +49,17 @@ bool HoverButton::init(const std::string& normalImage,
     return true;
 }
 
-// 处理鼠标移动事件
+// 鼠标移动事件
 void HoverButton::onMouseMove(cocos2d::Event* event)
 {
     auto* mouseEvent = static_cast<EventMouse*>(event);
     auto boundingBox = this->getBoundingBox();
     auto locationInNode = this->getParent()->convertToNodeSpace(mouseEvent->getLocationInView());
 
-    // 检测鼠标是否在按钮范围内
+    // 判断鼠标是否在按钮范围内
     if (boundingBox.containsPoint(locationInNode))
     {
-        // 鼠标进入，缩放并切换图片
+        // 放大并切换图片
         if (this->getScaleX() == _baseScaleX && this->getScaleY() == _baseScaleY)
         {
             this->stopAllActions();
@@ -70,7 +70,7 @@ void HoverButton::onMouseMove(cocos2d::Event* event)
     }
     else
     {
-        // 鼠标离开，恢复
+        // 离开恢复原样
         if (this->getScaleX() != _baseScaleX || this->getScaleY() != _baseScaleY)
         {
             this->stopAllActions();
@@ -80,14 +80,14 @@ void HoverButton::onMouseMove(cocos2d::Event* event)
     }
 }
 
-// 处理鼠标抬起事件
+// 鼠标抬起事件
 void HoverButton::onMouseUp(cocos2d::Event* event)
 {
     auto* mouseEvent = static_cast<EventMouse*>(event);
     auto boundingBox = this->getBoundingBox();
     auto locationInNode = this->getParent()->convertToNodeSpace(mouseEvent->getLocationInView());
 
-    // 鼠标点击时同样加载selectedImage
+    // 抬起时同时显示选中图片
     if (boundingBox.containsPoint(locationInNode))
     {
         if (this->getScaleX() == _baseScaleX && this->getScaleY() == _baseScaleY)

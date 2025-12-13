@@ -7,7 +7,7 @@
  * License:       MIT License
  ****************************************************************/
 
-#ifndef __INVENTORY_GRID_SCENE_H__
+#ifndef __INVENTORY_GRID_SCENE_H__  
 #define __INVENTORY_GRID_SCENE_H__
 
 #include "cocos2d.h"
@@ -39,6 +39,9 @@ public:
     // 获取指定格子的物品
     const Item& getItemAt(int gridIndex) const;
 
+    // 启用或禁用所有格子的触摸监听
+    void setGridsTouchEnabled(bool enabled);
+
     // 常量定义
     static const int INTEM_COUNT = 5;
     static const int TOOL_TAG_BASE = 1000;  // 工具tag基值
@@ -51,10 +54,14 @@ private:
     // 工具管理相关
     void placeTools(int highlightIndex = -1);  // 放置工具，-1表示无高亮
 
+    // 为指定格子创建触摸监听器
+    void createTouchListenerForGrid(int gridIndex, cocos2d::Sprite* grid);
+
     // 核心函数
     void createBackpacks();
     void createInvertory();
     void initItem();
+    // 高光处理
     void createClickableGrids();
     void onGridClicked(int gridIndex);
     void highlightGrid(int gridIndex, bool highlight);
@@ -79,6 +86,9 @@ private:
 
     // 回调函数
     std::function<void(int)> _gridSelectedCallback;
+
+    // 存储格子触摸监听器的映射表：格子索引 -> 监听器
+    std::unordered_map<int, cocos2d::EventListenerTouchOneByOne*> _gridListeners;
 };
 
 #endif // __INVENTORY_GRID_SCENE_H__

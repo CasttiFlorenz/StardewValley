@@ -11,7 +11,7 @@
 
 USING_NS_CC;
 
-Scene* InventoryGridScene::createScene()
+Scene* InventoryGridScene::createScene() 
 {
     auto scene = Scene::create();
     auto layer = InventoryGridScene::create();
@@ -242,6 +242,50 @@ bool InventoryGridScene::init()
 
 // ========== 点击高光效果 ==========
 
+// 为指定格子创建触摸监听器
+void InventoryGridScene::createTouchListenerForGrid(int gridIndex, cocos2d::Sprite* grid)
+{
+    auto listener = EventListenerTouchOneByOne::create();
+    listener->setSwallowTouches(true);
+
+    // 触摸开始事件
+    listener->onTouchBegan = [this, gridIndex](cocos2d::Touch* touch, cocos2d::Event* event) {
+        auto target = event->getCurrentTarget();
+        cocos2d::Vec2 locationInNode = target->convertToNodeSpace(touch->getLocation());
+        cocos2d::Size size = target->getContentSize();
+        cocos2d::Rect rect = cocos2d::Rect(-size.width / 2, -size.height / 2, size.width, size.height);
+
+        if (rect.containsPoint(locationInNode)) {
+            this->onGridClicked(gridIndex);
+            return true;
+        }
+        return false;
+        };
+
+    // 保存监听器到映射表
+    _gridListeners[gridIndex] = listener;
+
+    // 将监听器添加到事件分发器
+    Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, grid);
+}
+
+// 启用或禁用所有格子的触摸监听
+void InventoryGridScene::setGridsTouchEnabled(bool enabled)
+{
+    for (auto& pair : _gridListeners) {
+        auto listener = pair.second;
+        if (listener) {
+            if (enabled) {
+                // 恢复监听器
+                listener->setEnabled(true);
+            }
+            else {
+                // 禁用监听器
+                listener->setEnabled(false);
+            }
+        }
+    }
+}
 
 // 创建可点击格子
 void InventoryGridScene::createClickableGrids()
@@ -249,39 +293,23 @@ void InventoryGridScene::createClickableGrids()
     for (int row = 0; row < 3; row++) {
         float backpackLeft = _backpacks[row].x - _backpackWidth / 2;
 
-        // 使用整个背包高度作为点击区域
-        float clickHeight = _backpackHeight;  // 使用背包高度
-        float clickY = _backpacks[row].y + _backpackHeight * 0.5;  // 使用背包中心Y坐标
+        float clickHeight = _backpackHeight;
+        float clickY = _backpacks[row].y + _backpackHeight * 0.5;
 
-        // 创建12个格子
         for (int col = 0; col < 12; col++) {
             int gridIndex = row * 12 + col;
             float gridX = backpackLeft + _cellWidth * (col + 0.82f);
 
-            // 增大点击区域到整个格子
+            // 创建格子精灵
             auto grid = Sprite::create();
-            grid->setTextureRect(Rect(0, 0, _cellWidth, clickHeight));
+            grid->setTextureRect(cocos2d::Rect(0, 0, _cellWidth, clickHeight));
             grid->setOpacity(0);
-            grid->setPosition(Vec2(gridX, clickY));  // 使用背包中心Y
+            grid->setPosition(cocos2d::Vec2(gridX, clickY));
             grid->setTag(gridIndex);
 
-            // 触摸监听
-            auto listener = EventListenerTouchOneByOne::create();
-            listener->setSwallowTouches(true);
-            listener->onTouchBegan = [this, gridIndex](Touch* touch, Event* event) {
-                auto target = event->getCurrentTarget();
-                Vec2 locationInNode = target->convertToNodeSpace(touch->getLocation());
-                Size size = target->getContentSize();
-                Rect rect = Rect(-size.width / 2, -size.height / 2, size.width, size.height);
+            // 创建触摸监听器
+            createTouchListenerForGrid(gridIndex, grid);
 
-                if (rect.containsPoint(locationInNode)) {
-                    this->onGridClicked(gridIndex);
-                    return true;
-                }
-                return false;
-                };
-
-            Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, grid);
             this->addChild(grid, 2);
 
             // 高光边框
@@ -401,7 +429,6 @@ void InventoryGridScene::highlightGrid(int gridIndex, bool highlight)
 
 // ========== 主页面显示辅助函数 ==========
 
-
 int InventoryGridScene::getSelectedGrid()
 {
     return _selectedGrid;
@@ -413,7 +440,6 @@ void InventoryGridScene::setGridSelectedCallback(const std::function<void(int)>&
 }
 
 // 获取指定格子的物品
- // 常量版本，用于只读访问
 const Item& InventoryGridScene::getItemAt(int gridIndex) const 
 {
     assert(gridIndex >= 0 && gridIndex < INVENTORY_SIZE);

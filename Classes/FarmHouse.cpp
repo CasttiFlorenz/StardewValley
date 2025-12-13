@@ -32,7 +32,7 @@ bool FarmHouse::init()
     }
 
     // Òþ²ØÅö×²²ã
-    auto collisionLayer = _map->getLayer("collision");
+    auto collisionLayer = _map->getLayer("event");
     if (collisionLayer) {
         collisionLayer->setVisible(false);
     }
@@ -43,10 +43,17 @@ bool FarmHouse::init()
     return true;
 }
 
-std::string FarmHouse::getNewMap(const GameMap* curMap, const Vec2& curPos, bool isStart)
+std::string FarmHouse::getNewMap(const Vec2& curPos, bool isStart, const Direction& direction)
 {
-    if (curMap == this && isStart) {
+    if (isStart) {
         return _mapName;
+    }
+
+    if (direction == Direction::DOWN) {
+        Rect goToFarm = getObjectRect("goToFarm");
+        if (goToFarm.containsPoint(curPos)) {
+            return "Farm";
+        }
     }
 
     return "";
@@ -71,6 +78,10 @@ Vec2 FarmHouse::getPlayerStartPosition(std::string lastMap)
     if (lastMap == _mapName) {
         const Rect startRect = getObjectRect("start");
         return Vec2(startRect.getMidX(), startRect.getMidY());
+    }
+    else if (lastMap == "Farm") {
+        const Rect goToFarmRect = getObjectRect("goToFarm");
+        return Vec2(goToFarmRect.getMidX(), goToFarmRect.getMidY());
     }
 
     return Vec2(-1, -1);

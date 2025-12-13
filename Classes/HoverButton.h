@@ -2,8 +2,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     HoverButton.h
- * File Function: HoverButtonç±»çš„å®šä¹‰
- * Author:        éƒ­èŠ·çƒŸ
+ * File Function: HoverButtonÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
  * Update Date:   2025/12/07
  * License:       MIT License
  ****************************************************************/
@@ -16,6 +16,7 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 
+// ĞüÍ£°´Å¥Àà
 class HoverButton : public cocos2d::ui::Button {
 public:
     static HoverButton* create(const std::string& normalImage,
@@ -28,22 +29,21 @@ public:
 
 private:
 
-    // å›¾ç‰‡è·¯å¾„
+    // Í¼Æ¬Â·¾¶
     std::string _normalImage;
     std::string _selectedImage;
     std::string _disabledImage;
 
-    // è®¾ç½®ç¼©æ”¾æ¯”ä¾‹
+    // Ëõ·Å±ÈÀı
     const float _hoverScale = 1.03f;
     const float _baseScaleX = 1.0f;
     const float _baseScaleY = 1.0f;
 
-    // å¤„ç†é¼ æ ‡æ‚¬åœäº‹ä»¶
+    // Êó±êĞüÍ£ÊÂ¼ş
     void onMouseMove(cocos2d::Event* event);
 
-    // å¤„ç†é¼ æ ‡æŠ¬èµ·äº‹ä»¶
+    // Êó±êÌ§ÆğÊÂ¼ş
     void onMouseUp(cocos2d::Event* event);
 };
 
 #endif // _HOVER_BUTTON_H_
-

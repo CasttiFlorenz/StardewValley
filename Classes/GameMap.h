@@ -3,7 +3,7 @@
  * File Name:     GameMap.h
  * File Function: GameMap类的实现
  * Author:        郭芷烟
- * Update Date:   2025/12/11
+ * Update Date:   2025/12/13
  * License:       MIT License
  ****************************************************************/
 
@@ -31,10 +31,12 @@ public:
 
     std::string getMapName() const { return _mapName; }
 
+
+    virtual bool isCameraFollow() const { return false; }
     virtual void setStartPosition(std::string lastMap) = 0;
     virtual Vec2 getPlayerStartPosition(std::string lastMap) = 0;
 
-    virtual std::string getNewMap(const GameMap* curMap, const Vec2& curPos, bool isStart) = 0;
+    virtual std::string getNewMap(const Vec2& curPos, bool isStart, const Direction& direction) = 0;
 
 protected:
     TMXTiledMap* _map;

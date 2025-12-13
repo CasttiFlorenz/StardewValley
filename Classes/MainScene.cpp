@@ -9,6 +9,7 @@
 
 #include "MainScene.h"
 
+
 USING_NS_CC;
 
 Scene* MainScene::createScene()
@@ -30,20 +31,6 @@ bool MainScene::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     auto origin = Director::getInstance()->getVisibleOrigin();
 
-    // 创建背景
-    _background = Sprite::create("/CreateScene/Background-0.jpg");  // 主背景
-    if (!_background) {
-        _background = Sprite::create("/tools/background.png");  // 备用背景
-    }
-
-    if (_background) {
-        // 全屏显示背景
-        _background->setPosition(Vec2(visibleSize.width / 2 + origin.x,
-            visibleSize.height / 2 + origin.y));
-        _background->setScale(visibleSize.width / _background->getContentSize().width,
-            visibleSize.height / _background->getContentSize().height);
-        this->addChild(_background, 0);  // 最底层
-    }
 
     _previewFrame = Sprite::create("/tools/box.png"); // 预览框图片
 
@@ -68,6 +55,7 @@ bool MainScene::init()
             });
         this->addChild(_inventoryLayer, 10);
     }
+    _inventoryLayer->setGridsTouchEnabled(false);
 
     _inventoryVisible = false;
 
@@ -78,6 +66,7 @@ bool MainScene::init()
     updatePreviewTool();
     _previewFrame->setVisible(true);
     _previewTool->setVisible(true);
+
 
     return true;
 }
@@ -106,11 +95,17 @@ void MainScene::toggleInventory()
         _inventoryLayer->setVisible(_inventoryVisible);
 
         if (_inventoryVisible) {
+            // 打开背包：启用格子触摸
+            _inventoryLayer->setGridsTouchEnabled(true);
+
             _inventoryLayer->setScale(0.1f);
             auto scaleAction = ScaleTo::create(0.3f, 1.0f);
             _inventoryLayer->runAction(scaleAction);
         }
         else {
+            // 关闭背包：禁用格子触摸
+            _inventoryLayer->setGridsTouchEnabled(false);
+
             auto scaleAction = ScaleTo::create(0.2f, 0.1f);
             auto hideAction = CallFunc::create([this]() {
                 _inventoryLayer->setVisible(false);
@@ -153,8 +148,6 @@ void MainScene::updatePreviewTool()
                 _previewTool->setTextureRect(toolSprite->getTextureRect());
                 _previewTool->setScale(1.6f); // 放大一点显示
                 _previewTool->setVisible(true);
-
-                CCLOG("预览框显示工具: %s", toolImage.c_str());
             }
         }
     }

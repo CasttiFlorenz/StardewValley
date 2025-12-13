@@ -46,6 +46,9 @@ bool Player::init()
         return false;
     }
 
+    // 初始化方向为向下（或您喜欢的默认方向）
+    _direction = Direction::DOWN;
+
     // 初始化成员变量
     _speed = 250.0f;
     _velocity = Vec2::ZERO;
@@ -67,25 +70,29 @@ void Player::onEnter()
 
     // 创建键盘监听器
     auto listener = EventListenerKeyboard::create();
-    
+
     // 按下按键
     listener->onKeyPressed = [=](EventKeyboard::KeyCode code, Event* event) {
         switch (code) {
         case EventKeyboard::KeyCode::KEY_W:
         case EventKeyboard::KeyCode::KEY_UP_ARROW:
             _upPressed = true;
+            _direction = Direction::UP; // <--- 更新方向为上
             break;
         case EventKeyboard::KeyCode::KEY_S:
         case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
             _downPressed = true;
+            _direction = Direction::DOWN; // <--- 更新方向为下
             break;
         case EventKeyboard::KeyCode::KEY_A:
         case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
             _leftPressed = true;
+            _direction = Direction::LEFT; // <--- 更新方向为左
             break;
         case EventKeyboard::KeyCode::KEY_D:
         case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
             _rightPressed = true;
+            _direction = Direction::RIGHT; // <--- 更新方向为右
             break;
         default:
             break;
@@ -93,7 +100,7 @@ void Player::onEnter()
         updateVelocity();
         };
 
-    // 释放按键
+    // 释放按键 (保持原有逻辑即可，通常不需要在松开时改变面向，除非你想让它回弹)
     listener->onKeyReleased = [=](EventKeyboard::KeyCode code, Event* event) {
         switch (code) {
         case EventKeyboard::KeyCode::KEY_W:
@@ -115,6 +122,10 @@ void Player::onEnter()
         default:
             break;
         }
+        // 如果需要更高级的逻辑（例如松开右键时，如果还在按上键，就转回向上），
+        // 可以在 updateVelocity 里根据剩余的按键状态来修正 _direction。
+        // 但根据您的要求，修改 onKeyPressed 已经足够。
+
         updateVelocity();
         };
 

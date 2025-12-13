@@ -27,13 +27,14 @@ public:
     virtual void update(float dt) override;
 
     // 获取新地图
-    virtual std::string getNewMap(const GameMap* curMap, const Vec2& curPos, bool isStart) override;
+    virtual std::string getNewMap(const Vec2& curPos,  bool isStart, const Direction& direction) override;
     
     // 设置初始位置
     virtual void setStartPosition(std::string lastMap) override;
     
     // 获取玩家初始位置
     virtual Vec2 getPlayerStartPosition(std::string lastMap) override;
+
 
     CREATE_FUNC(FarmHouse);
 

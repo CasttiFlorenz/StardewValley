@@ -3,7 +3,7 @@
  * File Name:     GameMap.cpp
  * File Function: GameMap类的实现
  * Author:        郭芷烟
- * Update Date:   2025/12/11
+ * Update Date:   2025/12/13
  * License:       MIT License
  ****************************************************************/
 
@@ -37,7 +37,7 @@ bool GameMap::isCollidable(Vec2 worldPos)
     }
 
     // 获取碰撞层
-    auto layer = _map->getLayer("collision");
+    auto layer = _map->getLayer("event");
     if (!layer) return false;
 
     // 检查瓦片是否有 Collidable 属性
@@ -59,7 +59,6 @@ Vec2 GameMap::calMapPos(Vec2 worldPos)
 {
     const Vec2 nodePos = _map->convertToNodeSpace(worldPos);
     const int tileSize = _map->getContentSize().width / _map->getMapSize().width;
-
     // Y轴反转计算
     const int y = _map->getMapSize().height - nodePos.y / tileSize;
     const int x = nodePos.x / tileSize;
