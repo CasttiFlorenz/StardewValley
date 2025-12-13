@@ -161,9 +161,6 @@ void TimeManager::update(float dt) {
     }
 }
 
-//  昏迷与过夜逻辑
-// TimeManager.cpp
-
 void TimeManager::triggerPassOut() {
     // 1. 防止重复触发
     if (_isTransitioning) return;
@@ -171,20 +168,10 @@ void TimeManager::triggerPassOut() {
 
     // 2. 立刻禁止输入
     _isInputAllowed = false;
-
-    // 停顿 3 秒
-    auto delay = DelayTime::create(3.0f);
-
-    // 停顿结束后，执行“开始新的一天”
-    auto callback = CallFunc::create([this]() {
-        this->startNextDay();
-        });
-
+    
     // 执行动作序列
     CCLOG("2:00 AM reached. Pausing for 3 seconds...");
-    this->runAction(Sequence::create(delay, callback, nullptr));
 }
-// TimeManager.cpp
 
 void TimeManager::startNextDay() {
     CCLOG("Teleporting to next day...");
@@ -316,3 +303,4 @@ void TimeManager::refreshUI() {
     // 保留你原本的调用
     WeatherManager::getInstance()->updateSkyColor(h, m);
 }
+
