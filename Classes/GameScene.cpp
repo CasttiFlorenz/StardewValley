@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     GameScene.cpp
- * File Function: GameSceneÀàµÄÊµÏÖ
- * Author:        ¹ùÜÆÑÌ
+ * File Function: GameSceneç±»çš„å®žçŽ°
+ * Author:        éƒ­èŠ·çƒŸ
  * Update Date:   2025/12/13
  * License:       MIT License
  ****************************************************************/
@@ -41,9 +41,15 @@ bool GameScene::init()
 
     _followCamera = nullptr;
 
+   auto weatherManager = WeatherManager::getInstance();   // èŽ·å–å¹¶æ·»åŠ  WeatherManager 
+   auto timeManager = TimeManager::getInstance();// èŽ·å–å¹¶æ·»åŠ  TimeManager 
+   _followCamera = nullptr;// è§¦å‘åˆå§‹å¤©æ°”
+    
     this->scheduleUpdate();
     this->addChild(_player, 4);
     this->addChild(_ui, 5);
+    this->addChild(weatherManager, 50);
+    this->addChild(timeManager, 100);
     return true;
 }
 
@@ -78,9 +84,9 @@ void GameScene::switchMap()
 
             _map->scheduleUpdate();
              
-            // ¼ì²éÐÂµØÍ¼ÊÇ·ñÐèÒª¸úËæÉãÏñ»ú
+            // æ£€æŸ¥æ–°åœ°å›¾æ˜¯å¦éœ€è¦è·Ÿéšæ‘„åƒæœº
             if (_map->isCameraFollow()) {
-                // Èç¹û»¹Ã»ÓÐ¸úËæÉãÏñ»ú£¬´´½¨Ò»¸ö
+                // å¦‚æžœè¿˜æ²¡æœ‰è·Ÿéšæ‘„åƒæœºï¼Œåˆ›å»ºä¸€ä¸ª
                 if (!_followCamera) {
                     _followCamera = Camera::createOrthographic(Director::getInstance()->getVisibleSize().width, Director::getInstance()->getVisibleSize().height, 1, 1000);
                     _followCamera->setCameraFlag(CameraFlag::USER1);
@@ -90,12 +96,12 @@ void GameScene::switchMap()
                 _player->setCameraMask((unsigned short)CameraFlag::USER1, true);
                 _map->setCameraMask((unsigned short)CameraFlag::USER1, true);
                 
-                // È·±£ UI Ê¹ÓÃÄ¬ÈÏÉãÏñ»ú
+                // ç¡®ä¿ UI ä½¿ç”¨é»˜è®¤æ‘„åƒæœº
                 if (_ui) {
                      _ui->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
                 }
 
-                // ³õÊ¼»¯ÉãÏñ»úÎ»ÖÃ
+                // åˆå§‹åŒ–æ‘„åƒæœºä½ç½®
                 Vec3 currentPos = _followCamera->getPosition3D();
                 currentPos.z = CAMERA_POSZ;
                 _followCamera->setPosition3D(currentPos);
