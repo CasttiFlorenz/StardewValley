@@ -41,15 +41,14 @@ bool GameScene::init()
 
     _followCamera = nullptr;
 
-   auto weatherManager = WeatherManager::getInstance();   // 获取并添加 WeatherManager 
-   auto timeManager = TimeManager::getInstance();// 获取并添加 TimeManager 
-   _followCamera = nullptr;// 触发初始天气
+   _weatherManager = WeatherManager::getInstance();   // 获取并添加 WeatherManager 
+   _timeManager = TimeManager::getInstance();// 获取并添加 TimeManager 
     
     this->scheduleUpdate();
     this->addChild(_player, 4);
     this->addChild(_ui, 5);
-    this->addChild(weatherManager, 50);
-    this->addChild(timeManager, 100);
+    this->addChild(_weatherManager, 50);
+    this->addChild(_timeManager, 100);
     return true;
 }
 
@@ -59,6 +58,13 @@ void GameScene::update(float dt)
 
     if (_map && _map->isCameraFollow()) {
         updateCamera();
+    }
+    GameTime now = _timeManager->getCurrentTime();
+
+    if (now.hour >= 26)
+    {
+      setPlayerToStart();
+     _timeManager->startNextDay();
     }
 }
 
@@ -168,4 +174,24 @@ void GameScene::updateCamera()
 
 
     _followCamera->setPosition3D(Vec3(x, y, CAMERA_POSZ));
+}
+
+void GameScene::setPlayerToStart()
+{
+    if (_map->getMapName() != "FarmHouse") {
+        _map->unscheduleUpdate();
+        _map->removeFromParent();
+        _map = _mapCache["FarmHouse"];
+        this->addChild(_map, 0);
+    }
+    resetCamera();
+    _map->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
+    _player->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
+
+
+    _map->setStartPosition("FarmHouse");
+    _map->scheduleUpdate();
+    _player->setPosition(_map->getPlayerStartPosition("FarmHouse"));
+    _player->setGameMap(_map);
+
 }
