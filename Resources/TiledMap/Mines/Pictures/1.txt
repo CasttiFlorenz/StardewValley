@@ -1,0 +1,20 @@
+
+void GameScene::setPlayerToStart()
+{
+    if (_map->getMapName() != "FarmHouse") {
+        _map->unscheduleUpdate();
+        _map->removeFromParent();
+        _map = _mapCache["FarmHouse"];
+        this->addChild(_map, 0);
+    }
+    resetCamera();
+    _map->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
+    _player->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
+
+
+    _map->setStartPosition("FarmHouse");
+    _map->scheduleUpdate();
+    _player->setPosition(_map->getPlayerStartPosition("FarmHouse"));
+    _player->setGameMap(_map);
+
+}

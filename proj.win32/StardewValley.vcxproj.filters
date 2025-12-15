@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="win32">
+      <UniqueIdentifier>{84a8ebd7-7cf0-47f6-b75e-d441df67da40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{715254bc-d70b-4ec5-bf29-467dd3ace079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\AppDelegate">
+      <UniqueIdentifier>{44896277-45ec-4374-8ae4-3f03d83925c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Button">
+      <UniqueIdentifier>{f1b53675-e405-40a7-b83b-151854750c0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GameMap">
+      <UniqueIdentifier>{66d3d162-236a-4843-a80e-bada677d5d2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Inventory">
+      <UniqueIdentifier>{e3bc15f8-97bf-4638-89cc-bbb882bfdbef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\MapItem">
+      <UniqueIdentifier>{0547096e-90d3-49d7-a5b9-d62c82127692}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Player">
+      <UniqueIdentifier>{26fed7d6-f168-41db-9b27-00e6cec26fbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Scene">
+      <UniqueIdentifier>{d7ae25f3-890d-4e43-827a-d2e65c9c1506}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Time">
+      <UniqueIdentifier>{5cd253cd-c0f4-4eb4-b2c1-f46e27bc04e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Weather">
+      <UniqueIdentifier>{401edf9b-86ff-44a3-a634-021ecaa9a524}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\AppDelegate\AppDelegate.cpp">
+      <Filter>src\AppDelegate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Button\HoverButton.cpp">
+      <Filter>src\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GameMap\Barn.cpp">
+      <Filter>src\GameMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GameMap\Farm.cpp">
+      <Filter>src\GameMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GameMap\FarmHouse.cpp">
+      <Filter>src\GameMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GameMap\GameMap.cpp">
+      <Filter>src\GameMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GameMap\Mines.cpp">
+      <Filter>src\GameMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GameMap\Town.cpp">
+      <Filter>src\GameMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Inventory\InventoryGridScene.cpp">
+      <Filter>src\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Inventory\InventoryScene.cpp">
+      <Filter>src\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Inventory\Item.cpp">
+      <Filter>src\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\MapItem\CultivatedItem.cpp">
+      <Filter>src\MapItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\MapItem\FarmItem.cpp">
+      <Filter>src\MapItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\MapItem\FarmItemManager.cpp">
+      <Filter>src\MapItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\MapItem\GrassItem.cpp">
+      <Filter>src\MapItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\MapItem\WoodItem.cpp">
+      <Filter>src\MapItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Weather\WeatherManager.cpp">
+      <Filter>src\Weather</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Time\GameTime.cpp">
+      <Filter>src\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Time\TimeManager.cpp">
+      <Filter>src\Time</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scene\CreateScene.cpp">
+      <Filter>src\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scene\GameScene.cpp">
+      <Filter>src\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Scene\InitialMenuScene.cpp">
+      <Filter>src\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Player\Player.cpp">
+      <Filter>src\Player</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\AppDelegate\AppDelegate.h">
+      <Filter>src\AppDelegate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Button\HoverButton.h">
+      <Filter>src\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameMap\Barn.h">
+      <Filter>src\GameMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameMap\Farm.h">
+      <Filter>src\GameMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameMap\FarmHouse.h">
+      <Filter>src\GameMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameMap\GameMap.h">
+      <Filter>src\GameMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameMap\Mines.h">
+      <Filter>src\GameMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameMap\Town.h">
+      <Filter>src\GameMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Inventory\InventoryGridScene.h">
+      <Filter>src\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Inventory\InventoryScene.h">
+      <Filter>src\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Inventory\Item.h">
+      <Filter>src\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\MapItem\CultivatedItem.h">
+      <Filter>src\MapItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\MapItem\FarmItem.h">
+      <Filter>src\MapItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\MapItem\FarmItemManager.h">
+      <Filter>src\MapItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\MapItem\GrassItem.h">
+      <Filter>src\MapItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\MapItem\WoodItem.h">
+      <Filter>src\MapItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Weather\WeatherManager.h">
+      <Filter>src\Weather</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Time\GameTime.h">
+      <Filter>src\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Time\TimeManager.h">
+      <Filter>src\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scene\CreateScene.h">
+      <Filter>src\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scene\GameScene.h">
+      <Filter>src\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Scene\InitialMenuScene.h">
+      <Filter>src\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Player\Player.h">
+      <Filter>src\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Constant.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="game.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
