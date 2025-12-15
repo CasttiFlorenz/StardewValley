@@ -49,11 +49,10 @@ bool GameScene::init()
     this->addChild(_weatherManager, 5);
     this->addChild(_timeManager, 6);
     this->addChild(_inventory, 7);
-    this->scheduleUpdate();
-    
+  
     _player->changeUpdateStatus();
-    _timeManager->changeUpdateStatus();
     _weatherManager->scheduleUpdate();
+    this->scheduleUpdate();
   
 
     _mouseListener = nullptr;
