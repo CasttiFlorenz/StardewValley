@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     WeatherManager.cpp
- * File Function: WeatherManagerÀàµÄÊµÏÖ
- * Author:        ÕÔî£åû
+ * File Function: WeatherManagerç±»çš„å®ç°
+ * Author:        èµµç¿å¦
  * Update Date:   2025/12/13
  * License:       MIT License
  ****************************************************************/
@@ -11,7 +11,7 @@
 
 USING_NS_CC;
 
-// »ñÈ¡ÆÁÄ»´óĞ¡µÄºê
+// è·å–å±å¹•å¤§å°çš„å®
 #ifndef WINSIZE
 #define WINSIZE Director::getInstance()->getVisibleSize()
 #endif
@@ -23,7 +23,7 @@ WeatherManager* WeatherManager::getInstance() {
         instance = new WeatherManager();
         if (instance && instance->init()) {
             instance->autorelease();
-            instance->retain(); // ½¨Òéretain·ÀÖ¹ÒâÍâÊÍ·Å
+            instance->retain(); // å»ºè®®retainé˜²æ­¢æ„å¤–é‡Šæ”¾
         }
         else {
             CC_SAFE_DELETE(instance);
@@ -50,92 +50,90 @@ WeatherManager::WeatherManager()
 WeatherManager::~WeatherManager() {}
 
 bool WeatherManager::init() {
-    // 1. ÂË¾µ²ã - È·±£ÔÚ×î¶¥²ã
+    // 1. æ»¤é•œå±‚ - ç¡®ä¿åœ¨æœ€é¡¶å±‚
     overlayLayer = LayerColor::create(Color4B(0, 0, 0, 0), WINSIZE.width, WINSIZE.height);
-    overlayLayer->setCascadeOpacityEnabled(true); // ÆôÓÃÍ¸Ã÷¶È¼¶Áª
+    overlayLayer->setCascadeOpacityEnabled(true); // å¯ç”¨é€æ˜åº¦çº§è”
     this->addChild(overlayLayer, 9999);
 
-    // 2. ÌìÆøÁ£×Ó²ã - ÔÚÂË¾µÏÂÃæ
+    // 2. å¤©æ°”ç²’å­å±‚ - åœ¨æ»¤é•œä¸‹é¢
     weatherLayer = Layer::create();
     this->addChild(weatherLayer, 1);
 
-    // 3. È·±£Í¼²ãÊÇ¿É¼ûµÄ
+    // 3. ç¡®ä¿å›¾å±‚æ˜¯å¯è§çš„
     overlayLayer->setVisible(true);
 
-    // 4. ³õÊ¼ÉèÖÃÎª°×Ìì
+    // 4. åˆå§‹è®¾ç½®ä¸ºç™½å¤©
     overlayLayer->setColor(Color3B::BLACK);
     overlayLayer->setOpacity(0);
 
     return true;
 }
 
-// ==================== Âß¼­¿ØÖÆ ====================
-
-// ==================== Âß¼­¿ØÖÆ ====================
+// ==================== é€»è¾‘æ§åˆ¶ ====================
 
 void WeatherManager::updateWeather(Season season) {
-    // 1. ¼ÇÂ¼µ±Ç°¼¾½Ú£¬ÓÃÓÚºóĞøÁ£×ÓÏµÍ³£¨Èç·çÌìÊ¹ÓÃ»¨°ê»¹ÊÇÂäÒ¶£©µÄÅĞ¶Ï
+    // 1. è®°å½•å½“å‰å­£èŠ‚ï¼Œç”¨äºåç»­ç²’å­ç³»ç»Ÿï¼ˆå¦‚é£å¤©ä½¿ç”¨èŠ±ç“£è¿˜æ˜¯è½å¶ï¼‰çš„åˆ¤æ–­
     this->currentSeason = season;
 
-    // 2. ºËĞÄËæ»úÊı£ºÉú³ÉÒ»¸ö 0 µ½ 99 µÄËæ»úÕûÊı¡£
-    //    Õâ¸öÊı×Ö±»ÊÓÎª 100% µÄ¸ÅÂÊ¿Õ¼ä£¬ÓÃÓÚ»®·Ö²»Í¬µÄÌìÆøÇø¼ä¡£
+    // 2. æ ¸å¿ƒéšæœºæ•°ï¼šç”Ÿæˆä¸€ä¸ª 0 åˆ° 99 çš„éšæœºæ•´æ•°ã€‚
+    //    è¿™ä¸ªæ•°å­—è¢«è§†ä¸º 100% çš„æ¦‚ç‡ç©ºé—´ï¼Œç”¨äºåˆ’åˆ†ä¸åŒçš„å¤©æ°”åŒºé—´ã€‚
     int chance = rand() % 100;
 
-    // 3. ¸ù¾İ¼¾½ÚÓ¦ÓÃ²»Í¬µÄÌìÆø¸ÅÂÊ·ÖÅä¹æÔò
+    // 3. æ ¹æ®å­£èŠ‚åº”ç”¨ä¸åŒçš„å¤©æ°”æ¦‚ç‡åˆ†é…è§„åˆ™
     switch (season) {
     case Season::Spring:
-        // ´º¼¾¸ÅÂÊ·ÖÅä£º
+        // æ˜¥å­£æ¦‚ç‡åˆ†é…ï¼š
         if (chance < 15) {
-            currentWeather = WeatherType::Rain; // 15% ¸ÅÂÊÏÂÓê (chance 0-14)
+            currentWeather = WeatherType::Rain; // 15% æ¦‚ç‡ä¸‹é›¨ (chance 0-14)
         }
         else if (chance < 25) {
-            currentWeather = WeatherType::Wind; // 10% ¸ÅÂÊ¹Î·ç/»¨°êÆ®Âä (chance 15-24)
+            currentWeather = WeatherType::Wind; // 10% æ¦‚ç‡åˆ®é£/èŠ±ç“£é£˜è½ (chance 15-24)
         }
         else {
-            currentWeather = WeatherType::Sunny; // 75% ¸ÅÂÊÇçÌì (chance 25-99)
+            currentWeather = WeatherType::Sunny; // 75% æ¦‚ç‡æ™´å¤© (chance 25-99)
         }
         break;
 
     case Season::Fall:
-        // Çï¼¾¸ÅÂÊ·ÖÅä£º
+        // ç§‹å­£æ¦‚ç‡åˆ†é…ï¼š
         if (chance < 15) {
-            currentWeather = WeatherType::Rain; // 15% ¸ÅÂÊÏÂÓê (chance 0-14)
+            currentWeather = WeatherType::Rain; // 15% æ¦‚ç‡ä¸‹é›¨ (chance 0-14)
         }
         else if (chance < 35) {
-            currentWeather = WeatherType::Wind; // 20% ¸ÅÂÊ¹Î·ç/ÂäÒ¶ (chance 15-34)
+            currentWeather = WeatherType::Wind; // 20% æ¦‚ç‡åˆ®é£/è½å¶ (chance 15-34)
         }
         else {
-            currentWeather = WeatherType::Sunny; // 65% ¸ÅÂÊÇçÌì (chance 35-99)
+            currentWeather = WeatherType::Sunny; // 65% æ¦‚ç‡æ™´å¤© (chance 35-99)
         }
         break;
 
     case Season::Summer:
-        // ÏÄ¼¾¸ÅÂÊ·ÖÅä£º
+        // å¤å­£æ¦‚ç‡åˆ†é…ï¼š
         if (chance < 15) {
-            currentWeather = WeatherType::Rain; // 15% ¸ÅÂÊÏÂÓê (chance 0-14)
+            currentWeather = WeatherType::Rain; // 15% æ¦‚ç‡ä¸‹é›¨ (chance 0-14)
         }
         else {
-            currentWeather = WeatherType::Sunny; // 85% ¸ÅÂÊÇçÌì (chance 15-99)
+            currentWeather = WeatherType::Sunny; // 85% æ¦‚ç‡æ™´å¤© (chance 15-99)
         }
         break;
 
     case Season::Winter:
-        // ¶¬¼¾¸ÅÂÊ·ÖÅä£º
+        // å†¬å­£æ¦‚ç‡åˆ†é…ï¼š
         if (chance < 20) {
-            currentWeather = WeatherType::Snow; // 20% ¸ÅÂÊÏÂÑ© (chance 0-19)
+            currentWeather = WeatherType::Snow; // 20% æ¦‚ç‡ä¸‹é›ª (chance 0-19)
         }
         else {
-            currentWeather = WeatherType::Sunny; // 80% ¸ÅÂÊÇçÌì (chance 20-99)
+            currentWeather = WeatherType::Sunny; // 80% æ¦‚ç‡æ™´å¤© (chance 20-99)
         }
         break;
 
     default:
-        // Ä¬ÈÏÇé¿ö£¬Èç¹û¼¾½ÚÎ´¶¨Òå»ò³ö´í£¬ÔòÉèÎªÇçÌì
+        // é»˜è®¤æƒ…å†µï¼Œå¦‚æœå­£èŠ‚æœªå®šä¹‰æˆ–å‡ºé”™ï¼Œåˆ™è®¾ä¸ºæ™´å¤©
         currentWeather = WeatherType::Sunny;
         break;
     }
 
-    // 4. µ÷ÓÃ setVisuals º¯Êı£¬¸ù¾İÈ·¶¨µÄÌìÆøÀàĞÍ¸üĞÂÁ£×ÓĞ§¹ûºÍ¹âÕÕÂË¾µ
+    // 4. è°ƒç”¨ setVisuals å‡½æ•°ï¼Œæ ¹æ®ç¡®å®šçš„å¤©æ°”ç±»å‹æ›´æ–°ç²’å­æ•ˆæœå’Œå…‰ç…§æ»¤é•œ
     setVisuals(currentWeather);
 }
 
@@ -149,23 +147,23 @@ bool WeatherManager::isRaining() const {
 }
 Texture2D* getTextureOrFallback(const std::string& filename) {
     auto textureCache = Director::getInstance()->getTextureCache();
-    // 1. ³¢ÊÔ¼ÓÔØÍ¼Æ¬
+    // 1. å°è¯•åŠ è½½å›¾ç‰‡
     auto texture = textureCache->addImage(filename);
 
-    // 2. Èç¹û¼ÓÔØ³É¹¦£¬Ö±½Ó·µ»Ø
+    // 2. å¦‚æœåŠ è½½æˆåŠŸï¼Œç›´æ¥è¿”å›
     if (texture) return texture;
 
-    // 3. Èç¹ûÊ§°Ü£¬´´½¨Ò»¸ö 8x8 µÄ°×É«·½¿éÎÆÀí£¨±£µ×·½°¸£©
+    // 3. å¦‚æœå¤±è´¥ï¼Œåˆ›å»ºä¸€ä¸ª 8x8 çš„ç™½è‰²æ–¹å—çº¹ç†ï¼ˆä¿åº•æ–¹æ¡ˆï¼‰
     CCLOG("Warning: Texture %s not found. Using fallback.", filename.c_str());
 
-    // ¼ì²éÊÇ·ñÒÑ¾­´´½¨¹ı±£µ×ÎÆÀí
+    // æ£€æŸ¥æ˜¯å¦å·²ç»åˆ›å»ºè¿‡ä¿åº•çº¹ç†
     texture = textureCache->getTextureForKey("fallback_white_box");
     if (texture) return texture;
 
-    // ´´½¨´¿É«Êı¾İ
+    // åˆ›å»ºçº¯è‰²æ•°æ®
     const int w = 8, h = 8;
     unsigned char* data = new unsigned char[w * h * 4];
-    for (int i = 0; i < w * h * 4; i++) data[i] = 255; // È«°×
+    for (int i = 0; i < w * h * 4; i++) data[i] = 255; // å…¨ç™½
 
     Image* image = new Image();
     image->initWithRawData(data, w * h * 4, w, h, 8);
@@ -175,10 +173,10 @@ Texture2D* getTextureOrFallback(const std::string& filename) {
     image->release();
     return texture;
 }
-// ==================== ÊÓ¾õĞ§¹û (Á£×ÓÏµÍ³) ====================
+// ==================== è§†è§‰æ•ˆæœ (ç²’å­ç³»ç»Ÿ) ====================
 
 void WeatherManager::setVisuals(WeatherType type) {
-    // ÇåÀí¾ÉÁ£×Ó
+    // æ¸…ç†æ—§ç²’å­
     if (particleEffect) {
         particleEffect->removeFromParent();
         particleEffect = nullptr;
@@ -186,53 +184,53 @@ void WeatherManager::setVisuals(WeatherType type) {
 
     switch (type) {
     case WeatherType::Sunny:
-        // ÇçÌìÎŞÌØĞ§
+        // æ™´å¤©æ— ç‰¹æ•ˆ
         break;
     case WeatherType::Wind:
     {
-        // === 1. ÎÆÀíÂ·¾¶Ñ¡Ôñ ===
+        // === 1. çº¹ç†è·¯å¾„é€‰æ‹© ===
         std::string textureFile = (currentSeason == Season::Spring) ? "Weather/flower.png" : "Weather/leaf.png";
 
-        // === 2. Ê¹ÓÃ±£µ×ÎÆÀí¼ÓÔØ ===
+        // === 2. ä½¿ç”¨ä¿åº•çº¹ç†åŠ è½½ ===
         auto texture = getTextureOrFallback(textureFile);
 
-        // === 3. ´´½¨Á£×Ó ===
-        particleEffect = ParticleSystemQuad::createWithTotalParticles(200); // Ôö¼ÓÊıÁ¿
+        // === 3. åˆ›å»ºç²’å­ ===
+        particleEffect = ParticleSystemQuad::createWithTotalParticles(200); // å¢åŠ æ•°é‡
         particleEffect->setTexture(texture);
-        // 1. ÉèÖÃÁ£×Ó´æ»îÊ±¼ä
-        particleEffect->setLife(4.0f);      // Á£×Ó´æ»î4Ãë
-        particleEffect->setLifeVar(1.0f);   // Ëæ»ú²¨¶¯1Ãë
+        // 1. è®¾ç½®ç²’å­å­˜æ´»æ—¶é—´
+        particleEffect->setLife(4.0f);      // ç²’å­å­˜æ´»4ç§’
+        particleEffect->setLifeVar(1.0f);   // éšæœºæ³¢åŠ¨1ç§’
 
-        // 2. ÉèÖÃ·¢ÉäËÙÂÊ (×ÜÁ£×ÓÊı / ´æ»îÊ±¼ä = ¾ùÔÈ·¢Éä)
+        // 2. è®¾ç½®å‘å°„é€Ÿç‡ (æ€»ç²’å­æ•° / å­˜æ´»æ—¶é—´ = å‡åŒ€å‘å°„)
         particleEffect->setEmissionRate(particleEffect->getTotalParticles() / particleEffect->getLife());
-        // === 4. ¹Ø¼üÊôĞÔÉèÖÃ£¬È·±£¿É¼û ===
+        // === 4. å…³é”®å±æ€§è®¾ç½®ï¼Œç¡®ä¿å¯è§ ===
         particleEffect->setDuration(ParticleSystem::DURATION_INFINITY);
         particleEffect->setEmitterMode(ParticleSystem::Mode::GRAVITY);
 
-        // Î»ÖÃ£º´ÓÆÁÄ»×óÉÏ½ÇºÍÓÒÉÏ½ÇÉú³É
+        // ä½ç½®ï¼šä»å±å¹•å·¦ä¸Šè§’å’Œå³ä¸Šè§’ç”Ÿæˆ
         particleEffect->setPosition(Vec2(WINSIZE.width / 2, WINSIZE.height + 50));
         particleEffect->setPosVar(Vec2(WINSIZE.width, 0));
 
-        // ÔË¶¯£ºÏòÓÒÏÂ·½Æ®Âä
-        particleEffect->setGravity(Vec2(200, -100)); // ·çÁ¦ÏòÓÒ£¬ÖØÁ¦ÏòÏÂ
+        // è¿åŠ¨ï¼šå‘å³ä¸‹æ–¹é£˜è½
+        particleEffect->setGravity(Vec2(200, -100)); // é£åŠ›å‘å³ï¼Œé‡åŠ›å‘ä¸‹
         particleEffect->setSpeed(150);
         particleEffect->setSpeedVar(50);
-        particleEffect->setAngle(-45); // ÓÒÏÂ·½
+        particleEffect->setAngle(-45); // å³ä¸‹æ–¹
         particleEffect->setAngleVar(20);
 
-        // ´óĞ¡£ºÉèÖÃÉÔÎ¢´óÒ»µã£¬·ÀÖ¹¿´²»¼û
+        // å¤§å°ï¼šè®¾ç½®ç¨å¾®å¤§ä¸€ç‚¹ï¼Œé˜²æ­¢çœ‹ä¸è§
         particleEffect->setStartSize(25.0f);
         particleEffect->setStartSizeVar(10.0f);
         particleEffect->setEndSize(15.0f);
 
-        // ÑÕÉ«£º¸ù¾İ¼¾½ÚÉèÖÃÃ÷ÏÔÑÕÉ«
+        // é¢œè‰²ï¼šæ ¹æ®å­£èŠ‚è®¾ç½®æ˜æ˜¾é¢œè‰²
         if (currentSeason == Season::Spring) {
-            // ·ÛÉ«»¨°ê
+            // ç²‰è‰²èŠ±ç“£
             particleEffect->setStartColor(Color4F(1.0f, 0.7f, 0.8f, 1.0f));
             particleEffect->setEndColor(Color4F(1.0f, 0.7f, 0.8f, 0.5f));
         }
         else {
-            // ³ÈÉ«/ºÖÉ«ÂäÒ¶
+            // æ©™è‰²/è¤è‰²è½å¶
             particleEffect->setStartColor(Color4F(1.0f, 0.6f, 0.2f, 1.0f));
             particleEffect->setEndColor(Color4F(0.8f, 0.5f, 0.1f, 0.5f));
         }
@@ -245,42 +243,42 @@ void WeatherManager::setVisuals(WeatherType type) {
     {
         particleEffect = ParticleSystemQuad::createWithTotalParticles(1500);
 
-        // 1. ÎÆÀí
+        // 1. çº¹ç†
         auto texture = Director::getInstance()->getTextureCache()->addImage("Weather/raindrop.png");
         particleEffect->setTexture(texture);
 
-        // 2. »ù´¡ÉèÖÃ
+        // 2. åŸºç¡€è®¾ç½®
         particleEffect->setDuration(ParticleSystem::DURATION_INFINITY);
         particleEffect->setEmitterMode(ParticleSystem::Mode::GRAVITY);
 
-        // 3. Î»ÖÃºÍ·¶Î§
+        // 3. ä½ç½®å’ŒèŒƒå›´
         particleEffect->setPosition(Vec2(WINSIZE.width / 2, WINSIZE.height + 100));
         particleEffect->setPosVar(Vec2(WINSIZE.width / 2, 20));
 
-        // 4. ÎïÀí²ÎÊı
+        // 4. ç‰©ç†å‚æ•°
         particleEffect->setGravity(Vec2(40, -1000));
         particleEffect->setSpeed(50);
         particleEffect->setSpeedVar(20);
         particleEffect->setEmissionRate(100.0f);
 
-        // 5. ÉúÃüÖÜÆÚ
+        // 5. ç”Ÿå‘½å‘¨æœŸ
         particleEffect->setLife(1.2f);
         particleEffect->setLifeVar(0.3f);
 
-        // 6. ÑÕÉ«
+        // 6. é¢œè‰²
         particleEffect->setStartColor(Color4F(1.0f, 1.0f, 1.0f, 0.9f));
         particleEffect->setEndColor(Color4F(0.85f, 0.9f, 1.0f, 0.7f));
 
-        // 7. ´óĞ¡£¨¿ØÖÆÓêµÎĞÎ×´£©
+        // 7. å¤§å°ï¼ˆæ§åˆ¶é›¨æ»´å½¢çŠ¶ï¼‰
         particleEffect->setStartSize(20.0f);
         particleEffect->setStartSizeVar(5.0f);
         particleEffect->setEndSize(15.0f);
 
-        // 8. ½Ç¶È£¨´¹Ö±ÏòÏÂ£©
+        // 8. è§’åº¦ï¼ˆå‚ç›´å‘ä¸‹ï¼‰
         particleEffect->setAngle(270);
         particleEffect->setAngleVar(15);
 
-        // 9. »ìºÏÄ£Ê½£¨¸üÁÁ£©
+        // 9. æ··åˆæ¨¡å¼ï¼ˆæ›´äº®ï¼‰
         particleEffect->setBlendAdditive(true);
 
         weatherLayer->addChild(particleEffect);
@@ -291,7 +289,7 @@ void WeatherManager::setVisuals(WeatherType type) {
         particleEffect = ParticleSnow::create();
         particleEffect->setGravity(Vec2(0, -3));
 
-        // ÉèÖÃËÙ¶È
+        // è®¾ç½®é€Ÿåº¦
         particleEffect->setSpeed(20.0f);
         particleEffect->setSpeedVar(3.0f);
 
@@ -301,74 +299,63 @@ void WeatherManager::setVisuals(WeatherType type) {
     }
     }
 }
-// ==================== ÌìÉ«Óë¹âÕÕ ====================
+// ==================== å¤©è‰²ä¸å…‰ç…§ ====================
 void WeatherManager::updateSkyColor(int hour, int minute) {
-    // 1. ÌØÊâÌìÆøÓÅÏÈ´¦Àí (±ÈÈçÏÂÓêÌìÇ¿ÖÆ±ä°µ)
+    // 1. ç‰¹æ®Šå¤©æ°”ä¼˜å…ˆå¤„ç† (æ¯”å¦‚ä¸‹é›¨å¤©å¼ºåˆ¶å˜æš—)
     if (currentWeather == WeatherType::Rain) {
         if (overlayLayer) {
             overlayLayer->stopAllActions();
-            overlayLayer->setColor(Color3B(30, 40, 60)); // Éî»ÒÀ¶
-            overlayLayer->setOpacity(150);
+            overlayLayer->setColor(Color3B(30, 40, 60)); // æ·±ç°è“
+            overlayLayer->setOpacity(120);
         }
         return;
     }
 
-    // 2. »ñÈ¡Ä¿±êÑÕÉ«
+    // 2. è·å–ç›®æ ‡é¢œè‰²
     Color3B targetColor;
     GLubyte targetOpacity;
 
     getTargetColor(hour, minute, targetColor, targetOpacity);
 
-    // 3. Ó¦ÓÃÑÕÉ«µ½Í¼²ã
+    // 3. åº”ç”¨é¢œè‰²åˆ°å›¾å±‚
     if (overlayLayer) {
         overlayLayer->stopAllActions();
         overlayLayer->setColor(targetColor);
         overlayLayer->setOpacity(targetOpacity);
     }
 }
+
 void WeatherManager::getTargetColor(int hour, int minute, Color3B& outColor, GLubyte& outOpacity) {
     int totalMinutes = hour * 60 + minute;
-
-    // --- Ôç³¿ (6:00 - 7:00) 
-    if (totalMinutes >= 4 * 60 && totalMinutes < 7 * 60) {
-        float progress = (float)(totalMinutes - 4 * 60) / (3 * 60);
+    // 1. æ—©æ™¨ (6:00 - 7:00): å¤©è‰²æ¸äº®
+    if (totalMinutes >= 6 * 60 && totalMinutes < 7 * 60) {
+        float progress = (float)(totalMinutes - 6 * 60) / (1 * 60); // 0.0 -> 1.0
         outColor = Color3B(255, 200, 100);
-        outOpacity = static_cast<GLubyte>(200 * (1.0f - progress));
+        outOpacity = static_cast<GLubyte>(MAX_NIGHT_OPACITY * (1.0f - progress));
         return;
     }
 
-    // --- °×Ìì (7:00 - 17:00)
-    if (totalMinutes >= 7 * 60 && totalMinutes < 17 * 60) {
+    // 2. ç™½å¤© (7:00 - 18:00): ç™½å¤©
+    if (totalMinutes >= 7 * 60 && totalMinutes < 18 * 60) {
         outColor = Color3B(0, 0, 0);
         outOpacity = 0;
         return;
     }
-    // --- »Æ»è (17:00 - 19:30) 
-    if (totalMinutes >= 17 * 60 && totalMinutes < 19 * 60 + 30) {
-        float progress = (float)(totalMinutes - 17 * 60) / (2.5f * 60);
-        outColor.r = 10;
-        outColor.g = 15;
-        outColor.b = 40;
-        outOpacity = static_cast<GLubyte>(0 + (130 * progress));
 
+    // 3. é»„æ˜ (18:00 - 20:00): è“è‰²å˜æ·±
+    if (totalMinutes >= 18 * 60 && totalMinutes < 20 * 60) {
+        float progress = (float)(totalMinutes - 18 * 60) / (2 * 60); 
+        GLubyte r = static_cast<GLubyte>(0 + (10 - 0) * progress);
+        GLubyte g = static_cast<GLubyte>(50 + (10 - 50) * progress);
+        GLubyte b = static_cast<GLubyte>(100 + (30 - 100) * progress);
+        outColor = Color3B(r, g, b);
+        outOpacity = static_cast<GLubyte>(0 + (MAX_NIGHT_OPACITY * progress));
         return;
     }
-
-    // --- Ò¹Íí (19:30 - 24:00) 
-    if (totalMinutes >= 19 * 60 + 30 && totalMinutes < 24 * 60) {
-        float progress = (float)(totalMinutes - (19 * 60 + 30)) / (4.5f * 60);
-
-        outColor.r = 10;
-        outColor.g = static_cast<GLubyte>(15 - (5 * progress));
-        outColor.b = static_cast<GLubyte>(40 - (10 * progress)); 
-        outOpacity = static_cast<GLubyte>(130 + (50 * progress));
-
+    // 4. å¤œæ™š (20:00 - æ¬¡æ—¥ 6:00)
+    if (totalMinutes >= 20 * 60 || totalMinutes < 6 * 60) {
+        outColor = Color3B(10, 10, 30);
+        outOpacity = MAX_NIGHT_OPACITY;
         return;
     }
-    // --- ÉîÒ¹ (0:00 - 2:00) 
-    if (totalMinutes < 4 * 60) totalMinutes += 24 * 60;
-    float progress = (float)(totalMinutes - 24 * 60) / (4 * 60);
-
-    outColor = Color3B(20, 20, 60);
-    outOpacity = static_cast<GLubyte>(230 - (30 * progress));
 }
