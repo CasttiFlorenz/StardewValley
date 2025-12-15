@@ -11,7 +11,7 @@
 #define __WEATHER_MANAGER_H__
 
 #include "cocos2d.h"
-#include "GameTime.h" 
+#include "../Time/GameTime.h" 
 #define MAX_NIGHT_OPACITY 100
 
 // 定义天气类型
