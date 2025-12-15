@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     WeatherManager.h
- * File Function: WeatherManagerÀàµÄÊµÏÖ
- * Author:        ÕÔî£åû
+ * File Function: WeatherManagerç±»çš„å®ç°
+ * Author:        èµµç¿å¦
  * Update Date:   2025/12/13
  * License:       MIT License
  ****************************************************************/
@@ -11,9 +11,10 @@
 #define __WEATHER_MANAGER_H__
 
 #include "cocos2d.h"
-#include "../Time/GameTime.h" // È·±£ÒıÓÃÁËÄãµÄ GameTime Àà¶¨Òå
+#include "GameTime.h" 
+#define MAX_NIGHT_OPACITY 100
 
-// ¶¨ÒåÌìÆøÀàĞÍ
+// å®šä¹‰å¤©æ°”ç±»å‹
 enum class WeatherType {
     Sunny = 0,
     Rain,
@@ -23,23 +24,23 @@ enum class WeatherType {
 
 class WeatherManager : public cocos2d::Node {
 public:
-    // µ¥Àı·ÃÎÊ
+    // å•ä¾‹è®¿é—®
     static WeatherManager* getInstance();
     static void destroyInstance();
 
-    // ³õÊ¼»¯
+    // åˆå§‹åŒ–
     virtual bool init() override;
 
-    // ºËĞÄÂß¼­£º¸üĞÂÌìÆø (Ã¿ÌìÔçÉÏµ÷ÓÃ)
+    // æ ¸å¿ƒé€»è¾‘ï¼šæ›´æ–°å¤©æ°” (æ¯å¤©æ—©ä¸Šè°ƒç”¨)
     void updateWeather(Season currentSeason);
 
-    // ÊÖ¶¯ÉèÖÃÌìÆø (²âÊÔÓÃ)
+    // æ‰‹åŠ¨è®¾ç½®å¤©æ°” (æµ‹è¯•ç”¨)
     void setWeather(WeatherType type);
 
-    // ¸üĞÂÌìÉ«ÂË¾µ (Ã¿10·ÖÖÓµ÷ÓÃ)
+    // æ›´æ–°å¤©è‰²æ»¤é•œ (æ¯10åˆ†é’Ÿè°ƒç”¨)
     void updateSkyColor(int hour, int minute);
 
-    // »ñÈ¡µ±Ç°×´Ì¬
+    // è·å–å½“å‰çŠ¶æ€
     bool isRaining() const;
     WeatherType getCurrentWeather() const { return currentWeather; }
 
@@ -48,16 +49,16 @@ private:
     ~WeatherManager();
     static WeatherManager* instance;
 
-    // Êı¾İ
+    // æ•°æ®
     WeatherType currentWeather;
     Season currentSeason;
 
-    // ÊÓ¾õ×é¼ş
-    cocos2d::Layer* weatherLayer;       // Á£×Ó²ã
-    cocos2d::LayerColor* overlayLayer;  // ÂË¾µ²ã
-    cocos2d::ParticleSystemQuad* particleEffect; // µ±Ç°Á£×Ó
+    // è§†è§‰ç»„ä»¶
+    cocos2d::Layer* weatherLayer;       // ç²’å­å±‚
+    cocos2d::LayerColor* overlayLayer;  // æ»¤é•œå±‚
+    cocos2d::ParticleSystemQuad* particleEffect; // å½“å‰ç²’å­
 
-    // ÄÚ²¿·½·¨
+    // å†…éƒ¨æ–¹æ³•
     void setVisuals(WeatherType type);
     void WeatherManager::getTargetColor(int hour, int minute, cocos2d::Color3B& outColor, GLubyte& outOpacity);
 };
