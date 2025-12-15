@@ -12,7 +12,7 @@
 
 #include "cocos2d.h"
 #include "GameTime.h"
-#include "WeatherManager.h"
+#include "../Weather/WeatherManager.h""
 #include <functional> 
 
 class TimeManager : public cocos2d::Node {
