@@ -50,11 +50,10 @@ bool TimeManager::init() {
     if (!Node::init()) return false;
  
     std::srand((unsigned int)time(nullptr));
-
+    isUpdating = false;
     currentTime = GameTime(1, Season::Spring, 1, 6, 0);
     WeatherManager::getInstance()->updateWeather(currentTime.season);
     createUI();
-    this->scheduleUpdate();
     return true;
 }
 //  UI ´´½¨
