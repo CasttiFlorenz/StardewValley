@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     GameScene.cpp
- * File Function: GameSceneç±»çš„å®žçŽ°
- * Author:        éƒ­èŠ·çƒŸ
+ * File Function: GameSceneÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
  * Update Date:   2025/12/14
  * License:       MIT License
  ****************************************************************/
@@ -52,6 +52,7 @@ bool GameScene::init()
   
     _player->changeUpdateStatus();
     _weatherManager->scheduleUpdate();
+    _timeManager->scheduleUpdate();
     this->scheduleUpdate();
   
 
@@ -115,8 +116,8 @@ void GameScene::switchMap()
 {
     if (!_player || !_map) return;
 
-    std::string _newMap;    // ç›®æ ‡åœ°å›¾åç§°
-    std::string _lastMap;   // ä¸Šä¸€å¼ åœ°å›¾åç§°
+    std::string _newMap;    // Ä¿±êµØÍ¼Ãû³Æ
+    std::string _lastMap;   // ÉÏÒ»ÕÅµØÍ¼Ãû³Æ
 
     _newMap = _map->getNewMap(_player->getPosition(), _isStart, _player->getPlayerDirection());
     _lastMap = _map->getMapName();
@@ -137,25 +138,25 @@ void GameScene::switchMap()
             _player->setGameMap(_map);
 
 
-            // æ£€æŸ¥æ–°åœ°å›¾æ˜¯å¦éœ€è¦è·Ÿéšæ‘„åƒæœº
+            // ¼ì²éÐÂµØÍ¼ÊÇ·ñÐèÒª¸úËæÉãÏñ»ú
             if (_map->isCameraFollow()) {
-                // å¦‚æžœè¿˜æ²¡æœ‰è·Ÿéšæ‘„åƒæœºï¼Œåˆ›å»ºä¸€ä¸ª
+                // Èç¹û»¹Ã»ÓÐ¸úËæÉãÏñ»ú£¬´´½¨Ò»¸ö
                 if (!_followCamera) {
                     _followCamera = Camera::createOrthographic(Director::getInstance()->getVisibleSize().width, Director::getInstance()->getVisibleSize().height, 1, 1000);
                     _followCamera->setCameraFlag(CameraFlag::USER1);
                     this->addChild(_followCamera, 6);
                 }
 
-                // è®¾ç½®æŽ©ç 
+                // ÉèÖÃÑÚÂë
                 _player->setCameraMask((unsigned short)CameraFlag::USER1, true);
                 _map->setCameraMask((unsigned short)CameraFlag::USER1, true);
 
-                // ç¡®ä¿ UI ä½¿ç”¨é»˜è®¤æ‘„åƒæœº
+                // È·±£ UI Ê¹ÓÃÄ¬ÈÏÉãÏñ»ú
                 if (_inventory) {
                     _inventory->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
                 }
 
-                // è®¾ç½®æ‘„åƒæœºä½ç½®
+                // ÉèÖÃÉãÏñ»úÎ»ÖÃ
                 Vec3 currentPos = _followCamera->getPosition3D();
                 currentPos.z = CAMERA_POSZ;
                 _followCamera->setPosition3D(currentPos);
@@ -163,7 +164,7 @@ void GameScene::switchMap()
 
             }
             else {
-                // å¦‚æžœæ–°åœ°å›¾ä¸éœ€è¦æ‘„åƒæœºï¼Œè®¾ç½®ä¸åŒçš„æŽ©ç 
+                // Èç¹ûÐÂµØÍ¼²»ÐèÒªÉãÏñ»ú£¬ÉèÖÃ²»Í¬µÄÑÚÂë
                 resetCamera();
                 _map->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
                 _player->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);

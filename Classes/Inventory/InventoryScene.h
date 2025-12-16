@@ -11,7 +11,7 @@
 #define __INVENTORY_SCENE_H__
 
 #include "cocos2d.h"
-#include "Player.h"
+#include "../Player/Player.h"
 #include "InventoryGridScene.h"
 
 class InventoryScene : public cocos2d::Scene {

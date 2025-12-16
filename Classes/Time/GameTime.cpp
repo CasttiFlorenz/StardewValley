@@ -1,24 +1,24 @@
 /***************************************************************
  * Project Name : StardewValley
  * File Name : GameTime.cpp
- * File Function : GameTimeç±»çš„å®ç°
- * Author : èµµç¿å¦
+ * File Function : GameTimeÀàµÄÊµÏÖ
+ * Author : ÕÔî£åû
  * Update Date : 2025 / 12 / 13
  * License : MIT License
 * ***************************************************************/
 #include "GameTime.h"
 USING_NS_CC;
-// ==================== æ„é€ å‡½æ•° ====================
+// ==================== ¹¹Ôìº¯Êı ====================
 GameTime::GameTime()
     : year(1), season(Season::Spring), dayOfMonth(1), hour(6), minute(0) {
 }
 GameTime::GameTime(int y, Season s, int d, int h, int m)
     : year(y), season(s), dayOfMonth(d), hour(h), minute(m) {
 }
-// ==================== æ ¸å¿ƒè¿›ä½é€»è¾‘ ====================
+// ==================== ºËĞÄ½øÎ»Âß¼­ ====================
 void GameTime::addMinutes(int minutesToAdd) {
     minute += minutesToAdd;
-// åˆ†é’Ÿè¿›ä½
+// ·ÖÖÓ½øÎ»
    while (minute >= 60) {
             minute -= 60;
             hour++;
@@ -33,7 +33,7 @@ void GameTime::addDays(int daysToAdd) {
     handleDayRollover();
 }
 void GameTime::handleDayRollover() {
-    // æ¯ä¸ªæœˆå›ºå®š 28 å¤©
+    // Ã¿¸öÔÂ¹Ì¶¨ 28 Ìì
     while (dayOfMonth > 28) {
         dayOfMonth -= 28;
         int s = (int)season + 1;
@@ -47,11 +47,11 @@ void GameTime::handleDayRollover() {
 std::string GameTime::getTimeString() const {
     std::string period = "am";
     int displayHour = hour;
-    // å¤„ç†è·¨å¤©å°æ—¶ (24ç‚¹=0ç‚¹, 25ç‚¹=1ç‚¹, 26ç‚¹=2ç‚¹)
+    // ´¦Àí¿çÌìĞ¡Ê± (24µã=0µã, 25µã=1µã, 26µã=2µã)
     if (displayHour >= 24)
             displayHour -= 24;
 
-    // 12å°æ—¶åˆ¶è½¬æ¢
+    // 12Ğ¡Ê±ÖÆ×ª»»
     if (displayHour >= 12) {
         period = "pm";
         if (displayHour > 12)
@@ -77,14 +77,14 @@ std::string GameTime::getSeasonString() const {
     }
 }
 std::string GameTime::getFullString() const {
-    // è°ƒè¯•ç”¨å®Œæ•´å­—ç¬¦ä¸²
+    // µ÷ÊÔÓÃÍêÕû×Ö·û´®
     return StringUtils::format("Year %d %s Day %d - %s",
         year, getSeasonString().c_str(), dayOfMonth, getTimeString().c_str());
 }
-// ==================== è¾…åŠ©è®¡ç®— ====================
+// ==================== ¸¨Öú¼ÆËã ====================
 DayOfWeek GameTime::getDayOfWeek() const {
-    // æ˜Ÿéœ²è°·è§„åˆ™ï¼šæ¯ä¸ªæœˆ1å·æ°¸è¿œæ˜¯å‘¨ä¸€ (Mon=0)
-    // æ‰€ä»¥ (æ—¥æœŸ-1) % 7 å³ä¸ºæ˜ŸæœŸå‡ 
+    // ĞÇÂ¶¹È¹æÔò£ºÃ¿¸öÔÂ1ºÅÓÀÔ¶ÊÇÖÜÒ» (Mon=0)
+    // ËùÒÔ (ÈÕÆÚ-1) % 7 ¼´ÎªĞÇÆÚ¼¸
     return (DayOfWeek)((dayOfMonth - 1) % 7);
 }
 bool GameTime::isSameDay(const GameTime& other) const {
