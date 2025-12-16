@@ -83,5 +83,28 @@ MouseEvent Town::onLeftClick(const Vec2& playerPos, const Direction direction, O
 
 MouseEvent Town::onRightClick(const Vec2& playerPos, const Direction direction)
 {
+    const Rect EvelynRect = getObjectRect("Evelyn");
+    const Rect HaleyRect = getObjectRect("Haley");
+    const Rect MarnieRect = getObjectRect("Marnie");
+    const Rect PierreRect = getObjectRect("Pierre");
+    const Rect SamRect = getObjectRect("Sam");
+
+
+    if (EvelynRect.containsPoint(playerPos)) {
+        return MouseEvent::CONVERSATION_EVELYN;
+    }
+    if (HaleyRect.containsPoint(playerPos)) {
+        return MouseEvent::CONVERSATION_HALEY;
+    }
+    if (MarnieRect.containsPoint(playerPos)) {
+        return MouseEvent::SHOP_MARNIE;
+    }
+    if (PierreRect.containsPoint(playerPos)) {
+        return MouseEvent::SHOP_PIERRE;
+    }
+    if (SamRect.containsPoint(playerPos)) {
+        return MouseEvent::CONVERSATION_HALEY;
+    }
+
     return MouseEvent::NONE;
 }

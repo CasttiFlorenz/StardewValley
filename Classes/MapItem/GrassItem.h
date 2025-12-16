@@ -2,9 +2,9 @@
 #ifndef __GRASS_ITEM_H__
 #define __GRASS_ITEM_H__
 
-#include "FarmItem.h"
+#include "EnvironmentItem.h"
 
-class GrassItem : public FarmItem {
+class GrassItem : public EnvironmentItem {
 public:
     static GrassItem* create(const cocos2d::Vec2& tileCoord);
     bool init(const cocos2d::Vec2& tileCoord);

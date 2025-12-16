@@ -161,7 +161,6 @@ bool Farm::isCollidable(Vec2 worldPos)
         }
     }
 
-
     return false;
 }
 
@@ -188,14 +187,14 @@ MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction, O
         Vec2 checkPos = basePos;
         checkPos.y += offset;
 
-        FarmItem* item = _farmItemManager->getItem(checkPos);
+        EnvironmentItem* item = _farmItemManager->getItem(checkPos);
         if (item) {
             auto type = item->getType();
-            if (type == FarmItemType::WOOD) {
+            if (type == EnvironmentItemType::WOOD) {
                 _farmItemManager->removeItem(checkPos);
                 return MouseEvent::GET_WOOD;
             }
-            else if (type == FarmItemType::GRASS) {
+            else if (type == EnvironmentItemType::GRASS) {
                 _farmItemManager->removeItem(checkPos);
                 return MouseEvent::GET_GRASS;
             }
@@ -207,5 +206,46 @@ MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction, O
 
 MouseEvent Farm::onRightClick(const Vec2& playerPos, const Direction direction)
 {
+    const Rect saleRect = getObjectRect("sale");
+
+    if (saleRect.containsPoint(playerPos)) {
+        return MouseEvent::SHOP_SALE;
+    }
+
+    // 1. 计算基准瓦片坐标
+    Vec2 basePos = this->calMapPos(playerPos);
+
+    // 2. 根据朝向调整基准坐标
+    switch (direction) {
+    case Direction::DOWN:  basePos.y++; break;
+    case Direction::UP:    basePos.y--; break;
+    case Direction::LEFT:  basePos.x--; break;
+    case Direction::RIGHT: basePos.x++; break;
+    default: break;
+    }
+
+    // 3. 定义检测偏移量顺序：原位置(0)，上方(-1)，下方(+1)
+    // 对应原代码逻辑：tiledPos -> tiledPos.y-- -> tiledPos.y+=2
+    const int yOffsets[] = { 1,0, -1 };
+
+    // 4. 遍历检测
+    for (int offset : yOffsets) {
+        Vec2 checkPos = basePos;
+        checkPos.y += offset;
+
+        EnvironmentItem* item = _farmItemManager->getItem(checkPos);
+        if (item) {
+            auto type = item->getType();
+            if (type == EnvironmentItemType::LEEK) {
+                _farmItemManager->removeItem(checkPos);
+                return MouseEvent::GET_LEEK;
+            }
+            else if (type == EnvironmentItemType::DAFFODILS) {
+                _farmItemManager->removeItem(checkPos);
+                return MouseEvent::GET_DAFFODILS;
+            }
+        }
+    }
+
     return MouseEvent::NONE;
 }

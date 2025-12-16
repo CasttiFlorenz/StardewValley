@@ -13,9 +13,12 @@ FarmItemManager* FarmItemManager::create(GameMap* gameMap) {
 bool FarmItemManager::init(GameMap* gameMap) {
     _gameMap = gameMap;
     _tiledMap = _gameMap ? _gameMap->getTiledMap() : nullptr;
-    // 获取名为 "event" 的层，用于检测 Cultivated 属性
     _eventLayer = _tiledMap ? _tiledMap->getLayer("event") : nullptr;
     _items.clear();
+    _woodCount = 0;
+    _grassCount = 0;
+    _daffodilsCount = 0;
+    _leekCount = 0;
 
     if (_gameMap) {
         spawnInitialItems();
@@ -36,13 +39,11 @@ unsigned int FarmItemManager::stripFlags(unsigned int gid) {
 bool FarmItemManager::isCultivated(const Vec2& tileCoord) const {
     if (!_eventLayer || !_tiledMap) return false;
 
-    // 获取 GID 并去除翻转位
     unsigned int gid = _eventLayer->getTileGIDAt(tileCoord);
     if (gid == 0) return false;
 
     unsigned int rawGid = stripFlags(gid);
-    
-    // 获取 GID 属性
+
     auto propsValue = _tiledMap->getPropertiesForGID(rawGid);
     if (propsValue.getType() != cocos2d::Value::Type::MAP) return false;
 
@@ -50,7 +51,6 @@ bool FarmItemManager::isCultivated(const Vec2& tileCoord) const {
     auto it = props.find("Cultivated");
     if (it == props.end()) return false;
 
-    // 检查属性值是否为 true (支持布尔、整数或字符串形式)
     if (it->second.getType() == cocos2d::Value::Type::BOOLEAN) {
         return it->second.asBool();
     }
@@ -68,7 +68,7 @@ bool FarmItemManager::hasItem(const Vec2& tileCoord) const {
     return (_items.find(keyFor(tileCoord))) != (_items.end());
 }
 
-FarmItem* FarmItemManager::getItem(const Vec2& tileCoord) const {
+EnvironmentItem* FarmItemManager::getItem(const Vec2& tileCoord) const {
     auto it = _items.find(keyFor(tileCoord));
     if (it != _items.end()) {
         return it->second;
@@ -76,43 +76,57 @@ FarmItem* FarmItemManager::getItem(const Vec2& tileCoord) const {
     return nullptr;
 }
 
-bool FarmItemManager::addItem(FarmItemType type, const Vec2& tileCoord) {
-    // 1. 检查是否允许耕种 (event 层 Cultivated == 1)
+bool FarmItemManager::addItem(EnvironmentItemType type, const Vec2& tileCoord) {
     if (!isCultivated(tileCoord)) {
         return false;
     }
 
-    // 2. 检查该位置是否已有物品
     if (hasItem(tileCoord)) {
         return false;
     }
 
-    // 3. 创建物品
-    FarmItem* item = nullptr;
+    EnvironmentItem* item = nullptr;
     switch (type) {
-        case FarmItemType::WOOD:
-            item = WoodItem::create(tileCoord);
-            break;
-        case FarmItemType::GRASS:
-            item = GrassItem::create(tileCoord);
-            break;
-        //case FarmItemType::CULTIUVATED:
+    case EnvironmentItemType::WOOD:
+        item = WoodItem::create(tileCoord);
+        break;
+    case EnvironmentItemType::GRASS:
+        item = GrassItem::create(tileCoord);
+        break;
+    case EnvironmentItemType::DAFFODILS:
+        item = DaffodilsItem::create(tileCoord);
+        break;
+    case EnvironmentItemType::LEEK:
+        item = LeekItem::create(tileCoord);
+        break;
+        //case EnvironmentItemType::CULTIUVATED:
           //  item = CultivatedItem::create(tileCoord);
             //break;
-        default:
-            return false;
+    default:
+        return false;
     }
 
     if (item) {
-        // 将 Item 添加到 Map 上
+        // 将 Item 添加到 Map 中
         if (_tiledMap && _gameMap) {
-             Vec2 pos = _gameMap->calWorldPos(tileCoord);
-             item->setPosition(pos);
-             _tiledMap->addChild(item, 5); // ZOrder 5
+            Vec2 pos = _gameMap->calWorldPos(tileCoord);
+            item->setPosition(pos);
+            _tiledMap->addChild(item, 5); // ZOrder 5
         }
 
         item->retain(); // 保持引用，因为存储在 unordered_map 中
         _items.emplace(keyFor(tileCoord), item);
+
+        if (type == EnvironmentItemType::WOOD) {
+            _woodCount++;
+        } else if (type == EnvironmentItemType::GRASS) {
+            _grassCount++;
+        } else if (type == EnvironmentItemType::DAFFODILS) {
+            _daffodilsCount++;
+        } else if (type == EnvironmentItemType::LEEK) {
+            _leekCount++;
+        }
+
         return true;
     }
 
@@ -126,9 +140,21 @@ bool FarmItemManager::removeItem(const Vec2& tileCoord) {
         return false;
     }
 
-    // 从 Map 移除并释放
-    it->second->removeFromParent();
-    CC_SAFE_RELEASE(it->second);
+    EnvironmentItem* item = it->second;
+    EnvironmentItemType type = item->getType();
+
+    if (type == EnvironmentItemType::WOOD) {
+        _woodCount--;
+    } else if (type == EnvironmentItemType::GRASS) {
+        _grassCount--;
+    } else if (type == EnvironmentItemType::DAFFODILS) {
+        _daffodilsCount--;
+    } else if (type == EnvironmentItemType::LEEK) {
+        _leekCount--;
+    }
+
+    item->removeFromParent();
+    CC_SAFE_RELEASE(item);
     _items.erase(it);
     return true;
 }
@@ -139,19 +165,21 @@ void FarmItemManager::clear() {
         CC_SAFE_RELEASE(kv.second);
     }
     _items.clear();
+    _woodCount = 0;
+    _grassCount = 0;
+    _daffodilsCount = 0;
+    _leekCount = 0;
 }
 
 void FarmItemManager::spawnInitialItems() {
     if (!_tiledMap || !_eventLayer) return;
 
     Size mapSize = _eventLayer->getLayerSize();
-    int woodCount = 0;
-    int grassCount = 0;
-    const int maxItems = 15;
-    
+
     int attempts = 0;
-    // 尝试次数限制防止死循环
-    while ((woodCount < maxItems || grassCount < maxItems) && attempts < 1000) {
+    // 尝试生成物品，防止死循环
+    while ((_woodCount < MAX_WOOD_COUNT || _grassCount < MAX_GRASS_COUNT ||
+        _daffodilsCount < MAX_DAFFODILS_COUNT || _leekCount < MAX_LEEK_COUNT) && attempts < 2000) {
         attempts++;
         int x = RandomHelper::random_int(0, (int)mapSize.width - 1);
         int y = RandomHelper::random_int(0, (int)mapSize.height - 1);
@@ -160,18 +188,19 @@ void FarmItemManager::spawnInitialItems() {
         if (hasItem(coord)) continue;
         if (!isCultivated(coord)) continue;
 
-        FarmItemType type;
-        if (woodCount < maxItems && grassCount < maxItems) {
-            type = RandomHelper::random_int(0, 1) == 0 ? FarmItemType::WOOD : FarmItemType::GRASS;
-        } else if (woodCount < maxItems) {
-            type = FarmItemType::WOOD;
-        } else {
-            type = FarmItemType::GRASS;
-        }
+        EnvironmentItemType type = EnvironmentItemType::NONE;
 
-        if (addItem(type, coord)) {
-            if (type == FarmItemType::WOOD) woodCount++;
-            else grassCount++;
-        }
+        // 随机选择一种未满的类型
+        std::vector<EnvironmentItemType> availableTypes;
+        if (_woodCount < MAX_WOOD_COUNT) availableTypes.push_back(EnvironmentItemType::WOOD);
+        if (_grassCount < MAX_GRASS_COUNT) availableTypes.push_back(EnvironmentItemType::GRASS);
+        if (_daffodilsCount < MAX_DAFFODILS_COUNT) availableTypes.push_back(EnvironmentItemType::DAFFODILS);
+        if (_leekCount < MAX_LEEK_COUNT) availableTypes.push_back(EnvironmentItemType::LEEK);
+
+        if (availableTypes.empty()) break;
+
+        type = availableTypes[RandomHelper::random_int(0, (int)availableTypes.size() - 1)];
+
+        addItem(type, coord);
     }
 }

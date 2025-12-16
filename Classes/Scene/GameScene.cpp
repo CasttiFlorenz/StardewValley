@@ -220,14 +220,12 @@ void GameScene::setPlayerToStart()
     _map->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
     _player->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
 
-
     _map->setStartPosition("FarmHouse");
     _map->scheduleUpdate();
     _player->setPosition(_map->getPlayerStartPosition("FarmHouse"));
     _player->setGameMap(_map);
 
 }
-
 
 void GameScene::setupMouseListener()
 {
@@ -240,16 +238,26 @@ void GameScene::setupMouseListener()
             }
         }
         else if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT) {
-            _mouseRightPressed = true;
-            carryMouseEvent(_map->onRightClick(_player->getPosition(), _player->getPlayerDirection()));
+            if (_map && _player && !_mouseRightPressed) {
+                _mouseRightPressed = true;
+                carryMouseEvent(_map->onRightClick(_player->getPosition(), _player->getPlayerDirection()));
+            }
         }
         };
+
     _mouseListener->onMouseUp = [this](EventMouse* e) {
         if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT) {
-            _mouseLeftPressed = false;
-            _player->changeUpdateStatus();
+            if (_mouseLeftPressed) {
+                _mouseLeftPressed = false;
+                _player->changeUpdateStatus();
+            }
         }
-        else if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT) _mouseRightPressed = false;
+        else if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT) {
+            if (_mouseRightPressed) {
+                _mouseRightPressed = false;
+                _player->changeUpdateStatus();
+            }
+        }
         };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(_mouseListener, this);
 }
@@ -286,33 +294,62 @@ void GameScene::carryMouseEvent(const MouseEvent event)
 
         break;
     case MouseEvent::GET_WOOD:
-        _player->changeUpdateStatus();
         _inventory->ToolUseAnimation();
         break;
     case MouseEvent::GET_GRASS:
-        _player->changeUpdateStatus();
         _inventory->ToolUseAnimation();
+        break;
+    case MouseEvent::GET_COPPER:
+        _inventory->ToolUseAnimation();
+        break;
+    case MouseEvent::GET_STONE:
+        _inventory->ToolUseAnimation();
+        break;
+    case MouseEvent::GET_LEEK:
+        break;
+    case MouseEvent::GET_DAFFODILS:
         break;
     case MouseEvent::USE_TOOL:
-        _player->changeUpdateStatus();
         _inventory->ToolUseAnimation();
         break;
-    default:
+    case MouseEvent::SHOP_SALE:
+        _inventory->ToolUseAnimation();
+
+        break;
+    case MouseEvent::SHOP_MARNIE:
+        _inventory->ToolUseAnimation();
+
+        break;
+    case MouseEvent::SHOP_PIERRE:
+        _inventory->ToolUseAnimation();
+
+        break;
+    case MouseEvent::CONVERSATION_EVELYN:
+        _inventory->ToolUseAnimation();
+        break;
+    case MouseEvent::CONVERSATION_SAM:
+        _inventory->ToolUseAnimation();
+
+        break;
+    case MouseEvent::CONVERSATION_HALEY:
+        _inventory->ToolUseAnimation();
+        break;
+    case MouseEvent::NONE:
         break;
     }
+
+    _player->changeUpdateStatus();
 }
 
 void GameScene::carryKeyBoardEvent(const KeyBoardEvent event)
 {
     switch (event) {
     case KeyBoardEvent::CHANGE_INVENTORY:
-        enableMouse(!(_mouseListener->isEnabled()));
-
+        if (_mouseListener->isEnabled())enableMouse(false);
+        else  enableMouse(true);
         _player->changeUpdateStatus();
         _timeManager->changeUpdateStatus();
-
         _inventory->toggleInventory();
-     
         break;
     default:
         break;

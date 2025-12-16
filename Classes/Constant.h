@@ -27,7 +27,17 @@ enum class MouseEvent
     NPC_CONSERVATION,
     USE_TOOL,
     GET_WOOD,
-    GET_GRASS
+    GET_GRASS,
+    GET_STONE,
+    GET_COPPER,
+    GET_DAFFODILS,
+    GET_LEEK,
+    SHOP_SALE,
+    SHOP_PIERRE,
+    SHOP_MARNIE,
+    CONVERSATION_HALEY,
+    CONVERSATION_SAM,
+    CONVERSATION_EVELYN
 };
 
 enum class Objects {
@@ -68,11 +78,22 @@ enum class KeyBoardEvent
 
 constexpr int CAMERA_POSZ = 200;
 
-enum class FarmItemType {
+enum class EnvironmentItemType {
     NONE,
     WOOD,
     GRASS,
-    CULTIUVATED
+    CULTIUVATED,
+    STONE,
+    COPPER,
+    LEEK,
+    DAFFODILS
 };
+
+constexpr int MAX_WOOD_COUNT = 15;
+constexpr int MAX_GRASS_COUNT = 15;
+constexpr int MAX_DAFFODILS_COUNT = 5;
+constexpr int MAX_LEEK_COUNT = 3;
+constexpr int MAX_STONE_COUNT = 15;
+constexpr int MAX_COPPER_COUNT = 5;
 
 #endif // __CONSTANT_H__

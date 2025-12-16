@@ -2,13 +2,13 @@
 #ifndef __CULTIVATED_ITEM_H__
 #define __CULTIVATED_ITEM_H__
 
-#include "FarmItem.h"
+#include "EnvironmentItem.h"
 
-class CultivatedItem : public FarmItem {
+class CultivatedItem : public EnvironmentItem {
 public:
     static CultivatedItem* create(const cocos2d::Vec2& tileCoord) {
         auto p = new (std::nothrow) CultivatedItem();
-        if (p && p->init(FarmItemType::CULTIUVATED, tileCoord)) {
+        if (p && p->init(EnvironmentItemType::CULTIUVATED, tileCoord)) {
             p->autorelease();
             return p;
         }

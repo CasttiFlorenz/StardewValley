@@ -2,9 +2,9 @@
 #ifndef __WOOD_ITEM_H__
 #define __WOOD_ITEM_H__
 
-#include "FarmItem.h"
+#include "EnvironmentItem.h"
 
-class WoodItem : public FarmItem {
+class WoodItem : public EnvironmentItem {
 public:
     static WoodItem* create(const cocos2d::Vec2& tileCoord);
     bool init(const cocos2d::Vec2& tileCoord);
