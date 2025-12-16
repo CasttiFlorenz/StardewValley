@@ -38,9 +38,10 @@ public:
     virtual Vec2 getPlayerStartPosition(std::string lastMap) = 0;
 
     virtual std::string getNewMap(const Vec2& curPos, bool isStart, const Direction& direction) = 0;
+    virtual bool isOutdoor() { return false; }
 
     // ×ó¼üºÍÓÒ¼üÊÂ¼þ
-    virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction) { return MouseEvent::NONE; }
+    virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction,Objects objects) { return MouseEvent::NONE; }
     virtual MouseEvent onRightClick(const Vec2& playerPos, const Direction direction){ return MouseEvent::NONE; }
 
 protected:

@@ -47,6 +47,7 @@ bool Player::init()
     // 初始化方向为向下
     _direction = Direction::DOWN;
     _isMoving = false;                   // 初始不在移动
+    isUpdating = false;
 
     this->setScale(TILED_MAP_SCALE);
 

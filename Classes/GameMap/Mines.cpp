@@ -71,9 +71,9 @@ Vec2 Mines::getPlayerStartPosition(std::string lastMap)
 }
 
 
-MouseEvent Mines::onLeftClick(const Vec2& playerPos, const Direction direction)
+MouseEvent Mines::onLeftClick(const Vec2& playerPos, const Direction direction, Objects objects)
 {
-    return MouseEvent::NONE;
+    return MouseEvent::USE_TOOL;
 }
 
 MouseEvent Mines::onRightClick(const Vec2& playerPos, const Direction direction)

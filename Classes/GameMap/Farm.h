@@ -40,8 +40,10 @@ public:
 
     virtual bool isCollidable(Vec2 worldPos)override;
 
-    virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction)override;
+    virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction, Objects objects)override;
     virtual MouseEvent onRightClick(const Vec2& playerPos, const Direction direction) override;
+
+    virtual bool isOutdoor() override { return true; }
 
 private:
     static GameMap* _instance;

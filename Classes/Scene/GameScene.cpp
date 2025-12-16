@@ -52,7 +52,6 @@ bool GameScene::init()
   
     _player->changeUpdateStatus();
     _timeManager->changeUpdateStatus();
-    _weatherManager->scheduleUpdate();
     this->scheduleUpdate();
   
 
@@ -136,7 +135,6 @@ void GameScene::switchMap()
             _map->setStartPosition(_lastMap);
             _player->setPosition(_map->getPlayerStartPosition(_lastMap));
             _player->setGameMap(_map);
-
 
             // 检查新地图是否需要跟随摄像机
             if (_map->isCameraFollow()) {
@@ -236,12 +234,14 @@ void GameScene::setupMouseListener()
     _mouseListener = EventListenerMouse::create();
     _mouseListener->onMouseDown = [this](EventMouse* e) {
         if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT) {
-            _mouseLeftPressed = true;
-            _inventory->ToolUseAnimation();
-            _player->changeUpdateStatus();
+            if (_map && _player && !_mouseLeftPressed) {
+                _mouseLeftPressed = true;
+                carryMouseEvent(_map->onLeftClick(_player->getPosition(), _player->getPlayerDirection(), Objects::AXE));
+            }
         }
         else if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT) {
             _mouseRightPressed = true;
+            carryMouseEvent(_map->onRightClick(_player->getPosition(), _player->getPlayerDirection()));
         }
         };
     _mouseListener->onMouseUp = [this](EventMouse* e) {
@@ -284,11 +284,18 @@ void GameScene::carryMouseEvent(const MouseEvent event)
     switch (event) {
     case MouseEvent::NPC_CONSERVATION:
 
-
+        break;
+    case MouseEvent::GET_WOOD:
+        _player->changeUpdateStatus();
+        _inventory->ToolUseAnimation();
+        break;
+    case MouseEvent::GET_GRASS:
+        _player->changeUpdateStatus();
+        _inventory->ToolUseAnimation();
         break;
     case MouseEvent::USE_TOOL:
-        
-        
+        _player->changeUpdateStatus();
+        _inventory->ToolUseAnimation();
         break;
     default:
         break;

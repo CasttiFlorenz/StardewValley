@@ -8,7 +8,7 @@ class CultivatedItem : public FarmItem {
 public:
     static CultivatedItem* create(const cocos2d::Vec2& tileCoord) {
         auto p = new (std::nothrow) CultivatedItem();
-        if (p && p->init(FarmItemType::Cultivated, tileCoord)) {
+        if (p && p->init(FarmItemType::CULTIUVATED, tileCoord)) {
             p->autorelease();
             return p;
         }

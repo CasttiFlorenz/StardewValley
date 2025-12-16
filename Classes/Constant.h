@@ -68,4 +68,11 @@ enum class KeyBoardEvent
 
 constexpr int CAMERA_POSZ = 200;
 
+enum class FarmItemType {
+    NONE,
+    WOOD,
+    GRASS,
+    CULTIUVATED
+};
+
 #endif // __CONSTANT_H__

@@ -90,13 +90,13 @@ bool FarmItemManager::addItem(FarmItemType type, const Vec2& tileCoord) {
     // 3. 创建物品
     FarmItem* item = nullptr;
     switch (type) {
-        case FarmItemType::Wood:
+        case FarmItemType::WOOD:
             item = WoodItem::create(tileCoord);
             break;
-        case FarmItemType::Grass:
+        case FarmItemType::GRASS:
             item = GrassItem::create(tileCoord);
             break;
-        //case FarmItemType::Cultivated:
+        //case FarmItemType::CULTIUVATED:
           //  item = CultivatedItem::create(tileCoord);
             //break;
         default:
@@ -162,15 +162,15 @@ void FarmItemManager::spawnInitialItems() {
 
         FarmItemType type;
         if (woodCount < maxItems && grassCount < maxItems) {
-            type = RandomHelper::random_int(0, 1) == 0 ? FarmItemType::Wood : FarmItemType::Grass;
+            type = RandomHelper::random_int(0, 1) == 0 ? FarmItemType::WOOD : FarmItemType::GRASS;
         } else if (woodCount < maxItems) {
-            type = FarmItemType::Wood;
+            type = FarmItemType::WOOD;
         } else {
-            type = FarmItemType::Grass;
+            type = FarmItemType::GRASS;
         }
 
         if (addItem(type, coord)) {
-            if (type == FarmItemType::Wood) woodCount++;
+            if (type == FarmItemType::WOOD) woodCount++;
             else grassCount++;
         }
     }

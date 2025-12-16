@@ -28,7 +28,7 @@ public:
     virtual Vec2 getPlayerStartPosition(std::string lastMap) override;
     virtual bool isCameraFollow() const override{ return true; }
 
-    virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction)override;
+    virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction, Objects objects)override;
     virtual MouseEvent onRightClick(const Vec2& playerPos, const Direction direction) override;
 
 private:

@@ -96,9 +96,9 @@ Vec2 FarmHouse::getPlayerStartPosition(std::string lastMap)
     return Vec2(-1, -1);
 }
 
-MouseEvent FarmHouse::onLeftClick(const Vec2& playerPos, const Direction direction)
+MouseEvent FarmHouse::onLeftClick(const Vec2& playerPos, const Direction direction, Objects objects)
 {
-    return MouseEvent::NONE;
+    return MouseEvent::USE_TOOL;
 }
 
 MouseEvent FarmHouse::onRightClick(const Vec2& playerPos, const Direction direction)

@@ -11,7 +11,7 @@ GrassItem* GrassItem::create(const cocos2d::Vec2& tileCoord) {
 }
 
 bool GrassItem::init(const cocos2d::Vec2& tileCoord) {
-    if (!FarmItem::init(FarmItemType::Grass, tileCoord)) {
+    if (!FarmItem::init(FarmItemType::GRASS, tileCoord)) {
         return false;
     }
 
@@ -26,6 +26,7 @@ bool GrassItem::init(const cocos2d::Vec2& tileCoord) {
         this->setTexture(texture);
         this->setTextureRect(rect);
     }
+
 
     return true;
 }

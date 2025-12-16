@@ -3,14 +3,9 @@
 #define __FARM_ITEM_H__
 
 #include "cocos2d.h"
+#include "Constant.h"
 
 USING_NS_CC;
-
-enum class FarmItemType {
-    Wood,
-    Grass,
-    Cultivated
-};
 
 class FarmItem : public Sprite {
 public:

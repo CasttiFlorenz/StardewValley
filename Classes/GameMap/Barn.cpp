@@ -67,7 +67,7 @@ Vec2 Barn::getPlayerStartPosition(std::string lastMap)
 }
 
 
-MouseEvent Barn::onLeftClick(const Vec2& playerPos, const Direction direction)
+MouseEvent Barn::onLeftClick(const Vec2& playerPos, const Direction direction,Objects object)
 {
     return MouseEvent::USE_TOOL;
 }

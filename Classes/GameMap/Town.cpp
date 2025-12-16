@@ -76,9 +76,9 @@ Vec2 Town::getPlayerStartPosition(std::string lastMap)
     return Vec2(100, 100);
 }
 
-MouseEvent Town::onLeftClick(const Vec2& playerPos, const Direction direction)
+MouseEvent Town::onLeftClick(const Vec2& playerPos, const Direction direction, Objects objects)
 {
-    return MouseEvent::NONE;
+    return MouseEvent::USE_TOOL;
 }
 
 MouseEvent Town::onRightClick(const Vec2& playerPos, const Direction direction)

@@ -52,13 +52,13 @@ bool Farm::init()
     _farmItemManager = FarmItemManager::create(this);
     CC_SAFE_RETAIN(_farmItemManager);
 
-    this->addChild(_map,0);
+    this->addChild(_map, 0);
     this->scheduleUpdate();
 
     return true;
 }
 
-std::string Farm::getNewMap(const Vec2& curPos,  bool isStart, const Direction& direction)
+std::string Farm::getNewMap(const Vec2& curPos, bool isStart, const Direction& direction)
 {
     if (direction == Direction::UP) {
         const Rect goToHouse = getObjectRect("goToHouse");
@@ -146,7 +146,7 @@ bool Farm::isCollidable(Vec2 worldPos)
     }
 
     if (_farmItemManager && _farmItemManager->hasItem(tilePos))
-      return true;
+        return true;
 
     auto layer = _map->getLayer("event");
     if (!layer) return false;
@@ -157,7 +157,7 @@ bool Farm::isCollidable(Vec2 worldPos)
         if (!properties.empty() &&
             properties.find("Collidable") != properties.end() &&
             properties.at("Collidable").asBool()) {
-                return true;
+            return true;
         }
     }
 
@@ -165,8 +165,43 @@ bool Farm::isCollidable(Vec2 worldPos)
     return false;
 }
 
-MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction)
+MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction, Objects objects)
 {
+    // 1. 计算基准瓦片坐标
+    Vec2 basePos = this->calMapPos(playerPos);
+
+    // 2. 根据朝向调整基准坐标
+    switch (direction) {
+    case Direction::DOWN:  basePos.y++; break;
+    case Direction::UP:    basePos.y--; break;
+    case Direction::LEFT:  basePos.x--; break;
+    case Direction::RIGHT: basePos.x++; break;
+    default: break;
+    }
+
+    // 3. 定义检测偏移量顺序：原位置(0)，上方(-1)，下方(+1)
+    // 对应原代码逻辑：tiledPos -> tiledPos.y-- -> tiledPos.y+=2
+    const int yOffsets[] = { 1,0, -1 };
+
+    // 4. 遍历检测
+    for (int offset : yOffsets) {
+        Vec2 checkPos = basePos;
+        checkPos.y += offset;
+
+        FarmItem* item = _farmItemManager->getItem(checkPos);
+        if (item) {
+            auto type = item->getType();
+            if (type == FarmItemType::WOOD) {
+                _farmItemManager->removeItem(checkPos);
+                return MouseEvent::GET_WOOD;
+            }
+            else if (type == FarmItemType::GRASS) {
+                _farmItemManager->removeItem(checkPos);
+                return MouseEvent::GET_GRASS;
+            }
+        }
+    }
+
     return MouseEvent::USE_TOOL;
 }
 

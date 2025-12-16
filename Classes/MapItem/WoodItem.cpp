@@ -11,7 +11,7 @@ WoodItem* WoodItem::create(const cocos2d::Vec2& tileCoord) {
 }
 
 bool WoodItem::init(const cocos2d::Vec2& tileCoord) {
-    if (!FarmItem::init(FarmItemType::Wood, tileCoord)) {
+    if (!FarmItem::init(FarmItemType::WOOD, tileCoord)) {
         return false;
     }
 
