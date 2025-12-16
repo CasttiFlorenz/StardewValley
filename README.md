@@ -1,4 +1,4 @@
-
+<img width="28" height="28" alt="copper ore" src="https://github.com/user-attachments/assets/cecf64b3-432f-48de-97bd-879d29a97a6b" />
 # StardewValley
 同济大学程序设计范式期末项目，基于Cocos2d-x-17.2开发的类星露谷物语生活模拟游戏。
 
@@ -16,3 +16,4 @@
 | 2025-12-14 | enxi-yu       | ✅实现了人物移动动画、使用工具动画和更精密碰撞检测<br>||
 | 2025-12-15 | CasttiFlorenz | ✅整理项目文件结构<br>✅新增了事件处理框架<br>||
 | 2025-12-15 | enxi-yu       | ✅新增背包物品，区分不同物品的使用动画<br>|| 
+| 2025-12-16 | CasttiFlorenz | ✅新增左键采集物品：木头、杂草、石头、铜矿<br>✅新增右键采集物品：黄水仙、韭葱|| 
