@@ -51,8 +51,8 @@ bool GameScene::init()
     this->addChild(_inventory, 7);
   
     _player->changeUpdateStatus();
+    _timeManager->changeUpdateStatus();
     _weatherManager->scheduleUpdate();
-    _timeManager->scheduleUpdate();
     this->scheduleUpdate();
   
 
