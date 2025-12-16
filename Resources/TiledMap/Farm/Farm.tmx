@@ -748,7 +748,7 @@
   <object id="18" name="goToMines" x="192" y="80" width="15.8182" height="15.6364"/>
   <object id="19" name="goToBarn" x="64" y="143.909" width="16" height="15.9091"/>
   <object id="21" name="goToTown" x="736.182" y="240.182" width="15.7273" height="48"/>
-  <object id="22" name="sale" x="591.727" y="240.091" width="16.4545" height="16"/>
+  <object id="22" name="sale" x="576.272" y="192.466" width="47.5454" height="63.625"/>
   <object id="27" name="getWater" x="591.909" y="384.182" width="80.4545" height="63.7273"/>
  </objectgroup>
 </map>

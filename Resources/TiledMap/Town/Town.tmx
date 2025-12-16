@@ -936,8 +936,8 @@
   <object id="1" name="goToFarm" x="-0.181818" y="208.091" width="16.2727" height="47.6364"/>
   <object id="2" name="goToHill" x="720.091" y="15.7273" width="32.2727" height="16.5455"/>
   <object id="4" name="Sam" x="112.375" y="448.25" width="47.25" height="64.25"/>
-  <object id="6" name="Pierre" x="160.25" y="143.875" width="47.75" height="16.25"/>
-  <object id="7" name="Marnie" x="463.75" y="256" width="49.25" height="16.125"/>
+  <object id="6" name="Pierre" x="160.25" y="95.4205" width="64.0227" height="64.7045"/>
+  <object id="7" name="Marnie" x="463.75" y="207.909" width="49.25" height="64.2159"/>
   <object id="8" name="Haley" x="623.909" y="304.455" width="47.8182" height="63.8182"/>
   <object id="9" name="Evelyn" x="384.364" y="447.455" width="47.2727" height="64.4545"/>
  </objectgroup>
