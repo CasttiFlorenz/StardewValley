@@ -1,4 +1,3 @@
-<img width="28" height="28" alt="copper ore" src="https://github.com/user-attachments/assets/cecf64b3-432f-48de-97bd-879d29a97a6b" />
 # StardewValley
 同济大学程序设计范式期末项目，基于Cocos2d-x-17.2开发的类星露谷物语生活模拟游戏。
 
