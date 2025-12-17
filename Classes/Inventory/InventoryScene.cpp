@@ -270,7 +270,8 @@ void InventoryScene::addItemCount(Objects object, int amount)
         Item& item = _inventoryLayer->getItemAt(itemIndex);
         item.addCount(amount);
 
-        // 显示工具使用特效
+    // 显示工具使用特效
+    if (object != Objects::DAFFODILS && object != Objects::LEEK)
         ToolUseAnimation();
 
         // 0.2秒后显示第二个特效
@@ -323,4 +324,5 @@ void InventoryScene::removeIetmCount(Objects object, int amount)
     // 更新预览框图片（更新数量）
     updatePreviewTool();
 }
+
 
