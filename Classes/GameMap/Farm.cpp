@@ -190,11 +190,11 @@ MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction, O
         EnvironmentItem* item = _farmItemManager->getItem(checkPos);
         if (item) {
             auto type = item->getType();
-            if (type == EnvironmentItemType::WOOD) {
+            if (type == EnvironmentItemType::WOOD&&objects==Objects::AXE) {
                 _farmItemManager->removeItem(checkPos);
                 return MouseEvent::GET_WOOD;
             }
-            else if (type == EnvironmentItemType::GRASS) {
+            else if (type == EnvironmentItemType::GRASS&& objects == Objects::SCYTHE) {
                 _farmItemManager->removeItem(checkPos);
                 return MouseEvent::GET_GRASS;
             }

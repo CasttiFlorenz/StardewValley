@@ -82,11 +82,12 @@ enum class EnvironmentItemType {
     NONE,
     WOOD,
     GRASS,
-    CULTIUVATED,
     STONE,
     COPPER,
     LEEK,
-    DAFFODILS
+    DAFFODILS,
+    DRY,
+    WET
 };
 
 constexpr int MAX_WOOD_COUNT = 15;

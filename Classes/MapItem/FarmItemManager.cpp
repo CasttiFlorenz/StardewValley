@@ -99,9 +99,6 @@ bool FarmItemManager::addItem(EnvironmentItemType type, const Vec2& tileCoord) {
     case EnvironmentItemType::LEEK:
         item = LeekItem::create(tileCoord);
         break;
-        //case EnvironmentItemType::CULTIUVATED:
-          //  item = CultivatedItem::create(tileCoord);
-            //break;
     default:
         return false;
     }

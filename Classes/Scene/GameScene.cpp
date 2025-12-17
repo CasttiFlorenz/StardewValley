@@ -40,20 +40,20 @@ bool GameScene::init()
 
     initGameMap();
 
-   _inventory = InventoryScene::getInstance();
-   _weatherManager = WeatherManager::getInstance();  
-   _timeManager = TimeManager::getInstance();
-   _inventory->setPlayer(_player);
+    _inventory = InventoryScene::getInstance();
+    _weatherManager = WeatherManager::getInstance();
+    _timeManager = TimeManager::getInstance();
+    _inventory->setPlayer(_player);
 
     this->addChild(_player, 4);
     this->addChild(_weatherManager, 5);
     this->addChild(_timeManager, 6);
     this->addChild(_inventory, 7);
-  
+
     _player->changeUpdateStatus();
     _timeManager->changeUpdateStatus();
     this->scheduleUpdate();
-  
+
 
     _mouseListener = nullptr;
     _keyboardListener = nullptr;
@@ -104,11 +104,10 @@ void GameScene::update(float dt)
     if (_map && _map->isCameraFollow()) {
         updateCamera();
     }
-    _timeManager = TimeManager::getInstance();
 
     _timeManager->onDayStartCallback = [this]() {
-     this->setPlayerToStart(); 
-     };
+        this->setPlayerToStart();
+        };
 }
 
 void GameScene::switchMap()
@@ -234,7 +233,7 @@ void GameScene::setupMouseListener()
         if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT) {
             if (_map && _player && !_mouseLeftPressed) {
                 _mouseLeftPressed = true;
-                carryMouseEvent(_map->onLeftClick(_player->getPosition(), _player->getPlayerDirection(), Objects::AXE));
+                carryMouseEvent(_map->onLeftClick(_player->getPosition(), _player->getPlayerDirection(), _inventory->getTap()));
             }
         }
         else if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT) {
@@ -294,20 +293,22 @@ void GameScene::carryMouseEvent(const MouseEvent event)
 
         break;
     case MouseEvent::GET_WOOD:
-        _inventory->ToolUseAnimation();
+        _inventory->addItemCount(Objects::WOOD, 1);
         break;
     case MouseEvent::GET_GRASS:
-        _inventory->ToolUseAnimation();
+        _inventory->addItemCount(Objects::FIBER, 1);
         break;
     case MouseEvent::GET_COPPER:
-        _inventory->ToolUseAnimation();
+        _inventory->addItemCount(Objects::COPPER_ORE,1);
         break;
     case MouseEvent::GET_STONE:
-        _inventory->ToolUseAnimation();
+        _inventory->addItemCount(Objects::STONE, 1);
         break;
     case MouseEvent::GET_LEEK:
+        _inventory->addItemCount(Objects::LEEK, 1);
         break;
     case MouseEvent::GET_DAFFODILS:
+        _inventory->addItemCount(Objects::DAFFODILS, 1);
         break;
     case MouseEvent::USE_TOOL:
         _inventory->ToolUseAnimation();

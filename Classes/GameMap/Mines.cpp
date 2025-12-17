@@ -78,37 +78,40 @@ Vec2 Mines::getPlayerStartPosition(std::string lastMap)
 
 MouseEvent Mines::onLeftClick(const Vec2& playerPos, const Direction direction, Objects objects)
 {
-    // 1. 计算基准瓦片坐标
-    Vec2 basePos = this->calMapPos(playerPos);
 
-    // 2. 根据朝向调整基准坐标
-    switch (direction) {
-    case Direction::DOWN:  basePos.y++; break;
-    case Direction::UP:    basePos.y--; break;
-    case Direction::LEFT:  basePos.x--; break;
-    case Direction::RIGHT: basePos.x++; break;
-    default: break;
-    }
+    if (objects == Objects::PICKAXE) {
+        // 1. 计算基准瓦片坐标
+        Vec2 basePos = this->calMapPos(playerPos);
 
-    // 3. 定义检测偏移量顺序：原位置(0)，上方(-1)，下方(+1)
-    // 对应原代码逻辑：tiledPos -> tiledPos.y-- -> tiledPos.y+=2
-    const int yOffsets[] = { 1,0, -1 };
+        // 2. 根据朝向调整基准坐标
+        switch (direction) {
+        case Direction::DOWN:  basePos.y++; break;
+        case Direction::UP:    basePos.y--; break;
+        case Direction::LEFT:  basePos.x--; break;
+        case Direction::RIGHT: basePos.x++; break;
+        default: break;
+        }
 
-    // 4. 遍历检测
-    for (int offset : yOffsets) {
-        Vec2 checkPos = basePos;
-        checkPos.y += offset;
+        // 3. 定义检测偏移量顺序：原位置(0)，上方(-1)，下方(+1)
+        // 对应原代码逻辑：tiledPos -> tiledPos.y-- -> tiledPos.y+=2
+        const int yOffsets[] = { 1,0, -1 };
 
-        EnvironmentItem* item = _minesItemManager->getItem(checkPos);
-        if (item) {
-            auto type = item->getType();
-            if (type == EnvironmentItemType::STONE) {
-                _minesItemManager->removeItem(checkPos);
-                return MouseEvent::GET_STONE;
-            }
-            else if (type == EnvironmentItemType::COPPER) {
-                _minesItemManager->removeItem(checkPos);
-                return MouseEvent::GET_COPPER;
+        // 4. 遍历检测
+        for (int offset : yOffsets) {
+            Vec2 checkPos = basePos;
+            checkPos.y += offset;
+
+            EnvironmentItem* item = _minesItemManager->getItem(checkPos);
+            if (item) {
+                auto type = item->getType();
+                if (type == EnvironmentItemType::STONE) {
+                    _minesItemManager->removeItem(checkPos);
+                    return MouseEvent::GET_STONE;
+                }
+                else if (type == EnvironmentItemType::COPPER) {
+                    _minesItemManager->removeItem(checkPos);
+                    return MouseEvent::GET_COPPER;
+                }
             }
         }
     }

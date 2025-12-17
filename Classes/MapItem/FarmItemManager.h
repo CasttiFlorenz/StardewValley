@@ -8,7 +8,6 @@
 #include "GrassItem.h"
 #include "DaffodilsItem.h"
 #include "LeekItem.h"
-#include "CultivatedItem.h"
 #include "../GameMap/GameMap.h"
 #include <unordered_map>
 
