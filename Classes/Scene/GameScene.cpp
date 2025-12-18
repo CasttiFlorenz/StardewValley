@@ -313,21 +313,24 @@ void GameScene::carryMouseEvent(const MouseEvent event)
     case MouseEvent::USE_TOOL:
         _inventory->ToolUseAnimation();
         break;
-    case MouseEvent::SHOP_SALE:
+    case MouseEvent::SHOP_SALE: {
         _inventory->ToolUseAnimation();
         Farm* farm = dynamic_cast<Farm*>(_map);
         farm->openShopForNPC();
         break;
-    case MouseEvent::SHOP_MARNIE:
+    }
+    case MouseEvent::SHOP_MARNIE: {
         _inventory->ToolUseAnimation();
         Town* town = dynamic_cast<Town*>(_map);
-        town->openShopForNPC("Marine");
+        town->openShopForNPC("Marnie");
         break;
-    case MouseEvent::SHOP_PIERRE:
+    }
+    case MouseEvent::SHOP_PIERRE: {
         _inventory->ToolUseAnimation();
-         Town* town = dynamic_cast<Town*>(_map);
-         town->openShopForNPC("Pireer");
+        Town* town = dynamic_cast<Town*>(_map);
+        town->openShopForNPC("Pierre");
         break;
+    }
     case MouseEvent::CONVERSATION_EVELYN:
         _inventory->ToolUseAnimation();
         break;
