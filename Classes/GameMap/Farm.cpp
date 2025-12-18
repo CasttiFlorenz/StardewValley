@@ -251,7 +251,7 @@ MouseEvent Farm::onRightClick(const Vec2& playerPos, const Direction direction)
 }
 
 
-void Farm::openShopForNPC(const std::string& npcName)
+void Farm::openShopForNPC()
 {
     std::vector<Item*> itemsToSell;
     std::vector<Objects> acceptedSellItems;
