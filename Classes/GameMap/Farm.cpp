@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     Farm.cpp
- * File Function: FarmÀàµÄÊµÏÖ
- * Author:        ¹ùÜÆÑÌ
+ * File Function: Farmç±»çš„å®ç°
+ * Author:        éƒ­èŠ·çƒŸ
  * Update Date:   2025/12/13
  * License:       MIT License
  ****************************************************************/
@@ -166,10 +166,10 @@ bool Farm::isCollidable(Vec2 worldPos)
 
 MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction, Objects objects)
 {
-    // 1. ¼ÆËã»ù×¼ÍßÆ¬×ø±ê
+    // 1. è®¡ç®—åŸºå‡†ç“¦ç‰‡åæ ‡
     Vec2 basePos = this->calMapPos(playerPos);
 
-    // 2. ¸ù¾İ³¯Ïòµ÷Õû»ù×¼×ø±ê
+    // 2. æ ¹æ®æœå‘è°ƒæ•´åŸºå‡†åæ ‡
     switch (direction) {
     case Direction::DOWN:  basePos.y++; break;
     case Direction::UP:    basePos.y--; break;
@@ -178,11 +178,11 @@ MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction, O
     default: break;
     }
 
-    // 3. ¶¨Òå¼ì²âÆ«ÒÆÁ¿Ë³Ğò£ºÔ­Î»ÖÃ(0)£¬ÉÏ·½(-1)£¬ÏÂ·½(+1)
-    // ¶ÔÓ¦Ô­´úÂëÂß¼­£ºtiledPos -> tiledPos.y-- -> tiledPos.y+=2
+    // 3. å®šä¹‰æ£€æµ‹åç§»é‡é¡ºåºï¼šåŸä½ç½®(0)ï¼Œä¸Šæ–¹(-1)ï¼Œä¸‹æ–¹(+1)
+    // å¯¹åº”åŸä»£ç é€»è¾‘ï¼štiledPos -> tiledPos.y-- -> tiledPos.y+=2
     const int yOffsets[] = { 1,0, -1 };
 
-    // 4. ±éÀú¼ì²â
+    // 4. éå†æ£€æµ‹
     for (int offset : yOffsets) {
         Vec2 checkPos = basePos;
         checkPos.y += offset;
@@ -212,10 +212,10 @@ MouseEvent Farm::onRightClick(const Vec2& playerPos, const Direction direction)
         return MouseEvent::SHOP_SALE;
     }
 
-    // 1. ¼ÆËã»ù×¼ÍßÆ¬×ø±ê
+    // 1. è®¡ç®—åŸºå‡†ç“¦ç‰‡åæ ‡
     Vec2 basePos = this->calMapPos(playerPos);
 
-    // 2. ¸ù¾İ³¯Ïòµ÷Õû»ù×¼×ø±ê
+    // 2. æ ¹æ®æœå‘è°ƒæ•´åŸºå‡†åæ ‡
     switch (direction) {
     case Direction::DOWN:  basePos.y++; break;
     case Direction::UP:    basePos.y--; break;
@@ -224,11 +224,11 @@ MouseEvent Farm::onRightClick(const Vec2& playerPos, const Direction direction)
     default: break;
     }
 
-    // 3. ¶¨Òå¼ì²âÆ«ÒÆÁ¿Ë³Ğò£ºÔ­Î»ÖÃ(0)£¬ÉÏ·½(-1)£¬ÏÂ·½(+1)
-    // ¶ÔÓ¦Ô­´úÂëÂß¼­£ºtiledPos -> tiledPos.y-- -> tiledPos.y+=2
+    // 3. å®šä¹‰æ£€æµ‹åç§»é‡é¡ºåºï¼šåŸä½ç½®(0)ï¼Œä¸Šæ–¹(-1)ï¼Œä¸‹æ–¹(+1)
+    // å¯¹åº”åŸä»£ç é€»è¾‘ï¼štiledPos -> tiledPos.y-- -> tiledPos.y+=2
     const int yOffsets[] = { 1,0, -1 };
 
-    // 4. ±éÀú¼ì²â
+    // 4. éå†æ£€æµ‹
     for (int offset : yOffsets) {
         Vec2 checkPos = basePos;
         checkPos.y += offset;
@@ -248,4 +248,49 @@ MouseEvent Farm::onRightClick(const Vec2& playerPos, const Direction direction)
     }
 
     return MouseEvent::NONE;
+}
+
+
+void Farm::openShopForNPC(const std::string& npcName)
+{
+    std::vector<Item*> itemsToSell;
+    std::vector<Objects> acceptedSellItems;
+    acceptedSellItems.push_back(Objects::STONE);
+    acceptedSellItems.push_back(Objects::WOOD);
+    acceptedSellItems.push_back(Objects::COPPER_ORE);
+    acceptedSellItems.push_back(Objects::PARSNIP);
+    acceptedSellItems.push_back(Objects::CAULIFLOWER);
+    acceptedSellItems.push_back(Objects::POTATO);
+    acceptedSellItems.push_back(Objects::FIBER);
+    acceptedSellItems.push_back(Objects::DAFFODILS);
+    acceptedSellItems.push_back(Objects::LEEK);
+    acceptedSellItems.push_back(Objects::HAY);
+    acceptedSellItems.push_back(Objects::EGG);
+    acceptedSellItems.push_back(Objects::FRIED_EGG);
+    acceptedSellItems.push_back(Objects::CARP);
+    acceptedSellItems.push_back(Objects::MILK);
+    acceptedSellItems.push_back(Objects::SALAD);
+
+
+    auto runningScene = Director::getInstance()->getRunningScene();
+    if (runningScene) {
+        // å®šä¹‰ä¸€ä¸ªå”¯ä¸€çš„TAGï¼Œæ¯”å¦‚ 9999
+        const int SHOP_MENU_TAG = 9999;
+
+        // æŸ¥æ‰¾æ˜¯å¦å·²æœ‰è¯¥Tagçš„å­èŠ‚ç‚¹
+        auto existingShop = runningScene->getChildByTag(SHOP_MENU_TAG);
+        if (existingShop) {
+            CCLOG("å•†åº—èœå•å·²æ‰“å¼€ï¼Œä¸å†é‡å¤åˆ›å»º");
+            return;
+        }
+
+        auto shopMenu = ShopMenuLayer::create(itemsToSell, acceptedSellItems);
+        if (shopMenu) {
+            shopMenu->setTag(SHOP_MENU_TAG);
+            runningScene->addChild(shopMenu, 999);
+            shopMenu->setCameraMask((unsigned short)CameraFlag::DEFAULT);
+
+            CCLOG("æˆåŠŸæ‰“å¼€å•†åº—èœå•");
+        }
+    }
 }
