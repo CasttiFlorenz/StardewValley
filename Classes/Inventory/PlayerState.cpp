@@ -21,46 +21,42 @@ void PlayerState::destroyInstance() {
     }
 }
 
-// ¹¹Ôìº¯Êı£ºÖ»×ö×î»ù±¾µÄ¸³Öµ£¬µ÷ÓÃ³õÊ¼»¯º¯Êı
+// æ„é€ å‡½æ•°ï¼šåªåšæœ€åŸºæœ¬çš„èµ‹å€¼ï¼Œè°ƒç”¨åˆå§‹åŒ–å‡½æ•°
 PlayerState::PlayerState() {
-    money = 500; // ³õÊ¼½ğÇ®
+    money = 500; // åˆå§‹é‡‘é’±
 
-    // ³õÊ¼»¯±³°ü
+    // åˆå§‹åŒ–èƒŒåŒ…
     initDefaultItems();
 }
 
-// Îö¹¹º¯Êı£ºÇåÀíÄÚ´æ
+// ææ„å‡½æ•°ï¼šæ¸…ç†å†…å­˜
 PlayerState::~PlayerState() {
     for (auto item : _inventory) {
-        delete item; // ÊÍ·Å vector ÖĞµÄ Item ¶ÔÏó
+        delete item; // é‡Šæ”¾ vector ä¸­çš„ Item å¯¹è±¡
     }
     _inventory.clear();
 }
 
-// ³õÊ¼»¯Ä¬ÈÏµÀ¾ß (Ìæ´úÄãÔ­À´µÄÊı×é¸³Öµ)
+// åˆå§‹åŒ–é»˜è®¤é“å…·
 void PlayerState::initDefaultItems() {
-    // ¸¨Öú lambda£º¼ò»¯Ìí¼Ó´úÂë
+    // è¾…åŠ© lambdaï¼šç®€åŒ–æ·»åŠ ä»£ç 
     auto add = [&](Objects tag, float scale, float printPos, const char* path, int price, std::string name, int count = 1) {
         Item* item = new Item(tag, count, scale, printPos, (char*)path, price, name);
         _inventory.push_back(item);
         };
 
-    // ÕâÀïÍêÈ«ÕÕ°áÄãÖ®Ç°µÄÊı¾İ£¬µ«¸Ä³ÉÁË¶¯Ì¬Ìí¼Ó
     add(Objects::HOE, 1.5f, 0.7f, "/Items/hoe.png", 100, "Hoe");
     add(Objects::AXE, 1.4f, 1.6f, "/Items/axe.png", 100, "Axe");
     add(Objects::WATERING_CAN, 1.6f, 2.6f, "/Items/wateringCan.png", 100, "Watering Can");
     add(Objects::PICKAXE, 1.4f, 3.6f, "/Items/pickaxe.png", 100, "Pickaxe");
     add(Objects::SCYTHE, 1.4f, 4.6f, "/Items/scythe.png", 100, "Scythe");
     add(Objects::FISHINGROD, 1.3f, 5.5f, "/Items/fishingRod.png", 100, "Fishing Rod");
-
-    // ³õÊ¼×ÊÔ´
     add(Objects::STONE, 4.3f, 6.5f, "/Items/stone.png", 100, "Stone", 1);
     add(Objects::WOOD, 2.8f, 7.5f, "/Items/wood.png", 100, "Wood", 1);
     add(Objects::COPPER_ORE, 3.3f, 8.4f, "/Items/copper ore.png", 100, "Copper Ore", 1);
     add(Objects::FERTILIZER, 4.3f, 9.4f, "/Items/fertilizer.png", 100, "Fertilizer", 1);
-    add(Objects::PARSNIP_SEED, 4.3f, 10.4f, "/Items/parsnip seed.png", 20, "Parsnip Seed", 5); // ¸ø5¸öÖÖ×Ó
+    add(Objects::PARSNIP_SEED, 4.3f, 10.4f, "/Items/parsnip seed.png", 20, "Parsnip Seed", 5); 
 
-    // ... Äã¿ÉÒÔ¼ÌĞøÌí¼ÓÊ£ÏÂµÄ ...
 }
 
 bool PlayerState::canAfford(int cost) {
@@ -81,11 +77,11 @@ std::vector<Item*>& PlayerState::getInventoryItems() {
     return _inventory;
 }
 
-// Ìí¼ÓÎïÆ·Âß¼­ (Âò¶«Î÷Ê±µ÷ÓÃ)
+// æ·»åŠ ç‰©å“é€»è¾‘ (ä¹°ä¸œè¥¿æ—¶è°ƒç”¨)
 void PlayerState::addItem(Item* templateItem, int quantity) {
     if (!templateItem) return;
 
-    // 1. ¼ì²é¶Ñµş
+    // 1. æ£€æŸ¥å †å 
     for (auto item : _inventory) {
         if (item->getTag() == templateItem->getTag()) {
             item->addCount(quantity);
@@ -94,8 +90,8 @@ void PlayerState::addItem(Item* templateItem, int quantity) {
         }
     }
 
-    // 2. ĞÂÔöÎïÆ·
-    // Ê¹ÓÃÉî¿½±´´´½¨Ò»¸öĞÂ¶ÔÏó
+    // 2. æ–°å¢ç‰©å“
+    // ä½¿ç”¨æ·±æ‹·è´åˆ›å»ºä¸€ä¸ªæ–°å¯¹è±¡
     Item* newItem = new Item(
         templateItem->getTag(),
         quantity,
@@ -109,19 +105,19 @@ void PlayerState::addItem(Item* templateItem, int quantity) {
     CCLOG("Added new item: %s", newItem->getName().c_str());
 }
 
-// ÒÆ³ıÎïÆ·Âß¼­ (Âô¶«Î÷Ê±µ÷ÓÃ)
+// ç§»é™¤ç‰©å“é€»è¾‘ (å–ä¸œè¥¿æ—¶è°ƒç”¨)
 void PlayerState::removeItem(Item* targetItem, int quantity) {
     for (auto it = _inventory.begin(); it != _inventory.end(); ++it) {
         Item* item = *it;
 
-        // Æ¥ÅäÖ¸ÕëµØÖ· »òÕß Tag
+        // åŒ¹é…æŒ‡é’ˆåœ°å€ æˆ–è€… Tag
         if (item == targetItem || item->getTag() == targetItem->getTag()) {
 
             item->removeCount(quantity);
 
-            // ÊıÁ¿¹éÁãÔò³¹µ×É¾³ı
+            // æ•°é‡å½’é›¶åˆ™å½»åº•åˆ é™¤
             if (item->getCount() <= 0) {
-                delete item; // ÊÍ·ÅÄÚ´æ
+                delete item; // é‡Šæ”¾å†…å­˜
                 _inventory.erase(it);
             }
             return;
