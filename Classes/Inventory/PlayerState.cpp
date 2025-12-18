@@ -1,6 +1,11 @@
-// ==========================================
-// File: PlayerState.cpp
-// ==========================================
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     PlayerState.cpp
+ * File Function: PlayerState类的实现
+ * Author:        赵睿妍
+ * Update Date:   2025/12/17
+ * License:       MIT License
+ ****************************************************************/
 #include "PlayerState.h"
 
 USING_NS_CC;
