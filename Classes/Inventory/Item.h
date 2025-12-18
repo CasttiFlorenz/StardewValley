@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     Item.cpp
- * File Function: ItemÀàµÄÊµÏÖ
- * Author:        ÓÚ¶÷Îõ
+ * File Function: Itemç±»çš„å®ç°
+ * Author:        äºæ©ç†™
  * Update Date:   2025/12/11
  * License:       MIT License
  ****************************************************************/
@@ -16,30 +16,35 @@
 class Item
 {
 public:
-    // ¹¹Ôìº¯Êı
+    // æ„é€ å‡½æ•°
     Item();
-    Item(Objects tag , int count, float scale,float printPos ,char* pos);
+    Item(Objects tag, int count, float scale, float printPos, char* pos, int price, std::string name);
 
-    // »ñÈ¡ÎïÆ·ĞÅÏ¢
+    int getPrice() const { return _price; }
+    std::string getName() const { return _name; }
+
+    // è·å–ç‰©å“ä¿¡æ¯
     char* getPos() const;
     Objects getTag() const;
     int getCount() const;
     float getScale() const;
     float getPrintPos() const;
 
-    // ÉèÖÃÎïÆ·ĞÅÏ¢
+    // è®¾ç½®ç‰©å“ä¿¡æ¯
     void setCount(int count);
 
-    // ÎïÆ·ÊıÁ¿²Ù×÷
+    // ç‰©å“æ“ä½œ
     void addCount(int amount = 1);
     void removeCount(int amount = 1);
 
 private:
-    char* _pos;              // ÎïÆ·µØÖ·
-    Objects _tag;            // ÎïÆ·±êÇ©
-    int _count;              // ÎïÆ·ÊıÁ¿
-    float _scale;            // Ëõ·Å´óĞ¡
-    float _printPos;         // ÏÔÊ¾µØÖ·
+    int _price;          // å•ä»·
+    std::string _name;   // æ˜¾ç¤ºåç§° 
+    char* _pos;              // ç‰©å“åœ°å€
+    Objects _tag;                // ç‰©å“æ ‡ç­¾
+    int _count;              // ç‰©å“æ•°é‡
+    float _scale;            // ç¼©æ”¾å¤§å°
+    float _printPos;         // æ˜¾ç¤ºåœ°å€
 };
 
 #endif // __ITEM_H__#pragma once
