@@ -2,7 +2,7 @@
  * Project Name:  StardewValley
  * File Name:     InventoryScene.cpp
  * File Function: InventoryScene类的实现
- * Author:        于恩熙
+ * Author:        于恩熙、赵睿妍
  * Update Date:   2025/12/17
  * License:       MIT License
  ****************************************************************/
@@ -62,6 +62,23 @@ bool InventoryScene::init()
     _inventoryLayer->setGridsTouchEnabled(false);
 
     _inventoryVisible = false;
+    _inventoryLayer->setGridsTouchEnabled(false);
+    _inventoryVisible = false;
+
+    // 监听 "INVENTORY_COUNT_CHANGED" 事件
+    // 只要有地方发这个信号，主界面就刷新预览图和背包数据
+    auto refreshListener = EventListenerCustom::create("INVENTORY_COUNT_CHANGED", [this](EventCustom* event) {
+
+        // 1. 刷新全屏背包的数据（即使它现在是隐藏的，也要更新，防止下次打开闪烁）
+        if (_inventoryLayer) {
+            _inventoryLayer->placeTools(-1);
+        }
+
+        // 2. 刷新左下角预览图
+        this->updatePreviewTool();
+        });
+
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(refreshListener, this);
 
     return true;
 }
@@ -165,31 +182,33 @@ void InventoryScene::hideToolUseEffect()
     }
 }
 
-// 切换背包显示/隐藏状态
+
 void InventoryScene::toggleInventory()
 {
-    _inventoryVisible = !_inventoryVisible;    // 切换背包可见状态标志
+    _inventoryVisible = !_inventoryVisible;
 
     if (_inventoryLayer) {
         _inventoryLayer->setVisible(_inventoryVisible);
 
         if (_inventoryVisible) {
-            // 打开背包：启用格子触摸
+           
+            _inventoryLayer->placeTools(-1);
+
+            // 顺便更新一下预览框
+            updatePreviewTool();
+
             _inventoryLayer->setGridsTouchEnabled(true);
 
-            // 关闭工具使用效果（背包打开时不能使用工具）
             _showToolUseEffect = false;
-            hideToolUseEffect();  // 清理可能存在的特效
+            hideToolUseEffect();
 
             _inventoryLayer->setScale(0.1f);
             auto scaleAction = ScaleTo::create(0.3f, 1.0f);
             _inventoryLayer->runAction(scaleAction);
         }
         else {
-            // 关闭背包：禁用格子触摸
             _inventoryLayer->setGridsTouchEnabled(false);
 
-            // 启用工具使用效果（背包关闭后可以按鼠标左键使用工具）
             _showToolUseEffect = true;
             _selectedGrid = _inventoryLayer->getSelectedGrid();
 
