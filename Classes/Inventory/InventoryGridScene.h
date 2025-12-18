@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     InventoryGridScene.h
- * File Function: InventoryGridSceneÀàµÄÊµÏÖ
- * Author:        ÓÚ¶÷Îõ
- * Update Date:   2025/12/17
+ * File Function: InventoryGridSceneç±»çš„å®ç°
+ * Author:        äºæ©ç†™
+ * Update Date:   2025/12/11
  * License:       MIT License
  ****************************************************************/
 
@@ -13,22 +13,23 @@
 #include "cocos2d.h"
 #include "Item.h"
 #include "Constant.h"
-
+#include"PlayerState.h"
 USING_NS_CC;
 
-#define INVENTORY_SIZE 36  // ±³°ü´óĞ¡
+#define INVENTORY_SIZE 36  // èƒŒåŒ…å¤§å°
 
 
 struct BackpackPosition {
     float x;
     float y;
-    Sprite* backpack;  // ±³°ü¾«ÁéÖ¸Õë
-    float scale;       // Ëõ·Å±ÈÀı
+    Sprite* backpack;  // èƒŒåŒ…ç²¾çµæŒ‡é’ˆ
+    float scale;       // ç¼©æ”¾æ¯”ä¾‹
 };
 
 class InventoryGridScene : public cocos2d::Layer
 {
 public:
+    void setShopMode(bool isShop);
     static cocos2d::Scene* createScene();
     virtual bool init();
 
@@ -37,64 +38,68 @@ public:
 
     void setGridSelectedCallback(const std::function<void(int)>& callback);
 
-    // »ñÈ¡Ö¸¶¨¸ñ×ÓµÄÎïÆ·
-    Item& getItemAt(int gridIndex);
+    // è·å–æŒ‡å®šæ ¼å­çš„ç‰©å“
+    const Item* InventoryGridScene::getItemAt(int gridIndex) const;
 
-    // ÆôÓÃ»ò½ûÓÃËùÓĞ¸ñ×ÓµÄ´¥Ãş¼àÌı
+    // å¯ç”¨æˆ–ç¦ç”¨æ‰€æœ‰æ ¼å­çš„è§¦æ‘¸ç›‘å¬
     void setGridsTouchEnabled(bool enabled);
 
-    // Ìí¼ÓË¢ĞÂ·½·¨
-    void refreshInventory();
-
-    // ³£Á¿¶¨Òå
+    // å¸¸é‡å®šä¹‰
     static const int INTEM_COUNT = 25;
-    static const int TOOL_TAG_BASE = 1000;      // ¹¤¾ßtag»ùÖµ
-    static const int COUNT_TAG_BASE = 2000;     // ÊıÁ¿±êÇ©tag»ùÖµ
-     
+    static const int TOOL_TAG_BASE = 1000;      // å·¥å…·tagåŸºå€¼
+    static const int COUNT_TAG_BASE = 2000;     // æ•°é‡æ ‡ç­¾tagåŸºå€¼
+
+    void placeTools(int highlightIndex = -1);  // æ”¾ç½®å·¥å…·ï¼Œ-1è¡¨ç¤ºæ— é«˜äº®
+
+    void createClickableGrids();
+    // å•†åº—æ¨¡å¼å¼€å…³
+
+    // åˆ·æ–°æ˜¾ç¤ºï¼ˆå½“æ•°æ®å˜åŠ¨æ—¶è°ƒç”¨ï¼‰
+    void refreshDisplay();
+
+    void refreshInventory();
 private:
-    Item _inventory[INVENTORY_SIZE];  // ÎïÆ·Êı×é
-    BackpackPosition _backpacks[3];  // ÈıĞĞ±³°ü
 
-    // ¹¤¾ß¹ÜÀíÏà¹Ø
-    void placeTools(int highlightIndex = -1);  // ·ÅÖÃ¹¤¾ß£¬-1±íÊ¾ÎŞ¸ßÁÁ
+    bool _isShopMode = false; // æ ‡å¿—ä½
+    cocos2d::Sprite* _bgSprite = nullptr; // ä¿å­˜èƒŒæ™¯å›¾æŒ‡é’ˆæ–¹ä¾¿éšè—
 
-    // ÎªÖ¸¶¨¸ñ×Ó´´½¨´¥Ãş¼àÌıÆ÷
+    BackpackPosition _backpacks[3];  // ä¸‰è¡ŒèƒŒåŒ…
+
+    // å·¥å…·ç®¡ç†ç›¸å…³
+    
+
+    // ä¸ºæŒ‡å®šæ ¼å­åˆ›å»ºè§¦æ‘¸ç›‘å¬å™¨
     void createTouchListenerForGrid(int gridIndex, cocos2d::Sprite* grid);
 
-    // ÊÂ¼ş¼àÌıÆ÷
-    void setupEventListeners();
-
-    // ºËĞÄº¯Êı
+    // æ ¸å¿ƒå‡½æ•°
     void createBackpacks();
     void createInvertory();
-    void initItem();
-    // ¸ß¹â´¦Àí
-    void createClickableGrids();
+    // é«˜å…‰å¤„ç†
     void onGridClicked(int gridIndex);
     void highlightGrid(int gridIndex, bool highlight);
 
-    // ¹¤¾ß¾«Áé¹ÜÀí
-    void clearAllTools();  // Çå³ıËùÓĞ¹¤¾ß¾«Áé
+    // å·¥å…·ç²¾çµç®¡ç†
+    void clearAllTools();  // æ¸…é™¤æ‰€æœ‰å·¥å…·ç²¾çµ
     void updateToolSprite(int toolIndex, const std::string& imagePath,
-        float size, float x, float y);  // ¸üĞÂµ¥¸ö¹¤¾ß
+        float size, float x, float y);  // æ›´æ–°å•ä¸ªå·¥å…·
 
-    // ¸¨Öúº¯Êı
+    // è¾…åŠ©å‡½æ•°
     float getGridOffset(int gridIndex);
     void showItemCount(int itemIndex, int count, float x, float y);
 
-    // ±³°üÏà¹Ø
+    // èƒŒåŒ…ç›¸å…³
     cocos2d::Sprite* _backpack;
     float _backpackWidth, _backpackHeight;
     float _cellWidth;
 
-    // ¸ñ×Ó¹ÜÀí
+    // æ ¼å­ç®¡ç†
     cocos2d::DrawNode* _gridHighlights[INVENTORY_SIZE];
     int _selectedGrid;
 
-    // »Øµ÷º¯Êı
+    // å›è°ƒå‡½æ•°
     std::function<void(int)> _gridSelectedCallback;
 
-    // ´æ´¢¸ñ×Ó´¥Ãş¼àÌıÆ÷µÄÓ³Éä±í£º¸ñ×ÓË÷Òı -> ¼àÌıÆ÷
+    // å­˜å‚¨æ ¼å­è§¦æ‘¸ç›‘å¬å™¨çš„æ˜ å°„è¡¨ï¼šæ ¼å­ç´¢å¼• -> ç›‘å¬å™¨
     std::unordered_map<int, cocos2d::EventListenerTouchOneByOne*> _gridListeners;
 };
 
