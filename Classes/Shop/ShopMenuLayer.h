@@ -1,20 +1,27 @@
-// ==========================================
-// ÎÄ¼ş£ºClasses/Shop/ShopMenuLayer.h
-// ==========================================
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     ShopMenuLayer.h
+ * File Function: ShopMenuLayerç±»çš„å®ç°
+ * Author:        èµµç¿å¦
+ * Update Date:   2025/12/17
+ * License:       MIT License
+ ****************************************************************/
 #ifndef __SHOP_MENU_LAYER_H__
 #define __SHOP_MENU_LAYER_H__
 
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include <vector>
-#include "Constant.h" // ±ØĞë°üº¬£¬ÓÃÓÚ Objects Ã¶¾Ù
-
-class Item; // Ç°ÏòÉùÃ÷
+#include "Constant.h" 
+#include "ShopLayer.h"
+#include "../Inventory/PlayerState.h"
+#include "../Inventory/Item.h"
+class Item; // å‰å‘å£°æ˜
 
 class ShopMenuLayer : public cocos2d::Layer
 {
 public:
-    // 1. ĞŞ¸Ä²ÎÊı£ºÔö¼Ó acceptedTags (ÔÊĞíÊÛÂôµÄÎïÆ·ÀàĞÍ)
+    // 1. ä¿®æ”¹å‚æ•°ï¼šå¢åŠ  acceptedTags (å…è®¸å”®å–çš„ç‰©å“ç±»å‹)
     static ShopMenuLayer* create(const std::vector<Item*>& shopItems, const std::vector<Objects>& acceptedTags);
 
     virtual bool init(const std::vector<Item*>& shopItems, const std::vector<Objects>& acceptedTags);
@@ -22,7 +29,7 @@ public:
 private:
     void refreshUI();
     void sellItem(Item* item);
-    // ¸¨ÖúÏÔÊ¾ÌáÊ¾ĞÅÏ¢
+    // è¾…åŠ©æ˜¾ç¤ºæç¤ºä¿¡æ¯
     void showTip(const std::string& message, const cocos2d::Color3B& color);
 
 private:
@@ -30,7 +37,7 @@ private:
     cocos2d::Node* _inventoryNode;
     cocos2d::Label* _moneyLabel;
 
-    // 2. ´æ´¢µ±Ç°ÉÌµêÔÊĞí»ØÊÕµÄÎïÆ·ÁĞ±í
+    // 2. å­˜å‚¨å½“å‰å•†åº—å…è®¸å›æ”¶çš„ç‰©å“åˆ—è¡¨
     std::vector<Objects> _acceptedSellTags;
 };
 
