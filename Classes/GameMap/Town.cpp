@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     Town.cpp
- * File Function: TownÀàµÄÊµÏÖ
- * Author:        ¹ùÜÆÑÌ
+ * File Function: Town类的实现
+ * Author:        赵睿妍
  * Update Date:   2025/12/14
  * License:       MIT License
  ****************************************************************/
