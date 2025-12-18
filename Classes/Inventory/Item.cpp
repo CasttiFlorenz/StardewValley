@@ -1,62 +1,63 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     Item.h
- * File Function: ItemÀàµÄÊµÏÖ
- * Author:        ÓÚ¶÷Îõ
+ * File Function: Itemç±»çš„å®ç°
+ * Author:        äºæ©ç†™
  * Update Date:   2025/12/11
  * License:       MIT License
  ****************************************************************/
 
 #include "Item.h"
 
-// Ä¬ÈÏ¹¹Ôìº¯Êı
+// é»˜è®¤æ„é€ å‡½æ•°
 Item::Item(): _count(0)
 {
     _pos = nullptr;
     _tag = Objects::AXE;
 }
 
-// ´ø²ÎÊı¹¹Ôìº¯Êı
-Item::Item(Objects tag,int count,float scale, float printPos,char* pos)
-    : _pos(pos), _count(count),_scale(scale),_printPos(printPos),_tag(tag){ }
-
-// »ñÈ¡ÎïÆ·µØÖ·
+// å¸¦å‚æ•°æ„é€ å‡½æ•°
+Item::Item(Objects tag, int count, float scale, float printPos, char* pos, int price, std::string name)
+    : _pos(pos), _count(count), _scale(scale), _printPos(printPos), _tag(tag), _price(price), _name(name)
+{
+}
+// è·å–ç‰©å“åœ°å€
 char* Item::getPos() const
 {
     return _pos;
 }
 
-// »ñÈ¡ÎïÆ·±êÇ©
+// è·å–ç‰©å“æ ‡ç­¾
 Objects Item::getTag() const
 {
     return _tag;
 }
 
-// »ñÈ¡ÎïÆ·ÊıÁ¿
+// è·å–ç‰©å“æ•°é‡
 int Item::getCount() const
 {
     return _count;
 }
 
-// »ñÈ¡ÎïÆ·Ëõ·Å´óĞ¡
+// è·å–ç‰©å“ç¼©æ”¾å¤§å°
 float Item::getScale() const
 {
     return _scale;
 }
 
-// »ñÈ¡ÎïÆ·´òÓ¡Î»ÖÃ
+// è·å–ç‰©å“æ‰“å°ä½ç½®
 float Item::getPrintPos() const
 {
     return _printPos;
 }
 
-// ÉèÖÃÎïÆ·ÊıÁ¿
+// è®¾ç½®ç‰©å“æ•°é‡
 void Item::setCount(int count)
 {
     _count = count < 0 ? 0 : count;
 }
 
-// Ôö¼ÓÎïÆ·ÊıÁ¿
+// å¢åŠ ç‰©å“æ•°é‡
 void Item::addCount(int amount)
 {
     if (amount > 0) {
@@ -64,7 +65,7 @@ void Item::addCount(int amount)
     }
 }
 
-// ¼õÉÙÎïÆ·ÊıÁ¿
+// å‡å°‘ç‰©å“æ•°é‡
 void Item::removeCount(int amount)
 {
     if (amount > 0) {
