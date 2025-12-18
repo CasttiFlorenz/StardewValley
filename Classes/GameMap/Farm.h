@@ -2,8 +2,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     Farm.h
- * File Function: FarmÀàµÄÊµÏÖ
- * Author:        ¹ùÜÆÑÌ
+ * File Function: Farmç±»çš„å®ç°
+ * Author:        éƒ­èŠ·çƒŸ
  * Update Date:   2025/12/13
  * License:       MIT License
  ****************************************************************/
@@ -15,6 +15,9 @@
 #include "cocos2d.h"
 #include "Constant.h"
 #include "../MapItem/FarmItemManager.h"
+#include"../Inventory/Item.h"
+#include"../Shop/ShopLayer.h"
+#include"../Shop/ShopMenuLayer.h"
 
 USING_NS_CC;
 
@@ -25,7 +28,7 @@ public:
     static GameMap* getInstance();
     static void destroyInstance();
     
-    virtual ~Farm(); // Ìí¼ÓÎö¹¹º¯Êı
+    virtual ~Farm(); // æ·»åŠ ææ„å‡½æ•°
 
     virtual bool init() override;
     virtual void update(float dt) override;
@@ -44,7 +47,7 @@ public:
     virtual MouseEvent onRightClick(const Vec2& playerPos, const Direction direction) override;
 
     virtual bool isOutdoor() override { return true; }
-
+    void openShopForNPC();
 private:
     static GameMap* _instance;
     FarmItemManager* _farmItemManager;
