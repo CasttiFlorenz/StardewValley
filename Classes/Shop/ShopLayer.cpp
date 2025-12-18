@@ -1,5 +1,12 @@
-﻿#include "ShopLayer.h"
-#include "../Inventory/PlayerState.h"
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     ShopLayer.cpp
+ * File Function: ShopLayer类的实现
+ * Author:        赵睿妍
+ * Update Date:   2025/12/17
+ * License:       MIT License
+ ****************************************************************/
+#include "ShopLayer.h"
 
 USING_NS_CC;
 using namespace ui;
