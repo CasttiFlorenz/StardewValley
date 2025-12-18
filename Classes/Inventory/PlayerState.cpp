@@ -109,23 +109,33 @@ void PlayerState::addItem(Item* templateItem, int quantity) {
     _inventory.push_back(newItem);
     CCLOG("Added new item: %s", newItem->getName().c_str());
 }
+// PlayerState.cpp
 
-// 移除物品逻辑 (卖东西时调用)
-void PlayerState::removeItem(Item* targetItem, int quantity) {
-    for (auto it = _inventory.begin(); it != _inventory.end(); ++it) {
+void PlayerState::removeItem(Item* targetItem, int quantity)
+{
+    // 使用迭代器遍历，方便删除
+    for (auto it = _inventory.begin(); it != _inventory.end(); ) {
         Item* item = *it;
 
-        // 匹配指针地址 或者 Tag
-        if (item == targetItem || item->getTag() == targetItem->getTag()) {
+        // 找到要卖的那个物品
+        if (item == targetItem) { // 指针比较最安全
 
+            // 扣减数量
             item->removeCount(quantity);
 
-            // 数量归零则彻底删除
             if (item->getCount() <= 0) {
-                delete item; // 释放内存
-                _inventory.erase(it);
+                delete item;        // 释放内存
+                it = _inventory.erase(it); // 从数组移除，并获取下一个有效的迭代器
             }
+            else {
+                ++it;
+            }
+
+            // 找到并处理完后，可以直接返回（除非你要一次删多个）
             return;
+        }
+        else {
+            ++it;
         }
     }
 }
