@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     InventoryGridScene.cpp
- * File Function: InventoryGridSceneÀàµÄÊµÏÖ
- * Author:        ÓÚ¶÷Îõ
- * Update Date:   2025/12/17
+ * File Function: InventoryGridSceneç±»çš„å®ç°
+ * Author:        äºæ©ç†™
+ * Update Date:   2025/12/11
  * License:       MIT License
  ****************************************************************/
 
@@ -20,101 +20,132 @@ Scene* InventoryGridScene::createScene()
 }
 
 
-// ========== ±³°ü±³¾° ==========
+// ========== èƒŒåŒ…èƒŒæ™¯ ==========
 
 
 void InventoryGridScene::createBackpacks() 
 {
     auto visibleSize = Director::getInstance()->getVisibleSize();
 
-    // ¼ÆËãÃ¿ĞĞ±³°üµÄY×ø±ê
+    // è®¡ç®—æ¯è¡ŒèƒŒåŒ…çš„Yåæ ‡
     float yPositions[3] = {
-        visibleSize.height * 0.75f,  // µÚÒ»ĞĞ£º3/4¸ß¶È
-        visibleSize.height * 0.6f,   // µÚ¶şĞĞ£º1/2¸ß¶È
-        visibleSize.height * 0.45f   // µÚÈıĞĞ£º1/4¸ß¶È
+        visibleSize.height * 0.75f,  // ç¬¬ä¸€è¡Œï¼š3/4é«˜åº¦
+        visibleSize.height * 0.6f,   // ç¬¬äºŒè¡Œï¼š1/2é«˜åº¦
+        visibleSize.height * 0.45f   // ç¬¬ä¸‰è¡Œï¼š1/4é«˜åº¦
     };
 
     for (int i = 0; i < 3; i++) {
-        _backpacks[i].x = visibleSize.width / 2;  // X¾ÓÖĞ
+        _backpacks[i].x = visibleSize.width / 2;  // Xå±…ä¸­
         _backpacks[i].y = yPositions[i];
         _backpacks[i].scale = 1.65f;
 
-        // ´´½¨±³°ü¾«Áé
+        // åˆ›å»ºèƒŒåŒ…ç²¾çµ
         auto backpack = Sprite::create("/Items/inventory.jpg");
         backpack->setPosition(_backpacks[i].x, _backpacks[i].y);
         backpack->setScale(_backpacks[i].scale);
         this->addChild(backpack);
 
-        _backpacks[i].backpack = backpack;  // ±£´æÖ¸Õë
+        _backpacks[i].backpack = backpack;  // ä¿å­˜æŒ‡é’ˆ
     }
 }
 
-//Éú³É±³°ü
+//ç”ŸæˆèƒŒåŒ…
 void InventoryGridScene::createInvertory()
 {
     auto visibleSize = Director::getInstance()->getVisibleSize();
     auto origin = Director::getInstance()->getVisibleOrigin();
 
-    // Ê¹ÓÃÍ¼Æ¬±³¾°
-    auto background = Sprite::create("/Items/background.png");
-    background->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2 + 70));
-    background->setScaleX(1.5f);  
-    background->setScaleY(2.0f);  
-    this->addChild(background, -1);
+    // ä½¿ç”¨å›¾ç‰‡èƒŒæ™¯
+    _bgSprite = Sprite::create("/Items/background.png");
+    if (_bgSprite) {
+        _bgSprite->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2 + 70));
+        _bgSprite->setScaleX(1.5f);
+        _bgSprite->setScaleY(2.0f);
+        this->addChild(_bgSprite, -1);
+    }
 
-    //ÈıĞĞ
+  
+
+    //ä¸‰è¡Œ
     createBackpacks();
 
-    //»ñÈ¡±³°üµÄÊµ¼ÊÏÔÊ¾³ß´ç
+    //è·å–èƒŒåŒ…çš„å®é™…æ˜¾ç¤ºå°ºå¯¸
     Size backpackSize = _backpacks[0].backpack->getContentSize();
     _backpackWidth = backpackSize.width * _backpacks[0].scale;
     _backpackHeight = backpackSize.height * _backpacks[0].scale;
 
-    //¼ÆËã±³°ü¸ñ×Ó£¨Ò»ĞĞ12¸ö¸ñ×Ó£©
-    int gridCols = 12;   // 12ÁĞ
-    int gridRows = 1;    // 1ĞĞ
+    //è®¡ç®—èƒŒåŒ…æ ¼å­ï¼ˆä¸€è¡Œ12ä¸ªæ ¼å­ï¼‰
+    int gridCols = 12;   // 12åˆ—
+    int gridRows = 1;    // 1è¡Œ
 
-    _cellWidth = _backpackWidth / gridCols;    // Ã¿¸ö¸ñ×ÓµÄ¿í¶È
-    float cellHeight = _backpackHeight;             // Õû¸ö±³°ü¸ß¶È
+    _cellWidth = _backpackWidth / gridCols;    // æ¯ä¸ªæ ¼å­çš„å®½åº¦
+    float cellHeight = _backpackHeight;             // æ•´ä¸ªèƒŒåŒ…é«˜åº¦
 
 }
 
-
-// ========== ¹¤¾ß ==========
-
-
-// ·ÅÖÃ¹¤¾ß
-void InventoryGridScene::placeTools(int highlightIndex)
+void InventoryGridScene::setShopMode(bool isShop)
 {
-    // Çå³ıËùÓĞÒÑ´æÔÚµÄ¹¤¾ß¾«Áé
-    clearAllTools();
+    _isShopMode = isShop;
 
-    // ¼ÆËã±³°ü×ó±ß½ç
-    float backpackLeft0 = _backpacks[0].x - _backpackWidth / 2;
+    // 1. å¦‚æœæ˜¯å•†åº—æ¨¡å¼ï¼Œéšè—é‚£ä¸ªå…¨å±å¤§èƒŒæ™¯
+    if (_bgSprite) {
+        _bgSprite->setVisible(!isShop);
+    }
 
-    // ±éÀú¹¤¾ß¸ñ
-    for (int i = 0; i < INTEM_COUNT; i++) {
-        Item& item = _inventory[i];
-        float baseScale = item.getScale();;       // »ù´¡´óĞ¡
-        float highlightScale = baseScale + 0.2f;  // ¸ßÁÁÊ±·Å´ó
-
-        float x = backpackLeft0 + _cellWidth * item.getPrintPos(); // ¼òµ¥Î»ÖÃ¼ÆËã
-
-        float scale = (i == highlightIndex) ? highlightScale : baseScale;
-
-        updateToolSprite(i, item.getPos(), scale, x, _backpacks[i / 12].y);
+    // 2. æ¸…é™¤å½“å‰é€‰ä¸­çŠ¶æ€
+    if (isShop) {
+        if (_selectedGrid != -1) {
+            highlightGrid(_selectedGrid, false);
+            _selectedGrid = -1;
+        }
     }
 }
 
-// Çå³ıËùÓĞ¹¤¾ß¾«Áé
+// ========== å·¥å…· ==========
+
+// æ”¾ç½®å·¥å…·
+void InventoryGridScene::placeTools(int highlightIndex)
+{
+    clearAllTools();
+
+    float backpackLeft0 = _backpacks[0].x - _backpackWidth / 2;
+
+    auto& items = PlayerState::getInstance()->getInventoryItems();
+
+    // 2. éå†æ˜¾ç¤º
+    // æ³¨æ„ï¼šåªéå†èƒŒåŒ…å®¹é‡ (INVENTORY_SIZE) å’Œ å®é™…ç‰©å“æ•°é‡ çš„è¾ƒå°å€¼
+    int count = std::min((int)items.size(), INVENTORY_SIZE);
+
+    for (int i = 0; i < count; i++) {
+        Item* item = items[i]; // è·å–æŒ‡é’ˆ
+        if (!item) continue;
+
+        // ä½¿ç”¨ item-> è€Œä¸æ˜¯ item.
+        float baseScale = item->getScale();
+        float highlightScale = baseScale + 0.2f;
+
+        float x = backpackLeft0 + _cellWidth * item->getPrintPos();
+
+        // ä¿®æ­£ï¼šå¦‚æœ getPrintPos æ²¡æ•°æ®ï¼Œç”¨ i è®¡ç®—é»˜è®¤ä½ç½®
+        // float col = i % 12;
+        // x = backpackLeft0 + _cellWidth * (col + 0.5f);
+
+        float scale = (i == highlightIndex) ? highlightScale : baseScale;
+
+        // ä¼ å…¥ item æŒ‡é’ˆå¯¹åº”çš„å±æ€§
+        updateToolSprite(i, item->getPos(), scale, x, _backpacks[i / 12].y);
+    }
+}
+
+// æ¸…é™¤æ‰€æœ‰å·¥å…·ç²¾çµ
 void InventoryGridScene::clearAllTools()
 {
-    // ±éÀúËùÓĞ¿ÉÄÜµÄ¹¤¾ßtag
+    // éå†æ‰€æœ‰å¯èƒ½çš„å·¥å…·tag
     for (int i = 0; i < INTEM_COUNT; i++) {
-        // ¼ÆËãµ±Ç°¹¤¾ßµÄtag
+        // è®¡ç®—å½“å‰å·¥å…·çš„tag
         int tag = TOOL_TAG_BASE + i;
 
-        // ²éÕÒ²¢ÒÆ³ı¸ÃtagµÄ¾«Áé
+        // æŸ¥æ‰¾å¹¶ç§»é™¤è¯¥tagçš„ç²¾çµ
         auto toolSprite = this->getChildByTag(tag);
         if (toolSprite) {
             toolSprite->removeFromParent();
@@ -122,117 +153,84 @@ void InventoryGridScene::clearAllTools()
     }
 }
 
-// ÏÔÊ¾ÎïÆ·ÊıÁ¿
+// æ˜¾ç¤ºç‰©å“æ•°é‡
 void InventoryGridScene::showItemCount(int itemIndex, int count, float x, float y)
 {
-    // ÏÈÇå³ı¸ÃË÷ÒıÔ­ÓĞµÄÊıÁ¿±êÇ©
+    // å…ˆæ¸…é™¤è¯¥ç´¢å¼•åŸæœ‰çš„æ•°é‡æ ‡ç­¾
     int oldCountTag = COUNT_TAG_BASE + itemIndex;
     auto oldCountLabel = this->getChildByTag(oldCountTag);
     if (oldCountLabel) {
         oldCountLabel->removeFromParent();
     }
 
-    // ´´½¨ÊıÁ¿±êÇ©
+    // åˆ›å»ºæ•°é‡æ ‡ç­¾
     std::string countText = std::to_string(count);
     auto countLabel = Label::createWithTTF(countText, "/fonts/arial.ttf", 14);
 
     if (countLabel) {
-        // ¼ÆËãÓÒÏÂ½ÇÎ»ÖÃ
-        float offsetX = 25.0f;  // ÏòÓÒÆ«ÒÆ
-        float offsetY = -22.0f; // ÏòÏÂÆ«ÒÆ
+        // è®¡ç®—å³ä¸‹è§’ä½ç½®
+        float offsetX = 25.0f;  // å‘å³åç§»
+        float offsetY = -25.0f; // å‘ä¸‹åç§»
 
         countLabel->setPosition(Vec2(x + offsetX, y + offsetY));
         countLabel->setColor(Color3B::WHITE);
-        countLabel->enableOutline(Color4B::BLACK, 2);  // ºÚÉ«Ãè±ß£¬¸üÇåÎú
+        countLabel->enableOutline(Color4B::BLACK, 2);  // é»‘è‰²æè¾¹ï¼Œæ›´æ¸…æ™°
         
-        // ÉèÖÃÎ¨Ò»tag
+        // è®¾ç½®å”¯ä¸€tag
         countLabel->setTag(COUNT_TAG_BASE + itemIndex);
 
-        this->addChild(countLabel, 2);  // ±È¹¤¾ß¾«Áé¸ü¸ßµÄ²ã¼¶
+        this->addChild(countLabel, 2);  // æ¯”å·¥å…·ç²¾çµæ›´é«˜çš„å±‚çº§
     }
 }
 
-// ¸üĞÂµ¥¸ö¹¤¾ß¾«Áé
+// æ›´æ–°å•ä¸ªå·¥å…·ç²¾çµ
 void InventoryGridScene::updateToolSprite(int toolIndex, const std::string& imagePath,
     float size, float x, float y)
 {
-    // ¼ÆËãµ±Ç°¹¤¾ßµÄtag
+    // è®¡ç®—å½“å‰å·¥å…·çš„tag
     int tag = TOOL_TAG_BASE + toolIndex;
 
-    // ²éÕÒÊÇ·ñÒÑ´æÔÚÏàÍ¬tagµÄ¾«Áé£¨ÀíÂÛÉÏÓ¦¸ÃÒÑ±»clearAllToolsÇåÀí£©
+    // æŸ¥æ‰¾æ˜¯å¦å·²å­˜åœ¨ç›¸åŒtagçš„ç²¾çµï¼ˆç†è®ºä¸Šåº”è¯¥å·²è¢«clearAllToolsæ¸…ç†ï¼‰
     auto oldSprite = this->getChildByTag(tag);
     if (oldSprite) {
         oldSprite->removeFromParent();
     }
 
-    // ´´½¨ĞÂµÄ¹¤¾ß¾«Áé
+    // åˆ›å»ºæ–°çš„å·¥å…·ç²¾çµ
     auto sprite = Sprite::create(imagePath);
     if (sprite) {
-        Item& item = _inventory[toolIndex];
+        // âœ¨ ä¿®æ”¹æ•°æ®è·å–æ–¹å¼
+        auto& items = PlayerState::getInstance()->getInventoryItems();
+        if (toolIndex >= items.size()) return; // å®‰å…¨æ£€æŸ¥
+        Item* item = items[toolIndex];
 
         sprite->setPosition(Vec2(x, y));
         sprite->setScale(size);
-        if (item.getCount() <= 0) {
-            sprite->setOpacity(70); // Í¸Ã÷¶È 
+
+        // ä½¿ç”¨ç®­å¤´ -> è®¿é—®
+        if (item->getCount() <= 0) {
+            sprite->setOpacity(70);
         }
 
-        // ÉèÖÃÎ¨Ò»tag£¬±ãÓÚºóĞø¹ÜÀí
         sprite->setTag(tag);
+        this->addChild(sprite, 1);
 
-        // Ìí¼Óµ½³¡¾°ÖĞ
-        this->addChild(sprite, 1);  
+        // æ˜¾ç¤ºæ•°é‡
+        if (item->getTag() > Objects::FISHINGROD)
+            showItemCount(toolIndex, item->getCount(), x, y);
 
-        // ÏÔÊ¾ÊıÁ¿
-        if (item.getTag() > Objects::FISHINGROD)
-            showItemCount(toolIndex, item.getCount(), x, y);
-
-        // Ìí¼Óµã»÷Ê±µÄÇáÎ¢¶¯»­Ğ§¹û
-        if (size > item.getScale()) {  // Èç¹ûÊÇ¸ßÁÁ×´Ì¬
-            // ÇáÎ¢ÉÏ¸¡¶¯»­
+        // æ·»åŠ ç‚¹å‡»æ—¶çš„è½»å¾®åŠ¨ç”»æ•ˆæœ
+        if (size > item->getScale()) {  // å¦‚æœæ˜¯é«˜äº®çŠ¶æ€
+            // è½»å¾®ä¸Šæµ®åŠ¨ç”»
             auto floatUp = MoveBy::create(0.1f, Vec2(0, 3));
             sprite->runAction(floatUp);
         }
     }
 }
 
-// ³õÊ¼»¯¹¤¾ß
-void InventoryGridScene::initItem()
-{
-    for (int i = 0; i < INVENTORY_SIZE; i++) {
-        _inventory[i] = Item();  // ´´½¨¿ÕÎïÆ·
-    }
-
-    // ·ÅÖÃ³õÊ¼¹¤¾ß
-    _inventory[0] = Item(Objects::HOE, 1, 1.5f, 0.7f, "/Items/hoe.png");
-    _inventory[1] = Item(Objects::AXE, 1, 1.4f, 1.6f, "/Items/axe.png");
-    _inventory[2] = Item(Objects::WATERING_CAN, 1, 1.6f, 2.6f, "/Items/wateringCan.png");
-    _inventory[3] = Item(Objects::PICKAXE, 1, 1.4f, 3.6f, "/Items/pickaxe.png");
-    _inventory[4] = Item(Objects::SCYTHE, 1, 1.4f, 4.6f, "/Items/scythe.png");
-    _inventory[5] = Item(Objects::FISHINGROD, 1, 1.3f, 5.5f, "/Items/fishingRod.png");
-    _inventory[6] = Item(Objects::STONE, 1, 4.3f, 6.5f, "/Items/stone.png");
-    _inventory[7] = Item(Objects::WOOD, 1, 2.8f, 7.5f, "/Items/wood.png");
-    _inventory[8] = Item(Objects::COPPER_ORE, 1, 3.3f, 8.4f, "/Items/copper ore.png");
-    _inventory[9] = Item(Objects::FERTILIZER, 1, 4.3f, 9.4f, "/Items/fertilizer.png");
-    _inventory[10] = Item(Objects::PARSNIP_SEED, 1, 4.3f, 10.4f, "/Items/parsnip seed.png");
-    _inventory[11] = Item(Objects::CAULIFLOWER_SEED, 1, 4.3f, 11.35f, "/Items/cauliflower seed.png");
-    _inventory[12] = Item(Objects::POTATO_SEED, 1, 4.3f, 0.65f, "/Items/potato seed.png");
-    _inventory[13] = Item(Objects::PARSNIP, 1, 4.3f, 1.6f, "/Items/parsnip.png");
-    _inventory[14] = Item(Objects::CAULIFLOWER, 1, 4.3f, 2.6f, "/Items/cauliflower.png");
-    _inventory[15] = Item(Objects::POTATO, 1, 4.3f, 3.55f, "/Items/potato.png");
-    _inventory[16] = Item(Objects::FIBER, 1, 4.3f, 4.55f, "/Items/fiber.png");
-    _inventory[17] = Item(Objects::DAFFODILS, 1, 4.3f, 5.5f, "/Items/daffodils.png");
-    _inventory[18] = Item(Objects::LEEK, 1, 4.3f, 6.5f, "/Items/leek.png");
-    _inventory[19] = Item(Objects::HAY, 0, 4.3f, 7.45f, "/Items/hay.png");
-    _inventory[20] = Item(Objects::EGG, 1, 4.8f, 8.4f, "/Items/egg.png");
-    _inventory[21] = Item(Objects::FRIED_EGG, 1, 4.3f, 9.4f, "/Items/fried egg.png");
-    _inventory[22] = Item(Objects::CARP, 1, 4.3f, 10.4f, "/Items/carp.png");
-    _inventory[23] = Item(Objects::MILK, 1, 4.3f, 11.35f, "/Items/milk.png");
-    _inventory[24] = Item(Objects::SALAD, 1, 4.3f, 0.65f, "/Items/salad.png");
-
-}
 
 
-// ========== ³õÊ¼»¯ ==========
+// ========== åˆå§‹åŒ– ==========
 
 
 bool InventoryGridScene::init()
@@ -244,54 +242,31 @@ bool InventoryGridScene::init()
 
     createInvertory();
 
-    _selectedGrid = -1;  // ³õÊ¼Ã»ÓĞÑ¡ÖĞ¸ñ×Ó
+    _selectedGrid = -1;  // åˆå§‹æ²¡æœ‰é€‰ä¸­æ ¼å­
     for (int i = 0; i < INVENTORY_SIZE; i++) {
         _gridHighlights[i] = nullptr;
     }
 
-    // ³õÊ¼»¯ÎïÆ·Êı×é
-    initItem();
-
-    // ·ÅÖÃ¹¤¾ß
+    // æ”¾ç½®å·¥å…·
     placeTools();
 
-    // ´´½¨¿Éµã»÷¸ñ×Ó
+    // åˆ›å»ºå¯ç‚¹å‡»æ ¼å­
     createClickableGrids();
-
-    // ÉèÖÃÊÂ¼ş¼àÌıÆ÷
-    setupEventListeners();
 
     return true;
 }
 
 
-// ========== ÊÂ¼ş¼àÌı ==========
 
-void InventoryGridScene::setupEventListeners() {
-    // ¼àÌıÎïÆ·ÊıÁ¿¸Ä±äÊÂ¼ş
-    auto listener = EventListenerCustom::create("INVENTORY_COUNT_CHANGED",
-        [this](EventCustom* event) {
-            // ÊÕµ½Í¨ÖªÊ±Ë¢ĞÂ±³°ü
-            this->refreshInventory();
-        });
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-}
+// ========== ç‚¹å‡»é«˜å…‰æ•ˆæœ ==========
 
-void InventoryGridScene::refreshInventory() {
-    // ÖØĞÂ·ÅÖÃËùÓĞ¹¤¾ß£¬±£³Öµ±Ç°¸ßÁÁ×´Ì¬
-    placeTools(_selectedGrid); 
-}
-
-
-// ========== µã»÷¸ß¹âĞ§¹û ==========
-
-// ÎªÖ¸¶¨¸ñ×Ó´´½¨´¥Ãş¼àÌıÆ÷
+// ä¸ºæŒ‡å®šæ ¼å­åˆ›å»ºè§¦æ‘¸ç›‘å¬å™¨
 void InventoryGridScene::createTouchListenerForGrid(int gridIndex, cocos2d::Sprite* grid)
 {
     auto listener = EventListenerTouchOneByOne::create();
     listener->setSwallowTouches(true);
 
-    // ´¥Ãş¿ªÊ¼ÊÂ¼ş
+    // è§¦æ‘¸å¼€å§‹äº‹ä»¶
     listener->onTouchBegan = [this, gridIndex](cocos2d::Touch* touch, cocos2d::Event* event) {
         auto target = event->getCurrentTarget();
         cocos2d::Vec2 locationInNode = target->convertToNodeSpace(touch->getLocation());
@@ -305,32 +280,32 @@ void InventoryGridScene::createTouchListenerForGrid(int gridIndex, cocos2d::Spri
         return false;
         };
 
-    // ±£´æ¼àÌıÆ÷µ½Ó³Éä±í
+    // ä¿å­˜ç›‘å¬å™¨åˆ°æ˜ å°„è¡¨
     _gridListeners[gridIndex] = listener;
 
-    // ½«¼àÌıÆ÷Ìí¼Óµ½ÊÂ¼ş·Ö·¢Æ÷
+    // å°†ç›‘å¬å™¨æ·»åŠ åˆ°äº‹ä»¶åˆ†å‘å™¨
     Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, grid);
 }
 
-// ÆôÓÃ»ò½ûÓÃËùÓĞ¸ñ×ÓµÄ´¥Ãş¼àÌı
+// å¯ç”¨æˆ–ç¦ç”¨æ‰€æœ‰æ ¼å­çš„è§¦æ‘¸ç›‘å¬
 void InventoryGridScene::setGridsTouchEnabled(bool enabled)
 {
     for (auto& pair : _gridListeners) {
         auto listener = pair.second;
         if (listener) {
             if (enabled) {
-                // »Ö¸´¼àÌıÆ÷
+                // æ¢å¤ç›‘å¬å™¨
                 listener->setEnabled(true);
             }
             else {
-                // ½ûÓÃ¼àÌıÆ÷
+                // ç¦ç”¨ç›‘å¬å™¨
                 listener->setEnabled(false);
             }
         }
     }
 }
 
-// ´´½¨¿Éµã»÷¸ñ×Ó
+// åˆ›å»ºå¯ç‚¹å‡»æ ¼å­
 void InventoryGridScene::createClickableGrids()
 {
     for (int row = 0; row < 3; row++) {
@@ -343,19 +318,19 @@ void InventoryGridScene::createClickableGrids()
             int gridIndex = row * 12 + col;
             float gridX = backpackLeft + _cellWidth * (col + 0.82f);
 
-            // ´´½¨¸ñ×Ó¾«Áé
+            // åˆ›å»ºæ ¼å­ç²¾çµ
             auto grid = Sprite::create();
             grid->setTextureRect(cocos2d::Rect(0, 0, _cellWidth, clickHeight));
             grid->setOpacity(0);
             grid->setPosition(cocos2d::Vec2(gridX, clickY));
             grid->setTag(gridIndex);
 
-            // ´´½¨´¥Ãş¼àÌıÆ÷
+            // åˆ›å»ºè§¦æ‘¸ç›‘å¬å™¨
             createTouchListenerForGrid(gridIndex, grid);
 
             this->addChild(grid, 2);
 
-            // ¸ß¹â±ß¿ò
+            // é«˜å…‰è¾¹æ¡†
             auto highlight = DrawNode::create();
             highlight->setVisible(false);
             this->addChild(highlight, 3);
@@ -364,57 +339,53 @@ void InventoryGridScene::createClickableGrids()
     }
 }
 
-// µã»÷¸ñ×Ó´¦Àí
+// ç‚¹å‡»æ ¼å­å¤„ç†
 void InventoryGridScene::onGridClicked(int gridIndex)
 {
-    // ¼ÆËãĞĞºÅºÍÁĞºÅ
-    int row = gridIndex / 12;  // ĞĞºÅ£º0, 1, 2
-    int col = gridIndex % 12;  // ÁĞºÅ£º0-11
+    // è®¡ç®—è¡Œå·å’Œåˆ—å·
+    int row = gridIndex / 12;  // è¡Œå·ï¼š0, 1, 2
+    int col = gridIndex % 12;  // åˆ—å·ï¼š0-11
 
-    // È¡ÏûÖ®Ç°¸ñ×ÓµÄ¸ß¹â
+    // å–æ¶ˆä¹‹å‰æ ¼å­çš„é«˜å…‰
     if (_selectedGrid != -1) {
         highlightGrid(_selectedGrid, false);
     }
 
-    // ¸ß¹âĞÂ¸ñ×Ó
+    // é«˜å…‰æ–°æ ¼å­
     highlightGrid(gridIndex, true);
     _selectedGrid = gridIndex;
 
-    // ´¥·¢»Øµ÷Í¨ÖªÖ÷½çÃæ 
+    // è§¦å‘å›è°ƒé€šçŸ¥ä¸»ç•Œé¢ 
     if (_gridSelectedCallback) {
         _gridSelectedCallback(gridIndex);
     }
 }
 
-// Æ«ÒÆ¼ÆËãº¯Êı
+// åç§»è®¡ç®—å‡½æ•°
 float InventoryGridScene::getGridOffset(int colIndex)
 {
     float baseOffset = 0.5f;
     float offset = 0.0f;
     float correction = 0.01f;
 
-    if (colIndex < 2.5f)
-        offset = baseOffset + 0.1f;  // ×ó±ß£ºÏòÓÒÒÆ¶¯
-    else if (colIndex == 3)
-        offset = baseOffset + 0.05f;
-    else if (colIndex == 7)
-        offset = baseOffset - 0.05f;
+    if (colIndex < 3.5f)
+        offset = baseOffset + 0.1f ;  // å·¦è¾¹ï¼šå‘å³ç§»åŠ¨
     else if (colIndex > 7.5f)
-        offset = baseOffset - 0.1f - (colIndex - 7.0) * correction;  // ÓÒ±ß£ºÏò×óÒÆ¶¯
+        offset = baseOffset - 0.1f - (colIndex - 7.0) * correction;  // å³è¾¹ï¼šå‘å·¦ç§»åŠ¨
     else
         offset = baseOffset;
 
     return offset;
 }
 
-// ¸ß¹â¸ñ×Ó
+// é«˜å…‰æ ¼å­
 void InventoryGridScene::highlightGrid(int gridIndex, bool highlight)
 {
-    // ¼ÆËãĞĞºÅºÍÁĞºÅ
-    int row = gridIndex / 12;    // ĞĞºÅ£º0, 1, 2
-    int col = gridIndex % 12;    // ÁĞºÅ£º0-11
+    // è®¡ç®—è¡Œå·å’Œåˆ—å·
+    int row = gridIndex / 12;    // è¡Œå·ï¼š0, 1, 2
+    int col = gridIndex % 12;    // åˆ—å·ï¼š0-11
 
-    // ¼ì²éË÷ÒıÓĞĞ§ĞÔ
+    // æ£€æŸ¥ç´¢å¼•æœ‰æ•ˆæ€§
     if (row < 0 || row >= 3 || col < 0 || col >= 12)
         return;
 
@@ -426,7 +397,7 @@ void InventoryGridScene::highlightGrid(int gridIndex, bool highlight)
     highlightNode->setVisible(highlight);
 
     if (highlight) {
-        // ·Å´ó¶¯»­
+        // æ”¾å¤§åŠ¨ç”»
         int toolIndexToHighlight = (gridIndex < INTEM_COUNT) ? gridIndex : -1;
         placeTools(toolIndexToHighlight);
 
@@ -434,36 +405,36 @@ void InventoryGridScene::highlightGrid(int gridIndex, bool highlight)
         float offset = getGridOffset(col);
         float gridX = backpackLeft + _cellWidth * (col + offset);
 
-        // ¼ÆËã±ß¿òÎ»ÖÃ£¨Áô³ö¸ü¶àÄÚ±ß¾à¸ø´Ö±ß¿ò£©
+        // è®¡ç®—è¾¹æ¡†ä½ç½®ï¼ˆç•™å‡ºæ›´å¤šå†…è¾¹è·ç»™ç²—è¾¹æ¡†ï¼‰
         float halfCell = _cellWidth / 2 - 1.0f;
         float halfHeight = _backpackHeight * 0.5f - 14.0f;
 
-        // ±ß¿òËÄ¸ö½Ç
+        // è¾¹æ¡†å››ä¸ªè§’
         float left = gridX - halfCell;
         float right = gridX + halfCell;
         float top = _backpacks[row].y + halfHeight;
         float bottom = _backpacks[row].y - halfHeight;
 
-        // ÑÕÉ«
+        // é¢œè‰²
         Color4F highlightColor = Color4F(0.85f, 0.18f, 0.18f, 1.0f);
 
-        // ±ß¿òºñ¶È
+        // è¾¹æ¡†åšåº¦
         float borderThickness = 4.0f;
 
-        // ¼ò»¯µÄ´Ö±ß¿ò»æÖÆ£ºÃ¿¸ö±ß¿ò»­2ÌõÏß
-        // ÉÏ±ß¿ò£¨Á½ÌõÏß£©
+        // ç®€åŒ–çš„ç²—è¾¹æ¡†ç»˜åˆ¶ï¼šæ¯ä¸ªè¾¹æ¡†ç”»2æ¡çº¿
+        // ä¸Šè¾¹æ¡†ï¼ˆä¸¤æ¡çº¿ï¼‰
         highlightNode->drawLine(Vec2(left, top), Vec2(right, top), highlightColor);
         highlightNode->drawLine(Vec2(left, top - 2), Vec2(right, top - 2), highlightColor);
 
-        // ÏÂ±ß¿ò£¨Á½ÌõÏß£©
+        // ä¸‹è¾¹æ¡†ï¼ˆä¸¤æ¡çº¿ï¼‰
         highlightNode->drawLine(Vec2(left, bottom), Vec2(right, bottom), highlightColor);
         highlightNode->drawLine(Vec2(left, bottom + 2), Vec2(right, bottom + 2), highlightColor);
 
-        // ×ó±ß¿ò£¨Á½ÌõÏß£©
+        // å·¦è¾¹æ¡†ï¼ˆä¸¤æ¡çº¿ï¼‰
         highlightNode->drawLine(Vec2(left, top), Vec2(left, bottom), highlightColor);
         highlightNode->drawLine(Vec2(left + 2, top), Vec2(left + 2, bottom), highlightColor);
 
-        // ÓÒ±ß¿ò£¨Á½ÌõÏß£©
+        // å³è¾¹æ¡†ï¼ˆä¸¤æ¡çº¿ï¼‰
         highlightNode->drawLine(Vec2(right, top), Vec2(right, bottom), highlightColor);
         highlightNode->drawLine(Vec2(right - 2, top), Vec2(right - 2, bottom), highlightColor);
 
@@ -474,7 +445,7 @@ void InventoryGridScene::highlightGrid(int gridIndex, bool highlight)
 }
 
 
-// ========== Ö÷Ò³ÃæÏÔÊ¾¸¨Öúº¯Êı ==========
+// ========== ä¸»é¡µé¢æ˜¾ç¤ºè¾…åŠ©å‡½æ•° ==========
 
 int InventoryGridScene::getSelectedGrid()
 {
@@ -486,9 +457,22 @@ void InventoryGridScene::setGridSelectedCallback(const std::function<void(int)>&
     _gridSelectedCallback = callback;
 }
 
-// »ñÈ¡Ö¸¶¨¸ñ×ÓµÄÎïÆ·
-Item& InventoryGridScene::getItemAt(int gridIndex) 
+// è·å–æŒ‡å®šæ ¼å­çš„ç‰©å“
+const Item* InventoryGridScene::getItemAt(int gridIndex) const
 {
-    assert(gridIndex >= 0 && gridIndex < INVENTORY_SIZE);
-    return _inventory[gridIndex];
+    auto& items = PlayerState::getInstance()->getInventoryItems();
+    if (gridIndex >= 0 && gridIndex < items.size()) {
+        return items[gridIndex]; // è¿”å›æŒ‡é’ˆ
+    }
+    return nullptr;
+}
+
+void InventoryGridScene::refreshDisplay()
+{
+    placeTools(_selectedGrid);
+}
+
+void InventoryGridScene::refreshInventory()
+{
+    placeTools(-1); // -1 è¡¨ç¤ºæ²¡æœ‰é«˜äº®
 }
