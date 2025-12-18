@@ -49,6 +49,7 @@ bool ShopLayer::init(Item* item) {
     if (icon) {
         icon->setPosition(winSize.width / 2 - 150, winSize.height / 2 + 50);
         icon->setScale(_targetItem->getScale());
+        icon->setScale(4.0);
         this->addChild(icon);
     }
 
@@ -60,7 +61,7 @@ bool ShopLayer::init(Item* item) {
 
     auto priceLabel = Label::createWithTTF(StringUtils::format("%d G", _targetItem->getPrice()), "fonts/arial.ttf", 24);
     priceLabel->setPosition(winSize.width / 2 + 50, winSize.height / 2 + 40);
-    priceLabel->setColor(Color3B(139, 69, 19)); // 深褐色
+    priceLabel->setColor(Color3B::BLACK); // 深褐色
     this->addChild(priceLabel);
 
     // 5. 计算最大购买数量
@@ -204,7 +205,7 @@ void ShopLayer::onBuyClicked(Ref* sender) {
         // 2. 加背包 (调用你之前修复好的 addItem)
         playerState->addItem(_targetItem, _currentQuantity);
 
-        CCLOG("购买成功: %s x%d", _targetItem->getName().c_str(), _currentQuantity);
+        CCLOG("购买成功:%sx%d", _targetItem->getName().c_str(), _currentQuantity);
 
         // 3. 【关键】通知上层界面刷新
         if (onPurchaseSuccess) {
@@ -215,7 +216,7 @@ void ShopLayer::onBuyClicked(Ref* sender) {
         this->removeFromParent();
     }
     else {
-        CCLOG("金钱不足！");
+        CCLOG("金钱不足");
     }
 }
 
