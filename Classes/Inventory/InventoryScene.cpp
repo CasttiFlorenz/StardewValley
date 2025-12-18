@@ -1,4 +1,4 @@
-﻿/****************************************************************
+/****************************************************************
  * Project Name:  StardewValley
  * File Name:     InventoryScene.cpp
  * File Function: InventoryScene类的实现
@@ -72,8 +72,8 @@ void InventoryScene::ToolUseAnimation()
     if (_showToolUseEffect && ((_selectedGrid >= 0 && _selectedGrid <= 5)
         || (_selectedGrid >= 10 && _selectedGrid <= 12))) {
 
-        const Item& item = _inventoryLayer->getItemAt(_selectedGrid);
-        if (item.getCount() > 0)
+        const Item* item = _inventoryLayer->getItemAt(_selectedGrid);
+        if (item->getCount() > 0)
             // 显示工具使用特效
             showToolUseEffect(_selectedGrid);
     }
@@ -88,8 +88,8 @@ void InventoryScene::showToolUseEffect(int selected, bool clearPrevious)
 
     // 从背包获取当前选中的工具信息
     if (_inventoryLayer) {
-        const Item& item = _inventoryLayer->getItemAt(selected);
-        std::string toolImagePath = item.getPos();
+        const Item* item = _inventoryLayer->getItemAt(selected);
+        std::string toolImagePath = item->getPos();
 
         if (!toolImagePath.empty()) {
             // 创建工具特效精灵
@@ -98,7 +98,7 @@ void InventoryScene::showToolUseEffect(int selected, bool clearPrevious)
 
                 setToolUse();
 
-                _toolUseEffect->setScale(item.getScale());    // 设置大小
+                _toolUseEffect->setScale(item->getScale());    // 设置大小
 
                 float time = 0.3f;
                 auto delay = DelayTime::create(time);
@@ -117,7 +117,7 @@ void InventoryScene::showToolUseEffect(int selected, bool clearPrevious)
                     });
 
                 cocos2d::Action* sequence;
-                if (static_cast<int>(item.getTag()) < 5)
+                if (static_cast<int>(item->getTag()) < 5)
                     sequence = Sequence::create(rotate, remove, nullptr);   // 组合动画：旋转 -> 停留 -> 移除
                 else 
                     sequence = Sequence::create(delay, remove, nullptr);   // 闪现
@@ -219,20 +219,20 @@ void InventoryScene::updatePreviewTool()
 
     if (_selectedGrid >= 0 && _selectedGrid < _inventoryLayer->INTEM_COUNT) { // 只显示前INTEM_COUNT个工具
         // 获取工具图片路径
-        const Item& item = _inventoryLayer->getItemAt(_selectedGrid);
-        std::string toolImage = item.getPos();
+        const Item* item = _inventoryLayer->getItemAt(_selectedGrid);
+        std::string toolImage = item->getPos();
 
         if (!toolImage.empty()) {
             auto toolSprite = cocos2d::Sprite::create(toolImage);
             if (toolSprite) {
                 _previewTool->setTexture(toolSprite->getTexture());
                 _previewTool->setTextureRect(toolSprite->getTextureRect());
-                _previewTool->setScale(item.getScale() + 0.1f); // 放大一点显示
+                _previewTool->setScale(item->getScale() + 0.1f); // 放大一点显示
                 _previewTool->setVisible(true);
 
                 // 显示数量
-                if (item.getTag() > Objects::FISHINGROD) {
-                    std::string countText = std::to_string(item.getCount());
+                if (item->getTag() > Objects::FISHINGROD) {
+                    std::string countText = std::to_string(item->getCount());
                     auto label = Label::createWithTTF(countText, "/fonts/arial.ttf", 18);
 
                     if (label) {
@@ -255,11 +255,13 @@ void InventoryScene::updatePreviewTool()
 Objects InventoryScene::getTap() const
 {
     if (_selectedGrid >= 0 && _selectedGrid < _inventoryLayer->INTEM_COUNT) {
-        const Item& item = _inventoryLayer->getItemAt(_selectedGrid);
-        return item.getTag();
+        const Item* item = _inventoryLayer->getItemAt(_selectedGrid);
+        return item->getTag();
     }
     return Objects::HOE;
 }
+
+
 
 // 增加指定物品的数量
 void InventoryScene::addItemCount(Objects object, int amount)
@@ -267,12 +269,41 @@ void InventoryScene::addItemCount(Objects object, int amount)
     int itemIndex = static_cast<int>(object);
 
     if (object >= Objects::HOE && object < Objects::COUNT) {
-        Item& item = _inventoryLayer->getItemAt(itemIndex);
-        item.addCount(amount);
 
-    // 显示工具使用特效
-    if (object != Objects::DAFFODILS && object != Objects::LEEK)
-        ToolUseAnimation();
+        // 1. 获取 PlayerState 单例
+        auto playerState = PlayerState::getInstance();
+        auto& items = playerState->getInventoryItems();
+
+        Item* foundItem = nullptr;
+
+        // 2. 在背包中查找是否已有该物品 (用于堆叠)
+        for (auto item : items) {
+            if (item->getTag() == object) {
+                foundItem = item;
+                break;
+            }
+        }
+
+        if (foundItem) {
+        
+            playerState->addItem(foundItem, amount);
+        }
+        else {
+          
+            Item* newItem = new Item(object, amount, 1.0f, 0.0f, (char*)"Items/unknown.png", 0, "New Item");
+            playerState->addItem(newItem, amount);
+            delete newItem; // PlayerState 会复制数据，删除临时的
+        }
+
+        if (_inventoryLayer) {
+            _inventoryLayer->placeTools(-1); 
+        }
+
+    
+
+        // 显示工具使用特效
+        if (object != Objects::DAFFODILS && object != Objects::LEEK)
+            ToolUseAnimation();
 
         // 0.2秒后显示第二个特效
         scheduleOnce([this, itemIndex, amount](float dt) {
@@ -289,9 +320,13 @@ void InventoryScene::addItemCount(Objects object, int amount)
                 label->setTag(3000);
 
                 // 确保和特效使用相同的CameraMask
-                label->setCameraMask(_toolUseEffect->getCameraMask());
-                this->addChild(label, _toolUseEffect->getLocalZOrder() + 10);
-
+                if (_toolUseEffect) {
+                    label->setCameraMask(_toolUseEffect->getCameraMask());
+                    this->addChild(label, _toolUseEffect->getLocalZOrder() + 10);
+                }
+                else {
+                    this->addChild(label, 100);
+                }
 
                 // 0.3秒后直接删除
                 scheduleOnce([label](float dt) {
@@ -314,8 +349,26 @@ void InventoryScene::addItemCount(Objects object, int amount)
 void InventoryScene::removeIetmCount(Objects object, int amount)
 {
     if (object >= Objects::HOE && object < Objects::COUNT) {
-        Item& item = _inventoryLayer->getItemAt(static_cast<int>(object));
-        item.removeCount(amount);
+
+
+        // 1. 获取 PlayerState
+        auto playerState = PlayerState::getInstance();
+        auto& items = playerState->getInventoryItems();
+
+        // 2. 查找并扣除
+      
+        for (auto item : items) {
+            if (item->getTag() == object) {
+                // 调用 PlayerState 的移除接口
+                playerState->removeItem(item, amount);
+                break; // 找到一个就退出
+            }
+        }
+
+        // 3. 刷新界面
+        if (_inventoryLayer) {
+            _inventoryLayer->placeTools(-1); // 或者 refreshDisplay()
+        }
     }
 
     // 发送事件通知背包刷新
@@ -324,5 +377,3 @@ void InventoryScene::removeIetmCount(Objects object, int amount)
     // 更新预览框图片（更新数量）
     updatePreviewTool();
 }
-
-
