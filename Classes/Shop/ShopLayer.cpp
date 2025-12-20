@@ -65,7 +65,7 @@ bool ShopLayer::init(Item* item) {
     this->addChild(priceLabel);
 
     // 5. 计算最大购买数量
-    int playerMoney = PlayerState::getInstance()->money;
+    int playerMoney = Money::getInstance()->money;
     if (_targetItem->getPrice() > 0) {
         _maxQuantity = playerMoney / _targetItem->getPrice();
     }
@@ -181,7 +181,7 @@ void ShopLayer::updateUI() {
     }
 
     // 3. 检查钱够不够，控制按钮状态
-    bool canAfford = PlayerState::getInstance()->canAfford(totalCost);
+    bool canAfford = Money::getInstance()->canAfford(totalCost);
     if (_btnBuy) {
         _btnBuy->setEnabled(canAfford);
         _btnBuy->setOpacity(canAfford ? 255 : 128); // 买不起变半透明
@@ -196,7 +196,7 @@ void ShopLayer::onBuyClicked(Ref* sender) {
     if (!_targetItem) return;
 
     int totalCost = _currentQuantity * _targetItem->getPrice();
-    auto playerState = PlayerState::getInstance();
+    auto playerState = Money::getInstance();
 
     if (playerState->canAfford(totalCost)) {
         // 1. 扣钱 
