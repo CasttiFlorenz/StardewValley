@@ -37,11 +37,11 @@ enum class MouseEvent
     SHOP_MARNIE,
     CONVERSATION_HALEY,
     CONVERSATION_SAM,
-    CONVERSATION_EVELYN
+    CONVERSATION_EVELYN,
+    SLEEP,
 };
 
 enum class Objects {
-    NONE = -1，
     HOE = 0,           // 锄头
     AXE,              // 斧头
     WATERING_CAN,     // 浇水壶
@@ -67,6 +67,7 @@ enum class Objects {
     CARP,             // 鲤鱼
     MILK,             // 牛奶
     SALAD,            // 田园沙拉
+    NONE,
     COUNT             // 总数，用于遍历
 };
 
