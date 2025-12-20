@@ -1,11 +1,3 @@
-/****************************************************************
- * Project Name:  StardewValley
- * File Name:     Farm.cpp
- * File Function: Farm类的实现
- * Author:        郭芷烟
- * Update Date:   2025/12/13
- * License:       MIT License
- ****************************************************************/
 
 #include "Farm.h"
 
@@ -24,7 +16,6 @@ void Farm::destroyInstance() {
 }
 
 Farm::~Farm() {
-    CC_SAFE_RELEASE(_farmItemManager);
 }
 
 bool Farm::init()
@@ -49,8 +40,9 @@ bool Farm::init()
         eventLayer->setVisible(false);
     }
 
-    _farmItemManager = FarmItemManager::create(this);
-    CC_SAFE_RETAIN(_farmItemManager);
+    _farmItemManager = FarmItemManager::getInstance(this);
+    _cultivationManager = CultivationManager::getInstance();
+    _cultivationManager->init(_farmItemManager, this);
 
     this->addChild(_map, 0);
     this->scheduleUpdate();
@@ -145,7 +137,7 @@ bool Farm::isCollidable(Vec2 worldPos)
         return true;
     }
 
-    if (_farmItemManager && _farmItemManager->hasItem(tilePos))
+    if (_farmItemManager && _farmItemManager->isCollidable(tilePos))
         return true;
 
     auto layer = _map->getLayer("event");
@@ -166,10 +158,8 @@ bool Farm::isCollidable(Vec2 worldPos)
 
 MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction, Objects objects)
 {
-    // 1. 计算基准瓦片坐标
     Vec2 basePos = this->calMapPos(playerPos);
 
-    // 2. 根据朝向调整基准坐标
     switch (direction) {
     case Direction::DOWN:  basePos.y++; break;
     case Direction::UP:    basePos.y--; break;
@@ -178,11 +168,8 @@ MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction, O
     default: break;
     }
 
-    // 3. 定义检测偏移量顺序：原位置(0)，上方(-1)，下方(+1)
-    // 对应原代码逻辑：tiledPos -> tiledPos.y-- -> tiledPos.y+=2
     const int yOffsets[] = { 1,0, -1 };
 
-    // 4. 遍历检测
     for (int offset : yOffsets) {
         Vec2 checkPos = basePos;
         checkPos.y += offset;
@@ -190,54 +177,105 @@ MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction, O
         EnvironmentItem* item = _farmItemManager->getItem(checkPos);
         if (item) {
             auto type = item->getType();
-            if (type == EnvironmentItemType::WOOD&&objects==Objects::AXE) {
+            if (type == EnvironmentItemType::WOOD && objects == Objects::AXE) {
                 _farmItemManager->removeItem(checkPos);
                 return MouseEvent::GET_WOOD;
             }
-            else if (type == EnvironmentItemType::GRASS&& objects == Objects::SCYTHE) {
+            else if (type == EnvironmentItemType::GRASS && objects == Objects::SCYTHE) {
                 _farmItemManager->removeItem(checkPos);
                 return MouseEvent::GET_GRASS;
             }
         }
+
+        switch (objects) {
+        case Objects::HOE:
+            _cultivationManager->attemptCultivate(checkPos);
+            return MouseEvent::USE_TOOL;
+
+        case Objects::PICKAXE:
+            _cultivationManager->removeSoil(checkPos);
+            return MouseEvent::USE_TOOL;
+
+        case  Objects::WATERING_CAN:
+            _cultivationManager->waterSoil(checkPos);
+            return MouseEvent::USE_TOOL;
+
+        case  Objects::PARSNIP_SEED:
+            if (_cultivationManager->plantCrop(checkPos, CropType::PARSNIP))
+                return MouseEvent::USE_PARSNIP_SEED;
+            break;
+
+        case Objects::POTATO_SEED:
+            if (_cultivationManager->plantCrop(checkPos, CropType::POTATO))
+                return MouseEvent::USE_POTATO_SEED;
+            break;
+
+        case Objects::CAULIFLOWER_SEED:
+            if (_cultivationManager->plantCrop(checkPos, CropType::CAULIFLOWER))
+                return MouseEvent::USE_CAULIFLOWER_SEED;
+            break;
+        default:
+            break;
+        }
+
     }
 
     return MouseEvent::USE_TOOL;
 }
-MouseEvent Farm::onRightClick(const Vec2& pos, const Direction direction)
+
+MouseEvent Farm::onRightClick(const Vec2& playerPos, const Direction direction)
 {
-    // 1. 获取名为 "object" 的对象层 
-    auto objectGroup = _map->getObjectGroup("object");
+    const Rect saleRect = getObjectRect("sale");
 
-    if (objectGroup) {
-        // 2. 遍历这一层里所有的东西
-        auto& objects = objectGroup->getObjects();
+    if (saleRect.containsPoint(playerPos)) {
+        return MouseEvent::SHOP_SALE;
+    }
 
-        for (const auto& obj : objects) {
-            ValueMap dict = obj.asValueMap();
+    Vec2 basePos = this->calMapPos(playerPos);
 
-            std::string name = dict["name"].asString();
-            float x = dict["x"].asFloat();
-            float y = dict["y"].asFloat();
-            float w = dict["width"].asFloat();
-            float h = dict["height"].asFloat();
-            Rect rect(x, y, w, h);
+    switch (direction) {
+    case Direction::DOWN:  basePos.y++; break;
+    case Direction::UP:    basePos.y--; break;
+    case Direction::LEFT:  basePos.x--; break;
+    case Direction::RIGHT: basePos.x++; break;
+    default: break;
+    }
 
-            // 3. 判定点击
-            if (rect.containsPoint(pos)) {
-                if (name == "sale") {
-                    return MouseEvent::SHOP_SALE;
-                }
+    const int yOffsets[] = { 1,0, -1 };
 
+    for (int offset : yOffsets) {
+        Vec2 checkPos = basePos;
+        checkPos.y += offset;
+
+        EnvironmentItem* item = _farmItemManager->getItem(checkPos);
+        if (item) {
+            auto type = item->getType();
+            if (type == EnvironmentItemType::LEEK) {
+                _farmItemManager->removeItem(checkPos);
+                return MouseEvent::GET_LEEK;
+            }
+            else if (type == EnvironmentItemType::DAFFODILS) {
+                _farmItemManager->removeItem(checkPos);
+                return MouseEvent::GET_DAFFODILS;
             }
         }
-    }
-    else {
-        CCLOG("Town Error: 找不到名为 'object' 的图层！");
+
+        CropType crop = _cultivationManager->harvestCrop(checkPos);
+        switch (crop) {
+        case CropType::PARSNIP:
+            return MouseEvent::GET_PARSNIP;
+        case CropType::POTATO:
+            return MouseEvent::GET_POTATO;
+        case CropType::CAULIFLOWER:
+            return MouseEvent::GET_CAULIFLOWER;
+        default:
+            break;
+        }
+
     }
 
     return MouseEvent::NONE;
 }
-
 
 void Farm::openShopForNPC()
 {
@@ -262,12 +300,13 @@ void Farm::openShopForNPC()
 
     auto runningScene = Director::getInstance()->getRunningScene();
     if (runningScene) {
-        // 定义一个唯一的TAG，比如 9999
+        // ����һ��Ψһ��TAG������ 9999
         const int SHOP_MENU_TAG = 9999;
 
-        // 查找是否已有该Tag的子节点
+        // �����Ƿ����и�Tag���ӽڵ�
         auto existingShop = runningScene->getChildByTag(SHOP_MENU_TAG);
         if (existingShop) {
+            CCLOG("�̵�˵��Ѵ򿪣������ظ�����");
             return;
         }
 
@@ -276,6 +315,8 @@ void Farm::openShopForNPC()
             shopMenu->setTag(SHOP_MENU_TAG);
             runningScene->addChild(shopMenu, 999);
             shopMenu->setCameraMask((unsigned short)CameraFlag::DEFAULT);
+
+            CCLOG("�ɹ����̵�˵�");
         }
     }
 }

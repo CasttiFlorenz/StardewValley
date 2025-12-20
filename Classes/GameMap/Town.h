@@ -2,8 +2,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     Town.h
- * File Function: Townç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸã€èµµç¿å¦
+ * File Function: TownÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ¡¢ÕÔî£åû
  * Update Date:   2025/12/19
  * License:       MIT License
  ****************************************************************/
@@ -31,15 +31,15 @@ public:
     static void destroyInstance();
 
     virtual bool init() override;
-    
+
     virtual void update(float dt) override;
-    
+
     virtual std::string getNewMap(const Vec2& curPos, bool isStart, const Direction& direction) override;
-    
+
     virtual void setStartPosition(std::string lastMap) override;
-    
+
     virtual Vec2 getPlayerStartPosition(std::string lastMap) override;
-    
+
     virtual bool isCameraFollow() const { return true; }
 
     virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction, Objects objects)override;
@@ -53,7 +53,6 @@ public:
     void initNPCs();
 private:
     static GameMap* _instance;
-    std::map<std::string,NPCBase*> _npcMap;
+    std::map<std::string, NPCBase*> _npcMap;
 };
 #endif
-

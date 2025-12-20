@@ -13,6 +13,7 @@
 #include "GameMap.h"
 #include "cocos2d.h"
 #include "Constant.h"
+#include "../mapitem/BarnManager.h"
 
 USING_NS_CC;
 
@@ -35,5 +36,6 @@ public:
 
 private:
     static GameMap* _instance;
+    BarnManager* _barnManager;
 };
 #endif // _BARN_H_

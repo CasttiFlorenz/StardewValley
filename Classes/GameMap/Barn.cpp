@@ -1,11 +1,3 @@
-/****************************************************************
- * Project Name:  StardewValley
- * File Name:     Barn.cpp
- * File Function: Barn类的实现
- * Author:        郭芷烟
- * Update Date:   2025/12/14
- * License:       MIT License
- ****************************************************************/
 
 #include "Barn.h"
 
@@ -32,7 +24,17 @@ bool Barn::init()
     auto eventLayer = _map->getLayer("event");
     if (eventLayer) eventLayer->setVisible(false);
     this->addChild(_map);
-    this->scheduleUpdate();
+
+    _barnManager = BarnManager::getInstance();
+    _barnManager->init(this);
+    _barnManager->addAnimal(BarnAnimalType::CHICKEN);
+    _barnManager->addAnimal(BarnAnimalType::COW);
+    _barnManager->addAnimal(BarnAnimalType::COW);
+    _barnManager->addAnimal(BarnAnimalType::COW);
+    _barnManager->addAnimal(BarnAnimalType::CHICKEN);
+    _barnManager->addAnimal(BarnAnimalType::CHICKEN);
+
+
     return true;
 }
 
@@ -41,6 +43,7 @@ std::string Barn::getNewMap(const Vec2& curPos, bool isStart, const Direction& d
     if (direction == Direction::DOWN) {
         const Rect goToFarmRect = getObjectRect("goToFarm");
         if (goToFarmRect.containsPoint(curPos)) {
+            _barnManager->stopAnimations();
             return "Farm";
         }
     }
@@ -52,6 +55,7 @@ void Barn::setStartPosition(std::string lastMap)
     const Vec2 visibleSize = Director::getInstance()->getVisibleSize();
     _map->setScale(TILED_MAP_SCALE);
     _map->setPosition((visibleSize - _map->getContentSize() * _map->getScale()) / 2);
+    _barnManager->startAnimations();
 }
 
 void Barn::update(float dt)
@@ -67,12 +71,64 @@ Vec2 Barn::getPlayerStartPosition(std::string lastMap)
 }
 
 
-MouseEvent Barn::onLeftClick(const Vec2& playerPos, const Direction direction,Objects object)
+MouseEvent Barn::onLeftClick(const Vec2& playerPos, const Direction direction, Objects objects)
 {
+    Vec2 basePos = this->calMapPos(playerPos);
+
+    switch (direction) {
+    case Direction::DOWN:  basePos.y++; break;
+    case Direction::UP:    basePos.y--; break;
+    case Direction::LEFT:  basePos.x--; break;
+    case Direction::RIGHT: basePos.x++; break;
+    default: break;
+    }
+
+    const int yOffsets[] = { 1,0, -1 };
+
+    for (int offset : yOffsets) {
+        Vec2 checkPos = basePos;
+        checkPos.y += offset;
+
+        switch (objects) {
+        case Objects::HAY:
+            if (_barnManager->addHayAt(checkPos))return MouseEvent::USE_HAY;
+            break;
+        default:
+            break;
+        }
+
+    }
+
     return MouseEvent::USE_TOOL;
 }
 
 MouseEvent Barn::onRightClick(const Vec2& playerPos, const Direction direction)
 {
+
+    Vec2 basePos = this->calMapPos(playerPos);
+
+    switch (direction) {
+    case Direction::DOWN:  basePos.y++; break;
+    case Direction::UP:    basePos.y--; break;
+    case Direction::LEFT:  basePos.x--; break;
+    case Direction::RIGHT: basePos.x++; break;
+    default: break;
+    }
+
+    const int yOffsets[] = { 1,0, -1 };
+
+    for (int offset : yOffsets) {
+        Vec2 checkPos = basePos;
+        checkPos.y += offset;
+        switch (_barnManager->collectProductionAt(checkPos)) {
+        case Objects::MILK:
+            return MouseEvent::GET_MILK;
+        case Objects::EGG:
+            return MouseEvent::GET_EGG;
+        default:
+            break;
+        }
+    }
+
     return MouseEvent::NONE;
 }

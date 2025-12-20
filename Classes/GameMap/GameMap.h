@@ -44,7 +44,6 @@ public:
     virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction,Objects objects) { return MouseEvent::NONE; }
     virtual MouseEvent onRightClick(const Vec2& playerPos, const Direction direction){ return MouseEvent::NONE; }
 
-
 protected:
     TMXTiledMap* _map;
     std::string _mapName;

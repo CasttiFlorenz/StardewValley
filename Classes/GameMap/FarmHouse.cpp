@@ -103,30 +103,13 @@ MouseEvent FarmHouse::onLeftClick(const Vec2& playerPos, const Direction directi
 
 MouseEvent FarmHouse::onRightClick(const Vec2& playerPos, const Direction direction)
 {
-    auto objectGroup = _map->getObjectGroup("event");
-
-    if (objectGroup) {
-        auto& objects = objectGroup->getObjects();
-
-        for (const auto& obj : objects) {
-            ValueMap dict = obj.asValueMap();
-
-            std::string name = dict["name"].asString();
-            float x = dict["x"].asFloat();
-            float y = dict["y"].asFloat();
-            float w = dict["width"].asFloat();
-            float h = dict["height"].asFloat();
-
-            Rect rect(x, y, w, h);
-
-            if (rect.containsPoint(playerPos)) {
-                if (name == "goToBed")
-                    return MouseEvent::SLEEP;
-            }
-        }
+    const auto bedRect = getObjectRect("goToBed");
+    if (bedRect.containsPoint(playerPos)) {
+        return MouseEvent::SLEEP;
     }
-        return MouseEvent::NONE;
+    return MouseEvent::NONE;
 }
+
 void FarmHouse::sleep() {
     auto runningScene = Director::getInstance()->getRunningScene();
     if (runningScene) {

@@ -1,12 +1,3 @@
-/****************************************************************
- * Project Name:  StardewValley
- * File Name:     Town.cpp
- * File Function: TownÁ±ªÁöÑÂÆûÁé∞
- * Author:        ÈÉ≠Ëä∑ÁÉü„ÄÅËµµÁùøÂ¶ç
- * Update Date:   2025/12/19
- * License:       MIT License
- ****************************************************************/
-
 #include "Town.h"
 
 GameMap* Town::_instance = nullptr;
@@ -81,50 +72,20 @@ MouseEvent Town::onLeftClick(const Vec2& playerPos, const Direction direction, O
 {
     return MouseEvent::USE_TOOL;
 }
-MouseEvent Town::onRightClick(const Vec2& pos, const Direction direction)
+
+MouseEvent Town::onRightClick(const Vec2& playerpos, const Direction direction)
 {
-    auto objectGroup = _map->getObjectGroup("object");
+    const auto EvelynRect = getObjectRect("Evelyn");
+    const auto HaleyRect = getObjectRect("Haley");
+    const auto SamRect = getObjectRect("Sam");
+    const auto PierreRect = getObjectRect("Pierre");
+    const auto MarnieRect = getObjectRect("Marnie");
 
-    if (objectGroup) {
-        auto& objects = objectGroup->getObjects();
-
-        for (const auto& obj : objects) {
-            ValueMap dict = obj.asValueMap();
-
-            std::string name = dict["name"].asString();
-            float x = dict["x"].asFloat();
-            float y = dict["y"].asFloat();
-            float w = dict["width"].asFloat();
-            float h = dict["height"].asFloat();
-
-            Rect rect(x, y, w, h);
-
-            if (rect.containsPoint(pos)) {
-
-                // --- NPC ---
-                if (name == "Evelyn") {
-                    return MouseEvent::CONVERSATION_EVELYN;
-                }
-                if (name == "Haley") {
-                    return MouseEvent::CONVERSATION_HALEY;
-                }
-                if (name == "Sam") {
-                    return MouseEvent::CONVERSATION_SAM;
-                }
-
-                // --- ÂïÜÂ∫ó ---
-                if (name == "Pierre") {
-                    return MouseEvent::SHOP_PIERRE;
-                }
-                if (name == "Marnie") {
-                    return MouseEvent::SHOP_MARNIE;
-                }
-            }
-        }
-    }
-    else {
-        CCLOG("Town Error: Êâæ‰∏çÂà∞Âêç‰∏∫ 'object' ÁöÑÂõæÂ±ÇÔºÅ");
-    }
+    if (EvelynRect.containsPoint(playerpos))return MouseEvent::CONVERSATION_EVELYN;
+    if (HaleyRect.containsPoint(playerpos))return MouseEvent::CONVERSATION_HALEY;
+    if (SamRect.containsPoint(playerpos))return MouseEvent::CONVERSATION_SAM;
+    if (MarnieRect.containsPoint(playerpos))return MouseEvent::SHOP_MARNIE;
+    if (PierreRect.containsPoint(playerpos))return MouseEvent::SHOP_PIERRE;
 
     return MouseEvent::NONE;
 }
@@ -133,7 +94,7 @@ void Town::openShopForNPC(const std::string& npcName)
 {
     std::vector<Item*> itemsToSell;
     std::vector<Objects> acceptedSellItems;
-    // Ê†πÊçÆ NPC ËøõË¥ß
+    // ∏˘æ› NPC Ω¯ªı
     if (npcName == "Pierre") {
         itemsToSell.push_back(new Item(Objects::FERTILIZER, 1, 1.0f, 0.0f, "Items/fertilizer.png", 100, "Fertilizer"));
         itemsToSell.push_back(new Item(Objects::PARSNIP_SEED, 3, 1.0f, 0.0f, "Items/parsnip seed.png", 20, "Parsnip Seeds"));
@@ -143,25 +104,25 @@ void Town::openShopForNPC(const std::string& npcName)
         acceptedSellItems.push_back(Objects::PARSNIP);
         acceptedSellItems.push_back(Objects::CAULIFLOWER);
         acceptedSellItems.push_back(Objects::POTATO);
-        acceptedSellItems.push_back(Objects::DAFFODILS); // ÈááÈõÜÂìÅÈÄöÂ∏∏‰πüÊî∂
+        acceptedSellItems.push_back(Objects::DAFFODILS); // ≤…ºØ∆∑Õ®≥£“≤ ’
         acceptedSellItems.push_back(Objects::LEEK);
         acceptedSellItems.push_back(Objects::PARSNIP_SEED);
         acceptedSellItems.push_back(Objects::CAULIFLOWER_SEED);
         acceptedSellItems.push_back(Objects::POTATO_SEED);
         acceptedSellItems.push_back(Objects::FERTILIZER);
-        acceptedSellItems.push_back(Objects::EGG);       // ‰πüÂèØ‰ª•Êî∂‰∏Ä‰∫õÂÜú‰∫ßÂìÅ
+        acceptedSellItems.push_back(Objects::EGG);       // “≤ø…“‘ ’“ª–©≈©≤˙∆∑
         acceptedSellItems.push_back(Objects::MILK);
-        acceptedSellItems.push_back(Objects::SALAD);     // ÁÉπÈ•™
+        acceptedSellItems.push_back(Objects::SALAD);     // ≈Î‚ø
     }
     else if (npcName == "Marnie") {
-       itemsToSell.push_back(new Item(Objects::HAY, 1, 1.0f, 0.0f, "Items/hay.png", 50, "Hay"));
+        itemsToSell.push_back(new Item(Objects::HAY, 1, 1.0f, 0.0f, "Items/hay.png", 50, "Hay"));
     }
     if (!itemsToSell.empty()) {
         auto runningScene = Director::getInstance()->getRunningScene();
         if (runningScene) {
             const int SHOP_MENU_TAG = 9999;
 
-            // Êü•ÊâæÊòØÂê¶Â∑≤ÊúâËØ•TagÁöÑÂ≠êËäÇÁÇπ
+            // ≤È’“ «∑Ò“—”–∏√Tagµƒ◊”Ω⁄µ„
             auto existingShop = runningScene->getChildByTag(SHOP_MENU_TAG);
             if (existingShop) {
                 return;
@@ -172,7 +133,7 @@ void Town::openShopForNPC(const std::string& npcName)
                 runningScene->addChild(shopMenu, 999);
                 shopMenu->setCameraMask((unsigned short)CameraFlag::DEFAULT);
 
-                CCLOG("ÊàêÂäüÊâìÂºÄÂïÜÂ∫óËèúÂçï");
+                CCLOG("≥…π¶¥Úø™…ÃµÍ≤Àµ•");
             }
         }
     }
@@ -180,26 +141,16 @@ void Town::openShopForNPC(const std::string& npcName)
 
 void Town::initNPCs()
 {
-    // 1. Ëé∑Âèñ Tiled Âú∞ÂõæÈáåÁöÑÂØπË±°Â±Ç
-    auto objectGroup = _map->getObjectGroup("object");
-    if (!objectGroup) return;
+    std::vector<std::string>nameGroup = { "Sam","Haley","Evelyn" };
+    for (const auto& name : nameGroup) {
 
-    for (const auto& obj : objectGroup->getObjects()) {
-        ValueMap dict = obj.asValueMap();
-        std::string name = dict["name"].asString();
-        float x = dict["x"].asFloat();
-        float y = dict["y"].asFloat();
-
-        // 2. ËÆ©ÁÆ°ÁêÜÂô®ÂàõÂª∫ NPC
+        // »√π‹¿Ì∆˜¥¥Ω® NPC
         NPCBase* npc = NPCManager::getInstance()->createNPC(name);
 
         if (npc) {
-            // 3. ËÆæÁΩÆ‰ΩçÁΩÆ (Ê†πÊçÆ Tiled ÂùêÊ†á)
-            npc->setPosition(x + npc->getContentSize().width / 2, y + npc->getContentSize().height / 2);
-
-            // 4. Âä†Âà∞Âú∞Âõæ‰∏ä
+            npc->setPosition(getObjectRect(name).getMidX(), getObjectRect(name).getMidY());
+            // º”µΩµÿÕº…œ
             _map->addChild(npc, 5);
-
             _npcMap[name] = npc;
         }
     }
@@ -212,40 +163,40 @@ NPCBase* Town::getNPCByName(const std::string& name) {
 
 void Town::interactWithNPC(const std::string& npcName, Objects heldItem)
 {
-    // 1. Ê£ÄÊü•ÊòØÂê¶Â∑≤ÁªèÊúâÂØπËØùÊ°ÜÂú®ÊòæÁ§∫ÔºåÂ¶ÇÊûúÊúâÔºåÁõ¥Êé•Ë∑≥Âá∫Ôºå‰∏çÊâßË°å‰ªª‰ΩïÈÄªËæë
+    // 1. ºÏ≤È «∑Ò“—æ≠”–∂‘ª∞øÚ‘⁄œ‘ æ£¨»Áπ˚”–£¨÷±Ω”Ã¯≥ˆ£¨≤ª÷¥––»Œ∫Œ¬ﬂº≠
     auto runningScene = Director::getInstance()->getRunningScene();
     if (!runningScene || runningScene->getChildByName("DialogueLayer")) {
         return;
     }
 
-    // 2. Ëé∑Âèñ NPC ÂØπË±°
+    // 2. ªÒ»° NPC ∂‘œÛ
     NPCBase* npc = getNPCByName(npcName);
     if (!npc) {
-        CCLOG("Error: Êâæ‰∏çÂà∞ NPC %s", npcName.c_str());
+        CCLOG("Error: ’“≤ªµΩ NPC %s", npcName.c_str());
         return;
     }
 
     std::vector<std::string> dialogContentList;
 
-    // 3. Âà§Êñ≠ÊòØÈÄÅÁ§ºËøòÊòØÂØπËØù
+    // 3. ≈–∂œ «ÀÕ¿Òªπ «∂‘ª∞
     bool isGifting = (heldItem != Objects::NONE && heldItem > Objects::FISHINGROD);
 
     if (isGifting) {
-        // --- ÈÄÅÁ§ºÈÄªËæë ---
-        CCLOG("Gifting logic triggered for: %s", npcName.c_str()); // Ë∞ÉËØïÁî®
+        // --- ÀÕ¿Ò¬ﬂº≠ ---
+        CCLOG("Gifting logic triggered for: %s", npcName.c_str()); // µ˜ ‘”√
 
         std::string giftReply = npc->receiveGift(heldItem);
         dialogContentList.push_back(giftReply);
 
-        // Âú®ËøôÈáåÊâ£Èô§Áâ©ÂìÅÊòØÂÆâÂÖ®ÁöÑÔºåÂõ†‰∏∫‰∏äÈù¢Â∑≤ÁªèÊã¶Êà™‰∫ÜÈáçÂ§çË∞ÉÁî®
+        // ‘⁄’‚¿Ôø€≥˝ŒÔ∆∑ «∞≤»´µƒ£¨“ÚŒ™…œ√Ê“—æ≠¿πΩÿ¡À÷ÿ∏¥µ˜”√
         InventoryScene::getInstance()->removeItemCount(heldItem, 1);
     }
     else {
-        // --- ÂØπËØùÈÄªËæë ---
+        // --- ∂‘ª∞¬ﬂº≠ ---
         dialogContentList = npc->getConversation(false);
     }
 
-    // 4. ÂàõÂª∫Âπ∂ÊòæÁ§∫ UI
+    // 4. ¥¥Ω®≤¢œ‘ æ UI
     auto dialog = DialogueLayer::create();
     if (dialog) {
         dialog->setName("DialogueLayer");
