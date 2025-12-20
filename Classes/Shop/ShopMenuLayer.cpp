@@ -222,7 +222,7 @@ void ShopMenuLayer::refreshUI() {
                 slotBtn->addChild(icon);
             }
 
-            if (item.getCount() > 1) {
+            if (item.getTag()>= Objects::COPPER_ORE) {
                 auto countLabel = Label::createWithTTF(std::to_string(item.getCount()), "fonts/arial.ttf", 16);
                 countLabel->setAnchorPoint(Vec2(1, 0));
                 countLabel->setPosition(Vec2(SLOT_SIZE - 5, 10));
@@ -260,7 +260,6 @@ void ShopMenuLayer::sellItem(Item item) {
         showTip("This item cannot be sold here!", Color3B::RED);
         return;
     }
-    // >>>>>>>>>>>>>>>>>>>>>>>>>> <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     // 正常售卖流程
     int sellPrice = item.getPrice();
@@ -296,4 +295,3 @@ void ShopMenuLayer::showTip(const std::string& message, const Color3B& color) {
         nullptr
     ));
 }
-
