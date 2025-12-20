@@ -1,5 +1,21 @@
 #include "FarmItemManager.h"
 
+FarmItemManager* FarmItemManager::_instance = nullptr;
+
+FarmItemManager* FarmItemManager::getInstance(GameMap* gameMap) {
+    if (!_instance) {
+        _instance = FarmItemManager::create(gameMap);
+        CC_SAFE_RETAIN(_instance);
+    } else if (gameMap && !_instance->_gameMap) {
+        _instance->init(gameMap);
+    }
+    return _instance;
+}
+
+void FarmItemManager::destroyInstance() {
+    CC_SAFE_RELEASE_NULL(_instance);
+}
+
 FarmItemManager* FarmItemManager::create(GameMap* gameMap) {
     auto p = new (std::nothrow) FarmItemManager();
     if (p && p->init(gameMap)) {
@@ -15,6 +31,7 @@ bool FarmItemManager::init(GameMap* gameMap) {
     _tiledMap = _gameMap ? _gameMap->getTiledMap() : nullptr;
     _eventLayer = _tiledMap ? _tiledMap->getLayer("event") : nullptr;
     _items.clear();
+    _cultivatedSoils.clear();
     _woodCount = 0;
     _grassCount = 0;
     _daffodilsCount = 0;
@@ -65,7 +82,8 @@ bool FarmItemManager::isCultivated(const Vec2& tileCoord) const {
 }
 
 bool FarmItemManager::hasItem(const Vec2& tileCoord) const {
-    return (_items.find(keyFor(tileCoord))) != (_items.end());
+    long long key = keyFor(tileCoord);
+    return (_items.find(key) != _items.end()) || (_cultivatedSoils.find(key) != _cultivatedSoils.end());
 }
 
 EnvironmentItem* FarmItemManager::getItem(const Vec2& tileCoord) const {
@@ -99,19 +117,21 @@ bool FarmItemManager::addItem(EnvironmentItemType type, const Vec2& tileCoord) {
     case EnvironmentItemType::LEEK:
         item = LeekItem::create(tileCoord);
         break;
+    case EnvironmentItemType::CULTIVATED_SOIL:
+        _cultivatedSoils[keyFor(tileCoord)] = true;
+        return true;
     default:
         return false;
     }
 
     if (item) {
-        // 将 Item 添加到 Map 中
         if (_tiledMap && _gameMap) {
             Vec2 pos = _gameMap->calWorldPos(tileCoord);
             item->setPosition(pos);
-            _tiledMap->addChild(item, 5); // ZOrder 5
+            _tiledMap->addChild(item, 5);
         }
 
-        item->retain(); // 保持引用，因为存储在 unordered_map 中
+        item->retain();
         _items.emplace(keyFor(tileCoord), item);
 
         if (type == EnvironmentItemType::WOOD) {
@@ -132,6 +152,12 @@ bool FarmItemManager::addItem(EnvironmentItemType type, const Vec2& tileCoord) {
 
 bool FarmItemManager::removeItem(const Vec2& tileCoord) {
     long long k = keyFor(tileCoord);
+
+    if (_cultivatedSoils.find(k) != _cultivatedSoils.end()) {
+        _cultivatedSoils.erase(k);
+        return true;
+    }
+
     auto it = _items.find(k);
     if (it == _items.end()) {
         return false;
@@ -156,12 +182,23 @@ bool FarmItemManager::removeItem(const Vec2& tileCoord) {
     return true;
 }
 
+bool FarmItemManager::removeCultivation(const Vec2& tileCoord) {
+    long long k = keyFor(tileCoord);
+
+    if (_cultivatedSoils.find(k) != _cultivatedSoils.end()) {
+        _cultivatedSoils.erase(k);
+        return true;
+    }
+
+    return false;
+}
 void FarmItemManager::clear() {
     for (auto& kv : _items) {
         kv.second->removeFromParent();
         CC_SAFE_RELEASE(kv.second);
     }
     _items.clear();
+    _cultivatedSoils.clear();
     _woodCount = 0;
     _grassCount = 0;
     _daffodilsCount = 0;
@@ -174,7 +211,7 @@ void FarmItemManager::spawnInitialItems() {
     Size mapSize = _eventLayer->getLayerSize();
 
     int attempts = 0;
-    // 尝试生成物品，防止死循环
+    
     while ((_woodCount < MAX_WOOD_COUNT || _grassCount < MAX_GRASS_COUNT ||
         _daffodilsCount < MAX_DAFFODILS_COUNT || _leekCount < MAX_LEEK_COUNT) && attempts < 2000) {
         attempts++;
@@ -187,7 +224,6 @@ void FarmItemManager::spawnInitialItems() {
 
         EnvironmentItemType type = EnvironmentItemType::NONE;
 
-        // 随机选择一种未满的类型
         std::vector<EnvironmentItemType> availableTypes;
         if (_woodCount < MAX_WOOD_COUNT) availableTypes.push_back(EnvironmentItemType::WOOD);
         if (_grassCount < MAX_GRASS_COUNT) availableTypes.push_back(EnvironmentItemType::GRASS);
@@ -200,4 +236,10 @@ void FarmItemManager::spawnInitialItems() {
 
         addItem(type, coord);
     }
+}
+
+bool FarmItemManager::isCollidable(const Vec2& tileCoord) const
+{
+    long long key = keyFor(tileCoord);
+    return (_items.find(key) != _items.end());
 }

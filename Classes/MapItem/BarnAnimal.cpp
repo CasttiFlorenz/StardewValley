@@ -1,0 +1,1 @@
+#include "BarnAnimal.h"
