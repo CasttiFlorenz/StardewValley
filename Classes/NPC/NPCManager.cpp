@@ -57,3 +57,13 @@ NPCBase* NPCManager::createNPC(const std::string& name) {
     }
     return npc;
 }
+
+NPCBase* NPCManager::getNPCByName(const std::string& name)
+{
+    for (auto npc : _npcs) {
+        if (npc && npc->getNPCName() == name) {
+            return npc;
+        }
+    }
+    return nullptr; 
+}

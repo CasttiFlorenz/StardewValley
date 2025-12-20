@@ -20,6 +20,8 @@ public:
     const std::vector<NPCBase*>& getAllNPCs() const { return _npcs; }
 
     NPCBase* createNPC(const std::string& name);
+
+    NPCBase* getNPCByName(const std::string& name);
 private:
     NPCManager() {}
     ~NPCManager() {}
