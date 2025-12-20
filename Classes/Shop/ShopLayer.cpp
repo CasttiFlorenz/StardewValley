@@ -45,7 +45,7 @@ bool ShopLayer::init(Item* item) {
     this->addChild(bg);
 
     // 3. 商品图标
-    auto icon = Sprite::create(_targetItem->getPos());
+    auto icon = Sprite::create(_targetItem->getPath());
     if (icon) {
         icon->setPosition(winSize.width / 2 - 150, winSize.height / 2 + 50);
         icon->setScale(_targetItem->getScale());
@@ -199,15 +199,13 @@ void ShopLayer::onBuyClicked(Ref* sender) {
     auto playerState = PlayerState::getInstance();
 
     if (playerState->canAfford(totalCost)) {
-        // 1. 扣钱
+        // 1. 扣钱 
         playerState->spendMoney(totalCost);
 
-        // 2. 加背包 (调用你之前修复好的 addItem)
-        playerState->addItem(_targetItem, _currentQuantity);
+        // 2. 加背包 
+        InventoryScene::getInstance()->addItemCount(_targetItem->getTag(), _currentQuantity, false);
 
-        CCLOG("购买成功:%sx%d", _targetItem->getName().c_str(), _currentQuantity);
-
-        // 3. 【关键】通知上层界面刷新
+        // 3. 通知上层界面刷新 (主要是刷新金钱显示)
         if (onPurchaseSuccess) {
             onPurchaseSuccess();
         }
@@ -217,6 +215,7 @@ void ShopLayer::onBuyClicked(Ref* sender) {
     }
     else {
         CCLOG("金钱不足");
+        // 可选：添加一个提示动画
     }
 }
 
