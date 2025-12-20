@@ -225,7 +225,6 @@ void GameScene::setPlayerToStart()
     _player->setGameMap(_map);
 
 }
-// GameScene.cpp
 
 void GameScene::setupMouseListener()
 {
@@ -253,7 +252,12 @@ void GameScene::setupMouseListener()
             carryMouseEvent(result);
         }
         };
-    // ... onMouseUp ...
+    _mouseListener->onMouseUp = [this](EventMouse* e) {
+        if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT) {
+            _mouseLeftPressed = false; 
+        }
+        };
+
     _eventDispatcher->addEventListenerWithSceneGraphPriority(_mouseListener, this);
 }
 
@@ -286,9 +290,6 @@ void GameScene::carryMouseEvent(const MouseEvent event)
 {
     Objects currentItem = _inventory->getTap();
     switch (event) {
-    case MouseEvent::NPC_CONSERVATION:
-
-        break;
     case MouseEvent::GET_WOOD:
         _inventory->addItemCount(Objects::WOOD, 1);
         break;
@@ -347,15 +348,14 @@ void GameScene::carryMouseEvent(const MouseEvent event)
         town->interactWithNPC("Haley", currentItem);
         break;
     }
-    /*case MouseEvent::SLEEP: {
+    case MouseEvent::SLEEP: {
         FarmHouse* farmhouse = dynamic_cast<FarmHouse*>(_map);
-        farmhouse->interactWithNPC("Evelyn", currentItem);
-        break;
-    }*/
-    case MouseEvent::NONE:
+        farmhouse->sleep();
         break;
     }
-    _player->changeUpdateStatus();
+   default:
+        break;
+    }
 }
 void GameScene::carryKeyBoardEvent(const KeyBoardEvent event)
 {
