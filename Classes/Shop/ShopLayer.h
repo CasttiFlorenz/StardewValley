@@ -9,6 +9,7 @@
 #ifndef __SHOPLAYER_H__
 #define __SHOPLAYER_H__
 
+
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include <vector>
