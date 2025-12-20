@@ -263,8 +263,7 @@ void ShopMenuLayer::sellItem(Item item) {
     // >>>>>>>>>>>>>>>>>>>>>>>>>> <<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     // 正常售卖流程
-    int sellPrice = item.getPrice() / 2;
-    if (sellPrice < 1) sellPrice = 1;
+    int sellPrice = item.getPrice();
 
     Money::getInstance()->addMoney(sellPrice);
     InventoryScene::getInstance()->removeItemCount(item.getTag(),1);
@@ -297,3 +296,4 @@ void ShopMenuLayer::showTip(const std::string& message, const Color3B& color) {
         nullptr
     ));
 }
+
