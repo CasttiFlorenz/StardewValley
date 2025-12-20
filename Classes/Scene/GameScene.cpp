@@ -225,6 +225,7 @@ void GameScene::setPlayerToStart()
     _player->setGameMap(_map);
 
 }
+// GameScene.cpp
 
 void GameScene::setupMouseListener()
 {
@@ -237,27 +238,22 @@ void GameScene::setupMouseListener()
             }
         }
         else if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT) {
-            if (_map && _player && !_mouseRightPressed) {
-                _mouseRightPressed = true;
-                carryMouseEvent(_map->onRightClick(_player->getPosition(), _player->getPlayerDirection()));
-            }
-        }
-        };
+            Size visibleSize = Director::getInstance()->getVisibleSize();
+            Vec2 screenPos = e->getLocation();
+            screenPos.y = visibleSize.height - screenPos.y;
 
-    _mouseListener->onMouseUp = [this](EventMouse* e) {
-        if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT) {
-            if (_mouseLeftPressed) {
-                _mouseLeftPressed = false;
-                _player->changeUpdateStatus();
+            Vec2 cameraPos = Vec2::ZERO;
+            if (_followCamera) {
+                cameraPos = Vec2(_followCamera->getPositionX(), _followCamera->getPositionY());
             }
-        }
-        else if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT) {
-            if (_mouseRightPressed) {
-                _mouseRightPressed = false;
-                _player->changeUpdateStatus();
-            }
+
+            Vec2 worldPos = cameraPos + screenPos;
+            Vec2 nodeLoc = _map->getTiledMap()->convertToNodeSpace(worldPos);
+            MouseEvent result = _map->onRightClick(nodeLoc, _player->getPlayerDirection());
+            carryMouseEvent(result);
         }
         };
+    // ... onMouseUp ...
     _eventDispatcher->addEventListenerWithSceneGraphPriority(_mouseListener, this);
 }
 
@@ -288,6 +284,7 @@ void GameScene::enableKeyboard(bool enable)
 
 void GameScene::carryMouseEvent(const MouseEvent event)
 {
+    Objects currentItem = _inventory->getTap();
     switch (event) {
     case MouseEvent::NPC_CONSERVATION:
 
@@ -299,7 +296,7 @@ void GameScene::carryMouseEvent(const MouseEvent event)
         _inventory->addItemCount(Objects::FIBER, 1);
         break;
     case MouseEvent::GET_COPPER:
-        _inventory->addItemCount(Objects::COPPER_ORE,1);
+        _inventory->addItemCount(Objects::COPPER_ORE, 1);
         break;
     case MouseEvent::GET_STONE:
         _inventory->addItemCount(Objects::STONE, 1);
@@ -331,23 +328,35 @@ void GameScene::carryMouseEvent(const MouseEvent event)
         town->openShopForNPC("Pierre");
         break;
     }
-    case MouseEvent::CONVERSATION_EVELYN:
+                                
+    case MouseEvent::CONVERSATION_EVELYN: {
         _inventory->ToolUseAnimation();
+        Town* town = dynamic_cast<Town*>(_map);
+        town->interactWithNPC("Evelyn", currentItem);
         break;
-    case MouseEvent::CONVERSATION_SAM:
+    }
+    case MouseEvent::CONVERSATION_SAM: {
         _inventory->ToolUseAnimation();
-
+        Town* town = dynamic_cast<Town*>(_map);
+        town->interactWithNPC("Sam", currentItem);
         break;
-    case MouseEvent::CONVERSATION_HALEY:
+    }
+    case MouseEvent::CONVERSATION_HALEY: {
         _inventory->ToolUseAnimation();
+        Town* town = dynamic_cast<Town*>(_map);
+        town->interactWithNPC("Haley", currentItem);
         break;
+    }
+    /*case MouseEvent::SLEEP: {
+        FarmHouse* farmhouse = dynamic_cast<FarmHouse*>(_map);
+        farmhouse->interactWithNPC("Evelyn", currentItem);
+        break;
+    }*/
     case MouseEvent::NONE:
         break;
     }
-
     _player->changeUpdateStatus();
 }
-
 void GameScene::carryKeyBoardEvent(const KeyBoardEvent event)
 {
     switch (event) {
