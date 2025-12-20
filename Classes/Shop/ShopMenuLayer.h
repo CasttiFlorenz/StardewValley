@@ -14,7 +14,7 @@
 #include <vector>
 #include "Constant.h" 
 #include "ShopLayer.h"
-#include "../Inventory/PlayerState.h"
+#include "../Money/Money.h"
 #include "../Inventory/Item.h"
 class Item; // 前向声明
 
@@ -27,11 +27,10 @@ public:
     virtual bool init(const std::vector<Item*>& shopItems, const std::vector<Objects>& acceptedTags);
 
 private:
-    void refreshUI();
-    void sellItem(Item* item);
-    // 辅助显示提示信息
     void showTip(const std::string& message, const cocos2d::Color3B& color);
-
+    void refreshUI();
+    void sellItem(Item item);
+  
 private:
     cocos2d::ui::ListView* _listView;
     cocos2d::Node* _inventoryNode;
