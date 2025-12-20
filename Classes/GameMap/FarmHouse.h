@@ -13,7 +13,10 @@
 #include "GameMap.h"
 #include "cocos2d.h"
 #include "Constant.h"
-
+#include"../Inventory/Item.h"
+#include"../NPC/NPCbase.h"
+#include"../NPC/NPCManager.h"
+#include"../Dialogue/DialogueLayer.h"
 USING_NS_CC;
 
 class FarmHouse : public GameMap
@@ -34,7 +37,7 @@ public:
 
     virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction, Objects objects)override;
     virtual MouseEvent onRightClick(const Vec2& playerPos, const Direction direction) override;
-
+    void sleep();
 private:
     static GameMap* _instance;
 };

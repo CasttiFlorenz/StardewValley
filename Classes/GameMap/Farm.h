@@ -47,7 +47,7 @@ public:
     virtual MouseEvent onRightClick(const Vec2& playerPos, const Direction direction) override;
 
     virtual bool isOutdoor() override { return true; }
-    void openShopForNPC();
+    virtual void openShopForNPC();
 private:
     static GameMap* _instance;
     FarmItemManager* _farmItemManager;

@@ -203,48 +203,36 @@ MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction, O
 
     return MouseEvent::USE_TOOL;
 }
-
-MouseEvent Farm::onRightClick(const Vec2& playerPos, const Direction direction)
+MouseEvent Farm::onRightClick(const Vec2& pos, const Direction direction)
 {
-    const Rect saleRect = getObjectRect("sale");
+    // 1. 获取名为 "object" 的对象层 
+    auto objectGroup = _map->getObjectGroup("object");
 
-    if (saleRect.containsPoint(playerPos)) {
-        return MouseEvent::SHOP_SALE;
-    }
+    if (objectGroup) {
+        // 2. 遍历这一层里所有的东西
+        auto& objects = objectGroup->getObjects();
 
-    // 1. 计算基准瓦片坐标
-    Vec2 basePos = this->calMapPos(playerPos);
+        for (const auto& obj : objects) {
+            ValueMap dict = obj.asValueMap();
 
-    // 2. 根据朝向调整基准坐标
-    switch (direction) {
-    case Direction::DOWN:  basePos.y++; break;
-    case Direction::UP:    basePos.y--; break;
-    case Direction::LEFT:  basePos.x--; break;
-    case Direction::RIGHT: basePos.x++; break;
-    default: break;
-    }
+            std::string name = dict["name"].asString();
+            float x = dict["x"].asFloat();
+            float y = dict["y"].asFloat();
+            float w = dict["width"].asFloat();
+            float h = dict["height"].asFloat();
+            Rect rect(x, y, w, h);
 
-    // 3. 定义检测偏移量顺序：原位置(0)，上方(-1)，下方(+1)
-    // 对应原代码逻辑：tiledPos -> tiledPos.y-- -> tiledPos.y+=2
-    const int yOffsets[] = { 1,0, -1 };
+            // 3. 判定点击
+            if (rect.containsPoint(pos)) {
+                if (name == "sale") {
+                    return MouseEvent::SHOP_SALE;
+                }
 
-    // 4. 遍历检测
-    for (int offset : yOffsets) {
-        Vec2 checkPos = basePos;
-        checkPos.y += offset;
-
-        EnvironmentItem* item = _farmItemManager->getItem(checkPos);
-        if (item) {
-            auto type = item->getType();
-            if (type == EnvironmentItemType::LEEK) {
-                _farmItemManager->removeItem(checkPos);
-                return MouseEvent::GET_LEEK;
-            }
-            else if (type == EnvironmentItemType::DAFFODILS) {
-                _farmItemManager->removeItem(checkPos);
-                return MouseEvent::GET_DAFFODILS;
             }
         }
+    }
+    else {
+        CCLOG("Town Error: 找不到名为 'object' 的图层！");
     }
 
     return MouseEvent::NONE;
@@ -280,7 +268,6 @@ void Farm::openShopForNPC()
         // 查找是否已有该Tag的子节点
         auto existingShop = runningScene->getChildByTag(SHOP_MENU_TAG);
         if (existingShop) {
-            CCLOG("商店菜单已打开，不再重复创建");
             return;
         }
 
@@ -289,8 +276,6 @@ void Farm::openShopForNPC()
             shopMenu->setTag(SHOP_MENU_TAG);
             runningScene->addChild(shopMenu, 999);
             shopMenu->setCameraMask((unsigned short)CameraFlag::DEFAULT);
-
-            CCLOG("成功打开商店菜单");
         }
     }
 }

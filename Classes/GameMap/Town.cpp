@@ -83,11 +83,9 @@ MouseEvent Town::onLeftClick(const Vec2& playerPos, const Direction direction, O
 }
 MouseEvent Town::onRightClick(const Vec2& pos, const Direction direction)
 {
-    // 1. 获取名为 "object" 的对象层 (严格匹配你的 Tiled 设置)
     auto objectGroup = _map->getObjectGroup("object");
 
     if (objectGroup) {
-        // 2. 遍历这一层里所有的东西
         auto& objects = objectGroup->getObjects();
 
         for (const auto& obj : objects) {
@@ -99,19 +97,9 @@ MouseEvent Town::onRightClick(const Vec2& pos, const Direction direction)
             float w = dict["width"].asFloat();
             float h = dict["height"].asFloat();
 
-            // 直接构建矩形 (这是相对于地图的局部坐标，绝对准确)
             Rect rect(x, y, w, h);
 
-            // 3. 判定点击
             if (rect.containsPoint(pos)) {
-
-                // 打印日志：看看你到底点到了谁？
-                // 如果这里打印了名字，说明点击成功了；如果没打印，说明名字或坐标不对。
-                CCLOG("Town: 🎯 命中对象 -> '%s'", name.c_str());
-
-                // ====================================================
-                // 4. 名字匹配 (注意 Tiled 里首字母通常要大写)
-                // ====================================================
 
                 // --- NPC ---
                 if (name == "Evelyn") {
@@ -217,54 +205,52 @@ void Town::initNPCs()
     }
 }
 
-// 辅助函数：根据名字获取 NPC 指针
 NPCBase* Town::getNPCByName(const std::string& name) {
     if (_npcMap.find(name) != _npcMap.end()) return _npcMap[name];
     return nullptr;
 }
 
-
 void Town::interactWithNPC(const std::string& npcName, Objects heldItem)
 {
-    // 1. 获取 NPC 对象
+    // 1. 检查是否已经有对话框在显示，如果有，直接跳出，不执行任何逻辑
+    auto runningScene = Director::getInstance()->getRunningScene();
+    if (!runningScene || runningScene->getChildByName("DialogueLayer")) {
+        return;
+    }
+
+    // 2. 获取 NPC 对象
     NPCBase* npc = getNPCByName(npcName);
     if (!npc) {
         CCLOG("Error: 找不到 NPC %s", npcName.c_str());
         return;
     }
 
-    std::string dialogText = "";
+    std::vector<std::string> dialogContentList;
 
-    // 2. 判断是【送礼】还是【对话】
-    // 假设 Tag > 5 的物品算作礼物 (排除锄头、斧子等工具)
+    // 3. 判断是送礼还是对话
     bool isGifting = (heldItem != Objects::NONE && heldItem > Objects::FISHINGROD);
 
     if (isGifting) {
         // --- 送礼逻辑 ---
-        // 调用 NPC 的接收礼物函数
-        dialogText = npc->receiveGift(heldItem);
+        CCLOG("Gifting logic triggered for: %s", npcName.c_str()); // 调试用
+
+        std::string giftReply = npc->receiveGift(heldItem);
+        dialogContentList.push_back(giftReply);
+
+        // 在这里扣除物品是安全的，因为上面已经拦截了重复调用
         InventoryScene::getInstance()->removeItemCount(heldItem, 1);
     }
     else {
-        // --- 普通对话逻辑 ---
-        dialogText = npc->getConversation(false);
+        // --- 对话逻辑 ---
+        dialogContentList = npc->getConversation(false);
     }
 
-    // 3. 创建并显示 UI
-    auto runningScene = Director::getInstance()->getRunningScene();
-    if (runningScene) {
-        // 防止重复打开
-        if (runningScene->getChildByName("DialogueLayer")) return;
-
-        auto dialog = DialogueLayer::create();
-        if (dialog) {
-            dialog->setName("DialogueLayer"); // 设个名字防止重复
-            dialog->showText(npcName, dialogText);
-
-            // 加到场景最高层
-            runningScene->addChild(dialog, 9999);
-            // 强制固定在屏幕上
-            dialog->setCameraMask((unsigned short)CameraFlag::DEFAULT);
-        }
+    // 4. 创建并显示 UI
+    auto dialog = DialogueLayer::create();
+    if (dialog) {
+        dialog->setName("DialogueLayer");
+        dialog->showText(npcName, dialogContentList);
+        runningScene->addChild(dialog, 9999);
+        dialog->setCameraMask((unsigned short)CameraFlag::DEFAULT);
     }
 }
