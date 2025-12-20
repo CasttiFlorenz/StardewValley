@@ -17,7 +17,7 @@
 #include "../Player/Player.h"
 #include "../Inventory/InventoryScene.h"
 #include "../Inventory/Item.h"
-#include "../Inventory/PlayerState.h"
+#include "../Money/Money.h"
 class ShopLayer : public cocos2d::LayerColor {
 public:
     static ShopLayer* create(Item* item);
