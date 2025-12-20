@@ -2,21 +2,25 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     Town.h
- * File Function: TownÀàµÄÊµÏÖ
- * Author:        ¹ùÜÆÑÌ
- * Update Date:   2025/12/14
+ * File Function: Town类的实现
+ * Author:        郭芷烟、赵睿妍
+ * Update Date:   2025/12/19
  * License:       MIT License
  ****************************************************************/
 
 #ifndef __TOWN_H__
 #define __TOWN_H__
 #include "GameMap.h"
+#include <string>
+#include <map>
 #include "cocos2d.h"
 #include "Constant.h"
 #include"../Inventory/Item.h"
 #include"../Shop/ShopLayer.h"
 #include"../Shop/ShopMenuLayer.h"
-
+#include"../NPC/NPCbase.h"
+#include"../NPC/NPCManager.h"
+#include"../Dialogue/DialogueLayer.h"
 USING_NS_CC;
 
 class Town : public GameMap
@@ -43,10 +47,13 @@ public:
 
     virtual bool isOutdoor() override { return true; }
 
+    void Town::interactWithNPC(const std::string& npcName, Objects heldItem);
+    NPCBase* getNPCByName(const std::string& name);
     void openShopForNPC(const std::string& npcName);
+    void initNPCs();
 private:
     static GameMap* _instance;
-
+    std::map<std::string,NPCBase*> _npcMap;
 };
 #endif
 
