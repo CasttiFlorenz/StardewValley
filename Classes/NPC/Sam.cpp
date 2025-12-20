@@ -90,3 +90,64 @@ void Sam::createAndPlayAnimation()
 
     CCLOG("Sam动画开始播放");
 }
+
+std::vector<std::string> Sam::getConversation(bool isFirstMet) {
+    this->increaseFriendship(10);
+
+    std::vector<std::string> dialogue;
+
+    if (isFirstMet) {
+        dialogue.push_back("Hey, you're the new farmer, right? Nice to meet you.");
+        dialogue.push_back("I'm Sam. I live in town with my mom and little brother.");
+        dialogue.push_back("I play in a band with Sebastian and Abigail.");
+        dialogue.push_back("If you're into music, you should come listen sometime.");
+    }
+    else {
+        // 随机对话
+        int randomChoice = rand() % 6;
+        switch (randomChoice) {
+        case 0:
+            dialogue.push_back("I was practicing my skateboard tricks earlier.");
+            dialogue.push_back("Almost landed a kickflip!");
+            break;
+        case 1:
+            dialogue.push_back("Sebastian's working on some new music.");
+            dialogue.push_back("I can't wait to hear it!");
+            break;
+        case 2:
+            dialogue.push_back("Mom made pancakes this morning. They were amazing!");
+            break;
+        case 3:
+            dialogue.push_back("Vincent keeps trying to play my guitar.");
+            dialogue.push_back("He's getting pretty good for a little kid.");
+            break;
+        case 4:
+            dialogue.push_back("I work part-time at JojaMart.");
+            dialogue.push_back("Not my dream job, but it pays the bills.");
+            break;
+        case 5:
+            dialogue.push_back("Nice day for a skate, don't you think?");
+            break;
+        }
+    }
+
+    return dialogue;
+}
+
+
+int Sam::checkGiftTaste(Objects itemTag)
+{
+    // --- 最爱 (+80) ---
+    if (itemTag == Objects::FRIED_EGG) return 80;
+
+    // --- 喜欢 (+45) ---
+    if (itemTag == Objects::EGG) return 45;
+    if (itemTag == Objects::SALAD) return 45;
+
+    // --- 讨厌 (-20) ---
+    if (itemTag == Objects::CAULIFLOWER) return -20;
+    if (itemTag == Objects::PARSNIP) return -20;
+    if (itemTag == Objects::COPPER_ORE) return -20;
+
+    return NPCBase::checkGiftTaste(itemTag);
+}

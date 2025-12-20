@@ -6,7 +6,6 @@
 #include "Haley.h"
 #include "Sam.h"
 #include "Evelyn.h"
-
 USING_NS_CC;
 
 class NPCManager
@@ -18,7 +17,6 @@ public:
 
     void playAllAnimations();
 
-    // 获取所有NPC
     const std::vector<NPCBase*>& getAllNPCs() const { return _npcs; }
 
     NPCBase* createNPC(const std::string& name);

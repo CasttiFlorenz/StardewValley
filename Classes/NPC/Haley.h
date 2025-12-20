@@ -12,7 +12,8 @@ public:
     CREATE_FUNC(Haley);
     virtual bool init() override;
     virtual void playAnimation() override;
-
+    virtual std::vector<std::string> Haley::getConversation(bool isFirstMet)override;
+    virtual int checkGiftTaste(Objects itemTag) override;
 private:
     void createAndPlayAnimation();
 };

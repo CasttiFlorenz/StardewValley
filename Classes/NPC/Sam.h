@@ -12,7 +12,8 @@ public:
     CREATE_FUNC(Sam);
     virtual bool init() override;
     virtual void playAnimation() override;
-
+    virtual std::vector<std::string> Sam::getConversation(bool isFirstMet)override;
+    virtual int checkGiftTaste(Objects itemTag)override;
 private:
     void createAndPlayAnimation();
 };
