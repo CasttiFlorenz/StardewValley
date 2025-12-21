@@ -160,6 +160,21 @@ MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction, O
 {
     Vec2 basePos = this->calMapPos(playerPos);
 
+    if (objects == Objects::FISHINGROD) {
+        auto layer = _map->getLayer("event");
+        if (layer) {
+            const int tileGID = layer->getTileGIDAt(basePos);
+            if (tileGID) {
+                auto properties = _map->getPropertiesForGID(tileGID).asValueMap();
+                if (!properties.empty() &&
+                    properties.find("Fishing") != properties.end() &&
+                    properties.at("Fishing").asBool()) {
+                    return MouseEvent::FISHING;;
+                }
+            }
+        }
+    }
+
     switch (direction) {
     case Direction::DOWN:  basePos.y++; break;
     case Direction::UP:    basePos.y--; break;
