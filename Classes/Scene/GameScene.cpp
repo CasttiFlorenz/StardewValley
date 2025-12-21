@@ -362,6 +362,8 @@ void GameScene::carryMouseEvent(const MouseEvent event)
         farmhouse->sleep();
         break;
     }
+    case MouseEvent::FISHING:
+        break;
     case MouseEvent::USE_TOOL:
         _inventory->ToolUseAnimation();
         break;
