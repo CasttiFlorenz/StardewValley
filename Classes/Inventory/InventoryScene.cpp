@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     InventoryScene.cpp
- * File Function: InventorySceneç±»çš„å®ç°
- * Author:        äºæ©ç†™
+ * File Function: InventorySceneÀàµÄÊµÏÖ
+ * Author:        ÓÚ¶÷Îõ
  * Update Date:   2025/12/21
  * License:       MIT License
  ****************************************************************/
@@ -24,7 +24,7 @@ InventoryScene* InventoryScene::getInstance() {
 void InventoryScene::destroyInstance() {
     CC_SAFE_RELEASE_NULL(_instance);
 }
-// åˆå§‹åŒ–ä¸»åœºæ™¯ 
+// ³õÊ¼»¯Ö÷³¡¾° 
 bool InventoryScene::init()
 {
     if (!Scene::init())
@@ -36,25 +36,25 @@ bool InventoryScene::init()
     auto origin = Director::getInstance()->getVisibleOrigin();
 
 
-    _previewFrame = Sprite::create("/Items/box.png"); // é¢„è§ˆæ¡†å›¾ç‰‡
+    _previewFrame = Sprite::create("/Items/box.png"); // Ô¤ÀÀ¿òÍ¼Æ¬
 
-    // æ”¾åœ¨å·¦ä¸‹è§’
-    float previewX = origin.x + 100;      // å·¦è¾¹è·100
-    float previewY = origin.y + 100;      // ä¸‹è¾¹è·100
+    // ·ÅÔÚ×óÏÂ½Ç
+    float previewX = origin.x + 100;      // ×ó±ß¾à100
+    float previewY = origin.y + 100;      // ÏÂ±ß¾à100
     _previewFrame->setPosition(cocos2d::Vec2(previewX, previewY));
     this->addChild(_previewFrame, 5);
 
-    // é¢„è§ˆå·¥å…·å›¾ç‰‡
+    // Ô¤ÀÀ¹¤¾ßÍ¼Æ¬
     _previewTool = Sprite::create();
     _previewTool->setPosition(_previewFrame->getPosition());
     this->addChild(_previewTool, 6);
 
-    // åˆ›å»ºèƒŒåŒ…ç•Œé¢
+    // ´´½¨±³°ü½çÃæ
     _inventoryLayer = InventoryGridScene::create();
     if (_inventoryLayer) {
         _inventoryLayer->setVisible(false);
         _inventoryLayer->setGridSelectedCallback([this](int gridIndex) {
-            // å½“èƒŒåŒ…ä¸­æ ¼å­è¢«é€‰ä¸­æ—¶ï¼Œç«‹å³æ›´æ–°é¢„è§ˆ
+            // µ±±³°üÖĞ¸ñ×Ó±»Ñ¡ÖĞÊ±£¬Á¢¼´¸üĞÂÔ¤ÀÀ
             this->updatePreviewTool();
             });
         this->addChild(_inventoryLayer, 10);
@@ -66,7 +66,7 @@ bool InventoryScene::init()
     return true;
 }
 
-// å·¥å…·ç‰¹æ•ˆæ¥å£ 
+// ¹¤¾ßÌØĞ§½Ó¿Ú 
 void InventoryScene::ToolUseAnimation()
 {
     if (_showToolUseEffect && _selectedGrid >= 0 && _selectedGrid <= _inventoryLayer->getAmount()) {
@@ -74,39 +74,39 @@ void InventoryScene::ToolUseAnimation()
         const Item& item = _inventoryLayer->getItemAt(_selectedGrid);
         if ((item.getTag() >= Objects::HOE && item.getTag() <= Objects::FISHINGROD)
             || (item.getTag() >= Objects::PARSNIP_SEED && item.getTag() <= Objects::POTATO_SEED))
-            // æ˜¾ç¤ºå·¥å…·ä½¿ç”¨ç‰¹æ•ˆ
+            // ÏÔÊ¾¹¤¾ßÊ¹ÓÃÌØĞ§
             if (item.getCount() > 0)
                 showToolUseEffect(_selectedGrid);
     }
 }
 
-// æ˜¾ç¤ºå·¥å…·ç‰¹æ•ˆ 
+// ÏÔÊ¾¹¤¾ßÌØĞ§ 
 void InventoryScene::showToolUseEffect(int selected, bool clearPrevious)
 {
-    // å…ˆéšè—ä¹‹å‰å¯èƒ½å­˜åœ¨çš„ç‰¹æ•ˆ
+    // ÏÈÒş²ØÖ®Ç°¿ÉÄÜ´æÔÚµÄÌØĞ§
     if (clearPrevious)
         hideToolUseEffect();
 
-    // ä»èƒŒåŒ…è·å–å½“å‰é€‰ä¸­çš„å·¥å…·ä¿¡æ¯
+    // ´Ó±³°ü»ñÈ¡µ±Ç°Ñ¡ÖĞµÄ¹¤¾ßĞÅÏ¢
     if (_inventoryLayer) {
         const Item& item = _inventoryLayer->getItemAt(selected);
         std::string toolImagePath = item.getPath();
 
         if (!toolImagePath.empty()) {
-            // åˆ›å»ºå·¥å…·ç‰¹æ•ˆç²¾çµ
+            // ´´½¨¹¤¾ßÌØĞ§¾«Áé
             _toolUseEffect = Sprite::create(toolImagePath);
             if (_toolUseEffect) {
 
                 setToolUse();
 
-                _toolUseEffect->setScale(item.getScale());    // è®¾ç½®å¤§å°
+                _toolUseEffect->setScale(item.getScale());    // ÉèÖÃ´óĞ¡
 
                 float time = 0.3f;
                 auto delay = DelayTime::create(time);
 
-                //é€†æ—¶é’ˆæ—‹è½¬30åº¦
+                //ÄæÊ±ÕëĞı×ª30¶È
                 auto rotate = RotateBy::create(time, -30.0f);
-                _toolUseEffect->setFlippedX(true);   //æ°´å¹³é•œåƒ
+                _toolUseEffect->setFlippedX(true);   //Ë®Æ½¾µÏñ
 
                 if (_player->getPlayerDirection() == Direction::RIGHT ||
                     _player->getPlayerDirection() == Direction::DOWN) {
@@ -119,10 +119,9 @@ void InventoryScene::showToolUseEffect(int selected, bool clearPrevious)
 
                 cocos2d::Action* sequence;
                 if (static_cast<int>(item.getTag()) < 5)
-                    sequence = Sequence::create(rotate, remove, nullptr);   // ç»„åˆåŠ¨ç”»ï¼šæ—‹è½¬ -> åœç•™ -> ç§»é™¤
+                    sequence = Sequence::create(rotate, remove, nullptr);   // ×éºÏ¶¯»­£ºĞı×ª -> Í£Áô -> ÒÆ³ı
                 else {
-                    sequence = Sequence::create(delay, remove, nullptr);   // é—ªç°
-                    removeItemCount(item.getTag(), 1);
+                    sequence = Sequence::create(delay, remove, nullptr);   // ÉÁÏÖ
                 }
                 _toolUseEffect->runAction(sequence);
             }
@@ -130,7 +129,7 @@ void InventoryScene::showToolUseEffect(int selected, bool clearPrevious)
     }
 }
 
-// ä½¿ç”¨å·¥å…·åŠ¨ç”»çš„å±æ€§
+// Ê¹ÓÃ¹¤¾ß¶¯»­µÄÊôĞÔ
 void InventoryScene::setToolUse()
 {
     Node* playerScene = _player;
@@ -139,13 +138,13 @@ void InventoryScene::setToolUse()
     }
 
     if (playerScene) {
-        // æ·»åŠ åˆ°ç©å®¶æ‰€åœ¨çš„åœºæ™¯
+        // Ìí¼Óµ½Íæ¼ÒËùÔÚµÄ³¡¾°
         playerScene->addChild(_toolUseEffect, 10);
 
-        // è®¾ç½®å’Œç©å®¶ç›¸åŒçš„æ‘„åƒæœº
+        // ÉèÖÃºÍÍæ¼ÒÏàÍ¬µÄÉãÏñ»ú
         _toolUseEffect->setCameraMask(_player->getCameraMask(), true);
 
-        // ä½¿ç”¨ç©å®¶çš„ä½ç½®ï¼ˆç›¸å¯¹åæ ‡ï¼‰
+        // Ê¹ÓÃÍæ¼ÒµÄÎ»ÖÃ£¨Ïà¶Ô×ø±ê£©
         Vec2 offset = Vec2::ZERO;
         switch (_player->getPlayerDirection()) {
             case Direction::DOWN: offset = Vec2(5, -2); break;
@@ -162,16 +161,16 @@ void InventoryScene::setToolUse()
 void InventoryScene::hideToolUseEffect()
 {
     if (_toolUseEffect) {
-        _toolUseEffect->stopAllActions();      // åœæ­¢æ‰€æœ‰åŠ¨ç”»
-        _toolUseEffect->removeFromParent();    // ä»çˆ¶èŠ‚ç‚¹ç§»é™¤
-        _toolUseEffect = nullptr;              // æŒ‡é’ˆç½®ç©º
+        _toolUseEffect->stopAllActions();      // Í£Ö¹ËùÓĞ¶¯»­
+        _toolUseEffect->removeFromParent();    // ´Ó¸¸½ÚµãÒÆ³ı
+        _toolUseEffect = nullptr;              // Ö¸ÕëÖÃ¿Õ
     }
 }
 
-// åˆ‡æ¢èƒŒåŒ…æ˜¾ç¤º/éšè—çŠ¶æ€
+// ÇĞ»»±³°üÏÔÊ¾/Òş²Ø×´Ì¬
 void InventoryScene::toggleInventory()
 {
-    _inventoryVisible = !_inventoryVisible;    // åˆ‡æ¢èƒŒåŒ…å¯è§çŠ¶æ€æ ‡å¿—
+    _inventoryVisible = !_inventoryVisible;    // ÇĞ»»±³°ü¿É¼û×´Ì¬±êÖ¾
 
     if (_inventoryLayer) {
         _inventoryLayer->setVisible(_inventoryVisible);
@@ -179,22 +178,22 @@ void InventoryScene::toggleInventory()
         if (_inventoryVisible) {
             _inventoryLayer->refreshInventory();
 
-            // æ‰“å¼€èƒŒåŒ…ï¼šå¯ç”¨æ ¼å­è§¦æ‘¸
+            // ´ò¿ª±³°ü£ºÆôÓÃ¸ñ×Ó´¥Ãş
             _inventoryLayer->setGridsTouchEnabled(true);
 
-            // å…³é—­å·¥å…·ä½¿ç”¨æ•ˆæœï¼ˆèƒŒåŒ…æ‰“å¼€æ—¶ä¸èƒ½ä½¿ç”¨å·¥å…·ï¼‰
+            // ¹Ø±Õ¹¤¾ßÊ¹ÓÃĞ§¹û£¨±³°ü´ò¿ªÊ±²»ÄÜÊ¹ÓÃ¹¤¾ß£©
             _showToolUseEffect = false;
-            hideToolUseEffect();  // æ¸…ç†å¯èƒ½å­˜åœ¨çš„ç‰¹æ•ˆ
+            hideToolUseEffect();  // ÇåÀí¿ÉÄÜ´æÔÚµÄÌØĞ§
 
             _inventoryLayer->setScale(0.1f);
             auto scaleAction = ScaleTo::create(0.3f, 1.0f);
             _inventoryLayer->runAction(scaleAction);
         }
         else {
-            // å…³é—­èƒŒåŒ…ï¼šç¦ç”¨æ ¼å­è§¦æ‘¸
+            // ¹Ø±Õ±³°ü£º½ûÓÃ¸ñ×Ó´¥Ãş
             _inventoryLayer->setGridsTouchEnabled(false);
 
-            // å¯ç”¨å·¥å…·ä½¿ç”¨æ•ˆæœï¼ˆèƒŒåŒ…å…³é—­åå¯ä»¥æŒ‰é¼ æ ‡å·¦é”®ä½¿ç”¨å·¥å…·ï¼‰
+            // ÆôÓÃ¹¤¾ßÊ¹ÓÃĞ§¹û£¨±³°ü¹Ø±Õºó¿ÉÒÔ°´Êó±ê×ó¼üÊ¹ÓÃ¹¤¾ß£©
             _showToolUseEffect = true;
             _selectedGrid = _inventoryLayer->getSelectedGrid();
 
@@ -209,21 +208,21 @@ void InventoryScene::toggleInventory()
     }
 }
 
-// æ›´æ–°é¢„è§ˆçš„å·¥å…·å›¾ç‰‡
+// ¸üĞÂÔ¤ÀÀµÄ¹¤¾ßÍ¼Æ¬
 void InventoryScene::updatePreviewTool()
 {
     if (!_inventoryLayer) {
         return;
     }
 
-    // è·å–èƒŒåŒ…ä¸­å½“å‰é«˜å…‰çš„æ ¼å­ç´¢å¼•
+    // »ñÈ¡±³°üÖĞµ±Ç°¸ß¹âµÄ¸ñ×ÓË÷Òı
     _selectedGrid = _inventoryLayer->getSelectedGrid();
 
-    // åˆ é™¤æ—§çš„æ ‡ç­¾
+    // É¾³ı¾ÉµÄ±êÇ©
     this->removeChildByTag(999);
 
-    if (_selectedGrid >= 0 && _selectedGrid < _inventoryLayer->getAmount()) { // åªæ˜¾ç¤ºå‰INTEM_COUNTä¸ªå·¥å…·
-        // è·å–å·¥å…·å›¾ç‰‡è·¯å¾„
+    if (_selectedGrid >= 0 && _selectedGrid < _inventoryLayer->getAmount()) { // Ö»ÏÔÊ¾Ç°INTEM_COUNT¸ö¹¤¾ß
+        // »ñÈ¡¹¤¾ßÍ¼Æ¬Â·¾¶
         const Item& item = _inventoryLayer->getItemAt(_selectedGrid);
         std::string toolImage = item.getPath();
 
@@ -232,10 +231,10 @@ void InventoryScene::updatePreviewTool()
             if (toolSprite) {
                 _previewTool->setTexture(toolSprite->getTexture());
                 _previewTool->setTextureRect(toolSprite->getTextureRect());
-                _previewTool->setScale(item.getScale() + 0.1f); // æ”¾å¤§ä¸€ç‚¹æ˜¾ç¤º
+                _previewTool->setScale(item.getScale() + 0.1f); // ·Å´óÒ»µãÏÔÊ¾
                 _previewTool->setVisible(true);
 
-                // æ˜¾ç¤ºæ•°é‡
+                // ÏÔÊ¾ÊıÁ¿
                 if (item.getTag() > Objects::FISHINGROD) {
                     std::string countText = std::to_string(item.getCount());
                     auto label = Label::createWithTTF(countText, "/fonts/arial.ttf", 18);
@@ -244,7 +243,7 @@ void InventoryScene::updatePreviewTool()
                         label->setPosition(_previewTool->getPositionX() + 30,
                             _previewTool->getPositionY() - 30);
                         label->setColor(Color3B::WHITE);
-                        label->enableOutline(Color4B::BLACK, 2);  // é»‘è‰²æè¾¹ï¼Œæ›´æ¸…æ™°
+                        label->enableOutline(Color4B::BLACK, 2);  // ºÚÉ«Ãè±ß£¬¸üÇåÎú
                         label->setTag(999);
                         this->addChild(label, 100);
                     }
@@ -253,10 +252,10 @@ void InventoryScene::updatePreviewTool()
         }
     }
     else
-        _previewTool->setVisible(false);  // ä¿æŒå¯è§ï¼Œæ˜¾ç¤ºç©ºæ¡†
+        _previewTool->setVisible(false);  // ±£³Ö¿É¼û£¬ÏÔÊ¾¿Õ¿ò
 }
 
-//è·å–é€‰ä¸­ç‰©å“çš„æ ‡ç­¾
+//»ñÈ¡Ñ¡ÖĞÎïÆ·µÄ±êÇ©
 Objects InventoryScene::getTap() const
 {
     if (_selectedGrid >= 0 && _selectedGrid < _inventoryLayer->getAmount()) {
@@ -267,7 +266,7 @@ Objects InventoryScene::getTap() const
     return Objects::NONE;
 }
 
-// å¢åŠ æŒ‡å®šç‰©å“çš„æ•°é‡
+// Ôö¼ÓÖ¸¶¨ÎïÆ·µÄÊıÁ¿
 void InventoryScene::addItemCount(Objects object, int amount,bool animation)
 {
     if (object >= Objects::HOE && object < Objects::COUNT) {
@@ -275,14 +274,14 @@ void InventoryScene::addItemCount(Objects object, int amount,bool animation)
         int gridIndex = _inventoryLayer->findItemGridIndex(object);
 
         if (animation) {
-            // å·¥å…·ä½¿ç”¨ç‰¹æ•ˆ
+            // ¹¤¾ßÊ¹ÓÃÌØĞ§
             if (object != Objects::DAFFODILS && object != Objects::LEEK)
                 ToolUseAnimation();
 
-            // 0.2ç§’åæ˜¾ç¤ºç¬¬äºŒä¸ªç‰¹æ•ˆ
+            // 0.2ÃëºóÏÔÊ¾µÚ¶ş¸öÌØĞ§
             scheduleOnce([this, gridIndex, amount](float dt) {
                 showToolUseEffect(gridIndex);
-                this->removeChildByTag(3000);       // åˆ é™¤æ—§çš„æ ‡ç­¾
+                this->removeChildByTag(3000);       // É¾³ı¾ÉµÄ±êÇ©
 
                 std::string countText = "+" + std::to_string(amount);
                 auto label = Label::createWithTTF(countText, "/fonts/arial.ttf", 13);
@@ -290,15 +289,15 @@ void InventoryScene::addItemCount(Objects object, int amount,bool animation)
                 if (label) {
                     label->setPosition(_secondEffectPos.x + 25, _secondEffectPos.y - 17);
                     label->setColor(Color3B::WHITE);
-                    label->enableOutline(Color4B::BLACK, 2);  // é»‘è‰²æè¾¹ï¼Œæ›´æ¸…æ™°
+                    label->enableOutline(Color4B::BLACK, 2);  // ºÚÉ«Ãè±ß£¬¸üÇåÎú
                     label->setTag(3000);
 
-                    // ç¡®ä¿å’Œç‰¹æ•ˆä½¿ç”¨ç›¸åŒçš„CameraMask
+                    // È·±£ºÍÌØĞ§Ê¹ÓÃÏàÍ¬µÄCameraMask
                     label->setCameraMask(_toolUseEffect->getCameraMask());
                     this->addChild(label, _toolUseEffect->getLocalZOrder() + 10);
 
 
-                    // 0.3ç§’åç›´æ¥åˆ é™¤
+                    // 0.3ÃëºóÖ±½ÓÉ¾³ı
                     scheduleOnce([label](float dt) {
                         if (label) {
                             label->removeFromParent();
@@ -308,25 +307,25 @@ void InventoryScene::addItemCount(Objects object, int amount,bool animation)
                 }, 0.2f, "show_second_effect");
         }
 
-        // å‘é€äº‹ä»¶é€šçŸ¥èƒŒåŒ…åˆ·æ–°
+        // ·¢ËÍÊÂ¼şÍ¨Öª±³°üË¢ĞÂ
         EventCustom event("INVENTORY_COUNT_CHANGED");
         Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
-        // æ›´æ–°é¢„è§ˆæ¡†å›¾ç‰‡ï¼ˆæ›´æ–°æ•°é‡ï¼‰
+        // ¸üĞÂÔ¤ÀÀ¿òÍ¼Æ¬£¨¸üĞÂÊıÁ¿£©
         updatePreviewTool();
     }
 }
 
-// å‡å°‘æŒ‡å®šç‰©å“çš„æ•°é‡
+// ¼õÉÙÖ¸¶¨ÎïÆ·µÄÊıÁ¿
 void InventoryScene::removeItemCount(Objects object, int amount)
 {
     if (object >= Objects::HOE && object < Objects::COUNT) {
         _inventoryLayer->removeItem(object, amount);
     }
 
-    // å‘é€äº‹ä»¶é€šçŸ¥èƒŒåŒ…åˆ·æ–°
+    // ·¢ËÍÊÂ¼şÍ¨Öª±³°üË¢ĞÂ
     EventCustom event("INVENTORY_COUNT_CHANGED");
     Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
-    // æ›´æ–°é¢„è§ˆæ¡†å›¾ç‰‡ï¼ˆæ›´æ–°æ•°é‡ï¼‰
+    // ¸üĞÂÔ¤ÀÀ¿òÍ¼Æ¬£¨¸üĞÂÊıÁ¿£©
     updatePreviewTool();
 
 }

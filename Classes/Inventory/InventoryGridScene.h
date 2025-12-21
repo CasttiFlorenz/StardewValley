@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     InventoryGridScene.h
- * File Function: InventoryGridSceneç±»çš„å®ç°
- * Author:        äºæ©ç†™
+ * File Function: InventoryGridSceneÀàµÄÊµÏÖ
+ * Author:        ÓÚ¶÷Îõ
  * Update Date:   2025/12/21
  * License:       MIT License
  ****************************************************************/
@@ -19,14 +19,14 @@
 
 USING_NS_CC;
 
-//#define INVENTORY_SIZE 36  // èƒŒåŒ…å¤§å°
+//#define INVENTORY_SIZE 36  // ±³°ü´óĞ¡
 
 
 struct BackpackPosition {
     float x;
     float y;
-    Sprite* backpack;  // èƒŒåŒ…ç²¾çµæŒ‡é’ˆ
-    float scale;       // ç¼©æ”¾æ¯”ä¾‹
+    Sprite* backpack;  // ±³°ü¾«ÁéÖ¸Õë
+    float scale;       // Ëõ·Å±ÈÀı
 };
 
 class InventoryGridScene : public cocos2d::Layer
@@ -40,72 +40,72 @@ public:
 
     void setGridSelectedCallback(const std::function<void(int)>& callback);
 
-    // è·å–æŒ‡å®šæ ¼å­çš„ç‰©å“
+    // »ñÈ¡Ö¸¶¨¸ñ×ÓµÄÎïÆ·
     Item& getItemAt(int gridIndex);
 
-    // å¯ç”¨æˆ–ç¦ç”¨æ‰€æœ‰æ ¼å­çš„è§¦æ‘¸ç›‘å¬
+    // ÆôÓÃ»ò½ûÓÃËùÓĞ¸ñ×ÓµÄ´¥Ãş¼àÌı
     void setGridsTouchEnabled(bool enabled);
 
-    // æ·»åŠ åˆ·æ–°æ–¹æ³•
+    // Ìí¼ÓË¢ĞÂ·½·¨
     void refreshInventory();
 
-    // è¿”å›æ€»ç‰©å“æ•°é‡
+    // ·µ»Ø×ÜÎïÆ·ÊıÁ¿
     int getAmount() { return ItemCount; };
 
-    // å¢åŠ æ•°é‡
+    // Ôö¼ÓÊıÁ¿
     bool addItem(Objects object, int amount);
 
-    // å‡å°‘æ•°é‡
+    // ¼õÉÙÊıÁ¿
     bool removeItem(Objects object, int amount);
 
-    // æŸ¥æ‰¾ç‰©å“åœ¨å½“å‰æ•°ç»„å†…çš„ç´¢å¼•
+    // ²éÕÒÎïÆ·ÔÚµ±Ç°Êı×éÄÚµÄË÷Òı
     int findItemGridIndex(Objects tag);
 
-    // å¸¸é‡å®šä¹‰
-    static const int TOOL_TAG_BASE = 1000;      // å·¥å…·tagåŸºå€¼
-    static const int COUNT_TAG_BASE = 2000;     // æ•°é‡æ ‡ç­¾tagåŸºå€¼
+    // ³£Á¿¶¨Òå
+    static const int TOOL_TAG_BASE = 1000;      // ¹¤¾ßtag»ùÖµ
+    static const int COUNT_TAG_BASE = 2000;     // ÊıÁ¿±êÇ©tag»ùÖµ
 
 private:
-    PlaceItems* _placeItems;  // å·¥å…·æ”¾ç½®ç®¡ç†å™¨
-    std::vector<Item> _items;        // åŠ¨æ€å­˜å‚¨ç‰©å“
-    BackpackPosition _backpacks[3];  // ä¸‰è¡ŒèƒŒåŒ…
+    PlaceItems* _placeItems;  // ¹¤¾ß·ÅÖÃ¹ÜÀíÆ÷
+    std::vector<Item> _items;        // ¶¯Ì¬´æ´¢ÎïÆ·
+    BackpackPosition _backpacks[3];  // ÈıĞĞ±³°ü
     cocos2d::Sprite* _background;
     std::array<cocos2d::Sprite*, 4> _buttons;
 
     int ItemCount = 6;
 
-    // ä¸ºæŒ‡å®šæ ¼å­åˆ›å»ºè§¦æ‘¸ç›‘å¬å™¨
+    // ÎªÖ¸¶¨¸ñ×Ó´´½¨´¥Ãş¼àÌıÆ÷
     void createTouchListenerForGrid(int gridIndex, cocos2d::Sprite* grid);
 
-    // äº‹ä»¶ç›‘å¬å™¨
+    // ÊÂ¼ş¼àÌıÆ÷
     void setupEventListeners();
 
-    // æ ¸å¿ƒå‡½æ•°
+    // ºËĞÄº¯Êı
     void createBackpacks();
     void createInvertory();
 
-    // é«˜å…‰å¤„ç†
+    // ¸ß¹â´¦Àí
     void createClickableGrids();
     void onGridClicked(int gridIndex);
     void highlightGrid(int gridIndex, bool highlight);
 
-    // è¾…åŠ©å‡½æ•°
+    // ¸¨Öúº¯Êı
     float getGridOffset(int gridIndex);
     void onButtonClicked(int buttonIndex);
 
-    // èƒŒåŒ…ç›¸å…³
+    // ±³°üÏà¹Ø
     cocos2d::Sprite* _backpack;
     float _backpackWidth, _backpackHeight;
     float _cellWidth;
 
-    // æ ¼å­ç®¡ç†
+    // ¸ñ×Ó¹ÜÀí
     cocos2d::DrawNode* _gridHighlights[36];
     int _selectedGrid;
 
-    // å›è°ƒå‡½æ•°
+    // »Øµ÷º¯Êı
     std::function<void(int)> _gridSelectedCallback;
 
-    // å­˜å‚¨æ ¼å­è§¦æ‘¸ç›‘å¬å™¨çš„æ˜ å°„è¡¨ï¼šæ ¼å­ç´¢å¼• -> ç›‘å¬å™¨
+    // ´æ´¢¸ñ×Ó´¥Ãş¼àÌıÆ÷µÄÓ³Éä±í£º¸ñ×ÓË÷Òı -> ¼àÌıÆ÷
     std::unordered_map<int, cocos2d::EventListenerTouchOneByOne*> _gridListeners;
 };
 

@@ -1,8 +1,8 @@
-ï»¿/****************************************************************
+/****************************************************************
  * Project Name:  StardewValley
  * File Name:     InventoryScene.h
- * File Function: InventorySceneç±»çš„å®ç°
- * Author:        äºæ©ç†™
+ * File Function: InventorySceneÀàµÄÊµÏÖ
+ * Author:        ÓÚ¶÷Îõ
  * Update Date:   2025/12/21
  * License:       MIT License
  ****************************************************************/
@@ -27,34 +27,34 @@ public:
     virtual bool init();
     void updatePreviewTool();
     void setPlayer(Player* player) { _player = player; }
-    void toggleInventory();              // åˆ‡æ¢èƒŒåŒ…æ˜¾ç¤º/éšè—
-    void ToolUseAnimation();             // æ˜¾ç¤ºå·¥å…·ç‰¹æ•ˆ
+    void toggleInventory();              // ÇĞ»»±³°üÏÔÊ¾/Òş²Ø
+    void ToolUseAnimation();             // ÏÔÊ¾¹¤¾ßÌØĞ§
 
     InventoryGridScene* getInventoryLayer() { return _inventoryLayer; }
 
-    // è·å–ç‰©å“ä¿¡æ¯
+    // »ñÈ¡ÎïÆ·ĞÅÏ¢
     Objects getTap() const;
-    void addItemCount(Objects object, int amount, bool animation = true);        // å¢åŠ æŒ‡å®šç‰©å“çš„æ•°é‡
-    void removeItemCount(Objects object, int amount);      // å‡å°‘æŒ‡å®šç‰©å“çš„æ•°é‡
+    void addItemCount(Objects object, int amount, bool animation = true);        // Ôö¼ÓÖ¸¶¨ÎïÆ·µÄÊıÁ¿
+    void removeItemCount(Objects object, int amount);      // ¼õÉÙÖ¸¶¨ÎïÆ·µÄÊıÁ¿
 
 private:
     static InventoryScene* _instance;
 
     Player* _player;
-    cocos2d::Sprite* _background;         // èƒŒæ™¯ç²¾çµ
-    InventoryGridScene* _inventoryLayer;  // èƒŒåŒ…ç•Œé¢
-    bool _inventoryVisible;               // æ˜¯å¦æ˜¾ç¤ºèƒŒåŒ…
-    cocos2d::Sprite* _toolUseEffect = nullptr;    // å·¥å…·ä½¿ç”¨ç‰¹æ•ˆï¼ˆåœ¨äººç‰©å¤´ä¸Šæ˜¾ç¤ºçš„å›¾ç‰‡ï¼‰
-    bool _showToolUseEffect = false;              // æ˜¯å¦å…è®¸æ˜¾ç¤ºå·¥å…·ä½¿ç”¨ç‰¹æ•ˆ
-    int _selectedGrid = -1;                       // å½“å‰é€‰ä¸­çš„å·¥å…·ç´¢å¼•
-    cocos2d::Vec2 _secondEffectPos;          // ä¿å­˜æ•°é‡å¢åŠ æ—¶ç¬¬äºŒä¸ªç‰¹æ•ˆçš„ä½ç½®
+    cocos2d::Sprite* _background;         // ±³¾°¾«Áé
+    InventoryGridScene* _inventoryLayer;  // ±³°ü½çÃæ
+    bool _inventoryVisible;               // ÊÇ·ñÏÔÊ¾±³°ü
+    cocos2d::Sprite* _toolUseEffect = nullptr;    // ¹¤¾ßÊ¹ÓÃÌØĞ§£¨ÔÚÈËÎïÍ·ÉÏÏÔÊ¾µÄÍ¼Æ¬£©
+    bool _showToolUseEffect = false;              // ÊÇ·ñÔÊĞíÏÔÊ¾¹¤¾ßÊ¹ÓÃÌØĞ§
+    int _selectedGrid = -1;                       // µ±Ç°Ñ¡ÖĞµÄ¹¤¾ßË÷Òı
+    cocos2d::Vec2 _secondEffectPos;          // ±£´æÊıÁ¿Ôö¼ÓÊ±µÚ¶ş¸öÌØĞ§µÄÎ»ÖÃ
 
-    void setToolUse();                            // è®¾ç½®å·¥å…·åŠ¨ç”»å±æ€§
-    void hideToolUseEffect();                     // éšè—å·¥å…·ä½¿ç”¨ç‰¹æ•ˆ
-    void showToolUseEffect(int selected, bool clearPrevious = true);   // æ˜¾ç¤ºå·¥å…·ä½¿ç”¨ç‰¹æ•ˆ
+    void setToolUse();                            // ÉèÖÃ¹¤¾ß¶¯»­ÊôĞÔ
+    void hideToolUseEffect();                     // Òş²Ø¹¤¾ßÊ¹ÓÃÌØĞ§
+    void showToolUseEffect(int selected, bool clearPrevious = true);   // ÏÔÊ¾¹¤¾ßÊ¹ÓÃÌØĞ§
 
-    cocos2d::Sprite* _previewFrame;      // é¢„è§ˆæ¡†å›¾ç‰‡
-    cocos2d::Sprite* _previewTool;       // é¢„è§ˆçš„å·¥å…·å›¾ç‰‡
+    cocos2d::Sprite* _previewFrame;      // Ô¤ÀÀ¿òÍ¼Æ¬
+    cocos2d::Sprite* _previewTool;       // Ô¤ÀÀµÄ¹¤¾ßÍ¼Æ¬
 };
 
 #endif // __INVENTORY_SCENE_H___pragma once

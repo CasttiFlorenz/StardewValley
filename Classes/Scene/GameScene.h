@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     GameScene.h
- * File Function: GameSceneç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
+ * File Function: GameSceneÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
  * Update Date:   2025/12/14
  * License:       MIT License
  ****************************************************************/
@@ -29,7 +29,7 @@
 
 USING_NS_CC;
 
-// æ¸¸æˆä¸»åœºæ™¯ï¼Œç®¡ç†åœ°å›¾åˆ‡æ¢å’Œç©å®¶
+// ÓÎÏ·Ö÷³¡¾°£¬¹ÜÀíµØÍ¼ÇĞ»»ºÍÍæ¼Ò
 class GameScene : public cocos2d::Scene
 {
 public:
@@ -37,9 +37,9 @@ public:
     ~GameScene();
 
     virtual bool init();
-    // åˆå§‹åŒ–æ¸¸æˆåœ°å›¾
+    // ³õÊ¼»¯ÓÎÏ·µØÍ¼
     virtual void initGameMap();
-    // åˆ‡æ¢åœ°å›¾é€»è¾‘
+    // ÇĞ»»µØÍ¼Âß¼­
     virtual void switchMap();
     virtual void update(float dt);
     void setPlayerToStart();
@@ -57,18 +57,18 @@ public:
     void carryMouseEvent(const MouseEvent event);
     void carryKeyBoardEvent(const KeyBoardEvent event);
 private:
-    bool _isStart;          // æ˜¯å¦åˆšå¼€å§‹æ¸¸æˆ
-    GameMap* _map;          // å½“å‰åœ°å›¾
-    Player* _player;        // ç©å®¶å¯¹è±¡
-    std::map<std::string, GameMap*> _mapCache; // åœ°å›¾ç¼“å­˜
+    bool _isStart;          // ÊÇ·ñ¸Õ¿ªÊ¼ÓÎÏ·
+    GameMap* _map;          // µ±Ç°µØÍ¼
+    Player* _player;        // Íæ¼Ò¶ÔÏó
+    std::map<std::string, GameMap*> _mapCache; // µØÍ¼»º´æ
     InventoryScene* _inventory;
     WeatherManager* _weatherManager;
     TimeManager* _timeManager;
 
-    Camera* _followCamera; // è·Ÿéšæ‘„åƒæœº
+    Camera* _followCamera; // ¸úËæÉãÏñ»ú
 
-    void updateCamera(); // æ›´æ–°æ‘„åƒæœºä½ç½®
-    void resetCamera();  // é‡ç½®æ‘„åƒæœº
+    void updateCamera(); // ¸üĞÂÉãÏñ»úÎ»ÖÃ
+    void resetCamera();  // ÖØÖÃÉãÏñ»ú
 
     EventListenerMouse* _mouseListener;
     EventListenerKeyboard* _keyboardListener;
