@@ -47,7 +47,8 @@ enum class MouseEvent
     GET_CAULIFLOWER,
     GET_EGG,
     GET_MILK,
-    SLEEP
+    SLEEP,
+    FISHING
 };
 
 enum class Objects {
