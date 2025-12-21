@@ -120,8 +120,10 @@ void InventoryScene::showToolUseEffect(int selected, bool clearPrevious)
                 cocos2d::Action* sequence;
                 if (static_cast<int>(item.getTag()) < 5)
                     sequence = Sequence::create(rotate, remove, nullptr);   // 组合动画：旋转 -> 停留 -> 移除
-                else
+                else {
                     sequence = Sequence::create(delay, remove, nullptr);   // 闪现
+                    removeItemCount(item.getTag(), 1);
+                }
                 _toolUseEffect->runAction(sequence);
             }
         }
@@ -326,4 +328,5 @@ void InventoryScene::removeItemCount(Objects object, int amount)
     Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
     // 更新预览框图片（更新数量）
     updatePreviewTool();
+
 }
