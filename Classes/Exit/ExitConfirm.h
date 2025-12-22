@@ -11,6 +11,7 @@
 #define __EXIT_CONFIRM_H__
 
 #include "cocos2d.h"
+#include "../Music/MusicManager.h"
 
 class ExitConfirm : public cocos2d::Node
 {

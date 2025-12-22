@@ -54,6 +54,9 @@ bool ExitConfirm::init()
                 btnSize.width * 1.3f, btnSize.height * 1.3f);
 
             if (btnRect.containsPoint(localPos)) {
+
+                MusicManager::getInstance()->playButtonClick();
+
                 this->onReturnToTitle();
                 return true;
             }
@@ -84,6 +87,9 @@ bool ExitConfirm::init()
                 btnSize.width * 1.3f, btnSize.height * 1.3f);
 
             if (btnRect.containsPoint(localPos)) {
+
+                MusicManager::getInstance()->playButtonClick();
+
                 this->onExitGame();  
                 return true;
             }
