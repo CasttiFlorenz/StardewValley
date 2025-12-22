@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     GameScene.h
- * File Function: GameSceneÀàµÄÊµÏÖ
- * Author:        ¹ùÜÆÑÌ
+ * File Function: GameSceneç±»çš„å®ç°
+ * Author:        éƒ­èŠ·çƒŸ
  * Update Date:   2025/12/14
  * License:       MIT License
  ****************************************************************/
@@ -26,10 +26,13 @@
 #include "../Weather/WeatherManager.h"
 #include "../Time/TimeManager.h"
 #include "../Shop/ShopLayer.h"
+#include "../Fishing/FishGameScene.h"
+#include"../Music/MusicManager.h"
+
 
 USING_NS_CC;
 
-// ÓÎÏ·Ö÷³¡¾°£¬¹ÜÀíµØÍ¼ÇĞ»»ºÍÍæ¼Ò
+// æ¸¸æˆä¸»åœºæ™¯ï¼Œç®¡ç†åœ°å›¾åˆ‡æ¢å’Œç©å®¶
 class GameScene : public cocos2d::Scene
 {
 public:
@@ -37,9 +40,9 @@ public:
     ~GameScene();
 
     virtual bool init();
-    // ³õÊ¼»¯ÓÎÏ·µØÍ¼
+    // åˆå§‹åŒ–æ¸¸æˆåœ°å›¾
     virtual void initGameMap();
-    // ÇĞ»»µØÍ¼Âß¼­
+    // åˆ‡æ¢åœ°å›¾é€»è¾‘
     virtual void switchMap();
     virtual void update(float dt);
     void setPlayerToStart();
@@ -57,18 +60,18 @@ public:
     void carryMouseEvent(const MouseEvent event);
     void carryKeyBoardEvent(const KeyBoardEvent event);
 private:
-    bool _isStart;          // ÊÇ·ñ¸Õ¿ªÊ¼ÓÎÏ·
-    GameMap* _map;          // µ±Ç°µØÍ¼
-    Player* _player;        // Íæ¼Ò¶ÔÏó
-    std::map<std::string, GameMap*> _mapCache; // µØÍ¼»º´æ
+    bool _isStart;          // æ˜¯å¦åˆšå¼€å§‹æ¸¸æˆ
+    GameMap* _map;          // å½“å‰åœ°å›¾
+    Player* _player;        // ç©å®¶å¯¹è±¡
+    std::map<std::string, GameMap*> _mapCache; // åœ°å›¾ç¼“å­˜
     InventoryScene* _inventory;
     WeatherManager* _weatherManager;
     TimeManager* _timeManager;
 
-    Camera* _followCamera; // ¸úËæÉãÏñ»ú
+    Camera* _followCamera; // è·Ÿéšæ‘„åƒæœº
 
-    void updateCamera(); // ¸üĞÂÉãÏñ»úÎ»ÖÃ
-    void resetCamera();  // ÖØÖÃÉãÏñ»ú
+    void updateCamera(); // æ›´æ–°æ‘„åƒæœºä½ç½®
+    void resetCamera();  // é‡ç½®æ‘„åƒæœº
 
     EventListenerMouse* _mouseListener;
     EventListenerKeyboard* _keyboardListener;
