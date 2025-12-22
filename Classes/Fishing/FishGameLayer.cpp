@@ -236,4 +236,12 @@ void FishGameLayer::endGame(bool isSuccess)
 
     _resultLabel->setVisible(true);
     this->unscheduleUpdate();
+
+    this->scheduleOnce([this](float dt) {
+        // 弹出现有场景（返回农场）
+        Director::getInstance()->popScene();
+
+        // 注意：这里需要在GameScene中恢复时间和玩家移动
+        // 我们需要在FishGameScene中传递消息，或者让GameScene自己恢复
+        }, 3.0f, "return_to_farm");
 }

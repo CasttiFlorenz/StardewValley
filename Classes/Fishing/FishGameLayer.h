@@ -20,6 +20,7 @@ public:
     void updateFishPosition();
 
 private:
+    // UIÔªËØ
     cocos2d::Sprite* _background;
     cocos2d::DrawNode* _progressBar;
     cocos2d::Sprite* _fishSprite;
