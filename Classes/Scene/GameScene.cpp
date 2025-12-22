@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     GameScene.cpp
- * File Function: GameSceneç±»çš„å®žçŽ°
- * Author:        éƒ­èŠ·çƒŸ
+ * File Function: GameSceneÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
  * Update Date:   2025/12/14
  * License:       MIT License
  ****************************************************************/
@@ -63,8 +63,6 @@ bool GameScene::init()
     setupMouseListener();
     setupKeyboardListener();
 
-    MusicManager::getInstance()->preloadMusic();
-
     return true;
 }
 
@@ -119,8 +117,8 @@ void GameScene::switchMap()
 {
     if (!_player || !_map) return;
 
-    std::string _newMap;    // ç›®æ ‡åœ°å›¾åç§°
-    std::string _lastMap;   // ä¸Šä¸€å¼ åœ°å›¾åç§°
+    std::string _newMap;    // Ä¿±êµØÍ¼Ãû³Æ
+    std::string _lastMap;   // ÉÏÒ»ÕÅµØÍ¼Ãû³Æ
 
     _newMap = _map->getNewMap(_player->getPosition(), _isStart, _player->getPlayerDirection());
     _lastMap = _map->getMapName();
@@ -142,25 +140,25 @@ void GameScene::switchMap()
 
             MusicManager::getInstance()->playMusicForMap(_newMap);
 
-            // æ£€æŸ¥æ–°åœ°å›¾æ˜¯å¦éœ€è¦è·Ÿéšæ‘„åƒæœº
+            // ¼ì²éÐÂµØÍ¼ÊÇ·ñÐèÒª¸úËæÉãÏñ»ú
             if (_map->isCameraFollow()) {
-                // å¦‚æžœè¿˜æ²¡æœ‰è·Ÿéšæ‘„åƒæœºï¼Œåˆ›å»ºä¸€ä¸ª
+                // Èç¹û»¹Ã»ÓÐ¸úËæÉãÏñ»ú£¬´´½¨Ò»¸ö
                 if (!_followCamera) {
                     _followCamera = Camera::createOrthographic(Director::getInstance()->getVisibleSize().width, Director::getInstance()->getVisibleSize().height, 1, 1000);
                     _followCamera->setCameraFlag(CameraFlag::USER1);
                     this->addChild(_followCamera, 6);
                 }
 
-                // è®¾ç½®æŽ©ç 
+                // ÉèÖÃÑÚÂë
                 _player->setCameraMask((unsigned short)CameraFlag::USER1, true);
                 _map->setCameraMask((unsigned short)CameraFlag::USER1, true);
 
-                // ç¡®ä¿ UI ä½¿ç”¨é»˜è®¤æ‘„åƒæœº
+                // È·±£ UI Ê¹ÓÃÄ¬ÈÏÉãÏñ»ú
                 if (_inventory) {
                     _inventory->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
                 }
 
-                // è®¾ç½®æ‘„åƒæœºä½ç½®
+                // ÉèÖÃÉãÏñ»úÎ»ÖÃ
                 Vec3 currentPos = _followCamera->getPosition3D();
                 currentPos.z = CAMERA_POSZ;
                 _followCamera->setPosition3D(currentPos);
@@ -168,7 +166,7 @@ void GameScene::switchMap()
 
             }
             else {
-                // å¦‚æžœæ–°åœ°å›¾ä¸éœ€è¦æ‘„åƒæœºï¼Œè®¾ç½®ä¸åŒçš„æŽ©ç 
+                // Èç¹ûÐÂµØÍ¼²»ÐèÒªÉãÏñ»ú£¬ÉèÖÃ²»Í¬µÄÑÚÂë
                 resetCamera();
                 _map->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
                 _player->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
@@ -241,9 +239,6 @@ void GameScene::setupMouseListener()
             if (_map && _player && !_mouseLeftPressed) {
                 _mouseLeftPressed = true;
                 _player->changeUpdateStatus();
-
-                MusicManager::getInstance()->playButtonClick();
-
                 carryMouseEvent(_map->onLeftClick(_player->getPosition(), _player->getPlayerDirection(), _inventory->getTap()));
             }
         }
@@ -251,9 +246,6 @@ void GameScene::setupMouseListener()
             if (_map && _player && !_mouseRightPressed) {
                 _mouseRightPressed = true;
                 _player->changeUpdateStatus();
-
-                MusicManager::getInstance()->playButtonClick();
-
                 carryMouseEvent(_map->onRightClick(_player->getPosition(), _player->getPlayerDirection()));
             }
         }
@@ -277,9 +269,6 @@ void GameScene::setupKeyboardListener()
         if (key == EventKeyboard::KeyCode::KEY_E) {
             _keyEPressed = true;
             _timeManager->changeUpdateStatus();
-
-            MusicManager::getInstance()->playButtonClick();
-
             carryKeyBoardEvent(KeyBoardEvent::CHANGE_INVENTORY);
         }
         };
@@ -376,10 +365,9 @@ void GameScene::carryMouseEvent(const MouseEvent event)
         break;
     }
     case MouseEvent::FISHING: {
-        auto fishing = FishGameScene::createScene();
-        this->addChild(fishing);
-        break;
+        openFishingGame();
     }
+                            break;
     case MouseEvent::USE_TOOL:
         _inventory->ToolUseAnimation();
         break;
@@ -404,5 +392,23 @@ void GameScene::carryKeyBoardEvent(const KeyBoardEvent event)
         break;
     default:
         break;
+    }
+}
+
+void GameScene::openFishingGame()
+{
+    const int FISHING_GAME_TAG = 8998;
+
+    // ²éÕÒÊÇ·ñÒÑÓÐ¸ÃTagµÄ×Ó½Úµã
+    auto existingFishing = this->getChildByTag(FISHING_GAME_TAG);
+    if (existingFishing) {
+        return;
+    }
+    auto fishing = FishGameLayer::create();
+    if (fishing) {
+        fishing->setTag(FISHING_GAME_TAG);
+        this->addChild(fishing, 10);
+        fishing->setTag(FISHING_GAME_TAG);
+        fishing->setCameraMask((unsigned short)CameraFlag::DEFAULT);
     }
 }

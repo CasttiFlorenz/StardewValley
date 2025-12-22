@@ -84,6 +84,9 @@ bool InitialMenuScene::init()
     // 监听到按下按钮事件时退出
     exitButton->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type) {
         if (type == ui::Widget::TouchEventType::BEGAN)
+
+            MusicManager::getInstance()->playButtonClick();
+
             Director::getInstance()->end();
         });
     this->addChild(exitButton, 1);
@@ -91,6 +94,9 @@ bool InitialMenuScene::init()
     // 监听到按下按钮事件时转到创建角色界面
     createButton->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type) {
         if (type == ui::Widget::TouchEventType::BEGAN);
+
+        MusicManager::getInstance()->playButtonClick();
+
         auto create = CreateScene::createScene();
         Director::getInstance()->replaceScene(create);
         });
@@ -98,6 +104,9 @@ bool InitialMenuScene::init()
 
     loadButton->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type) {
         if (type == ui::Widget::TouchEventType::BEGAN);
+
+        MusicManager::getInstance()->playButtonClick();
+
         // 事件待添加
         });
     this->addChild(loadButton, 1);

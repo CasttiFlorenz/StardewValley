@@ -13,6 +13,7 @@
 
 #include "cocos2d.h"
 #include "CreateScene.h"
+#include "../Music/MusicManager.h"
 
 class InitialMenuScene : public cocos2d::Scene
 {
