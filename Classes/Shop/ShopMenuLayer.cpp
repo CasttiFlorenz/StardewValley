@@ -52,8 +52,6 @@ bool ShopMenuLayer::init(const std::string& shopName, const std::vector<Item*>& 
     listener->setSwallowTouches(true);
     listener->onTouchBegan = [](Touch*, Event*) { return true; };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, darkLayer);
-
-    // ... 原有的背景创建代码 ...
     Node* bg = nullptr;
     std::string bgPath = "Shop/Shop_" + shopName + ".png";
     auto spriteBg = Sprite::create(bgPath);
@@ -61,39 +59,7 @@ bool ShopMenuLayer::init(const std::string& shopName, const std::vector<Item*>& 
     // 设置背景图
     bg = spriteBg;
     spriteBg->setContentSize(Size(800, 600)); 
-    if ( shopName == "sale") {
-        int currentHour = TimeManager::getInstance()->getCurrentTime().hour;
-
-        std::string greetingText = "";
-        if (currentHour >= 6 && currentHour < 11) {
-            greetingText = "早上好，有什么需要出售？";
-        }
-        else if (currentHour >= 11 && currentHour < 14) {
-            greetingText = "中午好，有什么需要出售？";
-        }
-        else if (currentHour >= 14 && currentHour < 19) {
-            greetingText = "下午好，有什么需要出售？.";
-        }
-        else
-            greetingText = "晚上好，有什么需要出售？.";
-        // 3. 创建文字标签
-        auto label = Label::createWithTTF(greetingText, "fonts/pixel.ttf", 24);
-        label->setTextColor(Color4B(65, 30, 10, 255));
-
-        // 4. 设置文字位置
-        Size bgSize = spriteBg->getContentSize();
-
-        // 示例位置：背景图宽度的中间，高度的 25% 处（根据实际图片调整这个 0.25f）
-        label->setPosition(Vec2(bgSize.width / 2, bgSize.height * 0.25f));
-
-        bg->addChild(label);
-    }
-    // ==================== 新增逻辑结束 ====================
-    // 设置通用的位置属性
-    bg->setAnchorPoint(Vec2(0.5, 0.4));
-    bg->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-    this->addChild(bg);
-
+   
     // 4. 金钱
     _moneyLabel = Label::createWithTTF("0 G", "fonts/pixel.ttf", 26);
     _moneyLabel->setAnchorPoint(Vec2(1, 0.5));
@@ -482,4 +448,5 @@ void ShopMenuLayer::drawHighlight(float x, float y, float size) {
     // 右边框
     _highlightNode->drawLine(Vec2(right, top), Vec2(right, bottom), highlightColor);
     _highlightNode->drawLine(Vec2(right - 2, top), Vec2(right - 2, bottom), highlightColor);
+
 }
