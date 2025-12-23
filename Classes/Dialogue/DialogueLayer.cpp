@@ -27,18 +27,18 @@ bool DialogueLayer::init() {
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
     // 2. 背景框
-    _bg = Scale9Sprite::create("CreateScene/textBox.png");
+    _bg = Scale9Sprite::create("Shop/dialogue.png");
     _bg->setContentSize(Size(800, 200));
     _bg->setPosition(winSize.width / 2, 150);
     this->addChild(_bg);
 
     // 3. 名字与内容
-    _nameLabel = Label::createWithTTF("", "fonts/arial.ttf", 28);
+    _nameLabel = Label::createWithTTF("", "fonts/pixel.ttf", 28);
     _nameLabel->setPosition(100, 160);
     _nameLabel->setColor(Color3B(100, 50, 20));
     _bg->addChild(_nameLabel);
 
-    _contentLabel = Label::createWithTTF("", "fonts/arial.ttf", 24);
+    _contentLabel = Label::createWithTTF("", "fonts/pixel.ttf", 24);
     _contentLabel->setPosition(400, 80);
     _contentLabel->setDimensions(700, 100);
     _contentLabel->setColor(Color3B::BLACK);
@@ -162,6 +162,8 @@ void DialogueLayer::showChoice(const std::string& content, ChoiceCallback callba
 void DialogueLayer::showText(const std::string& name, const std::vector<std::string>& contentList) {
     _nameLabel->setString(name);
     _choiceNode->setVisible(false);
+    
+    updateBackground(name);
 
     while (!_dialogueQueue.empty()) {
         _dialogueQueue.pop();
@@ -185,4 +187,37 @@ void DialogueLayer::showNextSentence() {
 
     // 更新文本显示
     _contentLabel->setString(text);
+}
+
+void DialogueLayer::updateBackground(const std::string& name) {
+    // 1. 拼接图片路径
+    std::string path = "Shop/Dialogue_" + name + ".png";
+
+
+    // 3. 加载新纹理
+    auto texture = Director::getInstance()->getTextureCache()->addImage(path);
+    if (texture) {
+        // 创建新的 SpriteFrame
+        auto frame = SpriteFrame::createWithTexture(texture, Rect(0, 0, texture->getContentSize().width, texture->getContentSize().height));
+
+        // 4. 更新背景图
+        _bg->setSpriteFrame(frame);
+
+        // 5. 重置一下尺寸
+        _bg->setContentSize(Size(1000, 200));
+    }
+}
+
+void DialogueLayer::showChoice(const std::string& name, const std::string& content, ChoiceCallback callback) {
+    while (!_dialogueQueue.empty()) _dialogueQueue.pop();
+
+    _nameLabel->setString(name);
+    _contentLabel->setString(content);
+
+    // === 新增这一行：根据名字换背景图 ===
+    updateBackground(name);
+    // ==================================
+
+    _choiceCallback = callback;
+    _choiceNode->setVisible(true);
 }

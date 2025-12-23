@@ -16,6 +16,8 @@ public:
     void onChoiceMade(bool choice);
     void createChoiceButtons();
     void showChoice(const std::string& content, ChoiceCallback callback);
+    void updateBackground(const std::string& name);
+    void showChoice(const std::string& name, const std::string& content, ChoiceCallback callback);
 private:
     cocos2d::ui::Scale9Sprite* _bg;
     cocos2d::Label* _nameLabel;
