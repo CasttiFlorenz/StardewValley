@@ -1,16 +1,21 @@
-/****************************************************************
- * Project Name:  StardewValley
- * File Name:     Town.cpp
- * File Function: Town类的实现
- * Author:        郭芷烟、赵睿妍
- * Update Date:   2025/12/19
- * License:       MIT License
- ****************************************************************/
-
 #include "Town.h"
+#include "../Inventory/InventoryScene.h"
 
+// Town 场景单例指针
 GameMap* Town::_instance = nullptr;
 
+// 创建 Town 对象
+Town* Town::create() {
+    auto p = new (std::nothrow) Town();
+    if (p && p->init()) {
+        p->autorelease();
+        return p;
+    }
+    CC_SAFE_DELETE(p);
+    return nullptr;
+}
+
+// 获取 Town 单例
 GameMap* Town::getInstance() {
     if (!_instance) {
         _instance = Town::create();
@@ -19,86 +24,110 @@ GameMap* Town::getInstance() {
     return _instance;
 }
 
+// 销毁 Town 单例
 void Town::destroyInstance() {
     CC_SAFE_RELEASE_NULL(_instance);
 }
 
+// 初始化城镇地图与 NPC
 bool Town::init()
 {
-    if (!Scene::init())
-    {
-        return false;
-    }
-    _mapName = "Town";
+    if (!Scene::init()) return false;
+
+    _mapName = MapType::TOWN;
+
+    // 加载城镇 TMX 地图
     _map = TMXTiledMap::create("TiledMap/Town/Town.tmx");
-    if (_map == nullptr)
-    {
-        return false;
-    }
-    auto eventLayer = _map->getLayer("event");
-    if (eventLayer) {
+    if (!_map) return false;
+
+    // 隐藏事件层
+    if (auto eventLayer = _map->getLayer("event")) {
         eventLayer->setVisible(false);
     }
-    this->addChild(_map);
+
+    // 添加地图并初始化 NPC
+    addChild(_map);
     initNPCs();
-    this->scheduleUpdate();
+
     return true;
 }
 
-std::string Town::getNewMap(const Vec2& curPos, bool isStart, const Direction& direction)
+// 判断是否离开城镇
+MapType Town::leaveMap(const Vec2& curPos, bool isStart, const Direction& direction)
 {
+    // 向左进入农场
     if (direction == Direction::LEFT) {
-        const Rect goToFarm = getObjectRect("goToFarm");
-        if (goToFarm.containsPoint(curPos)) {
-            return "Farm";
+        if (getObjectRect(GO_TO_FARM).containsPoint(curPos)) {
+            return MapType::FARM;
         }
     }
-
-    return "";
+    return MapType::NONE;
 }
 
-void Town::setStartPosition(std::string lastMap)
+// 进入城镇时设置地图参数
+void Town::IntoMap(MapType lastMap)
 {
     _map->setScale(TILED_MAP_SCALE);
     _map->setPosition(Vec2::ZERO);
 }
 
+// 每帧更新（当前未使用）
 void Town::update(float dt)
 {
 }
 
-Vec2 Town::getPlayerStartPosition(std::string lastMap)
+// 根据来源地图确定玩家出生点
+Vec2 Town::getPlayerStartPosition(MapType lastMap)
 {
-    if (lastMap == "Farm") {
-        const Rect goToFarmRect = getObjectRect("goToFarm");
-        if (!goToFarmRect.equals(Rect::ZERO))
-            return Vec2(goToFarmRect.getMidX(), goToFarmRect.getMidY());
+    if (lastMap == MapType::FARM) {
+        const Rect rect = getObjectRect(GO_TO_FARM);
+        if (!rect.equals(Rect::ZERO))
+            return Vec2(rect.getMidX(), rect.getMidY());
     }
     return Vec2(100, 100);
 }
 
-MouseEvent Town::onLeftClick(const Vec2& playerPos, const Direction direction, ItemType  objects)
+// 左键交互（当前无城镇特殊逻辑）
+MouseEvent Town::onLeftClick(const Vec2& playerPos,
+    const Direction direction,
+    ItemType objects)
 {
-    CCLOG("DEBUG: Left Click Triggered!"); 
     return MouseEvent::USE_TOOL;
 }
 
-MouseEvent Town::onRightClick(const Vec2& playerpos, const Direction direction)
+// 右键交互（检测 NPC 并打开商店）
+MouseEvent Town::onRightClick(const Vec2& playerPos,
+    const Direction direction)
 {
-    const auto EvelynRect = getObjectRect("Evelyn");
-    const auto HaleyRect = getObjectRect("Haley");
-    const auto SamRect = getObjectRect("Sam");
-    const auto PierreRect = getObjectRect("Pierre");
-    const auto MarnieRect = getObjectRect("Marnie");
+    // NPC 名称列表
+    static const std::vector<std::string> npcNames = {
+        "Evelyn", "Haley", "Sam"
+    };
 
-    if (EvelynRect.containsPoint(playerpos))return MouseEvent::CONVERSATION_EVELYN;
-    if (HaleyRect.containsPoint(playerpos))return MouseEvent::CONVERSATION_HALEY;
-    if (SamRect.containsPoint(playerpos))return MouseEvent::CONVERSATION_SAM;
-    if (MarnieRect.containsPoint(playerpos))return MouseEvent::SHOP_MARNIE;
-    if (PierreRect.containsPoint(playerpos))return MouseEvent::SHOP_PIERRE;
+    // Shop 名称列表
+    static const std::vector<std::string> shopNames = {
+        "Pierre", "Marnie"
+    };
+
+    // 检测是否点击 NPC
+    for (const auto& name : npcNames) {
+        if (getObjectRect(name).containsPoint(playerPos)) {
+            interactWithNPC(name,InventoryScene::getInstance()->getTap());
+            break;
+        }
+    }
+
+    // 检测是否打开商店
+    for (const auto& name : shopNames) {
+        if (getObjectRect(name).containsPoint(playerPos)) {
+            openShopForNPC(name);
+            break;
+        }
+    }
 
     return MouseEvent::NONE;
 }
+
 void Town::openShopForNPC(const std::string& npcName)
 {
     std::vector<Item*> itemsToSell;
