@@ -49,7 +49,7 @@ public:
     void carryKeyBoardEvent(const KeyBoardEvent event);
     void openFishingGame();
     void onNewDay();
-
+    void sleep();
 private:
     bool _isStart;     
     GameMap* _map;      
@@ -72,4 +72,5 @@ private:
 
 
 #endif // _GAME_SCENE_H_
+
 
