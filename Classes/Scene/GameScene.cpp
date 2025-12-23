@@ -1,4 +1,4 @@
-
+✅调整事件触发方式，改为直接在地图类内调用相关方法|
 #include "GameScene.h"
 
 Scene* GameScene::createScene()
@@ -275,14 +275,14 @@ void GameScene::carryMouseEvent(const MouseEvent event)
 
     switch (event) {
     case MouseEvent::SLEEP: {
-        FarmHouse* farmhouse = dynamic_cast<FarmHouse*>(_map);
-        farmhouse->sleep();
+       sleep();
         break;
     }
     case MouseEvent::FISHING: {
         openFishingGame();
+        break;
     }
-                            break;
+                           
     case MouseEvent::USE_TOOL:
         _inventory->ToolUseAnimation();
         break;
@@ -339,6 +339,7 @@ void GameScene::onNewDay()
 }
 
 void GameScene::sleep() {
+    onNewDay();
     auto runningScene = Director::getInstance()->getRunningScene();
     if (!runningScene) return;
 
