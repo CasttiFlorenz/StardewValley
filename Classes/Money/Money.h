@@ -15,17 +15,14 @@ public:
     static Money* getInstance();
     static void destroyInstance();
 
-    // --- 金钱管理 ---
-    int money;
-
+    Money() : money(500) {};
     int getMoney() { return money; }
     bool canAfford(int cost);
     void spendMoney(int cost);
     void addMoney(int amount);
 
 private:
-    // 构造函数
-    Money() : money(500) {};
+    int money;
     static Money* _instance;
 
     // 统一数据结构：使用 vector 存储指针
