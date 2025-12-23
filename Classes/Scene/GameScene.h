@@ -13,7 +13,7 @@
 #include "../GameMap/Barn.h"
 #include "../GameMap/Mines.h"
 #include "../GameMap/Town.h"
-
+#include"../NPC/NPCManager.h"
 #include "../Inventory/InventoryScene.h"
 #include "../Weather/WeatherManager.h"
 #include "../Time/TimeManager.h"
@@ -58,7 +58,7 @@ private:
     InventoryScene* _inventory;
     WeatherManager* _weatherManager;
     TimeManager* _timeManager;
-
+    NPCManager* _npcManager;
     Camera* _followCamera;
     void updateCamera();
     void resetCamera(); 
@@ -72,3 +72,4 @@ private:
 
 
 #endif // _GAME_SCENE_H_
+
