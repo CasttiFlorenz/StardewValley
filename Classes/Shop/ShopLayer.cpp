@@ -9,30 +9,7 @@ License:       MIT License
 #include "ShopLayer.h"
 USING_NS_CC;
 using namespace ui;
-// ==========================================
-// 侦探函数：专门用来找缺失图片的
-// ==========================================
-Sprite* createSafeSprite(const std::string& path) {
-    // 1. 先打印正在尝试加载什么
-    CCLOG(">> [DEBUG] Trying to load: %s", path.c_str());
-    // 2. 检查文件是否存在
-    if (!cocos2d::FileUtils::getInstance()->isFileExist(path)) {
-        // ！！！ 重点在这里 ！！！
-        CCLOG("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        CCLOG("!! [ERROR] MISSING FILE: %s", path.c_str());
-        CCLOG("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        return nullptr; // 返回空，虽然会崩，但控制台已经打印了名字
-    }
 
-    // 3. 尝试创建
-    auto sprite = cocos2d::Sprite::create(path);
-    if (!sprite) {
-        CCLOG("!! [ERROR] File exists but Create Failed (Corrupt?): %s", path.c_str());
-        return nullptr;
-    }
-
-    return sprite;
-}
 ShopLayer* ShopLayer::create(Item* item) {
     ShopLayer* pRet = new(std::nothrow) ShopLayer();
     if (pRet && pRet->init(item)) {
@@ -54,7 +31,7 @@ bool ShopLayer::init(Item* item) {
     Size winSize = Director::getInstance()->getVisibleSize(); // 使用 VisibleSize 适配性更好
 
     // 2. 背景板
-    auto bg = createSafeSprite("Shop/background.png"); // 假设这是你的背景图路径
+    auto bg =  Sprite:: create("Shop/background.png"); // 假设这是你的背景图路径
 
     bg->setScale(1.2f);
     bg->setContentSize(Size(400, 400));
@@ -62,7 +39,7 @@ bool ShopLayer::init(Item* item) {
     this->addChild(bg);
 
     // 3. 商品图标
-    auto icon = createSafeSprite(item->getPath());
+    auto icon = Sprite::create(item->getPath());
     if (icon) {
         icon->setPosition(winSize.width / 2 - 150, winSize.height / 2+45);
         icon->setScale(_targetItem->getScale());
