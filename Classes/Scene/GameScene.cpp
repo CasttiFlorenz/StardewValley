@@ -338,7 +338,6 @@ void GameScene::onNewDay()
 }
 
 void GameScene::sleep() {
-    onNewDay();
     auto runningScene = Director::getInstance()->getRunningScene();
     if (!runningScene) return;
 
@@ -384,4 +383,5 @@ void GameScene::sleep() {
 
     runningScene->addChild(dialog, 9999);
 }
+
 
