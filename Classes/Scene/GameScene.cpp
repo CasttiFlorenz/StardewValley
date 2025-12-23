@@ -1,4 +1,3 @@
-✅调整事件触发方式，改为直接在地图类内调用相关方法|
 #include "GameScene.h"
 
 Scene* GameScene::createScene()
@@ -385,3 +384,4 @@ void GameScene::sleep() {
 
     runningScene->addChild(dialog, 9999);
 }
+
