@@ -40,9 +40,6 @@ ShopMenuLayer* ShopMenuLayer::create(const std::string& shopName, const std::vec
 bool ShopMenuLayer::init(const std::string& shopName, const std::vector<Item*>& shopItems, const std::vector<ItemType >& acceptedTags) {
     if (!Layer::init()) return false;
 
-    // 1. 保存允许售卖的列表
-    _acceptedSellTags = acceptedTags;
-
     Size visibleSize = Director::getInstance()->getVisibleSize();
 
     // 2. 遮罩层
@@ -52,13 +49,22 @@ bool ShopMenuLayer::init(const std::string& shopName, const std::vector<Item*>& 
     listener->setSwallowTouches(true);
     listener->onTouchBegan = [](Touch*, Event*) { return true; };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, darkLayer);
+
+    // 3. 背景板 
     Node* bg = nullptr;
+
     std::string bgPath = "Shop/Shop_" + shopName + ".png";
     auto spriteBg = Sprite::create(bgPath);
 
-    // 设置背景图
     bg = spriteBg;
-    spriteBg->setContentSize(Size(800, 600)); 
+
+    spriteBg->setContentSize(Size(800, 600));
+
+
+    // 设置通用的位置属性
+    bg->setAnchorPoint(Vec2(0.5, 0.4));
+    bg->setPosition(visibleSize.width / 2, visibleSize.height / 2);
+    this->addChild(bg);
    
     // 4. 金钱
     _moneyLabel = Label::createWithTTF("0 G", "fonts/pixel.ttf", 26);

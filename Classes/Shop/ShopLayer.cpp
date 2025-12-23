@@ -28,10 +28,10 @@ bool ShopLayer::init(Item* item) {
     listener->onTouchBegan = [](Touch* t, Event* e) { return true; };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     _targetItem = item;
-    Size winSize = Director::getInstance()->getVisibleSize(); // 使用 VisibleSize 适配性更好
+    Size winSize = Director::getInstance()->getVisibleSize(); 
 
     // 2. 背景板
-    auto bg =  Sprite:: create("Shop/background.png"); // 假设这是你的背景图路径
+    auto bg =  Sprite:: create("Shop/ShopBackground.png"); 
 
     bg->setScale(1.2f);
     bg->setContentSize(Size(400, 400));
@@ -59,7 +59,7 @@ bool ShopLayer::init(Item* item) {
     this->addChild(priceLabel);
 
     // 5. 计算最大购买数量
-    int playerMoney = Money::getInstance()->money;
+    int playerMoney = Money::getInstance()->getMoney();
     if (_targetItem->getPrice() > 0) {
         _maxQuantity = playerMoney / _targetItem->getPrice();
     }
