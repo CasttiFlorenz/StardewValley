@@ -217,8 +217,6 @@ void Town::openShopForNPC(const std::string& npcName)
                 shopMenu->setTag(SHOP_MENU_TAG);
                 runningScene->addChild(shopMenu, 999);
                 shopMenu->setCameraMask((unsigned short)CameraFlag::DEFAULT);
-
-                CCLOG("成功打开 %s 的商店", npcName.c_str());
             }
         }
     }
@@ -288,3 +286,4 @@ void Town::interactWithNPC(const std::string& npcName, ItemType  heldItem)
         dialog->setCameraMask((unsigned short)CameraFlag::DEFAULT);
     }
 }
+
