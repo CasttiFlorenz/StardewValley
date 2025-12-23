@@ -395,3 +395,4 @@ void Farm::openShopForNPC()
             shopMenu->setCameraMask((unsigned short)CameraFlag::DEFAULT);
         }
     }
+}
