@@ -13,7 +13,7 @@ public:
     virtual bool init() override;
     virtual void playAnimation() override;
     virtual std::vector<std::string> Haley::getConversation(bool isFirstMet)override;
-    virtual int checkGiftTaste(Objects itemTag) override;
+    virtual int checkGiftTaste(ItemType itemTag) override;
 private:
     void createAndPlayAnimation();
 };

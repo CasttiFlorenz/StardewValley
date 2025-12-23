@@ -23,7 +23,7 @@ public:
     // --- 好感度相关 ---
 
     // 接收礼物
-    std::string receiveGift(Objects itemTag);
+    std::string receiveGift(ItemType itemTag);
 
     // 获取当前好感度
     int getFriendship() const { return _friendship; }
@@ -32,7 +32,7 @@ protected:
     bool loadTexture(const std::string& path);
     void createAnimation(int totalRows, int totalCols, int animationRow, float frameDelay = 0.15f);
 
-    virtual int checkGiftTaste(Objects itemTag);
+    virtual int checkGiftTaste(ItemType itemTag);
     void increaseFriendship(int amount);
 private:
     bool _isTextureLoaded;

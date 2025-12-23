@@ -1,4 +1,11 @@
-
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     GameScene.h
+ * File Function: GameScene���ʵ��
+ * Author:        ������
+ * Update Date:   2025/12/14
+ * License:       MIT License
+ ****************************************************************/
 
 #ifndef _GAME_SCENE_H_
 #define _GAME_SCENE_H_
@@ -15,23 +22,25 @@
 #include "../GameMap/Town.h"
 
 #include "../Inventory/InventoryScene.h"
+#include "../Inventory/InventoryGridScene.h"
 #include "../Weather/WeatherManager.h"
 #include "../Time/TimeManager.h"
 #include "../Shop/ShopLayer.h"
-#include "../Fishing/FishGameLayer.h"
-
 
 USING_NS_CC;
 
+// ��Ϸ��������������ͼ�л������
 class GameScene : public cocos2d::Scene
 {
 public:
     static cocos2d::Scene* createScene();
     ~GameScene();
 
-    bool init();
-    void initGameMap();
-    void switchMap();
+    virtual bool init();
+    // ��ʼ����Ϸ��ͼ
+    virtual void initGameMap();
+    // �л���ͼ�߼�
+    virtual void switchMap();
     virtual void update(float dt);
     void setPlayerToStart();
 
@@ -47,21 +56,19 @@ public:
 
     void carryMouseEvent(const MouseEvent event);
     void carryKeyBoardEvent(const KeyBoardEvent event);
-    void openFishingGame();
-    void onNewDay();
-
 private:
-    bool _isStart;     
-    GameMap* _map;      
-    Player* _player;    
-    std::map<MapType, GameMap*> _mapCache;
+    bool _isStart;          // �Ƿ�տ�ʼ��Ϸ
+    GameMap* _map;          // ��ǰ��ͼ
+    Player* _player;        // ��Ҷ���
+    std::map<MapType, GameMap*> _mapCache; // ��ͼ����
     InventoryScene* _inventory;
     WeatherManager* _weatherManager;
     TimeManager* _timeManager;
 
-    Camera* _followCamera;
-    void updateCamera();
-    void resetCamera(); 
+    Camera* _followCamera; // ���������
+
+    void updateCamera(); // ���������λ��
+    void resetCamera();  // ���������
 
     EventListenerMouse* _mouseListener;
     EventListenerKeyboard* _keyboardListener;

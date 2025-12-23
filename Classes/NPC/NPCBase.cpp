@@ -9,7 +9,7 @@ bool NPCBase::init()
     return true;
 }
 
-std::string NPCBase::receiveGift(Objects itemTag)
+std::string NPCBase::receiveGift(ItemType itemTag)
 {
     int points = checkGiftTaste(itemTag);
 
@@ -24,7 +24,7 @@ std::string NPCBase::receiveGift(Objects itemTag)
 }
 
 // 默认喜好
-int NPCBase::checkGiftTaste(Objects itemTag)
+int NPCBase::checkGiftTaste(ItemType itemTag)
 {
     return 20; // 默认普通礼物加20分
 }

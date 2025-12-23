@@ -1,15 +1,15 @@
 /****************************************************************
  * Project Name : StardewValley
  * File Name : TimeManager.cpp
- * File Function : TimeManagerç±»çš„å®ç°
- * Author : èµµç¿å¦
+ * File Function : TimeManagerÀàµÄÊµÏÖ
+ * Author : ÕÔî£åû
  * Update Date : 2025 / 12 / 13
  * License : MIT License
  ****************************************************************/
 #include "TimeManager.h"
 #include <string>
 USING_NS_CC;
-// å®šä¹‰ Tag
+// ¶¨Òå Tag
 const int TAG_BLACK_MASK = 9999;
 #ifndef WINSIZE
 #define WINSIZE Director::getInstance()->getVisibleSize()
@@ -56,7 +56,7 @@ bool TimeManager::init() {
     createUI();
     return true;
 }
-//  UI åˆ›å»º
+//  UI ´´½¨
 void TimeManager::createUI() {
     uiContainer = Node::create();
     std::string bgPath = "Clock/Clock.png";
@@ -79,7 +79,7 @@ void TimeManager::createUI() {
         uiContainer->addChild(clockBg, 0);
     }
 
-    // åŠ è½½æŒ‡é’ˆ
+    // ¼ÓÔØÖ¸Õë
     std::string handPath = "Clock/hand.png";
     clockHand = Sprite::create(handPath);
 
@@ -90,16 +90,16 @@ void TimeManager::createUI() {
         uiContainer->addChild(clockHand, 20);
     }
 
-    // åŠ è½½å­—ä½“
+    // ¼ÓÔØ×ÖÌå
     std::string font = "fonts/arial.ttf";
     if (!FileUtils::getInstance()->isFileExist(font)) font = "Arial";
 
-    // å­—å·å‚æ•°
+    // ×ÖºÅ²ÎÊı
     float fontSizeTime = originalSize.height * 0.10f;
     float fontSizeDate = originalSize.height * 0.10f;
     float fontSizeLabel = originalSize.height * 0.15f;
 
-    // 1.æ—¶é—´ Label
+    // 1.Ê±¼ä Label
     timeLabel = Label::createWithTTF("12:00 am", font, fontSizeTime);
     if (!timeLabel)
         timeLabel = Label::createWithSystemFont("12:00 am", "Arial", fontSizeTime);
@@ -108,7 +108,7 @@ void TimeManager::createUI() {
     timeLabel->setTextColor(Color4B(60, 30, 10, 255));
     uiContainer->addChild(timeLabel, 10);
 
-    // 2. æ—¥æœŸ Label
+    // 2. ÈÕÆÚ Label
     dateLabel = Label::createWithTTF("Mon. 1", font, fontSizeDate);
     if (!dateLabel)
         dateLabel = Label::createWithSystemFont("Mon. 1", "Arial", fontSizeDate);
@@ -117,7 +117,7 @@ void TimeManager::createUI() {
     dateLabel->setTextColor(Color4B(60, 30, 10, 255));
     uiContainer->addChild(dateLabel, 10);
 
-    // 3. é‡‘å¸ Label
+    // 3. ½ğ±Ò Label
     moneyLabel = Label::createWithTTF("500", font, fontSizeLabel);
     if (!moneyLabel)
         moneyLabel = Label::createWithSystemFont("500", "Arial", fontSizeLabel);
@@ -126,7 +126,7 @@ void TimeManager::createUI() {
     moneyLabel->setTextColor(Color4B(60, 30, 10, 255));
     uiContainer->addChild(moneyLabel, 10);
 
-    // 4.  å¤©æ°”Label
+    // 4.  ÌìÆøLabel
     weatherIcon = Sprite::create("Clock/sunny.png");
     weatherIcon->setPosition(Vec2(originalSize.width * 0.48f, originalSize.height * 0.64f));
     weatherIcon->setScale(2.0f);
@@ -134,35 +134,35 @@ void TimeManager::createUI() {
 
     refreshUI();
 }
-//  Update é€»è¾‘
+//  Update Âß¼­
 void TimeManager::update(float dt) {
-    if (_isTransitioning) return; // å¦‚æœæ­£åœ¨è½¬åœºï¼Œæš‚åœæ—¶é—´
+    if (_isTransitioning) return; // Èç¹ûÕıÔÚ×ª³¡£¬ÔİÍ£Ê±¼ä
 
     accumulatedTime += dt;
 
-    // 0.7f æ˜¯æ­£å¸¸é€Ÿåº¦
+    // 0.7f ÊÇÕı³£ËÙ¶È
     if (accumulatedTime >= 0.7f) {
         accumulatedTime = 0;
 
         currentTime.addMinutes(1);
 
-        // æ£€æŸ¥æ˜¯ä¸æ˜¯åˆ°äº†26ç‚¹ï¼Œåˆ°äº†å°±è§¦å‘æ˜è¿·
+        // ¼ì²éÊÇ²»ÊÇµ½ÁË26µã£¬µ½ÁË¾Í´¥·¢»èÃÔ
         if (currentTime.hour >= 26) {
             triggerPassOut();
         }
         refreshUI();
 
-        // é‡ç½®ç´¯ç§¯æ—¶é—´ï¼Œé˜²æ­¢ä¸€å¸§è·³å˜
+        // ÖØÖÃÀÛ»ıÊ±¼ä£¬·ÀÖ¹Ò»Ö¡Ìø±ä
         accumulatedTime = 0;
     }
 }
 void TimeManager::triggerPassOut() {
-    // é˜²æ­¢é‡å¤è§¦å‘
+    // ·ÀÖ¹ÖØ¸´´¥·¢
     if (_isTransitioning) return;
 
-    // æ ‡è®°å¼€å§‹è½¬åœº
+    // ±ê¼Ç¿ªÊ¼×ª³¡
     _isTransitioning = true;
-    // ç¦æ­¢ç©å®¶ç§»åŠ¨
+    // ½ûÖ¹Íæ¼ÒÒÆ¶¯
     _isInputAllowed = false;
 
     CCLOG("2:00 AM reached. Pausing for 2 seconds...");
@@ -190,16 +190,16 @@ void TimeManager::startNextDay() {
     _isInputAllowed = true;
     CCLOG("Day %d Started. Player unlocked.", currentTime.dayOfMonth);
 }
-//  UI åˆ·æ–°
+//  UI Ë¢ĞÂ
 void TimeManager::refreshUI() {
-    // ==================== 1. æ—¶é—´å¤„ç† ====================
+    // ==================== 1. Ê±¼ä´¦Àí ====================
     int h = currentTime.hour;
     int m = currentTime.minute;
 
-    // æ˜¾ç¤ºåˆ†é’Ÿï¼ˆæ¯10åˆ†é’Ÿä¸€è·³ï¼‰
+    // ÏÔÊ¾·ÖÖÓ£¨Ã¿10·ÖÖÓÒ»Ìø£©
     int displayMin = (m / 10) * 10;
 
-    // AM/PM è½¬æ¢
+    // AM/PM ×ª»»
     std::string ampm;
     int showH = h;
 
@@ -221,48 +221,48 @@ void TimeManager::refreshUI() {
 
     if (timeLabel) timeLabel->setString(buf);
 
-    // ==================== 2. åˆ·æ–°æ—¥æœŸ ====================
+    // ==================== 2. Ë¢ĞÂÈÕÆÚ ====================
     if (dateLabel) dateLabel->setString(currentTime.getDateString());
 
-    // ==================== 3. åˆ·æ–°é‡‘å¸ ====================
+    // ==================== 3. Ë¢ĞÂ½ğ±Ò ====================
   
         if (moneyLabel) {
             int currentMoney = Money::getInstance()->getMoney();
             moneyLabel->setString(StringUtils::format("%d", currentMoney));
         
     }
-    // ==================== 4. æŒ‡é’ˆæ—‹è½¬ ====================
+    // ==================== 4. Ö¸ÕëĞı×ª ====================
     if (clockHand) {
-        // è®¡ç®—ä»æ—©ä¸Š6ç‚¹åˆ°å½“å‰æ—¶é—´çš„åˆ†é’Ÿæ•°ï¼Œæ—©ä¸Š6ç‚¹ = æŒ‡é’ˆæŒ‡å‘æ­£ä¸‹æ–¹ï¼ˆ180åº¦ï¼‰
+        // ¼ÆËã´ÓÔçÉÏ6µãµ½µ±Ç°Ê±¼äµÄ·ÖÖÓÊı£¬ÔçÉÏ6µã = Ö¸ÕëÖ¸ÏòÕıÏÂ·½£¨180¶È£©
         float minutesSince6AM;
 
         if (h >= 6) {
-            // 6:00amä¹‹åçš„æ—¶é—´
+            // 6:00amÖ®ºóµÄÊ±¼ä
             minutesSince6AM = (float)((h - 6) * 60 + m);
         }
         else {
-            // 0:00-5:59amçš„æ—¶é—´ï¼ˆçœ‹ä½œå‰ä¸€å¤©çš„æ™šä¸Šï¼‰
+            // 0:00-5:59amµÄÊ±¼ä£¨¿´×÷Ç°Ò»ÌìµÄÍíÉÏ£©
             minutesSince6AM = (float)((h + 24 - 6) * 60 + m);
         }
 
-        // æ¯10åˆ†é’Ÿä¸€è·³ï¼Œæ‰€ä»¥ç”¨displayMin
+        // Ã¿10·ÖÖÓÒ»Ìø£¬ËùÒÔÓÃdisplayMin
         int displayMinutes = (int)(minutesSince6AM / 10) * 10;
 
-        // ä»æ—©ä¸Š6ç‚¹ï¼ˆ180åº¦ï¼‰å¼€å§‹ï¼Œæ¯åˆ†é’Ÿè½¬0.15åº¦ï¼Œè¿™æ ·20å°æ—¶ï¼ˆ1200åˆ†é’Ÿï¼‰æ­£å¥½è½¬180åº¦
+        // ´ÓÔçÉÏ6µã£¨180¶È£©¿ªÊ¼£¬Ã¿·ÖÖÓ×ª0.15¶È£¬ÕâÑù20Ğ¡Ê±£¨1200·ÖÖÓ£©ÕıºÃ×ª180¶È
         float rotation = 180.0f + (displayMinutes * 0.15f);
 
         clockHand->setRotation(rotation);
     }
 
-    // ==================== 5. åˆ·æ–°å¤©æ°”å›¾æ ‡ ====================
+    // ==================== 5. Ë¢ĞÂÌìÆøÍ¼±ê ====================
     if (weatherIcon) {
         std::string iconPath = "Clock/sunny.png";
 
-        // è·å–å¤©æ°”æ•°æ®
+        // »ñÈ¡ÌìÆøÊı¾İ
         WeatherType type = WeatherManager::getInstance()->getCurrentWeather();
         Season season = currentTime.season;
 
-        // åˆ¤æ–­é€»è¾‘
+        // ÅĞ¶ÏÂß¼­
         switch (type) {
         case WeatherType::Sunny:
             iconPath = "Clock/sunny.png";
@@ -295,6 +295,6 @@ void TimeManager::refreshUI() {
         }
     }
 
-    // ==================== 6. æ›´æ–°å¤©è‰² ====================
+    // ==================== 6. ¸üĞÂÌìÉ« ====================
     WeatherManager::getInstance()->updateSkyColor(h, m);
 }

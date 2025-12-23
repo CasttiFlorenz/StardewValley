@@ -135,19 +135,19 @@ std::vector<std::string> Sam::getConversation(bool isFirstMet) {
 }
 
 
-int Sam::checkGiftTaste(Objects itemTag)
+int Sam::checkGiftTaste(ItemType itemTag)
 {
     // --- ×î°® (+80) ---
-    if (itemTag == Objects::FRIED_EGG) return 80;
+    if (itemTag == ItemType::FRIED_EGG) return 80;
 
     // --- Ï²»¶ (+45) ---
-    if (itemTag == Objects::EGG) return 45;
-    if (itemTag == Objects::SALAD) return 45;
+    if (itemTag == ItemType::EGG) return 45;
+    if (itemTag == ItemType::SALAD) return 45;
 
     // --- ÌÖÑá (-20) ---
-    if (itemTag == Objects::CAULIFLOWER) return -20;
-    if (itemTag == Objects::PARSNIP) return -20;
-    if (itemTag == Objects::COPPER_ORE) return -20;
+    if (itemTag == ItemType::CAULIFLOWER) return -20;
+    if (itemTag == ItemType::PARSNIP) return -20;
+    if (itemTag == ItemType::COPPER_ORE) return -20;
 
     return NPCBase::checkGiftTaste(itemTag);
 }

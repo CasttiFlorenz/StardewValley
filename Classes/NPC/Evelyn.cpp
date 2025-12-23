@@ -82,21 +82,21 @@ std::vector<std::string> Evelyn::getConversation(bool isFirstMet) {
 
     return dialogue;
 }
-int Evelyn::checkGiftTaste(Objects itemTag)
+int Evelyn::checkGiftTaste(ItemType itemTag)
 {
     // --- ×î°® (+80) ---
  
-    if (itemTag == Objects::CAULIFLOWER) return 80;
-    if (itemTag == Objects::DAFFODILS) return 80;
+    if (itemTag == ItemType::CAULIFLOWER) return 80;
+    if (itemTag == ItemType::DAFFODILS) return 80;
 
     // --- Ï²»¶ (+45) ---
-    if (itemTag == Objects::MILK) return 45; 
-    if (itemTag == Objects::SALAD) return 45;
-    if (itemTag == Objects::LEEK) return 45; 
+    if (itemTag == ItemType::MILK) return 45; 
+    if (itemTag == ItemType::SALAD) return 45;
+    if (itemTag == ItemType::LEEK) return 45; 
 
     // --- ÌÖÑá (-20) ---
-    if (itemTag == Objects::FISHINGROD) return -20; 
-    if (itemTag == Objects::COPPER_ORE) return -20;
+    if (itemTag == ItemType::FISHINGROD) return -20; 
+    if (itemTag == ItemType::COPPER_ORE) return -20;
 
     return NPCBase::checkGiftTaste(itemTag);
 }

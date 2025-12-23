@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     ShopMenuLayer.h
- * File Function: ShopMenuLayerç±»çš„å®ç°
- * Author:        èµµç¿å¦
+ * File Function: ShopMenuLayerÀàµÄÊµÏÖ
+ * Author:        ÕÔî£åû
  * Update Date:   2025/12/17
  * License:       MIT License
  ****************************************************************/
@@ -16,15 +16,15 @@
 #include "ShopLayer.h"
 #include "../Money/Money.h"
 #include "../Inventory/Item.h"
-class Item; // å‰å‘å£°æ˜
+class Item; // Ç°ÏòÉùÃ÷
 
 class ShopMenuLayer : public cocos2d::Layer
 {
 public:
-    // 1. ä¿®æ”¹å‚æ•°ï¼šå¢åŠ  acceptedTags (å…è®¸å”®å–çš„ç‰©å“ç±»å‹)
-    static ShopMenuLayer* create(const std::vector<Item*>& shopItems, const std::vector<Objects>& acceptedTags);
+    // 1. ĞŞ¸Ä²ÎÊı£ºÔö¼Ó acceptedTags (ÔÊĞíÊÛÂôµÄÎïÆ·ÀàĞÍ)
+    static ShopMenuLayer* create(const std::vector<Item*>& shopItems, const std::vector<ItemType>& acceptedTags);
 
-    virtual bool init(const std::vector<Item*>& shopItems, const std::vector<Objects>& acceptedTags);
+    virtual bool init(const std::vector<Item*>& shopItems, const std::vector<ItemType>& acceptedTags);
 
 private:
     void showTip(const std::string& message, const cocos2d::Color3B& color);
@@ -36,8 +36,8 @@ private:
     cocos2d::Node* _inventoryNode;
     cocos2d::Label* _moneyLabel;
 
-    // 2. å­˜å‚¨å½“å‰å•†åº—å…è®¸å›æ”¶çš„ç‰©å“åˆ—è¡¨
-    std::vector<Objects> _acceptedSellTags;
+    // 2. ´æ´¢µ±Ç°ÉÌµêÔÊĞí»ØÊÕµÄÎïÆ·ÁĞ±í
+    std::vector<ItemType> _acceptedSellTags;
 };
 
 #endif // __SHOP_MENU_LAYER_H__

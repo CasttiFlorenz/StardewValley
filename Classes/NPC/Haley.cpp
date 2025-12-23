@@ -55,21 +55,21 @@ std::vector<std::string> Haley::getConversation(bool isFirstMet)
 }
 
 
-int Haley::checkGiftTaste(Objects itemTag)
+int Haley::checkGiftTaste(ItemType itemTag)
 {
     // --- 最爱 (+80) ---
-    if (itemTag == Objects::DAFFODILS) return 80; 
-    if (itemTag == Objects::SALAD) return 80;    
+    if (itemTag == ItemType::DAFFODILS) return 80; 
+    if (itemTag == ItemType::SALAD) return 80;    
 
     // --- 喜欢 (+45) ---
     // 假设她不做饭，但喜欢现成的食物
-    if (itemTag == Objects::FRIED_EGG) return 45;
+    if (itemTag == ItemType::FRIED_EGG) return 45;
 
     // --- 讨厌 (-20) ---
-    if (itemTag == Objects::PARSNIP) return -20;
-    if (itemTag == Objects::POTATO) return -20;
+    if (itemTag == ItemType::PARSNIP) return -20;
+    if (itemTag == ItemType::POTATO) return -20;
 
     // 讨厌鱼
-    if (itemTag == Objects::CARP) return -20;
+    if (itemTag == ItemType::CARP) return -20;
     return NPCBase::checkGiftTaste(itemTag);
 }

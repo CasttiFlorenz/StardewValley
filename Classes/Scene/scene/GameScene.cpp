@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     GameScene.cpp
+ * File Function: GameScene���ʵ��
+ * Author:        ������
+ * Update Date:   2025/12/14
+ * License:       MIT License
+ ****************************************************************/
 
 #include "GameScene.h"
 
@@ -85,6 +93,7 @@ void GameScene::initGameMap()
         _mapCache[_map->getMapName()] = _map;
     }
 
+
     _map = _mapCache[MapType::FARM_HOUSE];
 }
 
@@ -97,7 +106,10 @@ void GameScene::update(float dt)
     }
 
     _timeManager->onDayStartCallback = [this]() {
-        this->onNewDay();
+        this->setPlayerToStart();
+        CultivationManager::getInstance()->onNewDay();
+        BarnManager::getInstance()->onNewDay();
+
         };
 }
 
@@ -105,10 +117,10 @@ void GameScene::switchMap()
 {
     if (!_player || !_map) return;
 
-    MapType _newMap;
-    MapType _lastMap;
+    MapType _newMap;    // Ŀ���ͼ����
+    MapType _lastMap;   // ��һ�ŵ�ͼ����
 
-    _newMap = _map->leaveMap(_player->getPosition(), _isStart, _player->getPlayerDirection());
+    _newMap = _map->getNewMap(_player->getPosition(), _isStart, _player->getPlayerDirection());
     _lastMap = _map->getMapName();
 
     if (_newMap != MapType::NONE) {
@@ -122,24 +134,29 @@ void GameScene::switchMap()
             _map->scheduleUpdate();
             this->addChild(_map, 0);
 
-            _map->IntoMap(_lastMap);
+            _map->setStartPosition(_lastMap);
             _player->setPosition(_map->getPlayerStartPosition(_lastMap));
             _player->setGameMap(_map);
 
+            // ����µ�ͼ�Ƿ���Ҫ���������
             if (_map->isCameraFollow()) {
+                // �����û�и��������������һ��
                 if (!_followCamera) {
                     _followCamera = Camera::createOrthographic(Director::getInstance()->getVisibleSize().width, Director::getInstance()->getVisibleSize().height, 1, 1000);
                     _followCamera->setCameraFlag(CameraFlag::USER1);
                     this->addChild(_followCamera, 6);
                 }
 
+                // ��������
                 _player->setCameraMask((unsigned short)CameraFlag::USER1, true);
                 _map->setCameraMask((unsigned short)CameraFlag::USER1, true);
 
+                // ȷ�� UI ʹ��Ĭ�������
                 if (_inventory) {
                     _inventory->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
                 }
 
+                // ���������λ��
                 Vec3 currentPos = _followCamera->getPosition3D();
                 currentPos.z = CAMERA_POSZ;
                 _followCamera->setPosition3D(currentPos);
@@ -147,6 +164,7 @@ void GameScene::switchMap()
 
             }
             else {
+                // ����µ�ͼ����Ҫ����������ò�ͬ������
                 resetCamera();
                 _map->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
                 _player->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
@@ -204,7 +222,7 @@ void GameScene::setPlayerToStart()
     _map->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
     _player->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
 
-    _map->IntoMap(MapType::FARM_HOUSE);
+    _map->setStartPosition(MapType::FARM_HOUSE);
     _map->scheduleUpdate();
     _player->setPosition(_map->getPlayerStartPosition(MapType::FARM_HOUSE));
     _player->setGameMap(_map);
@@ -218,21 +236,19 @@ void GameScene::setupMouseListener()
         if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT) {
             if (_map && _player && !_mouseLeftPressed) {
                 _mouseLeftPressed = true;
-                _player->changeUpdateStatus();
                 carryMouseEvent(_map->onLeftClick(_player->getPosition(), _player->getPlayerDirection(), _inventory->getTap()));
             }
         }
         else if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT) {
             if (_map && _player && !_mouseRightPressed) {
                 _mouseRightPressed = true;
-                _player->changeUpdateStatus();
                 carryMouseEvent(_map->onRightClick(_player->getPosition(), _player->getPlayerDirection()));
             }
         }
         };
     _mouseListener->onMouseUp = [this](EventMouse* e) {
         if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT) {
-            _mouseLeftPressed = false;
+            _mouseLeftPressed = false; 
         }
         if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT) {
             _mouseRightPressed = false;
@@ -248,7 +264,6 @@ void GameScene::setupKeyboardListener()
     _keyboardListener->onKeyPressed = [this](EventKeyboard::KeyCode key, Event* e) {
         if (key == EventKeyboard::KeyCode::KEY_E) {
             _keyEPressed = true;
-            _timeManager->changeUpdateStatus();
             carryKeyBoardEvent(KeyBoardEvent::CHANGE_INVENTORY);
         }
         };
@@ -270,28 +285,77 @@ void GameScene::enableKeyboard(bool enable)
 
 void GameScene::carryMouseEvent(const MouseEvent event)
 {
-    ItemType currentItem = _inventory->getTap();
+    Objects currentItem = _inventory->getTap();
 
     switch (event) {
+    case MouseEvent::GET_WOOD:
+        _inventory->addItemCount(Objects::WOOD, 1);
+        break;
+    case MouseEvent::GET_GRASS:
+        _inventory->addItemCount(Objects::FIBER, 1);
+        break;
+    case MouseEvent::GET_COPPER:
+        _inventory->addItemCount(Objects::COPPER_ORE, 1);
+        break;
+    case MouseEvent::GET_STONE:
+        _inventory->addItemCount(Objects::STONE, 1);
+        break;
+    case MouseEvent::GET_LEEK:
+        _inventory->addItemCount(Objects::LEEK, 1);
+        break;
+    case MouseEvent::GET_DAFFODILS:
+        _inventory->addItemCount(Objects::DAFFODILS, 1);
+        break;
+    case MouseEvent::GET_EGG:
+        _inventory->addItemCount(Objects::EGG, 1);
+        break;
+    case MouseEvent::GET_MILK:
+        _inventory->addItemCount(Objects::MILK, 1);
+        break;
+    case MouseEvent::USE_HAY:
+        _inventory->removeItemCount(Objects::HAY, 1);
+        break;
+    case MouseEvent::SHOP_SALE: {
+        Farm* farm = dynamic_cast<Farm*>(_map);
+        farm->openShopForNPC();
+        break;
+    }
+    case MouseEvent::SHOP_MARNIE: {
+        Town* town = dynamic_cast<Town*>(_map);
+        town->openShopForNPC("Marnie");
+        break;
+    }
+    case MouseEvent::SHOP_PIERRE: {
+        Town* town = dynamic_cast<Town*>(_map);
+        town->openShopForNPC("Pierre");
+        break;
+    }              
+    case MouseEvent::CONVERSATION_EVELYN: {
+        Town* town = dynamic_cast<Town*>(_map);
+        town->interactWithNPC("Evelyn", currentItem);
+        break;
+    }
+    case MouseEvent::CONVERSATION_SAM: {
+        Town* town = dynamic_cast<Town*>(_map);
+        town->interactWithNPC("Sam", currentItem);
+        break;
+    }
+    case MouseEvent::CONVERSATION_HALEY: {
+        Town* town = dynamic_cast<Town*>(_map);
+        town->interactWithNPC("Haley", currentItem);
+        break;
+    }
     case MouseEvent::SLEEP: {
         FarmHouse* farmhouse = dynamic_cast<FarmHouse*>(_map);
         farmhouse->sleep();
         break;
     }
-    case MouseEvent::FISHING: {
-        openFishingGame();
-    }
-                            break;
     case MouseEvent::USE_TOOL:
         _inventory->ToolUseAnimation();
         break;
-    default:
+   default:
         break;
     }
-
-    if (_map->isCameraFollow())
-        _map->setCameraMask((unsigned short)CameraFlag::USER1, true);
-    _player->changeUpdateStatus();
 }
 void GameScene::carryKeyBoardEvent(const KeyBoardEvent event)
 {
@@ -299,7 +363,6 @@ void GameScene::carryKeyBoardEvent(const KeyBoardEvent event)
     case KeyBoardEvent::CHANGE_INVENTORY:
         if (_mouseListener->isEnabled())enableMouse(false);
         else  enableMouse(true);
-
         _player->changeUpdateStatus();
         _timeManager->changeUpdateStatus();
         _inventory->toggleInventory();
@@ -307,32 +370,4 @@ void GameScene::carryKeyBoardEvent(const KeyBoardEvent event)
     default:
         break;
     }
-}
-
-void GameScene::openFishingGame()
-{
-    const int FISHING_GAME_TAG = 8998;
-
-    auto existingFishing = this->getChildByTag(FISHING_GAME_TAG);
-    if (existingFishing) {
-        return;
-    }
-    auto fishing = FishGameLayer::create();
-    if (fishing) {
-        fishing->setTag(FISHING_GAME_TAG);
-        this->addChild(fishing, 10);
-        fishing->setTag(FISHING_GAME_TAG);
-        fishing->setCameraMask((unsigned short)CameraFlag::DEFAULT);
-    }
-}
-
-void GameScene::onNewDay()
-{
-    this->setPlayerToStart();
-    if (auto instance = CultivationManager::getInstance()) { instance->onNewDay(); }
-    if (auto instance = BarnManager::getInstance()) { instance->onNewDay(); }
-    if (auto instance = FarmItemManager::getInstance()) { instance->onNewDay(); }
-    if (auto instance = MinesItemManager::getInstance()) { instance->onNewDay(); }
-
-
 }
