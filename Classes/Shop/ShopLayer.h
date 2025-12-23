@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     ShopLayer.h
- * File Function: ShopLayerÀàµÄÊµÏÖ
- * Author:        ÕÔî£åû
+ * File Function: ShopLayerç±»çš„å®ç°
+ * Author:        èµµç¿å¦
  * Update Date:   2025/12/17
  * License:       MIT License
  ****************************************************************/
@@ -26,17 +26,17 @@ public:
     void onBuyClicked(cocos2d::Ref* sender);
     void onCloseClicked(cocos2d::Ref* sender);
 private:
-    Item* _targetItem;      // µ±Ç°ÒªÂòµÄÉÌÆ·
-    int _maxQuantity;       // ×î´ó¿É¹ºÂòÊıÁ¿
-    int _currentQuantity;   // µ±Ç°Ñ¡ÔñÊıÁ¿
+    Item* _targetItem;      // å½“å‰è¦ä¹°çš„å•†å“
+    int _maxQuantity;       // æœ€å¤§å¯è´­ä¹°æ•°é‡
+    int _currentQuantity;   // å½“å‰é€‰æ‹©æ•°é‡
 
-    // UI ¿Ø¼ş
+    // UI æ§ä»¶
     cocos2d::Label* _lblQuantity;
     cocos2d::Label* _lblTotalCost;
     cocos2d::ui::Slider* _slider;
     cocos2d::ui::Button* _btnBuy;
 
-    // »Øµ÷º¯Êı
+    // å›è°ƒå‡½æ•°
     void onSliderEvent(cocos2d::Ref* sender, cocos2d::ui::Slider::EventType type);
 
     void updateUI();

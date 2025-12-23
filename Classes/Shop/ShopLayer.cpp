@@ -1,16 +1,38 @@
 /****************************************************************
- * Project Name:  StardewValley
- * File Name:     ShopLayer.cpp
- * File Function: ShopLayerÀàµÄÊµÏÖ
- * Author:        ÕÔî£åû
- * Update Date:   2025/12/17
- * License:       MIT License
- ****************************************************************/
+Project Name:  StardewValley
+File Name:     ShopLayer.cpp
+File Function: ShopLayerç±»çš„å®žçŽ°
+Author:        èµµç¿å¦
+Update Date:   2025/12/17
+License:       MIT License
+****************************************************************/
 #include "ShopLayer.h"
-
 USING_NS_CC;
 using namespace ui;
+// ==========================================
+// ä¾¦æŽ¢å‡½æ•°ï¼šä¸“é—¨ç”¨æ¥æ‰¾ç¼ºå¤±å›¾ç‰‡çš„
+// ==========================================
+Sprite* createSafeSprite(const std::string& path) {
+    // 1. å…ˆæ‰“å°æ­£åœ¨å°è¯•åŠ è½½ä»€ä¹ˆ
+    CCLOG(">> [DEBUG] Trying to load: %s", path.c_str());
+    // 2. æ£€æŸ¥æ–‡ä»¶æ˜¯å¦å­˜åœ¨
+    if (!cocos2d::FileUtils::getInstance()->isFileExist(path)) {
+        // ï¼ï¼ï¼ é‡ç‚¹åœ¨è¿™é‡Œ ï¼ï¼ï¼
+        CCLOG("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        CCLOG("!! [ERROR] MISSING FILE: %s", path.c_str());
+        CCLOG("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        return nullptr; // è¿”å›žç©ºï¼Œè™½ç„¶ä¼šå´©ï¼Œä½†æŽ§åˆ¶å°å·²ç»æ‰“å°äº†åå­—
+    }
 
+    // 3. å°è¯•åˆ›å»º
+    auto sprite = cocos2d::Sprite::create(path);
+    if (!sprite) {
+        CCLOG("!! [ERROR] File exists but Create Failed (Corrupt?): %s", path.c_str());
+        return nullptr;
+    }
+
+    return sprite;
+}
 ShopLayer* ShopLayer::create(Item* item) {
     ShopLayer* pRet = new(std::nothrow) ShopLayer();
     if (pRet && pRet->init(item)) {
@@ -20,51 +42,46 @@ ShopLayer* ShopLayer::create(Item* item) {
     delete pRet;
     return nullptr;
 }
-
 bool ShopLayer::init(Item* item) {
-    // 1. ³õÊ¼»¯°ëÍ¸Ã÷ºÚÉ«±³¾° (Ä£Ì¬Ð§¹û)
-    if (!LayerColor::initWithColor(Color4B(0, 0, 0, 150))) return false;
 
-    // ÍÌÊÉ´¥Ãþ (·ÀÖ¹µã´©)
+    if (!LayerColor::initWithColor(Color4B(0, 0, 0,0))) return false;
+    // 1. åžå™¬è§¦æ‘¸ (é˜²æ­¢ç‚¹ç©¿)
     auto listener = EventListenerTouchOneByOne::create();
     listener->setSwallowTouches(true);
     listener->onTouchBegan = [](Touch* t, Event* e) { return true; };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-
     _targetItem = item;
-    Size winSize = Director::getInstance()->getVisibleSize(); // Ê¹ÓÃ VisibleSize ÊÊÅäÐÔ¸üºÃ
+    Size winSize = Director::getInstance()->getVisibleSize(); // ä½¿ç”¨ VisibleSize é€‚é…æ€§æ›´å¥½
 
-    // 2. ±³¾°°å
-    auto bg = Scale9Sprite::create("Items/background.png");
-    if (!bg) { // »ØÍË·½°¸£ºÈç¹ûÃ»ÓÐÍ¼Æ¬£¬»­¸ö»ÆÉ«µÄ¿ò
-        bg = Scale9Sprite::create();
-        bg->setColor(Color3B(210, 180, 140));
-    }
-    bg->setContentSize(Size(500, 400));
+    // 2. èƒŒæ™¯æ¿
+    auto bg = createSafeSprite("Shop/background.png"); // å‡è®¾è¿™æ˜¯ä½ çš„èƒŒæ™¯å›¾è·¯å¾„
+
+    bg->setScale(1.2f);
+    bg->setContentSize(Size(400, 400));
     bg->setPosition(winSize.width / 2, winSize.height / 2);
     this->addChild(bg);
 
-    // 3. ÉÌÆ·Í¼±ê
-    auto icon = Sprite::create(_targetItem->getPath());
+    // 3. å•†å“å›¾æ ‡
+    auto icon = createSafeSprite(item->getPath());
     if (icon) {
-        icon->setPosition(winSize.width / 2 - 150, winSize.height / 2 + 50);
+        icon->setPosition(winSize.width / 2 - 150, winSize.height / 2+45);
         icon->setScale(_targetItem->getScale());
-        icon->setScale(4.0);
+        icon->setScale(6.5);
         this->addChild(icon);
     }
 
-    // 4. ÉÌÆ·Ãû×ÖÓëµ¥¼Û
-    auto nameLabel = Label::createWithTTF(_targetItem->getName(), "fonts/arial.ttf", 28);
-    nameLabel->setPosition(winSize.width / 2 + 50, winSize.height / 2 + 80);
+    // 4. å•†å“åå­—ä¸Žå•ä»·
+    auto nameLabel = Label::createWithTTF(_targetItem->getName(), "fonts/pixel.ttf", 28);
+    nameLabel->setPosition(winSize.width / 2 + 50, winSize.height / 2 +80);
     nameLabel->setColor(Color3B::BLACK);
     this->addChild(nameLabel);
 
-    auto priceLabel = Label::createWithTTF(StringUtils::format("%d G", _targetItem->getPrice()), "fonts/arial.ttf", 24);
-    priceLabel->setPosition(winSize.width / 2 + 50, winSize.height / 2 + 40);
-    priceLabel->setColor(Color3B::BLACK); // ÉîºÖÉ«
+    auto priceLabel = Label::createWithTTF(StringUtils::format("%d G", _targetItem->getPrice()), "fonts/pixel.ttf", 24);
+    priceLabel->setPosition(winSize.width / 2 + 50, winSize.height / 2 +20);
+    priceLabel->setColor(Color3B::BLACK); // æ·±è¤è‰²
     this->addChild(priceLabel);
 
-    // 5. ¼ÆËã×î´ó¹ºÂòÊýÁ¿
+    // 5. è®¡ç®—æœ€å¤§è´­ä¹°æ•°é‡
     int playerMoney = Money::getInstance()->money;
     if (_targetItem->getPrice() > 0) {
         _maxQuantity = playerMoney / _targetItem->getPrice();
@@ -72,44 +89,33 @@ bool ShopLayer::init(Item* item) {
     else {
         _maxQuantity = 99;
     }
-    // ÏÞÖÆ¹ºÂòÉÏÏÞ£¬·ÀÖ¹Êý¾ÝÒç³ö»òÂß¼­´íÎó
+    // é™åˆ¶è´­ä¹°ä¸Šé™ï¼Œé˜²æ­¢æ•°æ®æº¢å‡ºæˆ–é€»è¾‘é”™è¯¯
     if (_maxQuantity > 99) _maxQuantity = 99;
     if (_maxQuantity < 1) _maxQuantity = 1;
 
     _currentQuantity = 1;
 
-    // 6. ÊýÁ¿ÏÔÊ¾ (x1)
-    _lblQuantity = Label::createWithTTF("x1", "fonts/arial.ttf", 30);
+    // 6. æ•°é‡æ˜¾ç¤º (x1)
+    _lblQuantity = Label::createWithTTF("x1", "fonts/pixel.ttf", 30);
     _lblQuantity->setPosition(Vec2(winSize.width / 2, winSize.height / 2 - 40));
     _lblQuantity->setColor(Color3B::BLACK);
     this->addChild(_lblQuantity);
 
-    // 7. ¼Ó¼õ°´Å¥Âß¼­
-    // [ - ] °´Å¥
-    auto btnMinus = Button::create("ui/btn_minus.png");
-    if (btnMinus->getContentSize().width == 0) { // »ØÍË£ºÎÄ×Ö°´Å¥
-        btnMinus = Button::create();
-        btnMinus->setTitleText("[-]");
-        btnMinus->setTitleFontSize(40);
-        btnMinus->setTitleColor(Color3B::RED);
-    }
+    // 7. åŠ å‡æŒ‰é’®é€»è¾‘
+    // [ - ] æŒ‰é’®
+    auto btnMinus = Button::create("Shop/minus.png");
     btnMinus->setPosition(Vec2(winSize.width / 2 - 100, winSize.height / 2 - 40));
     btnMinus->addClickEventListener([this](Ref*) {
         if (_currentQuantity > 1) {
             _currentQuantity--;
-            updateUI(); // Ö»¸üÐÂÊý×ÖºÍ¼Û¸ñ£¬²»ÒÀÀµSlider
+            updateUI(); // åªæ›´æ–°æ•°å­—å’Œä»·æ ¼ï¼Œä¸ä¾èµ–Slider
         }
         });
     this->addChild(btnMinus);
 
-    // [ + ] °´Å¥
-    auto btnPlus = Button::create("ui/btn_plus.png");
-    if (btnPlus->getContentSize().width == 0) { // »ØÍË£ºÎÄ×Ö°´Å¥
-        btnPlus = Button::create();
-        btnPlus->setTitleText("[+]");
-        btnPlus->setTitleFontSize(40);
-        btnPlus->setTitleColor(Color3B::GREEN);
-    }
+    // [ + ] æŒ‰é’®
+    auto btnPlus = Button::create("Shop/plus.png");
+
     btnPlus->setPosition(Vec2(winSize.width / 2 + 100, winSize.height / 2 - 40));
     btnPlus->addClickEventListener([this](Ref*) {
         if (_currentQuantity < _maxQuantity) {
@@ -119,79 +125,54 @@ bool ShopLayer::init(Item* item) {
         });
     this->addChild(btnPlus);
 
-    // 8. ×Ü¼ÛÏÔÊ¾
-    _lblTotalCost = Label::createWithTTF("Total: 0", "fonts/arial.ttf", 26);
-    _lblTotalCost->setPosition(Vec2(winSize.width / 2, winSize.height / 2 - 100));
+    // 8. æ€»ä»·æ˜¾ç¤º
+    _lblTotalCost = Label::createWithTTF("Total: 0", "fonts/pixel.ttf", 26);
+    _lblTotalCost->setPosition(Vec2(winSize.width / 2, winSize.height / 2 -300));
     _lblTotalCost->setColor(Color3B::BLACK);
     this->addChild(_lblTotalCost);
 
-    // 9. ¡¾¹Ø¼üÐÞ¸´¡¿¹ºÂòÈ·ÈÏ°´Å¥ (OK Button)
-    _btnBuy = Button::create("Items/btn_ok.png");
-
-    // Èç¹ûÃ»ÓÐÍ¼Æ¬×ÊÔ´£¬ÊÖ¶¯»­Ò»¸öÂÌÉ«µÄ°´Å¥£¬±£Ö¤ÄÜµã»÷£¡
-    if (_btnBuy->getContentSize().width == 0) {
-        _btnBuy = Button::create();
-        _btnBuy->ignoreContentAdaptWithSize(false);
-        _btnBuy->setContentSize(Size(120, 50));
-
-        auto btnBg = LayerColor::create(Color4B(34, 139, 34, 255)); // ÂÌÉ«±³¾°
-        btnBg->setContentSize(Size(120, 50));
-        btnBg->setPosition(0, 0);
-        _eventDispatcher->removeEventListenersForTarget(btnBg); // ÒÆ³ý±³¾°µÄ½»»¥£¬·ÀÖ¹µ²×¡°´Å¥
-        _btnBuy->addChild(btnBg, -1);
-
-        _btnBuy->setTitleText("BUY");
-        _btnBuy->setTitleFontSize(24);
-    }
-
-    // È·±£°´Å¥Î»ÖÃÔÚ´°¿ÚÏÂ·½
+    // 9. è´­ä¹°ç¡®è®¤æŒ‰é’® (OK Button)
+    _btnBuy = Button::create("Shop/buy.png");
+    _btnBuy->setScale(3.0f);
+    // ç¡®ä¿æŒ‰é’®ä½ç½®åœ¨çª—å£ä¸‹æ–¹
     _btnBuy->setPosition(Vec2(winSize.width / 2, winSize.height / 2 - 160));
-    _btnBuy->addClickEventListener(CC_CALLBACK_1(ShopLayer::onBuyClicked, this));
-    this->addChild(_btnBuy, 10); // ZÖáÉèÎª10£¬È·±£ÔÚ×îÉÏ²ã
 
-    // 10. ¹Ø±Õ°´Å¥ (X)
-    auto btnClose = Button::create("Items/btn_close.png");
-    if (btnClose->getContentSize().width == 0) {
-        btnClose = Button::create();
-        btnClose->setTitleText("[X]");
-        btnClose->setTitleFontSize(30);
-        btnClose->setTitleColor(Color3B::RED);
-    }
-    // ·ÅÔÚÓÒÉÏ½Ç
-    btnClose->setPosition(Vec2(winSize.width / 2 + 250 - 30, winSize.height / 2 + 200 - 30));
+    _btnBuy->addClickEventListener(CC_CALLBACK_1(ShopLayer::onBuyClicked, this));
+    this->addChild(_btnBuy, 10); // Zè½´è®¾ä¸º10ï¼Œç¡®ä¿åœ¨æœ€ä¸Šå±‚
+
+    // 10. å…³é—­æŒ‰é’® (X)
+    auto btnClose = Button::create("Shop/close.png");
+    btnClose->setScale(3.0f);
+    // æ”¾åœ¨å³ä¸Šè§’
+    btnClose->setPosition(Vec2(winSize.width / 2 + 230, winSize.height/2+230));
     btnClose->addClickEventListener(CC_CALLBACK_1(ShopLayer::onCloseClicked, this));
     this->addChild(btnClose, 10);
 
-    updateUI(); // ³õÊ¼»¯½çÃæ×´Ì¬
+    updateUI(); // åˆå§‹åŒ–ç•Œé¢çŠ¶æ€
     return true;
 }
-
-// ÒÆ³ý onSliderEvent£¬´¿¿¿¼Ó¼õ°´Å¥¸üÎÈ½¡
-
 void ShopLayer::updateUI() {
-    // 1. ¸üÐÂÊýÁ¿ÎÄ±¾
+    // 1. æ›´æ–°æ•°é‡æ–‡æœ¬
     if (_lblQuantity) {
         _lblQuantity->setString(StringUtils::format("x%d", _currentQuantity));
     }
-
-    // 2. ¼ÆËã×Ü¼Û
+    // 2. è®¡ç®—æ€»ä»·
     int totalCost = _currentQuantity * _targetItem->getPrice();
     if (_lblTotalCost) {
         _lblTotalCost->setString(StringUtils::format("Total: %d G", totalCost));
     }
 
-    // 3. ¼ì²éÇ®¹»²»¹»£¬¿ØÖÆ°´Å¥×´Ì¬
+    // 3. æ£€æŸ¥é’±å¤Ÿä¸å¤Ÿï¼ŒæŽ§åˆ¶æŒ‰é’®çŠ¶æ€
     bool canAfford = Money::getInstance()->canAfford(totalCost);
     if (_btnBuy) {
         _btnBuy->setEnabled(canAfford);
-        _btnBuy->setOpacity(canAfford ? 255 : 128); // Âò²»Æð±ä°ëÍ¸Ã÷
+        _btnBuy->setOpacity(canAfford ? 255 : 128); // ä¹°ä¸èµ·å˜åŠé€æ˜Ž
 
-        // Èç¹ûÇ®²»¹»£¬×Ü¼ÛÏÔÊ¾ºìÉ«
+        // å¦‚æžœé’±ä¸å¤Ÿï¼Œæ€»ä»·æ˜¾ç¤ºçº¢è‰²
         if (!canAfford) _lblTotalCost->setColor(Color3B::RED);
         else _lblTotalCost->setColor(Color3B::BLACK);
     }
 }
-
 void ShopLayer::onBuyClicked(Ref* sender) {
     if (!_targetItem) return;
 
@@ -199,26 +180,25 @@ void ShopLayer::onBuyClicked(Ref* sender) {
     auto playerState = Money::getInstance();
 
     if (playerState->canAfford(totalCost)) {
-        // 1. ¿ÛÇ® 
+        // 1. æ‰£é’± 
         playerState->spendMoney(totalCost);
 
-        // 2. ¼Ó±³°ü 
+        // 2. åŠ èƒŒåŒ… 
         InventoryScene::getInstance()->addItemCount(_targetItem->getTag(), _currentQuantity, false);
 
-        // 3. Í¨ÖªÉÏ²ã½çÃæË¢ÐÂ (Ö÷ÒªÊÇË¢ÐÂ½ðÇ®ÏÔÊ¾)
+        // 3. é€šçŸ¥ä¸Šå±‚ç•Œé¢åˆ·æ–° (ä¸»è¦æ˜¯åˆ·æ–°é‡‘é’±æ˜¾ç¤º)
         if (onPurchaseSuccess) {
             onPurchaseSuccess();
         }
 
-        // 4. ¹Ø±Õµ¯´°
+        // 4. å…³é—­å¼¹çª—
         this->removeFromParent();
     }
     else {
-        CCLOG("½ðÇ®²»×ã");
-        // ¿ÉÑ¡£ºÌí¼ÓÒ»¸öÌáÊ¾¶¯»­
+        CCLOG("é‡‘é’±ä¸è¶³");
+        // å¯é€‰ï¼šæ·»åŠ ä¸€ä¸ªæç¤ºåŠ¨ç”»
     }
 }
-
 void ShopLayer::onCloseClicked(Ref* sender) {
     this->removeFromParent();
 }

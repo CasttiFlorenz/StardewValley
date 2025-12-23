@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     ShopMenuLayer.h
- * File Function: ShopMenuLayerÀàµÄÊµÏÖ
- * Author:        ÕÔî£åû
+ * File Function: ShopMenuLayerç±»çš„å®ç°
+ * Author:        èµµç¿å¦
  * Update Date:   2025/12/17
  * License:       MIT License
  ****************************************************************/
@@ -16,28 +16,34 @@
 #include "ShopLayer.h"
 #include "../Money/Money.h"
 #include "../Inventory/Item.h"
-class Item; // Ç°ÏòÉùÃ÷
+#include"../Time/TimeManager.h"
+#include "../MapItem/BarnManager.h" 
+class Item; // å‰å‘å£°æ˜
 
-class ShopMenuLayer : public cocos2d::Layer
-{
+class ShopMenuLayer : public cocos2d::Layer {
 public:
-    // 1. ĞŞ¸Ä²ÎÊı£ºÔö¼Ó acceptedTags (ÔÊĞíÊÛÂôµÄÎïÆ·ÀàĞÍ)
-    static ShopMenuLayer* create(const std::vector<Item*>& shopItems, const std::vector<ItemType>& acceptedTags);
+    static ShopMenuLayer* create(const std::string& shopName,
+        const std::vector<Item*>& shopItems,
+        const std::vector<ItemType>& acceptedTags);
 
-    virtual bool init(const std::vector<Item*>& shopItems, const std::vector<ItemType>& acceptedTags);
+    virtual bool init(const std::string& shopName,
+        const std::vector<Item*>& shopItems,
+        const std::vector<ItemType>& acceptedTags);
 
-private:
-    void showTip(const std::string& message, const cocos2d::Color3B& color);
     void refreshUI();
     void sellItem(Item item);
-  
+    void showTip(const std::string& message, const cocos2d::Color3B& color);
+    void buyLivestock(Item* item);
+
 private:
+    cocos2d::DrawNode* _highlightNode; // ç”¨äºç”»çº¢æ¡†
+    int _selectedSlotIndex;            // å½“å‰é€‰ä¸­çš„æ ¼å­ç´¢å¼• (-1è¡¨ç¤ºæ²¡é€‰ä¸­)
+
+    void drawHighlight(float x, float y, float size); // ç”»æ¡†çš„å…·ä½“é€»è¾‘
+    std::vector<ItemType> _acceptedSellTags;
+    cocos2d::Label* _moneyLabel;
     cocos2d::ui::ListView* _listView;
     cocos2d::Node* _inventoryNode;
-    cocos2d::Label* _moneyLabel;
-
-    // 2. ´æ´¢µ±Ç°ÉÌµêÔÊĞí»ØÊÕµÄÎïÆ·ÁĞ±í
-    std::vector<ItemType> _acceptedSellTags;
 };
 
-#endif // __SHOP_MENU_LAYER_H__
+#endif
