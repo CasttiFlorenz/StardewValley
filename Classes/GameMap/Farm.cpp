@@ -1,145 +1,174 @@
-
 #include "Farm.h"
+#include "../Inventory/InventoryScene.h"
 
+// Farm 场景单例指针
 GameMap* Farm::_instance = nullptr;
 
+Farm* Farm::create() {
+    auto p = new (std::nothrow) Farm();
+    if (p && p->init()) {
+        p->autorelease();
+        return p;
+    }
+    CC_SAFE_DELETE(p);
+    return nullptr;
+}
+
+// 获取 Farm 场景的单例实例
 GameMap* Farm::getInstance() {
     if (!_instance) {
         _instance = Farm::create();
-        CC_SAFE_RETAIN(_instance);
+        CC_SAFE_RETAIN(_instance); // 增加引用计数，防止被自动释放
     }
     return _instance;
 }
 
+// 销毁 Farm 场景单例
 void Farm::destroyInstance() {
     CC_SAFE_RELEASE_NULL(_instance);
 }
 
-Farm::~Farm() {
-}
-
 bool Farm::init()
 {
-    if (!Scene::init())
-    {
-        return false;
-    }
+    // 初始化 Scene 基类
+    if (!Scene::init()) return false;
 
-    _mapName = "Farm";
+    // 设置当前地图类型为 FARM
+    _mapName = MapType::FARM;
 
+    // 加载农场 Tiled 地图
     _map = TMXTiledMap::create("TiledMap/Farm/Farm.tmx");
-
     if (_map == nullptr)
     {
         CCLOG("Failed to load map: TiledMap/Farm/Farm.tmx");
         return false;
     }
 
+    // event 层仅用于逻辑判断（碰撞、触发器等），不需要显示
     auto eventLayer = _map->getLayer("event");
     if (eventLayer) {
         eventLayer->setVisible(false);
     }
 
+    // 初始化农场物品管理器（木头、杂草、采集物等）
     _farmItemManager = FarmItemManager::getInstance(this);
-    _cultivationManager = CultivationManager::getInstance();
-    _cultivationManager->init(_farmItemManager, this);
+    if (_farmItemManager == nullptr)
+    {
+        CCLOG("Failed to init FarmItemManager");
+        return false;
+    }
 
+    // 初始化耕种管理器（翻地、浇水、种植、收获）
+    _cultivationManager = CultivationManager::getInstance(_farmItemManager,this);
+    if (_cultivationManager == nullptr)
+    {
+        CCLOG("Failed to init CultivationManager");
+        return false;
+    }
+
+    // 添加地图到场景
     this->addChild(_map, 0);
-    this->scheduleUpdate();
 
     return true;
 }
 
-std::string Farm::getNewMap(const Vec2& curPos, bool isStart, const Direction& direction)
+// 判断玩家是否需要切换地图
+MapType Farm::leaveMap(const Vec2& curPos, bool isStart, const Direction& direction)
 {
+    // 向上移动时的地图切换检测
     if (direction == Direction::UP) {
-        const Rect goToHouse = getObjectRect("goToHouse");
-        if (goToHouse.containsPoint(curPos)) {
-            return "FarmHouse";
-        }
-        const Rect goToMines = getObjectRect("goToMines");
-        if (goToMines.containsPoint(curPos)) {
-            return "Mines";
-        }
-        const Rect goToBarn = getObjectRect("goToBarn");
-        if (goToBarn.containsPoint(curPos)) {
-            return "Barn";
-        }
+        if (getObjectRect(GO_TO_HOUSE).containsPoint(curPos))
+            return MapType::FARM_HOUSE;
+
+        else if (getObjectRect(GO_TO_MINES).containsPoint(curPos))
+            return MapType::MINES;
+
+        if (getObjectRect(GO_TO_BARN).containsPoint(curPos))
+            return MapType::BARN;
     }
+
+    // 向右移动进入城镇
     if (direction == Direction::RIGHT) {
-        const Rect goToTown = getObjectRect("goToTown");
-        if (goToTown.containsPoint(curPos)) {
-            return "Town";
-        }
+        if (getObjectRect(GO_TO_TOWN).containsPoint(curPos))
+            return MapType::TOWN;
     }
 
-
-    return "";
+    return MapType::NONE;
 }
 
-void Farm::setStartPosition(std::string lastMap)
+// 进入 Farm 地图时的处理
+void Farm::IntoMap(MapType lastMap)
 {
     const Vec2 visibleSize = Director::getInstance()->getVisibleSize();
+
+    // 设置地图缩放
     _map->setScale(TILED_MAP_SCALE);
 
+    // Farm 地图使用左下角原点对齐
     _map->setPosition(Vec2::ZERO);
 }
 
+// 每帧更新（目前未使用）
 void Farm::update(float dt)
 {
 }
 
-Vec2 Farm::getPlayerStartPosition(std::string lastMap)
+// 根据来源地图设置玩家出生点
+Vec2 Farm::getPlayerStartPosition(MapType lastMap)
 {
-    if (lastMap == "FarmHouse") {
-        const Rect startRect = this->getObjectRect("goToHouse");
-        if (!startRect.equals(Rect::ZERO)) {
-
-            return Vec2(startRect.getMidX(), startRect.getMidY());
-        }
-    }
-    if (lastMap == "Mines") {
-        const Rect goToMinesRect = this->getObjectRect("goToMines");
-        if (!goToMinesRect.equals(Rect::ZERO)) {
-
-            return Vec2(goToMinesRect.getMidX(), goToMinesRect.getMidY());
-        }
-    }
-    if (lastMap == "Barn") {
-        const Rect goToBarnRect = this->getObjectRect("goToBarn");
-        if (!goToBarnRect.equals(Rect::ZERO)) {
-
-            return Vec2(goToBarnRect.getMidX(), goToBarnRect.getMidY());
-        }
-    }
-    if (lastMap == "Town") {
-        const Rect goToTownRect = this->getObjectRect("goToTown");
-        if (!goToTownRect.equals(Rect::ZERO)) {
-
-            return Vec2(goToTownRect.getMidX(), goToTownRect.getMidY());
-        }
+    // 从房屋出来
+    if (lastMap == MapType::FARM_HOUSE) {
+        const Rect rect = getObjectRect(GO_TO_HOUSE);
+        if (!rect.equals(Rect::ZERO))
+            return rect.origin + rect.size / 2;
     }
 
+    // 从矿洞出来
+    if (lastMap == MapType::MINES) {
+        const Rect rect = getObjectRect(GO_TO_MINES);
+        if (!rect.equals(Rect::ZERO))
+            return rect.origin + rect.size / 2;
+    }
+
+    // 从谷仓出来
+    if (lastMap == MapType::BARN) {
+        const Rect rect = getObjectRect(GO_TO_BARN);
+        if (!rect.equals(Rect::ZERO))
+            return rect.origin + rect.size / 2;
+    }
+
+    // 从城镇回来
+    if (lastMap == MapType::TOWN) {
+        const Rect rect = getObjectRect(GO_TO_TOWN);
+        if (!rect.equals(Rect::ZERO))
+            return rect.origin + rect.size / 2;
+    }
+
+    // 兜底出生点
     return Vec2(100, 100);
 }
 
+// 判断世界坐标是否可碰撞
 bool Farm::isCollidable(Vec2 worldPos)
 {
     if (!_map) return false;
 
+    // 转换为瓦片坐标
     const Vec2 tilePos = calMapPos(worldPos);
     const int x = static_cast<int>(tilePos.x);
     const int y = static_cast<int>(tilePos.y);
 
     const Size mapSize = _map->getMapSize();
 
-    if (x < 0 || x >= mapSize.width || y < 0 || y >= mapSize.height) {
+    // 超出地图范围视为不可通行
+    if (x < 0 || x >= mapSize.width || y < 0 || y >= mapSize.height)
         return true;
-    }
 
+    // 农场环境物品（木头、杂草等）碰撞检测
     if (_farmItemManager && _farmItemManager->isCollidable(tilePos))
         return true;
 
+    // event 层中的 Collidable 属性检测
     auto layer = _map->getLayer("event");
     if (!layer) return false;
 
@@ -156,182 +185,201 @@ bool Farm::isCollidable(Vec2 worldPos)
     return false;
 }
 
-MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction, Objects objects)
+// 鼠标左键：工具使用 / 种植 / 砍伐 / 钓鱼
+MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction, ItemType objects)
 {
     Vec2 basePos = this->calMapPos(playerPos);
 
-    if (objects == Objects::FISHINGROD) {
+    // 钓鱼竿优先检测钓鱼区域
+    if (objects == ItemType::FISHINGROD) {
         auto layer = _map->getLayer("event");
         if (layer) {
             const int tileGID = layer->getTileGIDAt(basePos);
             if (tileGID) {
                 auto properties = _map->getPropertiesForGID(tileGID).asValueMap();
-                if (!properties.empty() &&
-                    properties.find("Fishing") != properties.end() &&
+                if (properties.find("Fishing") != properties.end() &&
                     properties.at("Fishing").asBool()) {
-                    return MouseEvent::FISHING;;
+                    return MouseEvent::FISHING;
                 }
             }
         }
     }
 
-    switch (direction) {
-    case Direction::DOWN:  basePos.y++; break;
-    case Direction::UP:    basePos.y--; break;
-    case Direction::LEFT:  basePos.x--; break;
-    case Direction::RIGHT: basePos.x++; break;
-    default: break;
-    }
+    // 计算玩家正前方交互位置
+    ApplyDirectionOffset(basePos, direction);
 
-    const int yOffsets[] = { 1,0, -1 };
+    // 允许上下三格检测，解决高度/遮挡问题
+    const int yOffsets[] = { 1, 0, -1 };
 
     for (int offset : yOffsets) {
         Vec2 checkPos = basePos;
         checkPos.y += offset;
 
-        EnvironmentItem* item = _farmItemManager->getItem(checkPos);
-        if (item) {
-            auto type = item->getType();
-            if (type == EnvironmentItemType::WOOD && objects == Objects::AXE) {
-                _farmItemManager->removeItem(checkPos);
-                return MouseEvent::GET_WOOD;
-            }
-            else if (type == EnvironmentItemType::GRASS && objects == Objects::SCYTHE) {
-                _farmItemManager->removeItem(checkPos);
-                return MouseEvent::GET_GRASS;
+        // 砍树 / 割草
+        if (_farmItemManager) {
+            EnvironmentItem* item = _farmItemManager->getItem(checkPos);
+            if (item) {
+                auto type = item->getType();
+
+                if (type == EnvironmentItemType::WOOD && objects == ItemType::AXE) {
+                    _farmItemManager->removeItem(checkPos);
+                    if (auto inv = InventoryScene::getInstance()) {
+                        inv->ToolUseAnimation();
+                        inv->addItemCount(ItemType::WOOD, 1);
+                    }
+                    return MouseEvent::NONE;
+                }
+
+                if (type == EnvironmentItemType::GRASS && objects == ItemType::SCYTHE) {
+                    _farmItemManager->removeItem(checkPos);
+                    if (auto inv = InventoryScene::getInstance()) {
+                        inv->ToolUseAnimation();
+                        inv->addItemCount(ItemType::FIBER, 1);
+                    }
+                    return MouseEvent::NONE;
+                }
             }
         }
 
-        switch (objects) {
-        case Objects::HOE:
-            _cultivationManager->attemptCultivate(checkPos);
-            return MouseEvent::USE_TOOL;
+        // 耕种系统交互
+        if (_cultivationManager) {
+            switch (objects) {
+            case ItemType::HOE:
+                _cultivationManager->attemptCultivate(checkPos);
+                return MouseEvent::NONE;
+            
+            case ItemType::WATERING_CAN:
+                _cultivationManager->waterSoil(checkPos);
+                return MouseEvent::NONE;
+            
+            case ItemType::PARSNIP_SEED:
+                if (_cultivationManager->plantCrop(checkPos, ItemType::PARSNIP))
+                    if (auto inv = InventoryScene::getInstance()) {
+                        inv->removeItemCount(ItemType::PARSNIP_SEED, 1);
+                    }
+                return MouseEvent::NONE;
 
-        case Objects::PICKAXE:
-            _cultivationManager->removeSoil(checkPos);
-            return MouseEvent::USE_TOOL;
+            case ItemType::POTATO_SEED:
+                if (_cultivationManager->plantCrop(checkPos, ItemType::POTATO))
+                    if (auto inv = InventoryScene::getInstance()) {
+                        inv->removeItemCount(ItemType::POTATO_SEED, 1);
+                    }
+                return MouseEvent::NONE;
 
-        case  Objects::WATERING_CAN:
-            _cultivationManager->waterSoil(checkPos);
-            return MouseEvent::USE_TOOL;
+            case ItemType::CAULIFLOWER_SEED:
+                if (_cultivationManager->plantCrop(checkPos, ItemType::CAULIFLOWER))
+                    if (auto inv = InventoryScene::getInstance()) {
+                        inv->removeItemCount(ItemType::CAULIFLOWER_SEED, 1);
+                    }
+                return MouseEvent::NONE;
 
-        case  Objects::PARSNIP_SEED:
-            if (_cultivationManager->plantCrop(checkPos, CropType::PARSNIP))
-                return MouseEvent::USE_PARSNIP_SEED;
-            break;
+            default:
+                break;
+            }
 
-        case Objects::POTATO_SEED:
-            if (_cultivationManager->plantCrop(checkPos, CropType::POTATO))
-                return MouseEvent::USE_POTATO_SEED;
-            break;
+            if (auto inv = InventoryScene::getInstance())
+                inv->ToolUseAnimation();
 
-        case Objects::CAULIFLOWER_SEED:
-            if (_cultivationManager->plantCrop(checkPos, CropType::CAULIFLOWER))
-                return MouseEvent::USE_CAULIFLOWER_SEED;
-            break;
-        default:
-            break;
         }
-
     }
 
     return MouseEvent::USE_TOOL;
 }
 
+// 鼠标右键：采集 / 商店
 MouseEvent Farm::onRightClick(const Vec2& playerPos, const Direction direction)
 {
+    // 检测是否点击出售区域
     const Rect saleRect = getObjectRect("sale");
-
     if (saleRect.containsPoint(playerPos)) {
-        return MouseEvent::SHOP_SALE;
+        openShopForNPC();
+        return MouseEvent::NONE;
     }
 
-    Vec2 basePos = this->calMapPos(playerPos);
+    Vec2 basePos = calMapPos(playerPos);
+    ApplyDirectionOffset(basePos, direction);
 
-    switch (direction) {
-    case Direction::DOWN:  basePos.y++; break;
-    case Direction::UP:    basePos.y--; break;
-    case Direction::LEFT:  basePos.x--; break;
-    case Direction::RIGHT: basePos.x++; break;
-    default: break;
-    }
-
-    const int yOffsets[] = { 1,0, -1 };
+    const int yOffsets[] = { 1, 0, -1 };
 
     for (int offset : yOffsets) {
         Vec2 checkPos = basePos;
         checkPos.y += offset;
 
-        EnvironmentItem* item = _farmItemManager->getItem(checkPos);
-        if (item) {
-            auto type = item->getType();
-            if (type == EnvironmentItemType::LEEK) {
-                _farmItemManager->removeItem(checkPos);
-                return MouseEvent::GET_LEEK;
-            }
-            else if (type == EnvironmentItemType::DAFFODILS) {
-                _farmItemManager->removeItem(checkPos);
-                return MouseEvent::GET_DAFFODILS;
+        // 采集地面物品
+        if (_farmItemManager) {
+            const EnvironmentItem* item = _farmItemManager->getItem(checkPos);
+            if (item) {
+                auto type = item->getType();
+                if (type == EnvironmentItemType::LEEK ||
+                    type == EnvironmentItemType::DAFFODILS) {
+
+                    _farmItemManager->removeItem(checkPos);
+                    if (auto inv = InventoryScene::getInstance()) {
+                        inv->addItemCount(
+                            type == EnvironmentItemType::LEEK ? ItemType::LEEK : ItemType::DAFFODILS,
+                            1
+                        );
+                    }
+                }
             }
         }
 
-        CropType crop = _cultivationManager->harvestCrop(checkPos);
+        // 检查是否在采集农作物 
+        const ItemType crop = _cultivationManager ? _cultivationManager->harvestCrop(checkPos) : ItemType::NONE;
         switch (crop) {
-        case CropType::PARSNIP:
-            return MouseEvent::GET_PARSNIP;
-        case CropType::POTATO:
-            return MouseEvent::GET_POTATO;
-        case CropType::CAULIFLOWER:
-            return MouseEvent::GET_CAULIFLOWER;
+        case ItemType::PARSNIP:
+            if (auto inv = InventoryScene::getInstance()) {
+                inv->addItemCount(ItemType::PARSNIP, 1);
+            }
+            return MouseEvent::NONE;
+        case ItemType::POTATO:
+            if (auto inv = InventoryScene::getInstance()) {
+                inv->addItemCount(ItemType::POTATO, 1);
+            }
+            return MouseEvent::NONE;
+        case ItemType::CAULIFLOWER:
+            if (auto inv = InventoryScene::getInstance()) {
+                inv->addItemCount(ItemType::CAULIFLOWER, 1);
+            }
+            return MouseEvent::NONE;
         default:
             break;
         }
-
     }
 
     return MouseEvent::NONE;
 }
 
+// 打开 NPC 商店界面
 void Farm::openShopForNPC()
 {
     std::vector<Item*> itemsToSell;
-    std::vector<Objects> acceptedSellItems;
-    acceptedSellItems.push_back(Objects::STONE);
-    acceptedSellItems.push_back(Objects::WOOD);
-    acceptedSellItems.push_back(Objects::COPPER_ORE);
-    acceptedSellItems.push_back(Objects::PARSNIP);
-    acceptedSellItems.push_back(Objects::CAULIFLOWER);
-    acceptedSellItems.push_back(Objects::POTATO);
-    acceptedSellItems.push_back(Objects::FIBER);
-    acceptedSellItems.push_back(Objects::DAFFODILS);
-    acceptedSellItems.push_back(Objects::LEEK);
-    acceptedSellItems.push_back(Objects::HAY);
-    acceptedSellItems.push_back(Objects::EGG);
-    acceptedSellItems.push_back(Objects::FRIED_EGG);
-    acceptedSellItems.push_back(Objects::CARP);
-    acceptedSellItems.push_back(Objects::MILK);
-    acceptedSellItems.push_back(Objects::SALAD);
 
+    // 定义可出售物品列表
+    std::vector<ItemType> acceptedSellItems = {
+        ItemType::STONE, ItemType::WOOD, ItemType::COPPER_ORE,
+        ItemType::PARSNIP, ItemType::CAULIFLOWER, ItemType::POTATO,
+        ItemType::FIBER, ItemType::DAFFODILS, ItemType::LEEK,
+        ItemType::HAY, ItemType::EGG, ItemType::FRIED_EGG,
+        ItemType::CARP, ItemType::MILK, ItemType::SALAD
+    };
 
     auto runningScene = Director::getInstance()->getRunningScene();
-    if (runningScene) {
-        // 定义一个唯一的TAG，比如 9999
-        const int SHOP_MENU_TAG = 9999;
+    if (!runningScene) return;
 
-        // 查找是否已有该Tag的子节点
-        auto existingShop = runningScene->getChildByTag(SHOP_MENU_TAG);
-        if (existingShop) {
-            CCLOG("商店菜单已打开，不再重复创建");
-            return;
-        }
+    // 防止重复打开商店
+    const int SHOP_MENU_TAG = 9999;
+    if (runningScene->getChildByTag(SHOP_MENU_TAG)) {
+        CCLOG("商店菜单已打开，不再重复创建");
+        return;
+    }
 
-        auto shopMenu = ShopMenuLayer::create(itemsToSell, acceptedSellItems);
-        if (shopMenu) {
-            shopMenu->setTag(SHOP_MENU_TAG);
-            runningScene->addChild(shopMenu, 999);
-            shopMenu->setCameraMask((unsigned short)CameraFlag::DEFAULT);
-
-            CCLOG("成功打开商店菜单");
-        }
+    // 创建并显示商店界面
+    auto shopMenu = ShopMenuLayer::create(itemsToSell, acceptedSellItems);
+    if (shopMenu) {
+        shopMenu->setTag(SHOP_MENU_TAG);
+        runningScene->addChild(shopMenu, 999);
+        shopMenu->setCameraMask((unsigned short)CameraFlag::DEFAULT);
+        CCLOG("成功打开商店菜单");
     }
 }

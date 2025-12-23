@@ -46,7 +46,7 @@ void CultivatedSoil::dry() {
     }
 }
 
-bool CultivatedSoil::plant(CropType type) {
+bool CultivatedSoil::plant(ItemType type) {
     if (_crop != nullptr) {
         return false; // Already has a crop
     }
@@ -62,16 +62,16 @@ bool CultivatedSoil::plant(CropType type) {
     return false;
 }
 
-CropType CultivatedSoil::harvest() {
+ItemType CultivatedSoil::harvest() {
     if (_crop && _crop->getStatus() == CropStatus::MATURE) {
-        CropType type = _crop->getCropType();
+        ItemType type = _crop->getCropType();
         
         _crop->removeFromParent();
         _crop = nullptr;
         
         return type;
     }
-    return CropType::NONE;
+    return ItemType::NONE;
 }
 
 void CultivatedSoil::updateDay() {

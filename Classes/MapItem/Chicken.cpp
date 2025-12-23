@@ -14,8 +14,8 @@ std::string Chicken::getProducePath() const {
     return "EnvironmentObjects/egg.png";
 }
 
-Objects Chicken::getProduceObject() const {
-    return Objects::EGG;
+ItemType Chicken::getProduceObject() const {
+    return ItemType::EGG;
 }
 
 void Chicken::startAnimation() {

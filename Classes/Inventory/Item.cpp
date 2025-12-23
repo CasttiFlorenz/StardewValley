@@ -13,11 +13,11 @@
 Item::Item(): _count(0)
 {
     _path = nullptr;
-    _tag = Objects::NONE;
+    _tag = ItemType::NONE;
 }
 
 // 带参数构造函数
-Item::Item(Objects tag,int count,float scale, float printPos,char* path,int price,char* name)
+Item::Item(ItemType tag,int count,float scale, float printPos,char* path,int price,char* name)
     : _path(path), _count(count),_scale(scale),_printPos(printPos),_tag(tag),_price(price),_name(name){ }
 
 // 获取物品路径
@@ -27,7 +27,7 @@ char* Item::getPath() const
 }
 
 // 获取物品标签
-Objects Item::getTag() const
+ItemType Item::getTag() const
 {
     return _tag;
 }

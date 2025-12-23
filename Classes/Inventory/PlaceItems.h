@@ -60,10 +60,10 @@ private:
     void setContext(cocos2d::Node* parent, std::vector<Item>& inventory, int& itemCount,
         float* backpackX, float* backpackY, float backpackWidth, float cellWidth);
 
-    bool addItem(Objects object, int amount);
-    bool removeItem(Objects object, int amount);
+    bool addItem(ItemType object, int amount);
+    bool removeItem(ItemType object, int amount);
 
-    int findItemIndex(Objects tag);
+    int findItemIndex(ItemType tag);
 
     void adjustPos();           // 删除物品后调整格子
 };

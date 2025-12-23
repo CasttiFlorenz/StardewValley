@@ -47,40 +47,40 @@ void PlaceItems::initItem()
     }
 
     // 预存物品
-    _inventory[0] = Item(Objects::HOE, 1, 1.5f, 0.0f, "/Items/hoe.png", 0, "Hoe"); // 工具不可购买
-    _inventory[1] = Item(Objects::AXE, 1, 1.4f, 0.0f, "/Items/axe.png", 0, "Axe"); // 工具不可购买
-    _inventory[2] = Item(Objects::WATERING_CAN, 1, 1.6f, 0.0f, "/Items/wateringCan.png", 0, "Watering Can"); // 工具不可购买
-    _inventory[3] = Item(Objects::PICKAXE, 1, 1.4f, 0.0f, "/Items/pickaxe.png", 0, "Pickaxe"); // 工具不可购买
-    _inventory[4] = Item(Objects::SCYTHE, 1, 1.4f, 0.0f, "/Items/scythe.png", 0, "Scythe"); // 工具不可购买
-    _inventory[5] = Item(Objects::FISHINGROD, 1, 1.3f, 0.0f, "/Items/fishingRod.png", 0, "Fishingrod"); // 工具不可购买
-    _inventory[6] = Item(Objects::STONE, 1, 4.3f, 0.0f, "/Items/stone.png", 20, "Stone");
-    _inventory[7] = Item(Objects::WOOD, 1, 2.8f, 0.0f, "/Items/wood.png", 10, "Wood");
-    _inventory[8] = Item(Objects::COPPER_ORE, 1, 3.3f, 0.0f, "/Items/copper ore.png", 75, "Copper Ore");
-    _inventory[9] = Item(Objects::FERTILIZER, 1, 4.3f, 0.0f, "/Items/fertilizer.png", 100, "Fertilizer");
-    _inventory[10] = Item(Objects::PARSNIP_SEED, 1, 4.3f, 0.0f, "/Items/parsnip seed.png", 20, "Parsnip Seed");
-    _inventory[11] = Item(Objects::CAULIFLOWER_SEED, 1, 4.3f, 0.0f, "/Items/cauliflower seed.png", 80, "Cauliflower Seed");
-    _inventory[12] = Item(Objects::POTATO_SEED, 1, 4.3f, 0.0f, "/Items/potato seed.png", 50, "Potato Seed");
-    _inventory[13] = Item(Objects::PARSNIP, 1, 4.3f, 0.0f, "/Items/parsnip.png", 35, "Parsnip");
-    _inventory[14] = Item(Objects::CAULIFLOWER, 1, 4.3f, 0.0f, "/Items/cauliflower.png", 175, "Cauliflower");
-    _inventory[15] = Item(Objects::POTATO, 1, 4.3f, 0.0f, "/Items/potato.png", 80, "Potato");
-    _inventory[16] = Item(Objects::FIBER, 1, 4.3f, 0.0f, "/Items/fiber.png", 1, "Fiber");
-    _inventory[17] = Item(Objects::DAFFODILS, 1, 4.3f, 0.0f, "/Items/daffodils.png", 30, "Daffodils");
-    _inventory[18] = Item(Objects::LEEK, 1, 4.3f, 0.0f, "/Items/leek.png", 60, "Leek");
-    _inventory[19] = Item(Objects::HAY, 0, 4.3f, 0.0f, "/Items/hay.png", 50, "Hay");
-    _inventory[20] = Item(Objects::EGG, 1, 4.8f, 0.0f, "/Items/egg.png", 50, "Egg");
-    _inventory[21] = Item(Objects::FRIED_EGG, 1, 4.3f, 0.0f, "/Items/fried egg.png", 35, "Fried Egg");
-    _inventory[22] = Item(Objects::CARP, 1, 4.3f, 0.0f, "/Items/carp.png", 30, "Carp");
-    _inventory[23] = Item(Objects::MILK, 1, 4.3f, 0.0f, "/Items/milk.png", 125, "Milk");
-    _inventory[24] = Item(Objects::SALAD, 1, 4.3f, 0.0f, "/Items/salad.png", 110, "Salad");
+    _inventory[0] = Item(ItemType::HOE, 1, 1.5f, 0.0f, "/Items/hoe.png", 0, "Hoe"); // 工具不可购买
+    _inventory[1] = Item(ItemType::AXE, 1, 1.4f, 0.0f, "/Items/axe.png", 0, "Axe"); // 工具不可购买
+    _inventory[2] = Item(ItemType::WATERING_CAN, 1, 1.6f, 0.0f, "/Items/wateringCan.png", 0, "Watering Can"); // 工具不可购买
+    _inventory[3] = Item(ItemType::PICKAXE, 1, 1.4f, 0.0f, "/Items/pickaxe.png", 0, "Pickaxe"); // 工具不可购买
+    _inventory[4] = Item(ItemType::SCYTHE, 1, 1.4f, 0.0f, "/Items/scythe.png", 0, "Scythe"); // 工具不可购买
+    _inventory[5] = Item(ItemType::FISHINGROD, 1, 1.3f, 0.0f, "/Items/fishingRod.png", 0, "Fishingrod"); // 工具不可购买
+    _inventory[6] = Item(ItemType::STONE, 1, 4.3f, 0.0f, "/Items/stone.png", 20, "Stone");
+    _inventory[7] = Item(ItemType::WOOD, 1, 2.8f, 0.0f, "/Items/wood.png", 10, "Wood");
+    _inventory[8] = Item(ItemType::COPPER_ORE, 1, 3.3f, 0.0f, "/Items/copper ore.png", 75, "Copper Ore");
+    _inventory[9] = Item(ItemType::FERTILIZER, 1, 4.3f, 0.0f, "/Items/fertilizer.png", 100, "Fertilizer");
+    _inventory[10] = Item(ItemType::PARSNIP_SEED, 1, 4.3f, 0.0f, "/Items/parsnip seed.png", 20, "Parsnip Seed");
+    _inventory[11] = Item(ItemType::CAULIFLOWER_SEED, 1, 4.3f, 0.0f, "/Items/cauliflower seed.png", 80, "Cauliflower Seed");
+    _inventory[12] = Item(ItemType::POTATO_SEED, 1, 4.3f, 0.0f, "/Items/potato seed.png", 50, "Potato Seed");
+    _inventory[13] = Item(ItemType::PARSNIP, 1, 4.3f, 0.0f, "/Items/parsnip.png", 35, "Parsnip");
+    _inventory[14] = Item(ItemType::CAULIFLOWER, 1, 4.3f, 0.0f, "/Items/cauliflower.png", 175, "Cauliflower");
+    _inventory[15] = Item(ItemType::POTATO, 1, 4.3f, 0.0f, "/Items/potato.png", 80, "Potato");
+    _inventory[16] = Item(ItemType::FIBER, 1, 4.3f, 0.0f, "/Items/fiber.png", 1, "Fiber");
+    _inventory[17] = Item(ItemType::DAFFODILS, 1, 4.3f, 0.0f, "/Items/daffodils.png", 30, "Daffodils");
+    _inventory[18] = Item(ItemType::LEEK, 1, 4.3f, 0.0f, "/Items/leek.png", 60, "Leek");
+    _inventory[19] = Item(ItemType::HAY, 0, 4.3f, 0.0f, "/Items/hay.png", 50, "Hay");
+    _inventory[20] = Item(ItemType::EGG, 1, 4.8f, 0.0f, "/Items/egg.png", 50, "Egg");
+    _inventory[21] = Item(ItemType::FRIED_EGG, 1, 4.3f, 0.0f, "/Items/fried egg.png", 35, "Fried Egg");
+    _inventory[22] = Item(ItemType::CARP, 1, 4.3f, 0.0f, "/Items/carp.png", 30, "Carp");
+    _inventory[23] = Item(ItemType::MILK, 1, 4.3f, 0.0f, "/Items/milk.png", 125, "Milk");
+    _inventory[24] = Item(ItemType::SALAD, 1, 4.3f, 0.0f, "/Items/salad.png", 110, "Salad");
   
     // 放置初始物品 - 使用 push_back
-    _currentInventory->push_back(Item(Objects::HOE, 1, 1.5f, 0.7f, "/Items/hoe.png", 0, "Hoe"));
-    _currentInventory->push_back(Item(Objects::AXE, 1, 1.4f, 1.6f, "/Items/axe.png", 0, "Axe"));
-    _currentInventory->push_back(Item(Objects::WATERING_CAN, 1, 1.6f, 2.6f, "/Items/wateringCan.png", 0, "Watering Can"));
-    _currentInventory->push_back(Item(Objects::PICKAXE, 1, 1.4f, 3.6f, "/Items/pickaxe.png", 0, "Pickaxe"));
-    _currentInventory->push_back(Item(Objects::SCYTHE, 1, 1.4f, 4.6f, "/Items/scythe.png", 0, "Scythe"));
-    _currentInventory->push_back(Item(Objects::FISHINGROD, 1, 1.3f, 5.5f, "/Items/fishingRod.png", 0, "Fishingrod"));
-    _currentInventory->push_back(Item(Objects::PARSNIP_SEED, 5, 4.3f, 6.5f, "/Items/parsnip seed.png", 20, "Parsnip Seed"));
+    _currentInventory->push_back(Item(ItemType::HOE, 1, 1.5f, 0.7f, "/Items/hoe.png", 0, "Hoe"));
+    _currentInventory->push_back(Item(ItemType::AXE, 1, 1.4f, 1.6f, "/Items/axe.png", 0, "Axe"));
+    _currentInventory->push_back(Item(ItemType::WATERING_CAN, 1, 1.6f, 2.6f, "/Items/wateringCan.png", 0, "Watering Can"));
+    _currentInventory->push_back(Item(ItemType::PICKAXE, 1, 1.4f, 3.6f, "/Items/pickaxe.png", 0, "Pickaxe"));
+    _currentInventory->push_back(Item(ItemType::SCYTHE, 1, 1.4f, 4.6f, "/Items/scythe.png", 0, "Scythe"));
+    _currentInventory->push_back(Item(ItemType::FISHINGROD, 1, 1.3f, 5.5f, "/Items/fishingRod.png", 0, "Fishingrod"));
+    _currentInventory->push_back(Item(ItemType::PARSNIP_SEED, 5, 4.3f, 6.5f, "/Items/parsnip seed.png", 20, "Parsnip Seed"));
 
     (*_itemCount) = _currentInventory->size();
 }
@@ -202,7 +202,7 @@ void PlaceItems::updateToolSprite(int toolIndex, const std::string& imagePath,
         _parent->addChild(sprite, 1);
 
         // 显示数量
-        if (item.getTag() > Objects::FISHINGROD) {
+        if (item.getTag() > ItemType::FISHINGROD) {
             showItemCount(toolIndex, item.getCount(), x, y);
         }
 
@@ -216,7 +216,7 @@ void PlaceItems::updateToolSprite(int toolIndex, const std::string& imagePath,
 }
 
 // 增加物品
-bool PlaceItems::addItem(Objects object, int amount)
+bool PlaceItems::addItem(ItemType object, int amount)
 {
     // 清除所有已存在的工具精灵
     clearAllTools();
@@ -252,7 +252,7 @@ bool PlaceItems::addItem(Objects object, int amount)
 }
 
 // 减少物品数量
-bool PlaceItems::removeItem(Objects object, int amount)
+bool PlaceItems::removeItem(ItemType object, int amount)
 {
     // 清除所有已存在的工具精灵
     clearAllTools();
@@ -306,7 +306,7 @@ void PlaceItems::adjustPos()
 
 }
 
-int PlaceItems::findItemIndex(Objects tag)
+int PlaceItems::findItemIndex(ItemType tag)
 {
     if (!_currentInventory) 
         return -1;

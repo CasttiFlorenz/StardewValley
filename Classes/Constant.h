@@ -2,6 +2,10 @@
 #define __CONSTANT_H__
 #include <map>
 #include <string>
+#include <algorithm>
+#include <unordered_map>
+#include <vector>
+
 
 // 地图缩放比例
 constexpr float TILED_MAP_SCALE = 5.0f;
@@ -51,7 +55,7 @@ enum class MouseEvent
     FISHING
 };
 
-enum class Objects {
+enum class ItemType {
     NONE = -1,
     HOE = 0,           // 锄头
     AXE,              // 斧头
@@ -127,12 +131,7 @@ constexpr int MAX_LEEK_COUNT = 3;
 constexpr int MAX_STONE_COUNT = 15;
 constexpr int MAX_COPPER_COUNT = 5;
 
-enum class CropType {
-    NONE,
-    PARSNIP,
-    POTATO,
-    CAULIFLOWER
-};
+
 
 enum class SoilStatus {
     DRY,
@@ -147,9 +146,24 @@ enum class CropStatus {
 };
 
 
-enum class BarnAnimalType {
+enum class AnimalType {
     CHICKEN,
     COW
 };
+
+enum class MapType {
+    NONE=0,
+    FARM_HOUSE,
+    FARM,
+    BARN,
+    MINES,
+    TOWN
+};
+
+const std::string GO_TO_FARM = "goToFarm";
+const std::string GO_TO_TOWN = "goToTown";
+const std::string GO_TO_BARN = "goToBarn";
+const std::string GO_TO_MINES = "goToMines";
+const std::string GO_TO_HOUSE = "goToHouse";
 
 #endif // __CONSTANT_H__

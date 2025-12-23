@@ -1,20 +1,42 @@
 #include "MinesItemManager.h"
 
-MinesItemManager* MinesItemManager::create(GameMap* gameMap) {
-    auto p = new (std::nothrow) MinesItemManager();
-    if (p && p->init(gameMap)) {
-        p->autorelease();
-        return p;
+// 单例实例
+MinesItemManager* MinesItemManager::_instance = nullptr;
+
+MinesItemManager* MinesItemManager::getInstance(GameMap* gameMap)
+{
+    if (!_instance) {
+        // 第一次创建，必须提供 GameMap
+        if (!gameMap) {
+            CCLOG("MinesItemManager::getInstance failed: gameMap is null");
+            return nullptr;
+        }
+
+        _instance = new (std::nothrow) MinesItemManager();
+        if (_instance && _instance->init(gameMap)) {
+            CC_SAFE_RETAIN(_instance);
+        }
+        else {
+            CC_SAFE_DELETE(_instance);
+        }
     }
-    CC_SAFE_DELETE(p);
-    return nullptr;
+    return _instance;
 }
 
-bool MinesItemManager::init(GameMap* gameMap) {
+void MinesItemManager::destroyInstance()
+{
+    if (_instance) {
+        _instance->clear();           // 清空所有物品（非常重要）
+        CC_SAFE_RELEASE_NULL(_instance);
+    }
+}
+
+bool MinesItemManager::init(GameMap* gameMap)
+{
     _gameMap = gameMap;
     _tiledMap = _gameMap ? _gameMap->getTiledMap() : nullptr;
-    // 获取名为 "Stone" 的层
     _eventLayer = _tiledMap ? _tiledMap->getLayer("event") : nullptr;
+
     _items.clear();
     _stoneCount = 0;
     _copperCount = 0;
@@ -24,6 +46,7 @@ bool MinesItemManager::init(GameMap* gameMap) {
     }
     return _gameMap != nullptr;
 }
+
 
 long long MinesItemManager::keyFor(const Vec2& tileCoord) {
     long long x = static_cast<long long>(tileCoord.x);
@@ -169,8 +192,8 @@ void MinesItemManager::spawnInitialItems() {
     // 尝试生成物品，防止死循环
     while ((_stoneCount < MAX_STONE_COUNT || _copperCount < MAX_COPPER_COUNT) && attempts < 1000) {
         attempts++;
-        int x = RandomHelper::random_int(0, (int)mapSize.width - 1);
-        int y = RandomHelper::random_int(0, (int)mapSize.height - 1);
+        const int x = RandomHelper::random_int(0, (int)mapSize.width - 1);
+        const int y = RandomHelper::random_int(0, (int)mapSize.height - 1);
         Vec2 coord((float)x, (float)y);
 
         if (hasItem(coord)) continue;
@@ -189,4 +212,9 @@ void MinesItemManager::spawnInitialItems() {
 
         addItem(type, coord);
     }
+}
+
+void MinesItemManager::onNewDay()
+{
+    spawnInitialItems();
 }

@@ -8,31 +8,40 @@
 #include "../Time/TimeManager.h"
 #include <unordered_map>
 
-class CultivationManager {
-public:
-    static CultivationManager* getInstance();
+USING_NS_CC;
 
-    void init(FarmItemManager* farmItemManager, GameMap* gameMap);
+class CultivationManager : public Ref
+{
+public:
+    static CultivationManager* getInstance(
+        FarmItemManager* farmItemManager = nullptr,
+        GameMap* gameMap = nullptr
+    );
+    static void destroyInstance();
+
+    bool init(FarmItemManager* farmItemManager, GameMap* gameMap);
 
     bool attemptCultivate(const Vec2& tileCoord);
-
     bool waterSoil(const Vec2& tileCoord);
-
-    bool plantCrop(const Vec2& tileCoord, CropType type);
+    bool plantCrop(const Vec2& tileCoord, ItemType type);
 
     void onNewDay();
     bool removeSoil(const Vec2& tileCoord);
-    CropType harvestCrop(const Vec2& tileCoord);
+    ItemType harvestCrop(const Vec2& tileCoord);
 
 private:
+    static CultivationManager* _instance;
+
     CultivationManager();
     ~CultivationManager();
 
-    static CultivationManager* _instance;
+    CultivationManager(const CultivationManager&) = delete;
+    CultivationManager& operator=(const CultivationManager&) = delete;
+
     FarmItemManager* _farmItemManager;
     GameMap* _gameMap;
     TMXTiledMap* _tiledMap;
-    
+
     std::unordered_map<long long, CultivatedSoil*> _soils;
 
     static long long keyFor(const Vec2& tileCoord);

@@ -398,7 +398,7 @@ void InventoryGridScene::highlightGrid(int gridIndex, bool highlight)
 // ========== 主页面显示辅助函数 ==========
 
 // 增加数量
-bool InventoryGridScene::addItem(Objects object, int amount) {
+bool InventoryGridScene::addItem(ItemType object, int amount) {
     if (_placeItems) {
         return _placeItems->addItem(object, amount);
     }
@@ -406,7 +406,7 @@ bool InventoryGridScene::addItem(Objects object, int amount) {
 }
 
 // 减少数量
-bool InventoryGridScene::removeItem(Objects object, int amount) {
+bool InventoryGridScene::removeItem(ItemType object, int amount) {
     if (_placeItems) {
         return _placeItems->removeItem(object, amount);
     }
@@ -420,7 +420,7 @@ int InventoryGridScene::getSelectedGrid()
 }
 
 // 返回当前物品在数组中的索引
-int InventoryGridScene::findItemGridIndex(Objects tag)
+int InventoryGridScene::findItemGridIndex(ItemType tag)
 {
     if (!_placeItems) 
         return -1;

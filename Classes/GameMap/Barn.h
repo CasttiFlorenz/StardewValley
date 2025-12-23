@@ -1,41 +1,48 @@
 #pragma once
-/****************************************************************
- * Project Name:  StardewValley
- * File Name:     Barn.h
- * File Function: Barn类的实现
- * Author:        郭芷烟
- * Update Date:   2025/12/14
- * License:       MIT License
- ****************************************************************/
 
 #ifndef __BARN_H__
 #define __BARN_H__
-#include "GameMap.h"
+
 #include "cocos2d.h"
 #include "Constant.h"
-#include "../mapitem/BarnManager.h"
+#include "GameMap.h"
+#include "../MapItem/BarnManager.h"
 
 USING_NS_CC;
 
 class Barn : public GameMap
 {
 public:
-    CREATE_FUNC(Barn);
+    static Barn* create();
     static GameMap* getInstance();
     static void destroyInstance();
 
+    // 初始化场景（加载 TMX、隐藏 event 层、初始化管理器）
     virtual bool init() override;
-    virtual void update(float dt) override;
-    virtual std::string getNewMap(const Vec2& curPos, bool isStart, const Direction& direction) override;
-    virtual void setStartPosition(std::string lastMap) override;
-    virtual Vec2 getPlayerStartPosition(std::string lastMap) override;
+    
+    // 每帧更新（当前无内部逻辑，保留扩展点）
+    virtual void update(float dt) override {}
+    
+    // 基于玩家位置与朝向判断是否切换到其他地图
+    virtual MapType leaveMap(const Vec2& curPos, bool isStart, const Direction& direction) override;
+    
+    // 设置场景起始参数（摄像机与地图定位）
+    virtual void IntoMap(MapType lastMap) override;
+    
+    // 计算玩家在本场景的起始位置（基于入口对象）
+    virtual Vec2 getPlayerStartPosition(MapType lastMap) override;
     virtual bool isCameraFollow() const { return true; }
 
-    virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction, Objects object)override;
+    // 左键交互：支持在 feed 区域投放干草
+    virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction, ItemType object)override;
+    // 右键交互：支持从生产点位收集产物
     virtual MouseEvent onRightClick(const Vec2& playerPos, const Direction direction) override;
 
 private:
     static GameMap* _instance;
-    BarnManager* _barnManager;
+
+    // 管理器指针仅引用单例，生命周期由管理器自身负责
+    BarnManager* _barnManager = nullptr;
+    Barn& operator=(const Barn&) = delete;
 };
 #endif // _BARN_H_

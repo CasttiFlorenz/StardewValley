@@ -1,58 +1,83 @@
 #pragma once
-/****************************************************************
- * Project Name:  StardewValley
- * File Name:     Town.h
- * File Function: Town类的实现
- * Author:        郭芷烟、赵睿妍
- * Update Date:   2025/12/19
- * License:       MIT License
- ****************************************************************/
-
 #ifndef __TOWN_H__
 #define __TOWN_H__
+
 #include "GameMap.h"
-#include <string>
-#include <map>
 #include "cocos2d.h"
 #include "Constant.h"
-#include"../Inventory/Item.h"
-#include"../Shop/ShopLayer.h"
-#include"../Shop/ShopMenuLayer.h"
-#include"../NPC/NPCbase.h"
-#include"../NPC/NPCManager.h"
-#include"../Dialogue/DialogueLayer.h"
+
+#include "../Inventory/Item.h"
+#include "../Shop/ShopLayer.h"
+#include "../Shop/ShopMenuLayer.h"
+#include "../NPC/NPCbase.h"
+#include "../NPC/NPCManager.h"
+#include "../Dialogue/DialogueLayer.h"
+
 USING_NS_CC;
 
+// 城镇地图（室外场景，包含 NPC 与商店）
 class Town : public GameMap
 {
 public:
-    CREATE_FUNC(Town);
+    // 创建 Town 对象
+    static Town* create();
+
+    // 获取 Town 单例
     static GameMap* getInstance();
+
+    // 销毁 Town 单例
     static void destroyInstance();
 
+    // 初始化城镇地图与 NPC
     virtual bool init() override;
 
+    // 每帧更新（NPC 行为等）
     virtual void update(float dt) override;
 
-    virtual std::string getNewMap(const Vec2& curPos, bool isStart, const Direction& direction) override;
+    // 判断是否离开城镇并切换地图
+    virtual MapType leaveMap(const Vec2& curPos,
+        bool isStart,
+        const Direction& direction) override;
 
-    virtual void setStartPosition(std::string lastMap) override;
+    // 进入城镇时设置地图参数
+    virtual void IntoMap(MapType lastMap) override;
 
-    virtual Vec2 getPlayerStartPosition(std::string lastMap) override;
+    // 根据来源地图确定玩家出生点
+    virtual Vec2 getPlayerStartPosition(MapType lastMap) override;
 
-    virtual bool isCameraFollow() const { return true; }
+    // 城镇内摄像机跟随玩家
+    virtual bool isCameraFollow() const override { return true; }
 
-    virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction, Objects objects)override;
-    virtual MouseEvent onRightClick(const Vec2& playerPos, const Direction direction) override;
+    // 左键交互（与 NPC 对话、使用物品）
+    virtual MouseEvent onLeftClick(const Vec2& playerPos,
+        const Direction direction,
+        ItemType objects) override;
 
+    // 右键交互（NPC 互动或功能触发）
+    virtual MouseEvent onRightClick(const Vec2& playerPos,
+        const Direction direction) override;
+
+    // 标记为室外地图
     virtual bool isOutdoor() override { return true; }
 
-    void Town::interactWithNPC(const std::string& npcName, Objects heldItem);
+    // 与指定 NPC 进行交互
+    void interactWithNPC(const std::string& npcName, ItemType heldItem);
+
+    // 根据名字获取 NPC 对象
     NPCBase* getNPCByName(const std::string& name);
+
+    // 为指定 NPC 打开商店界面
     void openShopForNPC(const std::string& npcName);
+
+    // 初始化城镇中的所有 NPC
     void initNPCs();
+
 private:
+    // Town 单例指针
     static GameMap* _instance;
+
+    // NPC 名字到对象的映射表
     std::map<std::string, NPCBase*> _npcMap;
 };
-#endif
+
+#endif // __TOWN_H__

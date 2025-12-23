@@ -14,8 +14,8 @@ std::string Cow::getProducePath() const {
     return "EnvironmentObjects/milk.png";
 }
 
-Objects Cow::getProduceObject() const {
-    return Objects::MILK;
+ItemType Cow::getProduceObject() const {
+    return ItemType::MILK;
 }
 
 void Cow::startAnimation() {

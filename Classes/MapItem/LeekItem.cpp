@@ -1,6 +1,7 @@
 #include "LeekItem.h"
 
 LeekItem* LeekItem::create(const cocos2d::Vec2& tileCoord) {
+    // 工厂方法：安全创建并自动管理生命周期
     auto p = new (std::nothrow) LeekItem();
     if (p && p->init(tileCoord)) {
         p->autorelease();
@@ -11,10 +12,12 @@ LeekItem* LeekItem::create(const cocos2d::Vec2& tileCoord) {
 }
 
 bool LeekItem::init(const cocos2d::Vec2& tileCoord) {
+    // 先初始化基类，绑定类型与瓦片坐标
     if (!EnvironmentItem::init(EnvironmentItemType::LEEK, tileCoord)) {
         return false;
     }
 
+    // 使用精灵的文件名设置纹理（保持与项目其他环境物体一致）
     this->setTexture("EnvironmentObjects/Leek.png");
 
     return true;

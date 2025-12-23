@@ -14,7 +14,6 @@ bool CopperItem::init(const cocos2d::Vec2& tileCoord) {
     if (!EnvironmentItem::init(EnvironmentItemType::COPPER, tileCoord)) {
         return false;
     }
-
     this->setTexture("EnvironmentObjects/Copper.png");
 
     return true;

@@ -8,7 +8,7 @@ class Chicken : public BarnAnimal {
 public:
     static Chicken* create();
     std::string getProducePath() const override;
-    Objects getProduceObject() const override;
+    ItemType getProduceObject() const override;
     void startAnimation() override;
     void stopAnimation() override;
 };

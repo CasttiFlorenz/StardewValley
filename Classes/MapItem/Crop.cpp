@@ -1,15 +1,15 @@
 #include "Crop.h"
 
-Crop* Crop::create(CropType type) {
+Crop* Crop::create(ItemType type) {
     Crop* p = nullptr;
     switch (type) {
-        case CropType::PARSNIP:
+        case ItemType::PARSNIP:
             p = Parsnip::create();
             break;
-        case CropType::POTATO:
+        case ItemType::POTATO:
             p = Potato::create();
             break;
-        case CropType::CAULIFLOWER:
+        case ItemType::CAULIFLOWER:
             p = Cauliflower::create();
             break;
         default:
@@ -18,7 +18,7 @@ Crop* Crop::create(CropType type) {
     return p;
 }
 
-bool Crop::init(CropType type) {
+bool Crop::init(ItemType type) {
     if (!Sprite::init()) {
         return false;
     }
@@ -78,7 +78,7 @@ Parsnip* Parsnip::create() {
 }
 
 bool Parsnip::init() {
-    if (!Crop::init(CropType::PARSNIP)) return false;
+    if (!Crop::init(ItemType::PARSNIP)) return false;
     _texturePrefix = "Parsnip";
     _maxGrowthStage = 3; // 0, 1, 2, 3 (4 stages)
     updateTexture();
@@ -97,7 +97,7 @@ Potato* Potato::create() {
 }
 
 bool Potato::init() {
-    if (!Crop::init(CropType::POTATO)) return false;
+    if (!Crop::init(ItemType::POTATO)) return false;
     _texturePrefix = "Potato";
     _maxGrowthStage = 4; // 0, 1, 2, 3, 4 (5 stages)
     updateTexture();
@@ -116,7 +116,7 @@ Cauliflower* Cauliflower::create() {
 }
 
 bool Cauliflower::init() {
-    if (!Crop::init(CropType::CAULIFLOWER)) return false;
+    if (!Crop::init(ItemType::CAULIFLOWER)) return false;
     _texturePrefix = "Cauliflower";
     _maxGrowthStage = 4; // 0, 1, 2, 3, 4 (5 stages)
     updateTexture();

@@ -2,36 +2,42 @@
 
 FarmItemManager* FarmItemManager::_instance = nullptr;
 
-FarmItemManager* FarmItemManager::getInstance(GameMap* gameMap) {
+FarmItemManager* FarmItemManager::getInstance(GameMap* gameMap)
+{
     if (!_instance) {
-        _instance = FarmItemManager::create(gameMap);
-        CC_SAFE_RETAIN(_instance);
-    } else if (gameMap && !_instance->_gameMap) {
-        _instance->init(gameMap);
+        if (!gameMap) {
+            CCLOG("FarmItemManager::getInstance failed: gameMap is null");
+            return nullptr;
+        }
+
+        _instance = new (std::nothrow) FarmItemManager();
+        if (_instance && _instance->init(gameMap)) {
+            CC_SAFE_RETAIN(_instance);
+        }
+        else {
+            CC_SAFE_DELETE(_instance);
+        }
     }
     return _instance;
 }
 
-void FarmItemManager::destroyInstance() {
-    CC_SAFE_RELEASE_NULL(_instance);
-}
-
-FarmItemManager* FarmItemManager::create(GameMap* gameMap) {
-    auto p = new (std::nothrow) FarmItemManager();
-    if (p && p->init(gameMap)) {
-        p->autorelease();
-        return p;
+void FarmItemManager::destroyInstance()
+{
+    if (_instance) {
+        _instance->clear();
+        CC_SAFE_RELEASE_NULL(_instance);
     }
-    CC_SAFE_DELETE(p);
-    return nullptr;
 }
 
-bool FarmItemManager::init(GameMap* gameMap) {
+bool FarmItemManager::init(GameMap* gameMap)
+{
     _gameMap = gameMap;
     _tiledMap = _gameMap ? _gameMap->getTiledMap() : nullptr;
     _eventLayer = _tiledMap ? _tiledMap->getLayer("event") : nullptr;
+
     _items.clear();
     _cultivatedSoils.clear();
+
     _woodCount = 0;
     _grassCount = 0;
     _daffodilsCount = 0;
@@ -40,8 +46,10 @@ bool FarmItemManager::init(GameMap* gameMap) {
     if (_gameMap) {
         spawnInitialItems();
     }
+
     return _gameMap != nullptr;
 }
+
 
 long long FarmItemManager::keyFor(const Vec2& tileCoord) {
     long long x = static_cast<long long>(tileCoord.x);
@@ -192,18 +200,7 @@ bool FarmItemManager::removeCultivation(const Vec2& tileCoord) {
 
     return false;
 }
-void FarmItemManager::clear() {
-    for (auto& kv : _items) {
-        kv.second->removeFromParent();
-        CC_SAFE_RELEASE(kv.second);
-    }
-    _items.clear();
-    _cultivatedSoils.clear();
-    _woodCount = 0;
-    _grassCount = 0;
-    _daffodilsCount = 0;
-    _leekCount = 0;
-}
+
 
 void FarmItemManager::spawnInitialItems() {
     if (!_tiledMap || !_eventLayer) return;
@@ -242,4 +239,26 @@ bool FarmItemManager::isCollidable(const Vec2& tileCoord) const
 {
     long long key = keyFor(tileCoord);
     return (_items.find(key) != _items.end());
+}
+
+void FarmItemManager::onNewDay()
+{
+    spawnInitialItems();
+}
+
+void FarmItemManager::clear()
+{
+    for (auto& kv : _items) {
+        if (kv.second) {
+            kv.second->removeFromParent();
+            CC_SAFE_RELEASE(kv.second);
+        }
+    }
+    _items.clear();
+    _cultivatedSoils.clear();
+
+    _woodCount = 0;
+    _grassCount = 0;
+    _daffodilsCount = 0;
+    _leekCount = 0;
 }

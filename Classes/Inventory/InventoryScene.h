@@ -33,9 +33,9 @@ public:
     InventoryGridScene* getInventoryLayer() { return _inventoryLayer; }
 
     // 获取物品信息
-    Objects getTap() const;
-    void addItemCount(Objects object, int amount, bool animation = true);        // 增加指定物品的数量
-    void removeItemCount(Objects object, int amount);      // 减少指定物品的数量
+    ItemType getTap() const;
+    void addItemCount(ItemType object, int amount, bool animation = true);        // 增加指定物品的数量
+    void removeItemCount(ItemType object, int amount);      // 减少指定物品的数量
 
 private:
     static InventoryScene* _instance;

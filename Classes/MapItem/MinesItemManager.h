@@ -12,44 +12,47 @@ USING_NS_CC;
 
 class MinesItemManager : public Ref {
 public:
-    static MinesItemManager* create(GameMap* gameMap);
-    bool init(GameMap* gameMap);
+    // 获取单例（首次需要传入 GameMap）
+    static MinesItemManager* getInstance(GameMap* gameMap = nullptr);
 
-    // 在指定坐标添加物品
+    // 销毁单例
+    static void destroyInstance();
+
     bool addItem(EnvironmentItemType type, const Vec2& tileCoord);
-    
-    // 移除指定坐标的物品
     bool removeItem(const Vec2& tileCoord);
-
-    // 查询指定坐标是否有物品
     bool hasItem(const Vec2& tileCoord) const;
-
-    // 获取指定坐标的物品
     EnvironmentItem* getItem(const Vec2& tileCoord) const;
-
-    // 清除所有物品
     void clear();
-
-    // 生成初始物品
     void spawnInitialItems();
+    void onNewDay();
 
 private:
-    GameMap* _gameMap;
-    TMXTiledMap* _tiledMap;
-    TMXLayer* _eventLayer;
+    // 单例指针
+    static MinesItemManager* _instance;
+
+    // 构造 / 析构私有化
+    MinesItemManager() = default;
+    ~MinesItemManager() override = default;
+
+    // 禁止拷贝
+    MinesItemManager(const MinesItemManager&) = delete;
+    MinesItemManager& operator=(const MinesItemManager&) = delete;
+
+    // 初始化（仅内部调用一次）
+    bool init(GameMap* gameMap);
+
+    GameMap* _gameMap = nullptr;
+    TMXTiledMap* _tiledMap = nullptr;
+    TMXLayer* _eventLayer = nullptr;
+
     std::unordered_map<long long, EnvironmentItem*> _items;
 
-    // 坐标转 key (x << 32 | y)
     static long long keyFor(const Vec2& tileCoord);
-
-    // 去除 GID 的翻转标志位
     static unsigned int stripFlags(unsigned int gid);
-
-    // 检查位置是否在 Stone 层上
     bool isStone(const Vec2& tileCoord) const;
 
-    int _stoneCount;
-    int _copperCount;
+    int _stoneCount = 0;
+    int _copperCount = 0;
 };
 
 #endif // __MINES_ITEM_MANAGER_H__

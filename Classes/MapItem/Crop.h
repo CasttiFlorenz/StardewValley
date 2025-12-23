@@ -10,18 +10,18 @@ USING_NS_CC;
 
 class Crop : public Sprite {
 public:
-    static Crop* create(CropType type);
-    virtual bool init(CropType type);
+    static Crop* create(ItemType type);
+    virtual bool init(ItemType type);
 
     // 更新作物状态（每天调用一次）
     void updateGrowth(bool isWatered);
 
-    CropType getCropType() const { return _type; }
+    ItemType getCropType() const { return _type; }
     CropStatus getStatus() const { return _status; }
     int getGrowthStage() const { return _growthStage; }
 
 protected:
-    CropType _type;
+    ItemType _type;
     CropStatus _status;
     int _growthStage;
     int _maxGrowthStage;

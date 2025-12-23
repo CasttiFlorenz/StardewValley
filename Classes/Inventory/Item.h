@@ -18,11 +18,11 @@ class Item
 public:
     // 构造函数
     Item();
-    Item(Objects tag , int count, float scale,float printPos ,char* path,int price,char* name);
+    Item(ItemType tag , int count, float scale,float printPos ,char* path,int price,char* name);
 
     // 获取物品信息
     char* getPath() const;
-    Objects getTag() const;
+    ItemType getTag() const;
     int getCount() const;
     float getScale() const;
     float getPrintPos() const;
@@ -42,7 +42,7 @@ private:
     int _price;              // 单价
     char* _name;             // 物品名字
     char* _path;             // 物品路径
-    Objects _tag;            // 物品标签
+    ItemType _tag;            // 物品标签
     int _count;              // 物品数量
     float _scale;            // 缩放大小
     float _printPos;         // 显示地址

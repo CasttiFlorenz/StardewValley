@@ -1,5 +1,4 @@
 #include "FishGameLayer.h"
-#include "ui/CocosGUI.h"
 
 USING_NS_CC;
 
@@ -119,7 +118,7 @@ void FishGameLayer::onMouseClick()
 {
     if (!_isGameActive) return;
 
-    _currentValue += 30.0f;
+    _currentValue += 10.0f;
     if (_currentValue > 1000.0f) {
         _currentValue = 1000.0f;
     }
@@ -144,7 +143,7 @@ void FishGameLayer::update(float delta)
 {
     if (!_isGameActive) return;
 
-    _currentValue -= 20.0f * delta;
+    _currentValue -= 60.0f * delta;
     if (_currentValue < 0.0f) {
         _currentValue = 0.0f;
     }
@@ -239,9 +238,8 @@ void FishGameLayer::endGame(bool isSuccess)
 
     this->scheduleOnce([this](float dt) {
         // 弹出现有场景（返回农场）
-        Director::getInstance()->popScene();
-
+        this->removeFromParent();
         // 注意：这里需要在GameScene中恢复时间和玩家移动
         // 我们需要在FishGameScene中传递消息，或者让GameScene自己恢复
-        }, 3.0f, "return_to_farm");
+        }, 2.0f, "return_to_farm");
 }

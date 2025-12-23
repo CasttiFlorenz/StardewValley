@@ -2,26 +2,59 @@
 
 CultivationManager* CultivationManager::_instance = nullptr;
 
-CultivationManager* CultivationManager::getInstance() {
+CultivationManager* CultivationManager::getInstance(
+    FarmItemManager* farmItemManager,
+    GameMap* gameMap
+) {
     if (!_instance) {
-        _instance = new CultivationManager();
+        _instance = new (std::nothrow) CultivationManager();
+        if (_instance && _instance->init(farmItemManager, gameMap)) {
+            _instance->autorelease();
+            CC_SAFE_RETAIN(_instance);
+        }
+        else {
+            CC_SAFE_DELETE(_instance);
+        }
+    }
+    else if ((farmItemManager || gameMap) && !_instance->_gameMap) {
+        _instance->init(farmItemManager, gameMap);
     }
     return _instance;
 }
 
-CultivationManager::CultivationManager() : _farmItemManager(nullptr), _gameMap(nullptr), _tiledMap(nullptr){}
+void CultivationManager::destroyInstance()
+{
+    CC_SAFE_RELEASE_NULL(_instance);
+}
 
-CultivationManager::~CultivationManager() {
+
+CultivationManager::CultivationManager()
+    : _farmItemManager(nullptr)
+    , _gameMap(nullptr)
+    , _tiledMap(nullptr)
+{
+}
+
+CultivationManager::~CultivationManager()
+{
+    for (auto& kv : _soils) {
+        if (kv.second) {
+            kv.second->removeFromParent();
+            CC_SAFE_RELEASE(kv.second);
+        }
+    }
     _soils.clear();
+
     CC_SAFE_RELEASE_NULL(_farmItemManager);
 }
 
-void CultivationManager::init(FarmItemManager* farmItemManager, GameMap* gameMap) {
-    // Clear existing soils if any (e.g. from previous session)
-    for (auto& pair : _soils) {
-        if (pair.second) {
-            pair.second->removeFromParent();
-            pair.second->release();
+bool CultivationManager::init(FarmItemManager* farmItemManager, GameMap* gameMap)
+{
+    // Çå¿Õ¾É soil
+    for (auto& kv : _soils) {
+        if (kv.second) {
+            kv.second->removeFromParent();
+            CC_SAFE_RELEASE(kv.second);
         }
     }
     _soils.clear();
@@ -29,21 +62,14 @@ void CultivationManager::init(FarmItemManager* farmItemManager, GameMap* gameMap
     if (_farmItemManager != farmItemManager) {
         CC_SAFE_RELEASE_NULL(_farmItemManager);
         _farmItemManager = farmItemManager;
-        CC_SAFE_RETAIN(_farmItemManager);
-    }
-    _gameMap = gameMap;
-    if (_gameMap) {
-        _tiledMap = _gameMap->getTiledMap();
     }
 
-    // Register callback for new day
-    auto timeManager = TimeManager::getInstance();
-    if (timeManager) {
-        timeManager->onDayStartCallback = [this]() {
-            this->onNewDay();
-        };
-    }
+    _gameMap = gameMap;
+    _tiledMap = _gameMap ? _gameMap->getTiledMap() : nullptr;
+    return _farmItemManager != nullptr && _gameMap != nullptr;
 }
+
+
 
 long long CultivationManager::keyFor(const Vec2& tileCoord) {
     long long x = static_cast<long long>(tileCoord.x);
@@ -101,7 +127,7 @@ bool CultivationManager::waterSoil(const Vec2& tileCoord) {
     return false;
 }
 
-bool CultivationManager::plantCrop(const Vec2& tileCoord, CropType type) {
+bool CultivationManager::plantCrop(const Vec2& tileCoord, ItemType type) {
     long long key = keyFor(tileCoord);
     if (_soils.find(key) != _soils.end()) {
         return _soils[key]->plant(type);
@@ -134,11 +160,11 @@ bool CultivationManager::removeSoil(const Vec2& tileCoord) {
     return true;
 }
 
-CropType CultivationManager::harvestCrop(const Vec2& tileCoord) {
+ItemType CultivationManager::harvestCrop(const Vec2& tileCoord) {
     long long key = keyFor(tileCoord);
     auto it = _soils.find(key);
     if (it != _soils.end()) {
         return it->second->harvest();
     }
-    return CropType::NONE;
+    return ItemType::NONE;
 }

@@ -53,13 +53,13 @@ public:
     int getAmount() { return ItemCount; };
 
     // 增加数量
-    bool addItem(Objects object, int amount);
+    bool addItem(ItemType object, int amount);
 
     // 减少数量
-    bool removeItem(Objects object, int amount);
+    bool removeItem(ItemType object, int amount);
 
     // 查找物品在当前数组内的索引
-    int findItemGridIndex(Objects tag);
+    int findItemGridIndex(ItemType tag);
 
     // 常量定义
     static const int TOOL_TAG_BASE = 1000;      // 工具tag基值

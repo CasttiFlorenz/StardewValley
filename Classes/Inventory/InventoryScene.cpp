@@ -72,8 +72,8 @@ void InventoryScene::ToolUseAnimation()
     if (_showToolUseEffect && _selectedGrid >= 0 && _selectedGrid <= _inventoryLayer->getAmount()) {
 
         const Item& item = _inventoryLayer->getItemAt(_selectedGrid);
-        if ((item.getTag() >= Objects::HOE && item.getTag() <= Objects::FISHINGROD)
-            || (item.getTag() >= Objects::PARSNIP_SEED && item.getTag() <= Objects::POTATO_SEED))
+        if ((item.getTag() >= ItemType::HOE && item.getTag() <= ItemType::FISHINGROD)
+            || (item.getTag() >= ItemType::PARSNIP_SEED && item.getTag() <= ItemType::POTATO_SEED))
             // 显示工具使用特效
             if (item.getCount() > 0)
                 showToolUseEffect(_selectedGrid);
@@ -235,7 +235,7 @@ void InventoryScene::updatePreviewTool()
                 _previewTool->setVisible(true);
 
                 // 显示数量
-                if (item.getTag() > Objects::FISHINGROD) {
+                if (item.getTag() > ItemType::FISHINGROD) {
                     std::string countText = std::to_string(item.getCount());
                     auto label = Label::createWithTTF(countText, "/fonts/arial.ttf", 18);
 
@@ -256,26 +256,26 @@ void InventoryScene::updatePreviewTool()
 }
 
 //获取选中物品的标签
-Objects InventoryScene::getTap() const
+ItemType InventoryScene::getTap() const
 {
     if (_selectedGrid >= 0 && _selectedGrid < _inventoryLayer->getAmount()) {
         const Item& item = _inventoryLayer->getItemAt(_selectedGrid);
         if (item.getCount() > 0)
             return item.getTag();
     }
-    return Objects::NONE;
+    return ItemType::NONE;
 }
 
 // 增加指定物品的数量
-void InventoryScene::addItemCount(Objects object, int amount,bool animation)
+void InventoryScene::addItemCount(ItemType object, int amount,bool animation)
 {
-    if (object >= Objects::HOE && object < Objects::COUNT) {
+    if (object >= ItemType::HOE && object < ItemType::COUNT) {
         _inventoryLayer->addItem(object, amount);
         int gridIndex = _inventoryLayer->findItemGridIndex(object);
 
         if (animation) {
             // 工具使用特效
-            if (object != Objects::DAFFODILS && object != Objects::LEEK)
+            if (object != ItemType::DAFFODILS && object != ItemType::LEEK)
                 ToolUseAnimation();
 
             // 0.2秒后显示第二个特效
@@ -316,9 +316,9 @@ void InventoryScene::addItemCount(Objects object, int amount,bool animation)
 }
 
 // 减少指定物品的数量
-void InventoryScene::removeItemCount(Objects object, int amount)
+void InventoryScene::removeItemCount(ItemType object, int amount)
 {
-    if (object >= Objects::HOE && object < Objects::COUNT) {
+    if (object >= ItemType::HOE && object < ItemType::COUNT) {
         _inventoryLayer->removeItem(object, amount);
     }
 

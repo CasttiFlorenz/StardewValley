@@ -12,8 +12,8 @@ public:
 
     void water();
     void dry();
-    bool plant(CropType type);
-    CropType harvest();
+    bool plant(ItemType type);
+    ItemType harvest();
     void updateDay();
 
     SoilStatus getStatus() const { return _status; }
