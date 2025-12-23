@@ -17,7 +17,7 @@ public:
 
     void playAllAnimations();
 
-    const std::vector<NPCBase*>& getAllNPCs() const { return _npcs; }
+    std::vector<NPCBase*> NPCManager::getAllNPCs();
 
     NPCBase* createNPC(const std::string& name);
 
@@ -25,9 +25,9 @@ public:
 private:
     NPCManager() {}
     ~NPCManager() {}
-
+    std::map<std::string, NPCBase*> _npcMap;
     static NPCManager* _instance;
-    std::vector<NPCBase*> _npcs;
+
 };
 
 #endif // __NPC_MANAGER_H__

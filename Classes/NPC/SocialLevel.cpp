@@ -6,124 +6,46 @@
  * Update Date:   2025/12/21
  * License:       MIT License
  ****************************************************************/
-
 #include "SocialLevel.h"
 
 USING_NS_CC;
 
-// 初始化静态成员
-SocialLevel::CharacterData SocialLevel::s_characterData[CHARACTER_COUNT];
 const char* SocialLevel::HEART_FILLED = "/NPC/red heart.png";
 const char* SocialLevel::HEART_EMPTY = "/NPC/empty heart.png";
-bool SocialLevel::s_isInitialized = false;
 
-// 初始化人物数据
-void SocialLevel::initCharacterData()
+void SocialLevel::getNPCStyle(const std::string& name, std::string& outIconPath, float& outScale)
 {
-    if (s_isInitialized) return;
-
-    // 初始化3个人物的数据
-    s_characterData[(int)CharacterType::Evelyn] = {
-        "Evelyn", 0, "/NPC/EvelynPhoto.png", 6.0f
-    };
-
-    s_characterData[(int)CharacterType::Haley] = {
-        "Haley", 0, "/NPC/HaleyPhoto.png", 5.2f
-    };
-
-    s_characterData[(int)CharacterType::Sam] = {
-        "Sam", 0, "/NPC/SamPhoto.png", 5.2f
-    };
-
-    s_isInitialized = true;
-}
-
-// 设置好感度等级
-void SocialLevel::setFriendshipLevel(CharacterType character, int level)
-{
-    int index = (int)character;
-    if (index >= 0 && index < CHARACTER_COUNT) {
-        if (level < 0) 
-            level = 0;
-        if (level > MAX_FRIENDSHIP_LEVEL) 
-            level = MAX_FRIENDSHIP_LEVEL;
-        s_characterData[index].friendshipLevel = level;
+    if (name == "Evelyn") {
+        outIconPath = "/NPC/EvelynPhoto.png";
+        outScale = 6.0f;
+    }
+    else if (name == "Haley") {
+        outIconPath = "/NPC/HaleyPhoto.png";
+        outScale = 5.2f;
+    }
+    else if (name == "Sam") {
+        outIconPath = "/NPC/SamPhoto.png";
+        outScale = 5.2f;
+    }
+    else {
+        // 默认头像
+        outIconPath = "/NPC/DefaultPhoto.png"; 
+        outScale = 5.0f;
     }
 }
 
-// 增加好感度
-bool SocialLevel::increaseFriendshipLevel(CharacterType character, int amount)
-{
-    int index = (int)character;
-    if (index < 0 || index >= CHARACTER_COUNT || amount <= 0) {
-        return false;
-    }
-
-    CharacterData& data = s_characterData[index];
-    int oldLevel = data.friendshipLevel;
-
-    int newLevel = oldLevel + amount;
-    if (newLevel > MAX_FRIENDSHIP_LEVEL) {
-        newLevel = MAX_FRIENDSHIP_LEVEL;
-    }
-
-    if (newLevel != oldLevel) {
-        data.friendshipLevel = newLevel;
-        return true;
-    }
-
-    return false;
-}
-
-// 减少好感度
-bool SocialLevel::decreaseFriendshipLevel(CharacterType character, int amount)
-{
-    int index = (int)character;
-    if (index < 0 || index >= CHARACTER_COUNT || amount <= 0) {
-        return false;
-    }
-
-    CharacterData& data = s_characterData[index];
-    int oldLevel = data.friendshipLevel;
-
-    int newLevel = oldLevel - amount;
-    if (newLevel < 0) {
-        newLevel = 0;
-    }
-
-    if (newLevel != oldLevel) {
-        data.friendshipLevel = newLevel;
-        return true;
-    }
-
-    return false;
-}
-
-// 获取好感度等级
-int SocialLevel::getFriendshipLevel(CharacterType character)
-{
-    int index = (int)character;
-    if (index >= 0 && index < CHARACTER_COUNT) {
-        return s_characterData[index].friendshipLevel;
-    }
-    return 0;
-}
-
-// 创建好感度爱心显示（单行显示10个爱心）
+// 创建好感度爱心显示（保持不变）
 Node* SocialLevel::createFriendshipHearts(int level)
 {
     Node* heartContainer = Node::create();
+    const float SPACING = 35.0f;
+    const int TOTAL_HEARTS = 10;
 
-    // 参数设置
-    const float SPACING = 35.0f;      // 爱心间距
-    const int TOTAL_HEARTS = 10;      // 总共10个爱心
-
-    // 计算总宽度和起始位置
     float totalWidth = (TOTAL_HEARTS - 1) * SPACING;
-    float startX = -totalWidth / 2 ;
+    float startX = -totalWidth / 2;
 
-    // 单行显示所有爱心
     for (int i = 0; i < TOTAL_HEARTS; i++) {
+        // 假设每 150 分一颗心
         bool isFilled = (i < level / 150);
         const char* heartPath = isFilled ? HEART_FILLED : HEART_EMPTY;
 
@@ -135,65 +57,57 @@ Node* SocialLevel::createFriendshipHearts(int level)
             heartContainer->addChild(heartSprite);
         }
     }
-
     return heartContainer;
 }
+
 // 创建单个社交人物项
-Node* SocialLevel::createCharacterItem(CharacterType characterType, const Vec2& position)
+Node* SocialLevel::createCharacterItem(NPCBase* npc, const Vec2& position)
 {
-    int index = (int)characterType;
-    if (index < 0 || index >= CHARACTER_COUNT) {
-        return nullptr;
-    }
+    if (!npc) return nullptr;
 
-    // 确保数据已初始化
-    if (!s_isInitialized) {
-        initCharacterData();
-    }
+    // 1. 获取实时数据
+    std::string name = npc->getNPCName(); 
+    int currentFriendship = npc->getFriendship(); 
 
-    CharacterData& character = s_characterData[index];
-    int currentLevel = character.friendshipLevel;
+    // 2. 获取 UI 样式
+    std::string iconPath;
+    float iconScale;
+    getNPCStyle(name, iconPath, iconScale);
 
     // 创建容器
     Node* characterItem = Node::create();
     characterItem->setPosition(position);
 
-    // ========== 人物头像（最左侧） ==========
-    auto characterIcon = Sprite::create(character.iconPath);
+    // ========== 人物头像 ==========
+    auto characterIcon = Sprite::create(iconPath);
     if (characterIcon) {
-        characterIcon->setScale(character.scale);
-        characterIcon->setAnchorPoint(Vec2(0, 0.5f));  // 左对齐
-        characterIcon->setPosition(Vec2(-350, 0));     // 最左边
+        characterIcon->setScale(iconScale);
+        characterIcon->setAnchorPoint(Vec2(0, 0.5f));
+        characterIcon->setPosition(Vec2(-350, 0));
         characterItem->addChild(characterIcon);
     }
 
-    // ========== 人物名字（头像右侧） ==========
-    auto nameLabel = Label::createWithTTF(character.name, "fonts/Louis George Cafe Bold.ttf", 28);
+    // ========== 人物名字 ==========
+    auto nameLabel = Label::createWithTTF(name, "fonts/Louis George Cafe Bold.ttf", 28);
     if (nameLabel) {
         nameLabel->setTextColor(Color4B::BLACK);
-        nameLabel->setAnchorPoint(Vec2(0, 0.5f));  // 左对齐
-        nameLabel->setPosition(Vec2(-260, 0));     // 头像右侧
+        nameLabel->setAnchorPoint(Vec2(0, 0.5f));
+        nameLabel->setPosition(Vec2(-260, 0));
         characterItem->addChild(nameLabel);
     }
 
-    // ========== 名字和爱心之间的竖线 ==========
+    // ========== 竖线 ==========
     DrawNode* verticalLine = DrawNode::create();
     if (verticalLine) {
-        // 竖线参数
-        Vec2 startPoint(-150, -75);  // 竖线起点
-        Vec2 endPoint(-150, 75);     // 竖线终点
-        float lineWidth = 2.0f;     // 线宽
-        Color4F lineColor(0.55f, 0.27f, 0.07f, 1.0f);
-
-        verticalLine->drawSegment(startPoint, endPoint, lineWidth, lineColor);
+        verticalLine->drawSegment(Vec2(-150, -75), Vec2(-150, 75), 2.0f, Color4F(0.55f, 0.27f, 0.07f, 1.0f));
         characterItem->addChild(verticalLine);
     }
 
-    // ========== 好感度爱心显示 ==========
-    Node* heartContainer = createFriendshipHearts(currentLevel);
+    // ========== 好感度爱心 ==========
+    Node* heartContainer = createFriendshipHearts(currentFriendship);
     if (heartContainer) {
-        heartContainer->setPosition(Vec2(100, 0));  // 中间位置
-        heartContainer->setScale(1.2f);            // 适当缩放
+        heartContainer->setPosition(Vec2(100, 0));
+        heartContainer->setScale(1.2f);
         characterItem->addChild(heartContainer);
     }
 
@@ -203,57 +117,48 @@ Node* SocialLevel::createCharacterItem(CharacterType characterType, const Vec2& 
 // 创建社交界面
 Node* SocialLevel::createSocialInterface(Node* parent, Sprite* background)
 {
-    if (!parent || !background) {
-        return nullptr;
-    }
+    if (!parent || !background) return nullptr;
 
-    // 确保数据已初始化
-    if (!s_isInitialized) {
-        initCharacterData();
-        s_isInitialized = true;
-    }
-
-    // 创建容器
+    // 创建主容器
     Node* container = Node::create();
 
     // 获取背景位置
     Vec2 bgPos = background->getPosition();
-
-    // 计算起始位置（背景上部）
     float startY = bgPos.y + 120;
-    float spacing = 120;  // 每个人物项的间距
+    float spacing = 120;
 
-    // 创建3个人物项
-    for (int i = 0; i < CHARACTER_COUNT; i++) {
-        CharacterType characterType = static_cast<CharacterType>(i);
+    const auto& npcList = NPCManager::getInstance()->getAllNPCs();
+
+    // 遍历所有活着的 NPC
+    for (size_t i = 0; i < npcList.size(); ++i) {
+        NPCBase* npc = npcList[i];
+        if (!npc) continue;
+
+        // 计算位置
         Vec2 position = Vec2(bgPos.x, startY - i * spacing);
 
-        Node* characterItem = createCharacterItem(characterType, position);
+        // 创建条目
+        Node* characterItem = createCharacterItem(npc, position);
         if (characterItem) {
             container->addChild(characterItem);
 
-            // ========== 人物之间的横线（最后一个不画） ==========
-            if (i < CHARACTER_COUNT - 1) {
+            if (i < npcList.size() - 1) {
                 DrawNode* horizontalLine = DrawNode::create();
                 if (horizontalLine) {
-                    // 横线参数
-                    float lineLength = 920.0f;  // 横线长度
-                    float lineY = startY - (i + 0.5f) * spacing;  // 横线Y坐标（在两个人之间）
-                    float lineWidth = 2.0f;      // 线宽
-                    Color4F lineColor(0.55f, 0.27f, 0.07f, 1.0f);
-
-                    Vec2 startPoint(bgPos.x - lineLength / 2, lineY);
-                    Vec2 endPoint(bgPos.x + lineLength / 2, lineY);
-
-                    horizontalLine->drawSegment(startPoint, endPoint, lineWidth, lineColor);
+                    float lineY = startY - (i + 0.5f) * spacing;
+                    horizontalLine->drawSegment(
+                        Vec2(bgPos.x - 460, lineY), // 920的一半
+                        Vec2(bgPos.x + 460, lineY),
+                        2.0f,
+                        Color4F(0.55f, 0.27f, 0.07f, 1.0f)
+                    );
                     container->addChild(horizontalLine);
                 }
             }
         }
     }
 
-    // 将容器添加到父节点
-    parent->addChild(container, 100);
 
+    parent->addChild(container, 100);
     return container;
 }

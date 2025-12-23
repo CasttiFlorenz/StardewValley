@@ -42,15 +42,15 @@ void Evelyn::setupStaticFrame()
 
 
 std::vector<std::string> Evelyn::getConversation(bool isFirstMet) {
-    this->increaseFriendship(10);
-
+    this->increaseFriendship(50);
+    CCLOG("%d",getFriendship());
     std::vector<std::string> dialogue;
 
     if (isFirstMet) {
         dialogue.push_back("Oh my! You must be the new farmer.");
         dialogue.push_back("I'm Evelyn. It's so nice to meet you, dear.");
-        dialogue.push_back("My husband George and I have lived here for years.");
-        dialogue.push_back("If you ever need anything, don't hesitate to ask.");
+        dialogue.push_back("I have lived here for years.");
+        dialogue.push_back("If you ever need anything, ask me.");
     }
     else {
         int randomChoice = rand() % 4;
@@ -58,24 +58,23 @@ std::vector<std::string> Evelyn::getConversation(bool isFirstMet) {
         switch (randomChoice) {
         case 0:
             dialogue.push_back("I just baked a fresh batch of cookies.");
-            dialogue.push_back("Would you like one, dear? They're still warm.");
+            dialogue.push_back("Would you like one, dear?");
             break;
 
         case 1:
-            dialogue.push_back("My gardenias are blooming beautifully this year.");
+            dialogue.push_back("My gardenias are blooming beautifully");
             dialogue.push_back("The secret is talking to them every morning.");
             break;
 
         case 2: 
-            dialogue.push_back("Remember to take care of yourself, dear.");
+            dialogue.push_back("Remember to take care of yourself");
             dialogue.push_back("Farming is hard work.");
             dialogue.push_back("Don't forget to eat proper meals!");
             break;
 
-        case 4: 
+        case 3: 
             dialogue.push_back("How are you doing, dear?");
             dialogue.push_back("Is the farm keeping you busy?");
-            dialogue.push_back("You look like you've been working hard.");
             break;
         }
     }
@@ -90,12 +89,12 @@ int Evelyn::checkGiftTaste(ItemType itemTag)
     if (itemTag == ItemType::DAFFODILS) return 80;
 
     // --- œ≤ª∂ (+45) ---
-    if (itemTag == ItemType::MILK) return 45; 
+    if (itemTag == ItemType::MILK) return 45;
     if (itemTag == ItemType::SALAD) return 45;
-    if (itemTag == ItemType::LEEK) return 45; 
+    if (itemTag == ItemType::LEEK) return 45;
 
     // --- Ã÷—· (-20) ---
-    if (itemTag == ItemType::FISHINGROD) return -20; 
+    if (itemTag == ItemType::FISHINGROD) return -20;
     if (itemTag == ItemType::COPPER_ORE) return -20;
 
     return NPCBase::checkGiftTaste(itemTag);

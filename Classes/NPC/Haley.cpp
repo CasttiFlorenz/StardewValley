@@ -23,7 +23,7 @@ void Haley::playAnimation()
 }
 std::vector<std::string> Haley::getConversation(bool isFirstMet)
 {
-    this->increaseFriendship(10);
+    this->increaseFriendship(50);
 
     std::vector<std::string> dialogue;
 
@@ -31,7 +31,6 @@ std::vector<std::string> Haley::getConversation(bool isFirstMet)
         // 初次见面 
         dialogue.push_back("Oh... aren't you the new farmer?");
         dialogue.push_back("I'm Haley.");
-        dialogue.push_back("If it were me, I'd hate getting dirty every day.");
     }
     else {
         // 日常对话
@@ -39,15 +38,15 @@ std::vector<std::string> Haley::getConversation(bool isFirstMet)
 
         if (random == 0) {
             dialogue.push_back("This town is so small.");
-            dialogue.push_back("I wish I could go to the mall completely.");
+            dialogue.push_back("I wish I could go to the mall.");
         }
         else if (random == 1) {
             dialogue.push_back("Do you like my dress?");
             dialogue.push_back("I bought it on sale last week.");
         }
         else {
-            dialogue.push_back("Ugh, being a farmer sounds like so much work.");
-            dialogue.push_back("Make sure you don't smell like dirt when you talk to me.");
+            dialogue.push_back("Being a farmer sounds like so much work.");
+            dialogue.push_back("Make sure you don't smell like dirt.");
         }
     }
 
@@ -55,14 +54,13 @@ std::vector<std::string> Haley::getConversation(bool isFirstMet)
 }
 
 
-int Haley::checkGiftTaste(ItemType itemTag)
+int Haley::checkGiftTaste(ItemType  itemTag)
 {
     // --- 最爱 (+80) ---
-    if (itemTag == ItemType::DAFFODILS) return 80; 
-    if (itemTag == ItemType::SALAD) return 80;    
+    if (itemTag == ItemType::DAFFODILS) return 80;
+    if (itemTag == ItemType::SALAD) return 80;
 
     // --- 喜欢 (+45) ---
-    // 假设她不做饭，但喜欢现成的食物
     if (itemTag == ItemType::FRIED_EGG) return 45;
 
     // --- 讨厌 (-20) ---

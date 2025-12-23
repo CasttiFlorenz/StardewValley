@@ -23,7 +23,7 @@ public:
     // --- 好感度相关 ---
 
     // 接收礼物
-    std::string receiveGift(ItemType itemTag);
+    std::string receiveGift(ItemType  itemTag);
 
     // 获取当前好感度
     int getFriendship() const { return _friendship; }

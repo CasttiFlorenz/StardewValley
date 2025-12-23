@@ -92,22 +92,22 @@ void Sam::createAndPlayAnimation()
 }
 
 std::vector<std::string> Sam::getConversation(bool isFirstMet) {
-    this->increaseFriendship(10);
+    this->increaseFriendship(50);
 
     std::vector<std::string> dialogue;
 
     if (isFirstMet) {
-        dialogue.push_back("Hey, you're the new farmer, right? Nice to meet you.");
-        dialogue.push_back("I'm Sam. I live in town with my mom and little brother.");
-        dialogue.push_back("I play in a band with Sebastian and Abigail.");
-        dialogue.push_back("If you're into music, you should come listen sometime.");
+        dialogue.push_back("Hey, you're the new farmer, right? ");
+        dialogue.push_back("I'm Sam. I live in town with my mom.");
+        dialogue.push_back("I play in a band with Sebastian.");
+        dialogue.push_back("If you're into music, you should come listen.");
     }
     else {
         // 随机对话
         int randomChoice = rand() % 6;
         switch (randomChoice) {
         case 0:
-            dialogue.push_back("I was practicing my skateboard tricks earlier.");
+            dialogue.push_back("I was practicing my skateboard tricks.");
             dialogue.push_back("Almost landed a kickflip!");
             break;
         case 1:
@@ -115,7 +115,7 @@ std::vector<std::string> Sam::getConversation(bool isFirstMet) {
             dialogue.push_back("I can't wait to hear it!");
             break;
         case 2:
-            dialogue.push_back("Mom made pancakes this morning. They were amazing!");
+            dialogue.push_back("Mom made pancakes this morning. ");
             break;
         case 3:
             dialogue.push_back("Vincent keeps trying to play my guitar.");
@@ -135,7 +135,7 @@ std::vector<std::string> Sam::getConversation(bool isFirstMet) {
 }
 
 
-int Sam::checkGiftTaste(ItemType itemTag)
+int Sam::checkGiftTaste(ItemType  itemTag)
 {
     // --- 最爱 (+80) ---
     if (itemTag == ItemType::FRIED_EGG) return 80;

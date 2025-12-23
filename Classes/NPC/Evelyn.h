@@ -13,7 +13,7 @@ public:
     virtual bool init() override;
     virtual void playAnimation() override {}  // 空实现，不需要动画
     virtual std::vector<std::string> Evelyn::getConversation(bool isFirstMet)override;
-    virtual int checkGiftTaste(ItemType itemTag)override;
+    virtual int checkGiftTaste(ItemType  itemTag)override;
 private:
     void setupStaticFrame();
 };

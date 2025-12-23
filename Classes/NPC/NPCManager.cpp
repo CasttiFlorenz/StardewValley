@@ -10,60 +10,53 @@ NPCManager* NPCManager::getInstance()
     return _instance;
 }
 
-void NPCManager::createAndAddNPCs(Scene* scene)
-{
-    if (!scene) return;
-
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-
-    Haley* haley = Haley::create();
-    if (haley) {
-        haley->setNPCPosition(Vec2(visibleSize.width * 0.25f, visibleSize.height * 0.5f));
-        haley->setNPCScale(2.0f);
-        scene->addChild(haley);
-        _npcs.push_back(haley);
+std::vector<NPCBase*> NPCManager::getAllNPCs() {
+    std::vector<NPCBase*> list;
+    for (auto& pair : _npcMap) {
+        if (pair.second) {
+            list.push_back(pair.second);
+        }
     }
-
-    Sam* sam = Sam::create();
-    if (sam) {
-        sam->setNPCPosition(Vec2(visibleSize.width * 0.5f, visibleSize.height * 0.5f));
-        sam->setNPCScale(2.0f);
-        scene->addChild(sam);
-        _npcs.push_back(sam);
-    }
-
-    Evelyn* evelyn = Evelyn::create();
-    if (evelyn) {
-        evelyn->setNPCPosition(Vec2(visibleSize.width * 0.75f, visibleSize.height * 0.5f));
-        evelyn->setNPCScale(2.0f);
-        scene->addChild(evelyn);
-        _npcs.push_back(evelyn);
-    }
-}
-
-NPCBase* NPCManager::createNPC(const std::string& name) {
-    NPCBase* npc = nullptr;
-    if (name == "Haley") {
-        npc = Haley::create();
-        npc->setNPCName("Haley");
-    }
-    else if (name == "Sam") {
-        npc = Sam::create();
-        npc->setNPCName("Sam");
-    }
-    else if (name == "Evelyn") {
-        npc = Evelyn::create();
-        npc->setNPCName("Evelyn");
-    }
-    return npc;
+    return list;
 }
 
 NPCBase* NPCManager::getNPCByName(const std::string& name)
 {
-    for (auto npc : _npcs) {
-        if (npc && npc->getNPCName() == name) {
-            return npc;
-        }
+    if (_npcMap.find(name) != _npcMap.end()) {
+        return _npcMap[name];
     }
-    return nullptr; 
+    return nullptr;
+}
+
+NPCBase* NPCManager::createNPC(const std::string& name) {
+
+    if (_npcMap.find(name) != _npcMap.end()) {
+        NPCBase* existingNPC = _npcMap[name];
+        if (existingNPC->getParent()) {
+            existingNPC->removeFromParent();
+        }
+
+        return existingNPC; 
+    }
+
+    NPCBase* npc = nullptr;
+
+    if (name == "Haley") {
+        npc = Haley::create(); 
+    }
+    else if (name == "Sam") {
+        npc = Sam::create();
+    }
+    else if (name == "Evelyn") {
+        npc = Evelyn::create();
+    }
+
+    if (npc) {
+        npc->setNPCName(name);
+        npc->retain();
+
+        _npcMap[name] = npc;
+    }
+
+    return npc;
 }
