@@ -7,16 +7,16 @@
 #include <vector>
 
 
-// µØÍ¼Ëõ·Å±ÈÀý
+// åœ°å›¾ç¼©æ”¾æ¯”ä¾‹
 constexpr float TILED_MAP_SCALE = 5.0f;
-// Íæ¼ÒÄ¬ÈÏËÙ¶È
+// çŽ©å®¶é»˜è®¤é€Ÿåº¦
 constexpr float DEFAULT_SPEED = 250.0f;
 
-// Å©ÉáµØÍ¼¿í¸ß£¨ÍßÆ¬Êý£©
+// å†œèˆåœ°å›¾å®½é«˜ï¼ˆç“¦ç‰‡æ•°ï¼‰
 constexpr int FARM_HOUSE_WIDTH = 20;
 constexpr int FARM_HOUSE_HEIGHT = 12;
 
-// ·½ÏòÃ¶¾Ù
+// æ–¹å‘æžšä¸¾
 enum class Direction
 {
     DOWN = 0,
@@ -57,32 +57,36 @@ enum class MouseEvent
 
 enum class ItemType {
     NONE = -1,
-    HOE = 0,           // ³úÍ·
-    AXE,              // ¸«Í·
-    WATERING_CAN,     // ½½Ë®ºø
-    PICKAXE,          // ¸ä
-    SCYTHE,           // Á­µ¶
-    FISHINGROD,       // µöÓã¸Í
-    STONE,            // Ê¯Í·
-    WOOD,             // Ä¾Í·
-    COPPER_ORE,       // Í­¿óÊ¯
-    FERTILIZER,       // ·ÊÁÏ
-    PARSNIP_SEED,     // ·À·ç²ÝÖÖ×Ó 
-    CAULIFLOWER_SEED, // »¨Ò¬²ËÖÖ×Ó
-    POTATO_SEED,      // ÍÁ¶¹ÖÖ×Ó
-    PARSNIP,          // ·À·ç²Ý
-    CAULIFLOWER,      // »¨Ò¬²Ë
-    POTATO,           // ÍÁ¶¹
-    FIBER,            // ÏËÎ¬
-    DAFFODILS,        // »ÆË®ÏÉ
-    LEEK,             // ¾Â´Ð
-    HAY,              // ¸É²Ý
-    EGG,              // ¼¦µ°
-    FRIED_EGG,        // ¼å¼¦µ°
-    CARP,             // ÀðÓã
-    MILK,             // Å£ÄÌ
-    SALAD,            // ÌïÔ°É³À­
-    COUNT             // ×ÜÊý£¬ÓÃÓÚ±éÀú
+    HOE = 0,           // é”„å¤´
+    AXE,              // æ–§å¤´
+    WATERING_CAN,     // æµ‡æ°´å£¶
+    PICKAXE,          // é•
+    SCYTHE,           // é•°åˆ€
+    FISHINGROD,       // é’“é±¼ç«¿
+    STONE,            // çŸ³å¤´
+    WOOD,             // æœ¨å¤´
+    COPPER_ORE,       // é“œçŸ¿çŸ³
+    FERTILIZER,       // è‚¥æ–™
+    PARSNIP_SEED,     // é˜²é£Žè‰ç§å­ 
+    CAULIFLOWER_SEED, // èŠ±æ¤°èœç§å­
+    POTATO_SEED,      // åœŸè±†ç§å­
+    PARSNIP,          // é˜²é£Žè‰
+    CAULIFLOWER,      // èŠ±æ¤°èœ
+    POTATO,           // åœŸè±†
+    FIBER,            // çº¤ç»´
+    DAFFODILS,        // é»„æ°´ä»™
+    LEEK,             // éŸ­è‘±
+    HAY,              // å¹²è‰
+    EGG,              // é¸¡è›‹
+    FRIED_EGG,        // ç…Žé¸¡è›‹
+    CARP,             // é²¤é±¼
+    MILK,             // ç‰›å¥¶
+    SALAD,            // ç”°å›­æ²™æ‹‰
+    COUNT,             // æ€»æ•°ï¼Œç”¨äºŽéåŽ†
+
+   // === ç‰¹æ®Š IDï¼šä¸è¿›èƒŒåŒ… ===
+  ANIMAL_CHICKEN_TAG = 10001,
+  ANIMAL_COW_TAG = 10002,
 };
 
 enum class SkillType
@@ -94,7 +98,7 @@ enum class SkillType
     SKILL_COUNT
 };
 
-// ÈËÎïÀàÐÍÃ¶¾Ù
+// äººç‰©ç±»åž‹æžšä¸¾
 enum class CharacterType
 {
     Evelyn = 0,
@@ -167,3 +171,4 @@ const std::string GO_TO_MINES = "goToMines";
 const std::string GO_TO_HOUSE = "goToHouse";
 
 #endif // __CONSTANT_H__
+
