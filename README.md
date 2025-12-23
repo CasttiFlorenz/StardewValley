@@ -23,3 +23,6 @@
 | 2025-12-20 | ZRY           | ✅实现NPC对话，送礼功能<br>✅初步实现NPC好感度系统<br>||
 | 2025-12-20 | CasttiFlorenz | ✅修复鼠标右键事件位置传入错误问题<br>✅实现了耕种和养殖系统<br>||
 | 2025-12-21 | enxi-yu       | ✅实现好感度界面<br>✅实现技能水平界面<br>✅实现退出界面<br>|| 
+| 2025-12-21 | Floloc        | ✅实现MusicManager类<br>✅实现FishGameLayer类<br>||
+| 2025-12-22 | CasttiFlorenz | ✅修复FishGameLayer类钓鱼小游戏重复触发bug||
+| 2025-12-23 | CasttiFlorenz | ✅合并多余enum class到Objects（现更名为ItemType）✅调整事件触发方式，改为直接在地图类内调用相关方法||
