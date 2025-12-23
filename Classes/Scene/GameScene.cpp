@@ -36,7 +36,8 @@ bool GameScene::init()
     _weatherManager = WeatherManager::getInstance();
     _timeManager = TimeManager::getInstance();
     _inventory->setPlayer(_player);
-
+    _npcManager = NPCManager::getInstance();
+    
     this->addChild(_player, 4);
     this->addChild(_weatherManager, 5);
     this->addChild(_timeManager, 6);
@@ -335,4 +336,51 @@ void GameScene::onNewDay()
     if (auto instance = MinesItemManager::getInstance()) { instance->onNewDay(); }
 
 
+}
+
+void GameScene::sleep() {
+    auto runningScene = Director::getInstance()->getRunningScene();
+    if (!runningScene) return;
+
+    // 防止重复打开
+    if (runningScene->getChildByName("goToBed")) return;
+
+    auto dialog = Layer::create();
+    dialog->setName("goToBed");
+    Size winSize = Director::getInstance()->getWinSize();
+    auto bg = Sprite::create("Shop/SelectDialogue.png");
+    float bgHeight = bg->getContentSize().height;
+    bg->setPosition(winSize.width / 2, 150);
+    bg->setScale(3.0f);
+    dialog->addChild(bg);
+    Size bgSize = bg->getContentSize();
+
+    auto label = Label::createWithTTF("Do you want to sleep now?", "fonts/pixel.ttf", 10);
+    label->setTextColor(Color4B::BLACK);
+    label->setPosition(Vec2(bgSize.width / 2, bgSize.height * 0.6f));
+    bg->addChild(label);
+
+    // 添加 OK 按钮
+    auto btnOk = ui::Button::create("Shop/ok.png");
+    btnOk->setScale(0.45f);
+    btnOk->setPosition(Vec2(bgSize.width * 0.3f, bgSize.height * 0.3f));
+    btnOk->addClickEventListener([runningScene](Ref*) {
+        CCLOG("Sleep: YES clicked");
+        runningScene->removeChildByName("goToBed");
+        TimeManager::getInstance()->startSleepSequence();
+        });
+    bg->addChild(btnOk);
+    
+    // 添加 NO 按钮
+    auto btnNo = ui::Button::create("Shop/no.png");
+    btnNo->setScale(0.45f);
+    btnNo->setPosition(Vec2(bgSize.width * 0.7f, bgSize.height * 0.3f));
+    btnNo->addClickEventListener([runningScene](Ref*) {
+        CCLOG("Sleep: NO clicked");
+
+        runningScene->removeChildByName("goToBed");
+        });
+    bg->addChild(btnNo);
+
+    runningScene->addChild(dialog, 9999);
 }
