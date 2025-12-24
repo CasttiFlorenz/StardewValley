@@ -31,7 +31,7 @@ bool ShopLayer::init(Item* item) {
     Size winSize = Director::getInstance()->getVisibleSize(); 
 
     // 2. 背景板
-    auto bg =  Sprite:: create("Shop/ShopBackground.png"); 
+    auto bg =  Sprite:: create("Shop/background.png"); 
 
     bg->setScale(1.2f);
     bg->setContentSize(Size(400, 400));
@@ -179,3 +179,4 @@ void ShopLayer::onBuyClicked(Ref* sender) {
 void ShopLayer::onCloseClicked(Ref* sender) {
     this->removeFromParent();
 }
+
