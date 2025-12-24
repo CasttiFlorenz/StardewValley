@@ -41,7 +41,7 @@ bool ShopMenuLayer::init(const std::string& shopName, const std::vector<Item*>& 
     if (!Layer::init()) return false;
 
     Size visibleSize = Director::getInstance()->getVisibleSize();
-
+    _acceptedSellTags = acceptedTags;
     // 2. 遮罩层
     auto darkLayer = LayerColor::create(Color4B(0, 0, 0, 180));
     this->addChild(darkLayer);
@@ -121,7 +121,7 @@ bool ShopMenuLayer::init(const std::string& shopName, const std::vector<Item*>& 
             if (icon) {
                 icon->setPosition(Vec2(50, 40));
                 float maxIconSize = 60.0f;
-                float scale = maxIconSize / std::max(icon->getContentSize().width, icon->getContentSize().height);
+                float scale = maxIconSize / std::max(icon->getContentSize().width/1.2f, icon->getContentSize().height/1.2f);
                 icon->setScale(scale);
                 itemLayout->addChild(icon);
             }
