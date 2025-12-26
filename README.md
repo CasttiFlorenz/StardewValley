@@ -27,3 +27,4 @@
 | 2025-12-22 | CasttiFlorenz | ✅修复FishGameLayer类钓鱼小游戏重复触发bug||
 | 2025-12-23 | CasttiFlorenz | ✅合并多余enum class到Objects（现更名为ItemType）<br>✅调整事件触发方式，改为直接在地图类内调用相关方法||
 | 2025-12-24 | ZRY           | ✅完善商店、npc互动UI界面<br>||
+| 2025-12-26 |  CasttiFlorenz| ✅修复了玩家在进行钓鱼、对话、商店等活动时玩家仍然可以走动与打开背包的问题<br>||
