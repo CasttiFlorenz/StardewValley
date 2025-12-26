@@ -7,16 +7,16 @@
 #include <vector>
 
 
-// åœ°å›¾ç¼©æ”¾æ¯”ä¾‹
+// µØÍ¼Ëõ·Å±ÈÀý
 constexpr float TILED_MAP_SCALE = 5.0f;
-// çŽ©å®¶é»˜è®¤é€Ÿåº¦
+// Íæ¼ÒÄ¬ÈÏËÙ¶È
 constexpr float DEFAULT_SPEED = 250.0f;
 
-// å†œèˆåœ°å›¾å®½é«˜ï¼ˆç“¦ç‰‡æ•°ï¼‰
+// Å©ÉáµØÍ¼¿í¸ß£¨ÍßÆ¬Êý£©
 constexpr int FARM_HOUSE_WIDTH = 20;
 constexpr int FARM_HOUSE_HEIGHT = 12;
 
-// æ–¹å‘æžšä¸¾
+// ·½ÏòÃ¶¾Ù
 enum class Direction
 {
     DOWN = 0,
@@ -30,61 +30,41 @@ enum class MouseEvent
     NONE = 0,
     NPC_CONSERVATION,
     USE_TOOL,
-    GET_WOOD,
-    GET_GRASS,
-    GET_STONE,
-    GET_COPPER,
-    GET_DAFFODILS,
-    GET_LEEK,
-    SHOP_SALE,
-    SHOP_PIERRE,
-    SHOP_MARNIE,
-    CONVERSATION_HALEY,
-    CONVERSATION_SAM,
-    CONVERSATION_EVELYN,
-    USE_PARSNIP_SEED,
-    USE_POTATO_SEED,
-    USE_CAULIFLOWER_SEED,
-    USE_HAY,
-    GET_PARSNIP,
-    GET_POTATO,
-    GET_CAULIFLOWER,
-    GET_EGG,
-    GET_MILK,
+    OPEN_SHOP,
     SLEEP,
     FISHING
 };
 
 enum class ItemType {
     NONE = -1,
-    HOE = 0,           // é”„å¤´
-    AXE,              // æ–§å¤´
-    WATERING_CAN,     // æµ‡æ°´å£¶
-    PICKAXE,          // é•
-    SCYTHE,           // é•°åˆ€
-    FISHINGROD,       // é’“é±¼ç«¿
-    STONE,            // çŸ³å¤´
-    WOOD,             // æœ¨å¤´
-    COPPER_ORE,       // é“œçŸ¿çŸ³
-    FERTILIZER,       // è‚¥æ–™
-    PARSNIP_SEED,     // é˜²é£Žè‰ç§å­ 
-    CAULIFLOWER_SEED, // èŠ±æ¤°èœç§å­
-    POTATO_SEED,      // åœŸè±†ç§å­
-    PARSNIP,          // é˜²é£Žè‰
-    CAULIFLOWER,      // èŠ±æ¤°èœ
-    POTATO,           // åœŸè±†
-    FIBER,            // çº¤ç»´
-    DAFFODILS,        // é»„æ°´ä»™
-    LEEK,             // éŸ­è‘±
-    HAY,              // å¹²è‰
-    EGG,              // é¸¡è›‹
-    FRIED_EGG,        // ç…Žé¸¡è›‹
-    CARP,             // é²¤é±¼
-    MILK,             // ç‰›å¥¶
-    SALAD,            // ç”°å›­æ²™æ‹‰
-    COUNT,             // æ€»æ•°ï¼Œç”¨äºŽéåŽ†
+    HOE = 0,           // ³úÍ·
+    AXE,              // ¸«Í·
+    WATERING_CAN,     // ½½Ë®ºø
+    PICKAXE,          // ¸ä
+    SCYTHE,           // Á­µ¶
+    FISHINGROD,       // µöÓã¸Í
+    STONE,            // Ê¯Í·
+    WOOD,             // Ä¾Í·
+    COPPER_ORE,       // Í­¿óÊ¯
+    FERTILIZER,       // ·ÊÁÏ
+    PARSNIP_SEED,     // ·À·ç²ÝÖÖ×Ó 
+    CAULIFLOWER_SEED, // »¨Ò¬²ËÖÖ×Ó
+    POTATO_SEED,      // ÍÁ¶¹ÖÖ×Ó
+    PARSNIP,          // ·À·ç²Ý
+    CAULIFLOWER,      // »¨Ò¬²Ë
+    POTATO,           // ÍÁ¶¹
+    FIBER,            // ÏËÎ¬
+    DAFFODILS,        // »ÆË®ÏÉ
+    LEEK,             // ¾Â´Ð
+    HAY,              // ¸É²Ý
+    EGG,              // ¼¦µ°
+    FRIED_EGG,        // ¼å¼¦µ°
+    CARP,             // ÀðÓã
+    MILK,             // Å£ÄÌ
+    SALAD,            // ÌïÔ°É³À­
+    COUNT,             // ×ÜÊý£¬ÓÃÓÚ±éÀú
 
-   // === ç‰¹æ®Š IDï¼šä¸è¿›èƒŒåŒ… ===
+   // === ÌØÊâ ID£º²»½ø±³°ü ===
   ANIMAL_CHICKEN_TAG = 10001,
   ANIMAL_COW_TAG = 10002,
 };
@@ -98,7 +78,7 @@ enum class SkillType
     SKILL_COUNT
 };
 
-// äººç‰©ç±»åž‹æžšä¸¾
+// ÈËÎïÀàÐÍÃ¶¾Ù
 enum class CharacterType
 {
     Evelyn = 0,
@@ -164,11 +144,24 @@ enum class MapType {
     TOWN
 };
 
+// ¶¨ÒåÌìÆøÀàÐÍ
+enum class WeatherType {
+    Sunny = 0,
+    Rain,
+    Wind,
+    Snow
+};
+
+const std::string GAME_START = "start";
 const std::string GO_TO_FARM = "goToFarm";
 const std::string GO_TO_TOWN = "goToTown";
 const std::string GO_TO_BARN = "goToBarn";
 const std::string GO_TO_MINES = "goToMines";
 const std::string GO_TO_HOUSE = "goToHouse";
+
+const int FISHING_GAME_TAG = 8998;
+const int SHOP_MENU_TAG = 9999;
+
 
 #endif // __CONSTANT_H__
 

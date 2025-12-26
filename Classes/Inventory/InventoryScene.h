@@ -36,6 +36,7 @@ public:
     ItemType getTap() const;
     void addItemCount(ItemType object, int amount, bool animation = true);        // 增加指定物品的数量
     void removeItemCount(ItemType object, int amount);      // 减少指定物品的数量
+    bool getInventoryVisible() { return _inventoryVisible; }
 
 private:
     static InventoryScene* _instance;
