@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     Player.cpp
- * File Function: Playerç±»çš„å®žçŽ°
- * Author:        éƒ­èŠ·çƒŸã€äºŽæ©ç†™
+ * File Function: PlayerÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ¡¢ÓÚ¶÷Îõ
  * Update Date:   2025/12/14
  * License:       MIT License
  ****************************************************************/
@@ -27,7 +27,7 @@ void Player::destroyInstance() {
 
 bool Player::init()
 {
-    // åŠ è½½çŽ©å®¶çº¹ç†
+    // ¼ÓÔØÍæ¼ÒÎÆÀí
     auto texture = Director::getInstance()->getTextureCache()->addImage("Player/Abigail..png");
     if (!texture)
     {
@@ -35,7 +35,7 @@ bool Player::init()
         return false;
     }
 
-    // è®¡ç®—æ¯å¸§å°ºå¯¸
+    // ¼ÆËãÃ¿Ö¡³ß´ç
     const float w = texture->getContentSize().width / 4;
     const float h = texture->getContentSize().height / 13;
 
@@ -44,23 +44,21 @@ bool Player::init()
         return false;
     }
 
-    // åˆå§‹åŒ–æ–¹å‘ä¸ºå‘ä¸‹
+    // ³õÊ¼»¯·½ÏòÎªÏòÏÂ
     _direction = Direction::DOWN;
-    _isMoving = false;                   // åˆå§‹ä¸åœ¨ç§»åŠ¨
-    isUpdating = false;
+    _isMoving = false;                   // ³õÊ¼²»ÔÚÒÆ¶¯
 
     this->setScale(TILED_MAP_SCALE);
 
-    // åˆ›å»ºåŠ¨ç”»
+    // ´´½¨¶¯»­
     createAnimations();
 
     auto downAnimation = _walkAnimations[(int)Direction::DOWN];
 
-    // è®¾ç½®åˆå§‹åŠ¨ç”»çŠ¶æ€
+    // ÉèÖÃ³õÊ¼¶¯»­×´Ì¬
     setAnimation(_direction, false);
 
-    // åˆå§‹åŒ–æˆå‘˜å˜é‡
-    isUpdating = false;
+    // ³õÊ¼»¯³ÉÔ±±äÁ¿
     _speed = DEFAULT_SPEED;
     _velocity = Vec2::ZERO;
     _upPressed = false;
@@ -74,62 +72,62 @@ bool Player::init()
     return true;
 }
 
-// åˆ›å»ºæ‰€æœ‰æ–¹å‘çš„è¡Œèµ°åŠ¨ç”»
+// ´´½¨ËùÓÐ·½ÏòµÄÐÐ×ß¶¯»­
 void Player::createAnimations()
 {
-    // èŽ·å–çŽ©å®¶çº¹ç†
+    // »ñÈ¡Íæ¼ÒÎÆÀí
     auto texture = this->getTexture();
 
-    // è®¡ç®—çº¹ç†ä¸­æ¯å¸§çš„å°ºå¯¸
-    float frameWidth = texture->getContentSize().width / 4;     // 4åˆ—ï¼Œæ¯åˆ—ä¸€å¸§
-    float frameHeight = texture->getContentSize().height / 13;  // 13è¡Œï¼Œæ¯è¡Œä¸€ä¸ªåŠ¨ä½œ
+    // ¼ÆËãÎÆÀíÖÐÃ¿Ö¡µÄ³ß´ç
+    float frameWidth = texture->getContentSize().width / 4;     // 4ÁÐ£¬Ã¿ÁÐÒ»Ö¡
+    float frameHeight = texture->getContentSize().height / 13;  // 13ÐÐ£¬Ã¿ÐÐÒ»¸ö¶¯×÷
 
-    // å®šä¹‰çº¹ç†ä¸­æ¯ä¸ªæ–¹å‘å¯¹åº”çš„è¡Œç´¢å¼•
-    int downRow = 0;   // ç¬¬0è¡Œï¼šå‘ä¸‹è¡Œèµ°çš„4å¸§åŠ¨ç”»
-    int rightRow = 1;  // ç¬¬1è¡Œï¼šå‘å³è¡Œèµ°çš„4å¸§åŠ¨ç”»
-    int upRow = 2;     // ç¬¬2è¡Œï¼šå‘ä¸Šè¡Œèµ°çš„4å¸§åŠ¨ç”»
-    int leftRow = 3;   // ç¬¬3è¡Œï¼šå‘å·¦è¡Œèµ°çš„4å¸§åŠ¨ç”»
+    // ¶¨ÒåÎÆÀíÖÐÃ¿¸ö·½Ïò¶ÔÓ¦µÄÐÐË÷Òý
+    int downRow = 0;   // µÚ0ÐÐ£ºÏòÏÂÐÐ×ßµÄ4Ö¡¶¯»­
+    int rightRow = 1;  // µÚ1ÐÐ£ºÏòÓÒÐÐ×ßµÄ4Ö¡¶¯»­
+    int upRow = 2;     // µÚ2ÐÐ£ºÏòÉÏÐÐ×ßµÄ4Ö¡¶¯»­
+    int leftRow = 3;   // µÚ3ÐÐ£ºÏò×óÐÐ×ßµÄ4Ö¡¶¯»­
 
-    // ä¸ºæ¯ä¸ªæ–¹å‘åˆ›å»ºåŠ¨ç”»
+    // ÎªÃ¿¸ö·½Ïò´´½¨¶¯»­
     for (int direction = 0; direction < 4; direction++)
     {
-        // å­˜å‚¨åŠ¨ç”»å¸§çš„å®¹å™¨
+        // ´æ´¢¶¯»­Ö¡µÄÈÝÆ÷
         Vector<SpriteFrame*> frames;
 
-        int row = direction; // å½“å‰æ–¹å‘å¯¹åº”çš„çº¹ç†è¡Œ
+        int row = direction; // µ±Ç°·½Ïò¶ÔÓ¦µÄÎÆÀíÐÐ
 
-        // å–å½“å‰è¡Œçš„4å¸§åˆ›å»ºåŠ¨ç”»åºåˆ—
+        // È¡µ±Ç°ÐÐµÄ4Ö¡´´½¨¶¯»­ÐòÁÐ
         for (int col = 0; col < 4; col++)
         {
-            // ä»Žçº¹ç†çš„æŒ‡å®šä½ç½®åˆ‡å‰²å‡ºä¸€å¸§
+            // ´ÓÎÆÀíµÄÖ¸¶¨Î»ÖÃÇÐ¸î³öÒ»Ö¡
             auto frame = SpriteFrame::createWithTexture(texture,
                 Rect(col * frameWidth, row * frameHeight + 0.5, frameWidth, frameHeight));
 
             frames.pushBack(frame);
         }
 
-        // ä½¿ç”¨å¸§åºåˆ—åˆ›å»ºåŠ¨ç”»ï¼Œæ¯å¸§æŒç»­0.15ç§’
+        // Ê¹ÓÃÖ¡ÐòÁÐ´´½¨¶¯»­£¬Ã¿Ö¡³ÖÐø0.15Ãë
         auto animation = Animation::createWithSpriteFrames(frames, 0.15f);
 
         animation->retain();
 
-        // ä½¿ç”¨æ–¹å‘ä½œä¸ºé”®ï¼Œå­˜å‚¨å¯¹åº”çš„åŠ¨ç”»
+        // Ê¹ÓÃ·½Ïò×÷Îª¼ü£¬´æ´¢¶ÔÓ¦µÄ¶¯»­
         _walkAnimations[direction] = animation;
     }
 }
 
 void Player::setAnimation(Direction direction, bool moving)
 {
-    // æ›´æ–°çŠ¶æ€
+    // ¸üÐÂ×´Ì¬
     _direction = direction;
     _isMoving = moving;
 
-    // åœæ­¢å½“å‰æ‰€æœ‰åŠ¨ä½œ
+    // Í£Ö¹µ±Ç°ËùÓÐ¶¯×÷
     this->stopAllActions();
 
     if (moving)
     {
-        // åŠ¨ç”»æ’­æ”¾
+        // ¶¯»­²¥·Å
         auto  animation = _walkAnimations[(int)direction];
         if (animation)
         {
@@ -144,17 +142,17 @@ void Player::setAnimation(Direction direction, bool moving)
     }
     else
     {
-        // ç«™ç«‹çŠ¶æ€è®¾ç½®
+        // Õ¾Á¢×´Ì¬ÉèÖÃ
         auto texture = this->getTexture();
         if (texture)
         {
             float frameWidth = texture->getContentSize().width / 4;
             float frameHeight = texture->getContentSize().height / 13;
 
-            // directionå€¼ç›´æŽ¥ä½œä¸ºçº¹ç†è¡Œç´¢å¼•
+            // directionÖµÖ±½Ó×÷ÎªÎÆÀíÐÐË÷Òý
             int row = (int)direction;
 
-            // ç¡®ä¿è¡Œç´¢å¼•åœ¨æœ‰æ•ˆèŒƒå›´å†…
+            // È·±£ÐÐË÷ÒýÔÚÓÐÐ§·¶Î§ÄÚ
             int totalRows = texture->getContentSize().height / frameHeight;
             if (row >= 0 && row < totalRows)
             {
@@ -164,16 +162,16 @@ void Player::setAnimation(Direction direction, bool moving)
     }
 }
 
-// æ›´æ–°åŠ¨ç”»çŠ¶æ€ï¼ˆæ ¹æ®ç§»åŠ¨çŠ¶æ€ï¼‰
+// ¸üÐÂ¶¯»­×´Ì¬£¨¸ù¾ÝÒÆ¶¯×´Ì¬£©
 void Player::updateAnimation()
 {
     bool moving = (_velocity != Vec2::ZERO);
 
-    Direction newDirection = _direction; // é»˜è®¤ä¿æŒå½“å‰æ–¹å‘
+    Direction newDirection = _direction; // Ä¬ÈÏ±£³Öµ±Ç°·½Ïò
 
     if (moving)
     {
-        // æ ¹æ®é€Ÿåº¦æ–¹å‘ç¡®å®šé¢å‘æ–¹å‘
+        // ¸ù¾ÝËÙ¶È·½ÏòÈ·¶¨ÃæÏò·½Ïò
         if (_upPressed)
         {
             newDirection = Direction::UP;
@@ -190,12 +188,12 @@ void Player::updateAnimation()
         {
             newDirection = Direction::LEFT;
         }
-        // è®¾ç½®è¡Œèµ°åŠ¨ç”»
+        // ÉèÖÃÐÐ×ß¶¯»­
         setAnimation(newDirection, true);
     }
     else
     {
-        // è®¾ç½®ç«™ç«‹åŠ¨ç”»
+        // ÉèÖÃÕ¾Á¢¶¯»­
         setAnimation(_direction, false);
     }
 }
@@ -205,10 +203,10 @@ void Player::onEnter()
 {
     Sprite::onEnter();
 
-    // åˆ›å»ºé”®ç›˜ç›‘å¬å™¨
+    // ´´½¨¼üÅÌ¼àÌýÆ÷
     auto listener = EventListenerKeyboard::create();
 
-    // æŒ‰ä¸‹æŒ‰é”®
+    // °´ÏÂ°´¼ü
     listener->onKeyPressed = [=](EventKeyboard::KeyCode code, Event* event) {
         switch (code) {
         case EventKeyboard::KeyCode::KEY_W:
@@ -234,7 +232,7 @@ void Player::onEnter()
         updateAnimation();
         };
 
-    // é‡Šæ”¾æŒ‰é”® (ä¿æŒåŽŸæœ‰é€»è¾‘å³å¯ï¼Œé€šå¸¸ä¸éœ€è¦åœ¨æ¾å¼€æ—¶æ”¹å˜é¢å‘ï¼Œé™¤éžä½ æƒ³è®©å®ƒå›žå¼¹)
+    // ÊÍ·Å°´¼ü (±£³ÖÔ­ÓÐÂß¼­¼´¿É£¬Í¨³£²»ÐèÒªÔÚËÉ¿ªÊ±¸Ä±äÃæÏò£¬³ý·ÇÄãÏëÈÃËü»Øµ¯)
     listener->onKeyReleased = [=](EventKeyboard::KeyCode code, Event* event) {
         switch (code) {
         case EventKeyboard::KeyCode::KEY_W:
@@ -256,9 +254,9 @@ void Player::onEnter()
         default:
             break;
         }
-        // å¦‚æžœéœ€è¦æ›´é«˜çº§çš„é€»è¾‘ï¼ˆä¾‹å¦‚æ¾å¼€å³é”®æ—¶ï¼Œå¦‚æžœè¿˜åœ¨æŒ‰ä¸Šé”®ï¼Œå°±è½¬å›žå‘ä¸Šï¼‰ï¼Œ
-        // å¯ä»¥åœ¨ updateVelocity é‡Œæ ¹æ®å‰©ä½™çš„æŒ‰é”®çŠ¶æ€æ¥ä¿®æ­£ _directionã€‚
-        // ä½†æ ¹æ®æ‚¨çš„è¦æ±‚ï¼Œä¿®æ”¹ onKeyPressed å·²ç»è¶³å¤Ÿã€‚
+        // Èç¹ûÐèÒª¸ü¸ß¼¶µÄÂß¼­£¨ÀýÈçËÉ¿ªÓÒ¼üÊ±£¬Èç¹û»¹ÔÚ°´ÉÏ¼ü£¬¾Í×ª»ØÏòÉÏ£©£¬
+        // ¿ÉÒÔÔÚ updateVelocity Àï¸ù¾ÝÊ£ÓàµÄ°´¼ü×´Ì¬À´ÐÞÕý _direction¡£
+        // µ«¸ù¾ÝÄúµÄÒªÇó£¬ÐÞ¸Ä onKeyPressed ÒÑ¾­×ã¹»¡£
         updateVelocity();
         updateAnimation();
 
@@ -271,7 +269,7 @@ void Player::onExit()
 {
     this->stopAllActions();
 
-    //æ¸…ç†åŠ¨ç”»èµ„æº
+    //ÇåÀí¶¯»­×ÊÔ´
     for (auto& pair : _walkAnimations)
     {
         if (pair.second)
@@ -303,7 +301,7 @@ void Player::updateVelocity()
     if (_leftPressed) _velocity.x -= 1;
     if (_rightPressed) _velocity.x += 1;
 
-    // å½’ä¸€åŒ–é€Ÿåº¦å‘é‡
+    // ¹éÒ»»¯ËÙ¶ÈÏòÁ¿
     if (_velocity.lengthSquared() > 0)
     {
         _velocity.normalize();
@@ -322,7 +320,7 @@ void Player::update(float dt)
         {
             Vec2 newPos = currentPos;
 
-            // èŽ·å–è§’è‰²å°ºå¯¸
+            // »ñÈ¡½ÇÉ«³ß´ç
             auto texture = this->getTexture();
             if (texture)
             {
@@ -331,13 +329,13 @@ void Player::update(float dt)
                 float halfWidth = frameWidth / 2;
                 float halfHeight = frameHeight / 2;
 
-                // åˆ†ç¦»Xè½´å’ŒYè½´æ£€æµ‹
+                // ·ÖÀëXÖáºÍYÖá¼ì²â
                 if (moveDelta.y != 0)
                 {
                     Vec2 testPointY = Vec2(newPos.x, currentPos.y);
                     float targetY = currentPos.y + moveDelta.y;
 
-                    testPointY.y = targetY - halfHeight * 0.5f; // æ£€æµ‹è§’è‰²ä¸‹éƒ¨
+                    testPointY.y = targetY - halfHeight * 0.5f; // ¼ì²â½ÇÉ«ÏÂ²¿
 
                     if (!_map->isCollidable(testPointY))
                     {
@@ -348,17 +346,17 @@ void Player::update(float dt)
                 if (moveDelta.x != 0)
                 {
                     float targetX = currentPos.x + moveDelta.x;
-                    float testY = newPos.y - halfHeight * 0.4f; // ä½¿ç”¨æ–°çš„Yåæ ‡
+                    float testY = newPos.y - halfHeight * 0.4f; // Ê¹ÓÃÐÂµÄY×ø±ê
                     Vec2 testPointX;
                     testY = newPos.y - halfHeight * 0.5f;
 
-                    if (moveDelta.x > 0) // å‘å³ç§»åŠ¨
+                    if (moveDelta.x > 0) // ÏòÓÒÒÆ¶¯
                     {
-                        testPointX = Vec2(targetX + halfWidth * 0.5f, testY); // æ£€æµ‹æ–°ä½ç½®çš„å³è¾¹ç¼˜
+                        testPointX = Vec2(targetX + halfWidth * 0.5f, testY); // ¼ì²âÐÂÎ»ÖÃµÄÓÒ±ßÔµ
                     }
-                    else // å‘å·¦ç§»åŠ¨
+                    else // Ïò×óÒÆ¶¯
                     {
-                        testPointX = Vec2(targetX - halfWidth * 0.5f, testY); // æ£€æµ‹æ–°ä½ç½®çš„å·¦è¾¹ç¼˜
+                        testPointX = Vec2(targetX - halfWidth * 0.5f, testY); // ¼ì²âÐÂÎ»ÖÃµÄ×ó±ßÔµ
                     }
 
                     if (!_map->isCollidable(testPointX))

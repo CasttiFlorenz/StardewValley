@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     ShopMenuLayer.cpp
- * File Function: ShopMenuLayerç±»çš„å®ç°
- * Author:        èµµç¿å¦
+ * File Function: ShopMenuLayerÀàµÄÊµÏÖ
+ * Author:        ÕÔî£åû
  * Update Date:   2025/12/17
  * License:       MIT License
  ****************************************************************/
@@ -29,7 +29,7 @@ Button* createFallbackButton(const std::string& imagePath, const std::string& te
 }
 ShopMenuLayer* ShopMenuLayer::create(const std::string& shopName, const std::vector<Item*>& shopItems, const std::vector<ItemType >& acceptedTags) {
     ShopMenuLayer* pRet = new(std::nothrow) ShopMenuLayer();
-    if (pRet && pRet->init(shopName, shopItems, acceptedTags)) { // ä¼ å…¥ shopName
+    if (pRet && pRet->init(shopName, shopItems, acceptedTags)) { // ´«Èë shopName
         pRet->autorelease();
         return pRet;
     }
@@ -42,7 +42,7 @@ bool ShopMenuLayer::init(const std::string& shopName, const std::vector<Item*>& 
 
     Size visibleSize = Director::getInstance()->getVisibleSize();
     _acceptedSellTags = acceptedTags;
-    // 2. é®ç½©å±‚
+    // 2. ÕÚÕÖ²ã
     auto darkLayer = LayerColor::create(Color4B(0, 0, 0, 180));
     this->addChild(darkLayer);
     auto listener = EventListenerTouchOneByOne::create();
@@ -50,7 +50,7 @@ bool ShopMenuLayer::init(const std::string& shopName, const std::vector<Item*>& 
     listener->onTouchBegan = [](Touch*, Event*) { return true; };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, darkLayer);
 
-    // 3. èƒŒæ™¯æ¿ 
+    // 3. ±³¾°°å 
     Node* bg = nullptr;
 
     std::string bgPath = "Shop/Shop_" + shopName + ".png";
@@ -61,19 +61,19 @@ bool ShopMenuLayer::init(const std::string& shopName, const std::vector<Item*>& 
     spriteBg->setContentSize(Size(800, 600));
 
 
-    // è®¾ç½®é€šç”¨çš„ä½ç½®å±æ€§
+    // ÉèÖÃÍ¨ÓÃµÄÎ»ÖÃÊôĞÔ
     bg->setAnchorPoint(Vec2(0.5, 0.4));
     bg->setPosition(visibleSize.width / 2, visibleSize.height / 2);
     this->addChild(bg);
    
-    // 4. é‡‘é’±
+    // 4. ½ğÇ®
     _moneyLabel = Label::createWithTTF("0 G", "fonts/pixel.ttf", 26);
     _moneyLabel->setAnchorPoint(Vec2(1, 0.5));
     _moneyLabel->setPosition(bg->getContentSize().width - 80, bg->getContentSize().height - 50);
     _moneyLabel->setColor(Color3B(139, 69, 19));
     bg->addChild(_moneyLabel);
 
-    // 5. å…³é—­æŒ‰é’®
+    // 5. ¹Ø±Õ°´Å¥
     auto closeBtn = createFallbackButton("Shop/close.png", "[X]", Size(50, 50), Color3B::RED);
     closeBtn->setPosition(Vec2(bg->getContentSize().width, bg->getContentSize().height - 30));
     closeBtn->addClickEventListener([this](Ref*) { this->removeFromParent(); });
@@ -81,14 +81,14 @@ bool ShopMenuLayer::init(const std::string& shopName, const std::vector<Item*>& 
     bg->addChild(closeBtn, 100);
 
     // ============================================================
-      // 6. å•†å“åˆ—è¡¨ (ListView) - ä¿®æ”¹é«˜åº¦ä»¥é€‚é… 3 ä¸ªå•†å“
+      // 6. ÉÌÆ·ÁĞ±í (ListView) - ĞŞ¸Ä¸ß¶ÈÒÔÊÊÅä 3 ¸öÉÌÆ·
       // ============================================================
     _listView = ListView::create();
     _listView->setDirection(ui::ScrollView::Direction::VERTICAL);
     _listView->setBounceEnabled(true);
-    _listView->setScrollBarEnabled(true); // ç¡®ä¿å¼€å¯æ»šåŠ¨æ¡
-    _listView->setScrollBarPositionFromCorner(Vec2(10, 10)); // è°ƒæ•´æ»šåŠ¨æ¡ä½ç½®
-    _listView->setScrollBarColor(Color3B::GRAY); // è®¾ç½®æ»šåŠ¨æ¡é¢œè‰²å¯è§
+    _listView->setScrollBarEnabled(true); // È·±£¿ªÆô¹ö¶¯Ìõ
+    _listView->setScrollBarPositionFromCorner(Vec2(10, 10)); // µ÷Õû¹ö¶¯ÌõÎ»ÖÃ
+    _listView->setScrollBarColor(Color3B::GRAY); // ÉèÖÃ¹ö¶¯ÌõÑÕÉ«¿É¼û
 
     _listView->setContentSize(Size(700, 240));
 
@@ -100,7 +100,7 @@ bool ShopMenuLayer::init(const std::string& shopName, const std::vector<Item*>& 
 
     bg->addChild(_listView);
 
-    // --- å¡«å……å•†å“ ---
+    // --- Ìî³äÉÌÆ· ---
     int index = 0;
     for (const auto& item : shopItems) {
         if (!item) continue;
@@ -127,67 +127,67 @@ bool ShopMenuLayer::init(const std::string& shopName, const std::vector<Item*>& 
             }
         }
 
-        // åå­—
+        // Ãû×Ö
         auto nameLabel = Label::createWithTTF(item->getName(), "fonts/pixel.ttf", 22);
         nameLabel->setAnchorPoint(Vec2(0, 0.5));
         nameLabel->setPosition(Vec2(100, 55));
         nameLabel->setColor(Color3B::BLACK);
         itemLayout->addChild(nameLabel);
 
-        // ä»·æ ¼
+        // ¼Û¸ñ
         auto priceLabel = Label::createWithTTF(StringUtils::format("%d G", item->getPrice()), "fonts/pixel.ttf", 18);
         priceLabel->setAnchorPoint(Vec2(0, 0.5));
         priceLabel->setPosition(Vec2(100, 25));
         priceLabel->setColor(Color3B::GRAY);
         itemLayout->addChild(priceLabel);
 
-        // è´­ä¹°æŒ‰é’®
+        // ¹ºÂò°´Å¥
         auto buyBtn = createFallbackButton("Shop/buy.png", "BUY", Size(80, 40), Color3B::BLUE);
         buyBtn->setPosition(Vec2(620, 40));
         buyBtn->setScale(3.0f);
         buyBtn->addClickEventListener([=](Ref*) {
 
-            // è·å–å½“å‰ç‚¹å‡»ç‰©å“çš„ Tag
+            // »ñÈ¡µ±Ç°µã»÷ÎïÆ·µÄ Tag
             ItemType tag = (ItemType)item->getTag();
 
-            // 1. åˆ¤æ–­æ˜¯ä¸æ˜¯åŠ¨ç‰©
+            // 1. ÅĞ¶ÏÊÇ²»ÊÇ¶¯Îï
             bool isAnimal = (tag == ItemType::ANIMAL_CHICKEN_TAG || tag == ItemType::ANIMAL_COW_TAG);
 
             if (isAnimal) {
                 // ============================
-                // A. è´­ä¹°åŠ¨ç‰©é€»è¾‘ (èµ° BarnManager)
+                // A. ¹ºÂò¶¯ÎïÂß¼­ (×ß BarnManager)
                 // ============================
 
-                // A1. æ£€æŸ¥é‡‘é’±
+                // A1. ¼ì²é½ğÇ®
                 int price = item->getPrice();
                 if (Money::getInstance()->getMoney() < price) {
                     showTip("Not enough money!", Color3B::RED);
                     return;
                 }
 
-                // A2. è½¬æ¢ç±»å‹
+                // A2. ×ª»»ÀàĞÍ
                 AnimalType animalType = (tag == ItemType::ANIMAL_CHICKEN_TAG)
                     ? AnimalType::CHICKEN
                     : AnimalType::COW;
 
-                // A3. è°ƒç”¨ BarnManager æ·»åŠ åŠ¨ç‰©
+                // A3. µ÷ÓÃ BarnManager Ìí¼Ó¶¯Îï
                 bool success = BarnManager::getInstance()->addAnimal(animalType);
 
                 if (success) {
-                    // A4. æˆåŠŸï¼šæ‰£é’±
+                    // A4. ³É¹¦£º¿ÛÇ®
                     Money::getInstance()->spendMoney(price);
-                    this->refreshUI(); // åˆ·æ–°é‡‘é’±æ˜¾ç¤º
+                    this->refreshUI(); // Ë¢ĞÂ½ğÇ®ÏÔÊ¾
 
                     showTip("Sent to Barn!", Color3B::GREEN);
                 }
                 else {
-                    // A5. å¤±è´¥ï¼šé€šå¸¸æ˜¯å› ä¸ºç•œæ£šæ»¡äº†
+                    // A5. Ê§°Ü£ºÍ¨³£ÊÇÒòÎªĞóÅïÂúÁË
                     showTip("Barn is Full!", Color3B::RED);
                 }
             }
             else {
                 // ============================
-                // B. è´­ä¹°æ™®é€šç‰©å“é€»è¾‘ (èµ°èƒŒåŒ…)
+                // B. ¹ºÂòÆÕÍ¨ÎïÆ·Âß¼­ (×ß±³°ü)
                 // ============================
                 auto detailLayer = ShopLayer::create(item);
                 if (detailLayer) {
@@ -200,7 +200,7 @@ bool ShopMenuLayer::init(const std::string& shopName, const std::vector<Item*>& 
 
         _listView->pushBackCustomItem(itemLayout);
     }
-    // 7. åˆå§‹åŒ–èƒŒåŒ…èƒŒæ™¯åŒºåŸŸ
+    // 7. ³õÊ¼»¯±³°ü±³¾°ÇøÓò
     _inventoryNode = Node::create();
     _inventoryNode->setPosition(0, 0);
     bg->addChild(_inventoryNode);
@@ -213,20 +213,20 @@ bool ShopMenuLayer::init(const std::string& shopName, const std::vector<Item*>& 
     float gapY = 75.0f;
     float bgScale = 1.45f;
 
-    // ç»˜åˆ¶ 3 è¡ŒèƒŒæ™¯å›¾
+    // »æÖÆ 3 ĞĞ±³¾°Í¼
     for (int i = 0; i < 3; i++) {
         auto backpackBg = Sprite::create("Items/inventory.jpg");
 
         if (backpackBg) {
             backpackBg->setScale(bgScale);
-            // ä»ä¸Šå¾€ä¸‹æ’ï¼šRow 0, Row 1, Row 2
+            // ´ÓÉÏÍùÏÂÅÅ£ºRow 0, Row 1, Row 2
             backpackBg->setPosition(Vec2(centerX, startY - (i * gapY)));
             _inventoryNode->addChild(backpackBg);
         }
     }
 
     // ============================================================
-     // 8. æ»šè½®æ”¯æŒ 
+     // 8. ¹öÂÖÖ§³Ö 
      // ============================================================
     auto mouseListener = EventListenerMouse::create();
     mouseListener->onMouseScroll = [this](Event* event) {
@@ -235,19 +235,19 @@ bool ShopMenuLayer::init(const std::string& shopName, const std::vector<Item*>& 
         auto mouseEvent = static_cast<EventMouse*>(event);
         if (mouseEvent == nullptr) return;
 
-        // 1. è·å–é¼ æ ‡åœ¨ ListView èŠ‚ç‚¹ç©ºé—´å†…çš„åæ ‡
+        // 1. »ñÈ¡Êó±êÔÚ ListView ½Úµã¿Õ¼äÄÚµÄ×ø±ê
         Vec2 mousePos = _listView->convertToNodeSpace(mouseEvent->getLocationInView());
         Size listSize = _listView->getContentSize();
         Rect listRect = Rect(0, 0, listSize.width, listSize.height);
 
-        // 2. åªæœ‰é¼ æ ‡åœ¨åˆ—è¡¨èŒƒå›´å†…ï¼Œæ‰å“åº”æ»šè½®
+        // 2. Ö»ÓĞÊó±êÔÚÁĞ±í·¶Î§ÄÚ£¬²ÅÏìÓ¦¹öÂÖ
         if (listRect.containsPoint(mousePos)) {
             float scrollY = mouseEvent->getScrollY();
 
             if (scrollY != 0 && _listView->getInnerContainerSize().height > _listView->getContentSize().height) {
-                // æ‰‹åŠ¨è®¡ç®—æ»šåŠ¨ä½ç½®
+                // ÊÖ¶¯¼ÆËã¹ö¶¯Î»ÖÃ
                 Vec2 pos = _listView->getInnerContainerPosition();
-                // å¢åŠ æ»šåŠ¨é€Ÿåº¦ (åŸæ¥æ˜¯ *20ï¼Œå¦‚æœä½ è§‰å¾—æ…¢å¯ä»¥æ”¹æˆ *40)
+                // Ôö¼Ó¹ö¶¯ËÙ¶È (Ô­À´ÊÇ *20£¬Èç¹ûÄã¾õµÃÂı¿ÉÒÔ¸Ä³É *40)
                 pos.y += scrollY * 30.0f;
 
                 float minY = _listView->getContentSize().height - _listView->getInnerContainerSize().height;
@@ -270,11 +270,11 @@ void ShopMenuLayer::refreshUI() {
     auto gridLayer = inventoryScene->getInventoryLayer();
     if (!gridLayer) return;
 
-    // åˆ·æ–°é‡‘é’±
+    // Ë¢ĞÂ½ğÇ®
     int money = Money::getInstance()->getMoney();
     _moneyLabel->setString(StringUtils::format("%d G", money));
 
-    // æ¸…ç†æ—§ç‰©å“ (Tag 999)
+    // ÇåÀí¾ÉÎïÆ· (Tag 999)
     Vector<Node*> children = _inventoryNode->getChildren();
     for (auto node : children) {
         if (node->getTag() == 999) {
@@ -282,38 +282,38 @@ void ShopMenuLayer::refreshUI() {
         }
     }
 
-    // å¦‚æœå½“å‰é€‰ä¸­çš„ç´¢å¼•è¶…è¿‡äº†ç‰©å“æ€»æ•°ï¼Œé‡ç½®å®ƒ
+    // Èç¹ûµ±Ç°Ñ¡ÖĞµÄË÷Òı³¬¹ıÁËÎïÆ·×ÜÊı£¬ÖØÖÃËü
     // if (_selectedSlotIndex >= 36) _selectedSlotIndex = -1; 
 
-    // å¦‚æœæ²¡æœ‰é€‰ä¸­ä»»ä½•ä¸œè¥¿ï¼Œæ¸…ç†é«˜äº®
+    // Èç¹ûÃ»ÓĞÑ¡ÖĞÈÎºÎ¶«Î÷£¬ÇåÀí¸ßÁÁ
     if (_selectedSlotIndex == -1) {
         _highlightNode->clear();
     }
 
-    // å‚æ•°é…ç½® (ä¸èƒŒæ™¯å›¾å¯¹é½)
+    // ²ÎÊıÅäÖÃ (Óë±³¾°Í¼¶ÔÆë)
     float centerX = 400.0f;
     float startY = 220.0f;
     float gapY = 75.0f;
     float slotStep = 43.0f * 1.35f;
     float startX = centerX - (slotStep * 12 / 2) + (slotStep / 2);
 
-    // éå†æ ¼å­
+    // ±éÀú¸ñ×Ó
     for (int i = 0; i < 36; i++) {
         int row = i / 12;
         int col = i % 12;
 
         float x = startX + col * slotStep;
         float y = startY - row * gapY;
-        float slotSize = 50.0f; // ç‚¹å‡»åŒºåŸŸå’Œé«˜äº®åŸºå‡†å¤§å°
+        float slotSize = 50.0f; // µã»÷ÇøÓòºÍ¸ßÁÁ»ù×¼´óĞ¡
 
-        // 1. å¦‚æœå½“å‰ç´¢å¼•æ˜¯é€‰ä¸­çš„ç´¢å¼•ï¼Œç”»æ¡†ï¼
+        // 1. Èç¹ûµ±Ç°Ë÷ÒıÊÇÑ¡ÖĞµÄË÷Òı£¬»­¿ò£¡
         if (i == _selectedSlotIndex) {
             drawHighlight(x, y, slotSize);
         }
 
         Item item = gridLayer->getItemAt(i);
 
-        // åˆ›å»ºé€æ˜æŒ‰é’®
+        // ´´½¨Í¸Ã÷°´Å¥
         auto slotBtn = ui::Button::create();
         slotBtn->ignoreContentAdaptWithSize(false);
         slotBtn->setContentSize(Size(slotSize, slotSize));
@@ -321,7 +321,7 @@ void ShopMenuLayer::refreshUI() {
         slotBtn->setTag(999);
         _inventoryNode->addChild(slotBtn);
 
-        // å¦‚æœæœ‰ç‰©å“
+        // Èç¹ûÓĞÎïÆ·
         if (item.getCount() > 0) {
             auto icon = Sprite::create(item.getPath());
             if (icon) {
@@ -333,11 +333,11 @@ void ShopMenuLayer::refreshUI() {
             if (item.getCount() > 1) {
                 auto countLabel = Label::createWithTTF(std::to_string(item.getCount()), "fonts/pixel.ttf", 16);
 
-                // 1. è®¾ç½®é”šç‚¹ä¸º Label çš„å³ä¸‹è§’
+                // 1. ÉèÖÃÃªµãÎª Label µÄÓÒÏÂ½Ç
                 countLabel->setAnchorPoint(Vec2(1, 0));
 
-                // 2. è®¾ç½®ä½ç½®åˆ°æŒ‰é’®çš„å³ä¸‹è§’ (slotSize, 0)
-                // ç¨å¾®å‡å»/åŠ ä¸Šä¸€ç‚¹è¾¹è· (padding)ï¼Œæ¯”å¦‚ 2 åƒç´ ï¼Œé˜²æ­¢è´´è¾¹å¤ªç´§
+                // 2. ÉèÖÃÎ»ÖÃµ½°´Å¥µÄÓÒÏÂ½Ç (slotSize, 0)
+                // ÉÔÎ¢¼õÈ¥/¼ÓÉÏÒ»µã±ß¾à (padding)£¬±ÈÈç 2 ÏñËØ£¬·ÀÖ¹Ìù±ßÌ«½ô
                 float padding = 1.0f;
                 countLabel->setPosition(Vec2(slotBtn->getContentSize().width - padding, padding));
                 countLabel->setScale(1.0f);
@@ -345,21 +345,21 @@ void ShopMenuLayer::refreshUI() {
                 slotBtn->addChild(countLabel);
             }
 
-            // === ä¿®æ”¹ç‚¹å‡»äº‹ä»¶ ===
+            // === ĞŞ¸Äµã»÷ÊÂ¼ş ===
             slotBtn->addClickEventListener([=](Ref*) {
-                // 1. æ›´æ–°é€‰ä¸­ç´¢å¼•
+                // 1. ¸üĞÂÑ¡ÖĞË÷Òı
                 _selectedSlotIndex = i;
 
-                // 2. ç«‹å³æ›´æ–°é«˜äº®æ¡†çš„ä½ç½® (è§†è§‰åé¦ˆ)
+                // 2. Á¢¼´¸üĞÂ¸ßÁÁ¿òµÄÎ»ÖÃ (ÊÓ¾õ·´À¡)
                 this->drawHighlight(x, y, slotSize);
 
-                // 3. æ‰§è¡Œå–å‡ºé€»è¾‘
+                // 3. Ö´ĞĞÂô³öÂß¼­
                 this->sellItem(item);
 
                 });
         }
         else {
-            // å¦‚æœæ˜¯ç©ºæ ¼å­ï¼Œä¹Ÿå¯ä»¥ç‚¹å‡»é€‰ä¸­ï¼ˆè™½ç„¶ä¸èƒ½å–ï¼Œä½†å¯ä»¥æ˜¾ç¤ºçº¢æ¡†ï¼‰
+            // Èç¹ûÊÇ¿Õ¸ñ×Ó£¬Ò²¿ÉÒÔµã»÷Ñ¡ÖĞ£¨ËäÈ»²»ÄÜÂô£¬µ«¿ÉÒÔÏÔÊ¾ºì¿ò£©
             slotBtn->addClickEventListener([=](Ref*) {
                 _selectedSlotIndex = i;
                 this->drawHighlight(x, y, slotSize);
@@ -371,12 +371,12 @@ void ShopMenuLayer::refreshUI() {
 void ShopMenuLayer::sellItem(Item item) {
     bool isAcceptable = false;
 
-    // å¦‚æœå…è®¸åˆ—è¡¨ä¸ºç©º
+    // Èç¹ûÔÊĞíÁĞ±íÎª¿Õ
     if (_acceptedSellTags.empty()) {
         isAcceptable = false;
     }
     else {
-        // æ£€æŸ¥ç‰©å“ Tag æ˜¯å¦åœ¨å…è®¸åˆ—è¡¨é‡Œ
+        // ¼ì²éÎïÆ· Tag ÊÇ·ñÔÚÔÊĞíÁĞ±íÀï
         for (ItemType tag : _acceptedSellTags) {
             if (item.getTag() == tag) {
                 isAcceptable = true;
@@ -385,13 +385,13 @@ void ShopMenuLayer::sellItem(Item item) {
         }
     }
 
-    // å¦‚æœä¸å¯å–ï¼Œæ˜¾ç¤ºæç¤º
+    // Èç¹û²»¿ÉÂô£¬ÏÔÊ¾ÌáÊ¾
     if (!isAcceptable) {
         showTip("This item cannot be sold here!", Color3B::RED);
         return;
     }
 
-    // æ­£å¸¸å”®å–æµç¨‹
+    // Õı³£ÊÛÂôÁ÷³Ì
     int sellPrice = item.getPrice();
 
     Money::getInstance()->addMoney(sellPrice);
@@ -412,7 +412,7 @@ void ShopMenuLayer::showTip(const std::string& message, const Color3B& color) {
     Size winSize = Director::getInstance()->getVisibleSize();
     label->setPosition(winSize / 2);
 
-    // åŠ åˆ°åœºæ™¯æœ€ä¸Šå±‚ (Z=10000)
+    // ¼Óµ½³¡¾°×îÉÏ²ã (Z=10000)
     Director::getInstance()->getRunningScene()->addChild(label, 10000);
 
     label->runAction(Sequence::create(
@@ -426,32 +426,32 @@ void ShopMenuLayer::showTip(const std::string& message, const Color3B& color) {
     ));
 }
 void ShopMenuLayer::drawHighlight(float x, float y, float size) {
-    _highlightNode->clear(); // æ¸…é™¤æ—§çš„æ¡†
+    _highlightNode->clear(); // Çå³ı¾ÉµÄ¿ò
     _highlightNode->setVisible(true);
 
-    float halfSize = size / 2 + 4.0f; // +4 è®©æ¡†ç¨å¾®æ¯”æ ¼å­å¤§ä¸€ç‚¹
+    float halfSize = size / 2 + 4.0f; // +4 ÈÃ¿òÉÔÎ¢±È¸ñ×Ó´óÒ»µã
 
     float left = x - halfSize;
     float right = x + halfSize;
     float top = y + halfSize;
     float bottom = y - halfSize;
 
-    Color4F highlightColor = Color4F(0.85f, 0.18f, 0.18f, 1.0f); // çº¢è‰²
+    Color4F highlightColor = Color4F(0.85f, 0.18f, 0.18f, 1.0f); // ºìÉ«
 
-    // ç»˜åˆ¶ç²—è¾¹æ¡† (é€šè¿‡ç”»åŒçº¿æˆ–è€…å¤šè¾¹å½¢æ¥å®ç°ç²—ç»†)
-    // ä¸Šè¾¹æ¡†
+    // »æÖÆ´Ö±ß¿ò (Í¨¹ı»­Ë«Ïß»òÕß¶à±ßĞÎÀ´ÊµÏÖ´ÖÏ¸)
+    // ÉÏ±ß¿ò
     _highlightNode->drawLine(Vec2(left, top), Vec2(right, top), highlightColor);
     _highlightNode->drawLine(Vec2(left, top - 2), Vec2(right, top - 2), highlightColor);
 
-    // ä¸‹è¾¹æ¡†
+    // ÏÂ±ß¿ò
     _highlightNode->drawLine(Vec2(left, bottom), Vec2(right, bottom), highlightColor);
     _highlightNode->drawLine(Vec2(left, bottom + 2), Vec2(right, bottom + 2), highlightColor);
 
-    // å·¦è¾¹æ¡†
+    // ×ó±ß¿ò
     _highlightNode->drawLine(Vec2(left, top), Vec2(left, bottom), highlightColor);
     _highlightNode->drawLine(Vec2(left + 2, top), Vec2(left + 2, bottom), highlightColor);
 
-    // å³è¾¹æ¡†
+    // ÓÒ±ß¿ò
     _highlightNode->drawLine(Vec2(right, top), Vec2(right, bottom), highlightColor);
     _highlightNode->drawLine(Vec2(right - 2, top), Vec2(right - 2, bottom), highlightColor);
 

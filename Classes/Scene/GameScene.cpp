@@ -44,9 +44,6 @@ bool GameScene::init()
     if (_timeManager) this->addChild(_timeManager, 6);
     if (_inventory) this->addChild(_inventory, 7);
 
-    _player->changeUpdateStatus();
-    if (_timeManager) _timeManager->changeUpdateStatus();
-
     this->scheduleUpdate();
 
     // 初始化输入状态
@@ -222,7 +219,6 @@ void GameScene::setupMouseListener()
         if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT && !_mouseLeftPressed)
         {
             _mouseLeftPressed = true;
-            _player->changeUpdateStatus();
             carryMouseEvent(
                 _map->onLeftClick(
                     _player->getPosition(),
@@ -234,7 +230,6 @@ void GameScene::setupMouseListener()
         else if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_RIGHT && !_mouseRightPressed)
         {
             _mouseRightPressed = true;
-            _player->changeUpdateStatus();
             carryMouseEvent(
                 _map->onRightClick(
                     _player->getPosition(),
@@ -310,17 +305,12 @@ void GameScene::carryMouseEvent(const MouseEvent event)
         if (_inventory)
             _inventory->ToolUseAnimation();
         break;
-
-    case MouseEvent::OPEN_SHOP:
-        break;
-
     default:
         break;
     }
 
-    // 恢复角色更新
-    if (_player)
-        _player->changeUpdateStatus();
+    if (_map->isCameraFollow())
+        _map->setCameraMask((unsigned short)CameraFlag::USER1, true);
 }
 
 
@@ -330,7 +320,7 @@ void GameScene::carryKeyBoardEvent(const KeyBoardEvent event)
     switch (event)
     {
     case KeyBoardEvent::CHANGE_INVENTORY:
-        if (!existInterface()||_inventory->getInventoryVisible()) _inventory->toggleInventory();
+        if (!existInterface() || _inventory->getInventoryVisible()) _inventory->toggleInventory();
         break;
 
     default:
@@ -376,16 +366,14 @@ void GameScene::onNewDay()
 // 睡觉确认弹窗
 void GameScene::sleep()
 {
-    auto runningScene = Director::getInstance()->getRunningScene();
-    if (!runningScene) return;
 
     // 防止重复创建
-    if (runningScene->getChildByName("goToBed")) return;
+    if (this->getChildByName("goToBed")) return;
 
-    auto dialog = Layer::create();
+    const auto dialog = Layer::create();
     dialog->setName("goToBed");
 
-    Size winSize = Director::getInstance()->getWinSize();
+    const Size winSize = Director::getInstance()->getWinSize();
     auto bg = Sprite::create("Shop/SelectDialogue.png");
     if (!bg) return;
 
@@ -393,9 +381,9 @@ void GameScene::sleep()
     bg->setScale(3.0f);
     dialog->addChild(bg);
 
-    Size bgSize = bg->getContentSize();
+    const Size bgSize = bg->getContentSize();
 
-    auto label = Label::createWithTTF(
+    const auto label = Label::createWithTTF(
         "Do you want to sleep now?",
         "fonts/pixel.ttf",
         10
@@ -408,8 +396,8 @@ void GameScene::sleep()
     auto btnOk = ui::Button::create("Shop/ok.png");
     btnOk->setScale(0.45f);
     btnOk->setPosition(Vec2(bgSize.width * 0.3f, bgSize.height * 0.3f));
-    btnOk->addClickEventListener([runningScene](Ref*) {
-        runningScene->removeChildByName("goToBed");
+    btnOk->addClickEventListener([this](Ref*) {
+        this->removeChildByName("goToBed");
         TimeManager::getInstance()->startSleepSequence();
         });
     bg->addChild(btnOk);
@@ -418,12 +406,12 @@ void GameScene::sleep()
     auto btnNo = ui::Button::create("Shop/no.png");
     btnNo->setScale(0.45f);
     btnNo->setPosition(Vec2(bgSize.width * 0.7f, bgSize.height * 0.3f));
-    btnNo->addClickEventListener([runningScene](Ref*) {
-        runningScene->removeChildByName("goToBed");
+    btnNo->addClickEventListener([this](Ref*) {
+        this->removeChildByName("goToBed");
         });
     bg->addChild(btnNo);
 
-    runningScene->addChild(dialog, 9999);
+    this->addChild(dialog, 9999);
 }
 
 bool GameScene::existInterface()
@@ -443,10 +431,12 @@ void GameScene::gamePause()
 {
     if (_player)_player->unscheduleUpdate();
     if (_timeManager)_timeManager->unscheduleUpdate();
+    enableMouse(false);
 }
 
 void GameScene::gameRestore()
 {
     if (_player)_player->scheduleUpdate();
     if (_timeManager)_timeManager->scheduleUpdate();
+    enableMouse(true);
 }

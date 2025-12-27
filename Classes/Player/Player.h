@@ -38,7 +38,6 @@ public:
 
     // 获取方向的接口
     Direction getPlayerDirection() const noexcept { return _direction; }
-    void changeUpdateStatus()noexcept { if (isUpdating)unscheduleUpdate(); else scheduleUpdate(); isUpdating = !isUpdating; };
 
 private:
     void createAnimations();       // 创建所有方向动画
@@ -47,7 +46,6 @@ private:
 
     static Player* _instance;
 
-    bool isUpdating;
     float _speed;           // 速度
     cocos2d::Vec2 _velocity; // 速度向量
     GameMap* _map;          // 当前地图引用

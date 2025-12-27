@@ -1,8 +1,8 @@
 /****************************************************************
 Project Name:  StardewValley
 File Name:     ShopLayer.cpp
-File Function: ShopLayerç±»çš„å®ç°
-Author:        èµµç¿å¦
+File Function: ShopLayerÀàµÄÊµÏÖ
+Author:        ÕÔî£åû
 Update Date:   2025/12/17
 License:       MIT License
 ****************************************************************/
@@ -22,7 +22,7 @@ ShopLayer* ShopLayer::create(Item* item) {
 bool ShopLayer::init(Item* item) {
 
     if (!LayerColor::initWithColor(Color4B(0, 0, 0,0))) return false;
-    // 1. åå™¬è§¦æ‘¸ (é˜²æ­¢ç‚¹ç©¿)
+    // 1. ÍÌÊÉ´¥Ãş (·ÀÖ¹µã´©)
     auto listener = EventListenerTouchOneByOne::create();
     listener->setSwallowTouches(true);
     listener->onTouchBegan = [](Touch* t, Event* e) { return true; };
@@ -30,7 +30,7 @@ bool ShopLayer::init(Item* item) {
     _targetItem = item;
     Size winSize = Director::getInstance()->getVisibleSize(); 
 
-    // 2. èƒŒæ™¯æ¿
+    // 2. ±³¾°°å
     auto bg =  Sprite:: create("Shop/background.png"); 
 
     bg->setScale(1.2f);
@@ -38,7 +38,7 @@ bool ShopLayer::init(Item* item) {
     bg->setPosition(winSize.width / 2, winSize.height / 2);
     this->addChild(bg);
 
-    // 3. å•†å“å›¾æ ‡
+    // 3. ÉÌÆ·Í¼±ê
     auto icon = Sprite::create(item->getPath());
     if (icon) {
         icon->setPosition(winSize.width / 2 - 150, winSize.height / 2+45);
@@ -47,7 +47,7 @@ bool ShopLayer::init(Item* item) {
         this->addChild(icon);
     }
 
-    // 4. å•†å“åå­—ä¸å•ä»·
+    // 4. ÉÌÆ·Ãû×ÖÓëµ¥¼Û
     auto nameLabel = Label::createWithTTF(_targetItem->getName(), "fonts/pixel.ttf", 28);
     nameLabel->setPosition(winSize.width / 2 + 50, winSize.height / 2 +80);
     nameLabel->setColor(Color3B::BLACK);
@@ -55,10 +55,10 @@ bool ShopLayer::init(Item* item) {
 
     auto priceLabel = Label::createWithTTF(StringUtils::format("%d G", _targetItem->getPrice()), "fonts/pixel.ttf", 24);
     priceLabel->setPosition(winSize.width / 2 + 50, winSize.height / 2 +20);
-    priceLabel->setColor(Color3B::BLACK); // æ·±è¤è‰²
+    priceLabel->setColor(Color3B::BLACK); // ÉîºÖÉ«
     this->addChild(priceLabel);
 
-    // 5. è®¡ç®—æœ€å¤§è´­ä¹°æ•°é‡
+    // 5. ¼ÆËã×î´ó¹ºÂòÊıÁ¿
     int playerMoney = Money::getInstance()->getMoney();
     if (_targetItem->getPrice() > 0) {
         _maxQuantity = playerMoney / _targetItem->getPrice();
@@ -66,31 +66,31 @@ bool ShopLayer::init(Item* item) {
     else {
         _maxQuantity = 99;
     }
-    // é™åˆ¶è´­ä¹°ä¸Šé™ï¼Œé˜²æ­¢æ•°æ®æº¢å‡ºæˆ–é€»è¾‘é”™è¯¯
+    // ÏŞÖÆ¹ºÂòÉÏÏŞ£¬·ÀÖ¹Êı¾İÒç³ö»òÂß¼­´íÎó
     if (_maxQuantity > 99) _maxQuantity = 99;
     if (_maxQuantity < 1) _maxQuantity = 1;
 
     _currentQuantity = 1;
 
-    // 6. æ•°é‡æ˜¾ç¤º (x1)
+    // 6. ÊıÁ¿ÏÔÊ¾ (x1)
     _lblQuantity = Label::createWithTTF("x1", "fonts/pixel.ttf", 30);
     _lblQuantity->setPosition(Vec2(winSize.width / 2, winSize.height / 2 - 40));
     _lblQuantity->setColor(Color3B::BLACK);
     this->addChild(_lblQuantity);
 
-    // 7. åŠ å‡æŒ‰é’®é€»è¾‘
-    // [ - ] æŒ‰é’®
+    // 7. ¼Ó¼õ°´Å¥Âß¼­
+    // [ - ] °´Å¥
     auto btnMinus = Button::create("Shop/minus.png");
     btnMinus->setPosition(Vec2(winSize.width / 2 - 100, winSize.height / 2 - 40));
     btnMinus->addClickEventListener([this](Ref*) {
         if (_currentQuantity > 1) {
             _currentQuantity--;
-            updateUI(); // åªæ›´æ–°æ•°å­—å’Œä»·æ ¼ï¼Œä¸ä¾èµ–Slider
+            updateUI(); // Ö»¸üĞÂÊı×ÖºÍ¼Û¸ñ£¬²»ÒÀÀµSlider
         }
         });
     this->addChild(btnMinus);
 
-    // [ + ] æŒ‰é’®
+    // [ + ] °´Å¥
     auto btnPlus = Button::create("Shop/plus.png");
 
     btnPlus->setPosition(Vec2(winSize.width / 2 + 100, winSize.height / 2 - 40));
@@ -102,50 +102,50 @@ bool ShopLayer::init(Item* item) {
         });
     this->addChild(btnPlus);
 
-    // 8. æ€»ä»·æ˜¾ç¤º
+    // 8. ×Ü¼ÛÏÔÊ¾
     _lblTotalCost = Label::createWithTTF("Total: 0", "fonts/pixel.ttf", 26);
     _lblTotalCost->setPosition(Vec2(winSize.width / 2, winSize.height / 2 -300));
     _lblTotalCost->setColor(Color3B::BLACK);
     this->addChild(_lblTotalCost);
 
-    // 9. è´­ä¹°ç¡®è®¤æŒ‰é’® (OK Button)
+    // 9. ¹ºÂòÈ·ÈÏ°´Å¥ (OK Button)
     _btnBuy = Button::create("Shop/buy.png");
     _btnBuy->setScale(3.0f);
-    // ç¡®ä¿æŒ‰é’®ä½ç½®åœ¨çª—å£ä¸‹æ–¹
+    // È·±£°´Å¥Î»ÖÃÔÚ´°¿ÚÏÂ·½
     _btnBuy->setPosition(Vec2(winSize.width / 2, winSize.height / 2 - 160));
 
     _btnBuy->addClickEventListener(CC_CALLBACK_1(ShopLayer::onBuyClicked, this));
-    this->addChild(_btnBuy, 10); // Zè½´è®¾ä¸º10ï¼Œç¡®ä¿åœ¨æœ€ä¸Šå±‚
+    this->addChild(_btnBuy, 10); // ZÖáÉèÎª10£¬È·±£ÔÚ×îÉÏ²ã
 
-    // 10. å…³é—­æŒ‰é’® (X)
+    // 10. ¹Ø±Õ°´Å¥ (X)
     auto btnClose = Button::create("Shop/close.png");
     btnClose->setScale(3.0f);
-    // æ”¾åœ¨å³ä¸Šè§’
+    // ·ÅÔÚÓÒÉÏ½Ç
     btnClose->setPosition(Vec2(winSize.width / 2 + 230, winSize.height/2+230));
     btnClose->addClickEventListener(CC_CALLBACK_1(ShopLayer::onCloseClicked, this));
     this->addChild(btnClose, 10);
 
-    updateUI(); // åˆå§‹åŒ–ç•Œé¢çŠ¶æ€
+    updateUI(); // ³õÊ¼»¯½çÃæ×´Ì¬
     return true;
 }
 void ShopLayer::updateUI() {
-    // 1. æ›´æ–°æ•°é‡æ–‡æœ¬
+    // 1. ¸üĞÂÊıÁ¿ÎÄ±¾
     if (_lblQuantity) {
         _lblQuantity->setString(StringUtils::format("x%d", _currentQuantity));
     }
-    // 2. è®¡ç®—æ€»ä»·
+    // 2. ¼ÆËã×Ü¼Û
     int totalCost = _currentQuantity * _targetItem->getPrice();
     if (_lblTotalCost) {
         _lblTotalCost->setString(StringUtils::format("Total: %d G", totalCost));
     }
 
-    // 3. æ£€æŸ¥é’±å¤Ÿä¸å¤Ÿï¼Œæ§åˆ¶æŒ‰é’®çŠ¶æ€
+    // 3. ¼ì²éÇ®¹»²»¹»£¬¿ØÖÆ°´Å¥×´Ì¬
     bool canAfford = Money::getInstance()->canAfford(totalCost);
     if (_btnBuy) {
         _btnBuy->setEnabled(canAfford);
-        _btnBuy->setOpacity(canAfford ? 255 : 128); // ä¹°ä¸èµ·å˜åŠé€æ˜
+        _btnBuy->setOpacity(canAfford ? 255 : 128); // Âò²»Æğ±ä°ëÍ¸Ã÷
 
-        // å¦‚æœé’±ä¸å¤Ÿï¼Œæ€»ä»·æ˜¾ç¤ºçº¢è‰²
+        // Èç¹ûÇ®²»¹»£¬×Ü¼ÛÏÔÊ¾ºìÉ«
         if (!canAfford) _lblTotalCost->setColor(Color3B::RED);
         else _lblTotalCost->setColor(Color3B::BLACK);
     }
@@ -157,23 +157,23 @@ void ShopLayer::onBuyClicked(Ref* sender) {
     auto playerState = Money::getInstance();
 
     if (playerState->canAfford(totalCost)) {
-        // 1. æ‰£é’± 
+        // 1. ¿ÛÇ® 
         playerState->spendMoney(totalCost);
 
-        // 2. åŠ èƒŒåŒ… 
+        // 2. ¼Ó±³°ü 
         InventoryScene::getInstance()->addItemCount(_targetItem->getTag(), _currentQuantity, false);
 
-        // 3. é€šçŸ¥ä¸Šå±‚ç•Œé¢åˆ·æ–° (ä¸»è¦æ˜¯åˆ·æ–°é‡‘é’±æ˜¾ç¤º)
+        // 3. Í¨ÖªÉÏ²ã½çÃæË¢ĞÂ (Ö÷ÒªÊÇË¢ĞÂ½ğÇ®ÏÔÊ¾)
         if (onPurchaseSuccess) {
             onPurchaseSuccess();
         }
 
-        // 4. å…³é—­å¼¹çª—
+        // 4. ¹Ø±Õµ¯´°
         this->removeFromParent();
     }
     else {
-        CCLOG("é‡‘é’±ä¸è¶³");
-        // å¯é€‰ï¼šæ·»åŠ ä¸€ä¸ªæç¤ºåŠ¨ç”»
+        CCLOG("½ğÇ®²»×ã");
+        // ¿ÉÑ¡£ºÌí¼ÓÒ»¸öÌáÊ¾¶¯»­
     }
 }
 void ShopLayer::onCloseClicked(Ref* sender) {

@@ -11,23 +11,16 @@
 #define __WEATHER_MANAGER_H__
 
 #include "cocos2d.h"
+#include "Constant.h"
 #include "../Time/GameTime.h" 
 #define MAX_NIGHT_OPACITY 100
-
-// 定义天气类型
-enum class WeatherType {
-    Sunny = 0,
-    Rain,
-    Wind,
-    Snow
-};
 
 class WeatherManager : public cocos2d::Node {
 public:
     // 单例访问
     static WeatherManager* getInstance();
     static void destroyInstance();
-
+       
     // 初始化
     virtual bool init() override;
 

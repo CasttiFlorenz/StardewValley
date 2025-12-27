@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     ShopMenuLayer.h
- * File Function: ShopMenuLayerç±»çš„å®ç°
- * Author:        èµµç¿å¦
+ * File Function: ShopMenuLayerÀàµÄÊµÏÖ
+ * Author:        ÕÔî£åû
  * Update Date:   2025/12/17
  * License:       MIT License
  ****************************************************************/
@@ -18,7 +18,7 @@
 #include "../Inventory/Item.h"
 #include"../Time/TimeManager.h"
 #include "../MapItem/BarnManager.h" 
-class Item; // å‰å‘å£°æ˜
+class Item; // Ç°ÏòÉùÃ÷
 
 class ShopMenuLayer : public cocos2d::Layer {
 public:
@@ -36,10 +36,10 @@ public:
     void buyLivestock(Item* item);
 
 private:
-    cocos2d::DrawNode* _highlightNode; // ç”¨äºç”»çº¢æ¡†
-    int _selectedSlotIndex;            // å½“å‰é€‰ä¸­çš„æ ¼å­ç´¢å¼• (-1è¡¨ç¤ºæ²¡é€‰ä¸­)
+    cocos2d::DrawNode* _highlightNode; // ÓÃÓÚ»­ºì¿ò
+    int _selectedSlotIndex;            // µ±Ç°Ñ¡ÖĞµÄ¸ñ×ÓË÷Òı (-1±íÊ¾Ã»Ñ¡ÖĞ)
 
-    void drawHighlight(float x, float y, float size); // ç”»æ¡†çš„å…·ä½“é€»è¾‘
+    void drawHighlight(float x, float y, float size); // »­¿òµÄ¾ßÌåÂß¼­
     std::vector<ItemType> _acceptedSellTags;
     cocos2d::Label* _moneyLabel;
     cocos2d::ui::ListView* _listView;
