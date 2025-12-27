@@ -11,11 +11,9 @@
 #define __TIME_MANAGER_H__
 
 #include "cocos2d.h"
-#include "Constant.h" // 引用常量
+#include "Constant.h" 
 #include "GameTime.h"
 #include <functional> 
-
- // 保持您要求的原始引用路径
 #include "../Weather/WeatherManager.h"
 #include "../Money/Money.h"
 
@@ -51,7 +49,7 @@ public:
     std::function<void()> onDayStartCallback; 
 
     // 设定时间
-    void setTime(const GameTime& time)；
+    void setTime(const GameTime& time);
 private:
     TimeManager();
     ~TimeManager();
@@ -84,3 +82,4 @@ private:
 
 
 #endif // __TIME_MANAGER_H__
+
