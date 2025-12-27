@@ -8,7 +8,7 @@ class MusicManager {
 private:
     static MusicManager* instance;
 
-    std::string currentMusic;
+    std::string _currentMusic;
 
     float _volume;
     float _effectVolume;
@@ -20,7 +20,7 @@ private:
 public:
     static MusicManager* getInstance();
 
-    // ‘§º”‘ÿ“Ù¿÷
+    // √î¬§¬º√ì√î√ò√í√¥√Ä√ñ
     void preloadMusic();
 
     void playMusicForMap(const std::string& _mapName);
@@ -38,5 +38,6 @@ public:
 
     bool isMusicPlaying();
 };
+
 
 #endif // __MUSIC_MANAGER_H__
