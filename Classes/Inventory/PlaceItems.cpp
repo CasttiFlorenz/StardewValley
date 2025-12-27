@@ -108,6 +108,11 @@ void PlaceItems::placeAllItems(int highlightIndex)
 {
     if (!_parent || !_currentInventory || !_backpackX || !_backpackY)
         return;
+    if (static_cast<int>(_currentInventory->size()) == 0) {
+        clearAllItems();
+        *_itemCount = 0;
+        return;
+    }
 
     // 计算背包左边界（使用第一个背包）
     float backpackLeft0 = _backpackX[0] - _backpackWidth / 2;
@@ -136,6 +141,7 @@ void PlaceItems::clearAllItems()
 
     // 遍历所有可能的物品tag
     for (int i = 0; i < (*_itemCount); i++) {
+        
         // 计算当前物品的tag
         int tag = ITEM_TAG_BASE + i;
 
@@ -236,9 +242,6 @@ void PlaceItems::updateItemSprite(int toolIndex, const std::string& imagePath,
 // 增加物品
 bool PlaceItems::addItem(ItemType object, int amount)
 {
-    // 清除所有已存在的工具精灵
-    clearAllItems();
-
     if (!_currentInventory || amount <= 0)
         return false;
 
@@ -247,6 +250,7 @@ bool PlaceItems::addItem(ItemType object, int amount)
         if (item.getTag() == object) {
             // 找到物品，增加数量
             item.addCount(amount);
+            placeAllItems();
             return true;
         }
     }
@@ -257,10 +261,11 @@ bool PlaceItems::addItem(ItemType object, int amount)
             // 创建新物品并添加到 vector
             Item newItem = _inventory[i];
             newItem.setCount(amount);
-            newItem.setPrintPos(_pos[(*_itemCount) % 12]);
+            newItem.setPrintPos(_pos[static_cast<int>(_currentInventory->size()) % 12]);
 
             _currentInventory->push_back(newItem);
             (*_itemCount) = _currentInventory->size();  // 更新计数
+            placeAllItems();
             return true;
         }
     }
@@ -272,11 +277,10 @@ bool PlaceItems::addItem(ItemType object, int amount)
 // 减少物品数量
 bool PlaceItems::removeItem(ItemType object, int amount)
 {
-    // 清除所有已存在的工具精灵
-    clearAllItems();
-
     if (!_currentInventory || amount <= 0)
         return false;
+
+    clearAllItems(); //清空工具精灵
 
     // 在 currentInventory 中查找物品
     for (auto it = _currentInventory->begin(); it != _currentInventory->end(); ++it) {
@@ -287,21 +291,15 @@ bool PlaceItems::removeItem(ItemType object, int amount)
             if (newCount > 0) {
                 // 数量仍大于0，更新数量
                 it->setCount(newCount);
-                return true;
             }
             else if (newCount <= 0) {
                 // 数量为0，删除该物品
                 _currentInventory->erase(it);
                 (*_itemCount) = _currentInventory->size();  // 更新计数
                 adjustPos();
-                return true;
             }
-            else {
-                // 数量不足，无法减少
-                CCLOG("错误: 物品 %d 数量不足 (现有: %d, 需要减少: %d)",
-                    static_cast<int>(object), it->getCount(), amount);
-                return false;
-            }
+            placeAllItems();
+            return true;
         }
     }
 

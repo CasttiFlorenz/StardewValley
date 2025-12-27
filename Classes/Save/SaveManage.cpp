@@ -97,6 +97,10 @@ bool SaveManage::loadInventory()
     }
 
     inventory.clear();
+    // 发送刷新事件
+    EventCustom event("INVENTORY_COUNT_CHANGED");
+    Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
+
 
     // 解析物品到临时列表
     std::vector<Item> savedItems;
@@ -111,7 +115,7 @@ bool SaveManage::loadInventory()
     // 使用 InventoryScene 加载数据
     auto inventoryScene = InventoryScene::getInstance();
     if (inventoryScene) {
-        return inventoryScene->loadItemsFromSaveData(savedItems);
+       return inventoryScene->loadItemsFromSaveData(savedItems);
     }
     return false;
 }

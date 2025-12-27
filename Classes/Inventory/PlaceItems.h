@@ -21,6 +21,14 @@ public:
     static PlaceItems* getInstance();
     static void destroyInstance();
 
+    // 清除所有工具精灵
+    void clearAllItems();
+
+    // 改变物品数量
+    bool addItem(ItemType object, int amount);
+    bool removeItem(ItemType object, int amount);
+
+
     // 返回当前物品数组
     std::vector<Item>& getCurrentInventory() { return *_currentInventory; }
 
@@ -46,9 +54,6 @@ private:
     // 放置工具
     void placeAllItems(int highlightIndex = -1);
 
-    // 清除所有工具精灵
-    void clearAllItems();
-
     // 显示物品数量
     void showItemCount(int itemIndex, int count, float x, float y);
 
@@ -59,10 +64,6 @@ private:
     // 设置上下文信息
     void setContext(cocos2d::Node* parent, std::vector<Item>& inventory, int& itemCount,
         float* backpackX, float* backpackY, float backpackWidth, float cellWidth);
-
-    // 改变物品数量
-    bool addItem(ItemType object, int amount);
-    bool removeItem(ItemType object, int amount);
 
     // 删除物品后调整格子
     void adjustPos();  

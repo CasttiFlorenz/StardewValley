@@ -59,7 +59,7 @@ public:
     int findItemGridIndex(ItemType tag);
 
 private:
-    PlaceItems* _placeItems;  // 工具放置管理器
+    PlaceItems* _placeItems;         // 工具放置管理器
     std::vector<Item> _items;        // 动态存储物品
     BackpackPosition _backpacks[3];  // 三行背包
     cocos2d::Sprite* _background;

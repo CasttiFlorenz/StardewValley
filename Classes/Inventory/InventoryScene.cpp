@@ -298,7 +298,6 @@ void InventoryScene::addItemCount(ItemType object, int amount,bool animation)
 
                 std::string countText = "+" + std::to_string(amount);
                 auto label = Label::createWithTTF(countText, PATH_FONT_ARIAL, 13);
-                if (_toolUseEffect && _player) {
                     if (label) {
                         label->setPosition(_secondEffectPos.x + 25, _secondEffectPos.y - 17);
                         label->setColor(Color3B::WHITE);
@@ -317,7 +316,6 @@ void InventoryScene::addItemCount(ItemType object, int amount,bool animation)
                             }
                             }, 0.3f, "remove_label");
                     }
-                }
                 }, 0.2f, "show_second_effect");
                 }
         // 发送事件通知背包刷新
@@ -369,11 +367,8 @@ bool InventoryScene::loadItemsFromSaveData(const std::vector<Item>& savedItems)
         }
     }
     // 发送刷新事件
-    EventCustom event("INVENTORY_COUNT_CHANGED");
-    Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
-
-    // 更新预览
-    updatePreviewTool();
+    EventCustom refreshEvent("INVENTORY_COUNT_CHANGED");
+    Director::getInstance()->getEventDispatcher()->dispatchEvent(&refreshEvent);
 
     return successCount > 0;
 }
