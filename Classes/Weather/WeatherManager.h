@@ -1,59 +1,63 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     WeatherManager.h
- * File Function: WeatherManager类的实现
+ * File Function: WeatherManager类的声明
  * Author:        赵睿妍
  * Update Date:   2025/12/13
  * License:       MIT License
  ****************************************************************/
-
-#ifndef __WEATHER_MANAGER_H__
-#define __WEATHER_MANAGER_H__
+#ifndef WEATHER_MANAGER_H
+#define WEATHER_MANAGER_H
 
 #include "cocos2d.h"
-#include "Constant.h"
-#include "../Time/GameTime.h" 
-#define MAX_NIGHT_OPACITY 100
+#include "Constant.h" 
 
 class WeatherManager : public cocos2d::Node {
 public:
-    // 单例访问
+    // 单例获取与销毁
     static WeatherManager* getInstance();
     static void destroyInstance();
-       
-    // 初始化
+
+    // 初始化节点
     virtual bool init() override;
 
-    // 核心逻辑：更新天气 (每天早上调用)
-    void updateWeather(Season currentSeason);
+    // 更新天气逻辑
+    void updateWeather(Season season);
 
-    // 手动设置天气 (测试用)
+    // 强制设置天气
     void setWeather(WeatherType type);
 
-    // 更新天色滤镜 (每10分钟调用)
-    void updateSkyColor(int hour, int minute);
-
-    // 获取当前状态
+    // 判断是否下雨
     bool isRaining() const;
-    WeatherType getCurrentWeather() const { return currentWeather; }
+
+    // 获取当前天气
+    WeatherType getCurrentWeather() const;
+
+    // 更新天色光照
+    void updateSkyColor(int hour, int minute);
 
 private:
     WeatherManager();
-    ~WeatherManager();
-    static WeatherManager* instance;
+    virtual ~WeatherManager();
 
-    // 数据
-    WeatherType currentWeather;
-    Season currentSeason;
-
-    // 视觉组件
-    cocos2d::Layer* weatherLayer;       // 粒子层
-    cocos2d::LayerColor* overlayLayer;  // 滤镜层
-    cocos2d::ParticleSystemQuad* particleEffect; // 当前粒子
-
-    // 内部方法
+    // 设置粒子视觉效果
     void setVisuals(WeatherType type);
-    void WeatherManager::getTargetColor(int hour, int minute, cocos2d::Color3B& outColor, GLubyte& outOpacity);
+
+    // 计算目标颜色
+    void getTargetColor(int hour, int minute, cocos2d::Color3B& outColor, GLubyte& outOpacity);
+
+    // 获取纹理（含保底）
+    cocos2d::Texture2D* getTextureOrFallback(const std::string& filename);
+
+private:
+    static WeatherManager* _instance;
+
+    WeatherType _currentWeather;
+    Season _currentSeason;
+
+    cocos2d::LayerColor* _overlayLayer;
+    cocos2d::Layer* _weatherLayer;
+    cocos2d::ParticleSystem* _particleEffect;
 };
 
-#endif // __WEATHER_MANAGER_H__
+#endif //
