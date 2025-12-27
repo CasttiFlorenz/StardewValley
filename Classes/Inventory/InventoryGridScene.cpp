@@ -40,7 +40,7 @@ void InventoryGridScene::createBackpacks()
         _backpacks[i].scale = 1.65f;
 
         // 创建背包精灵
-        auto backpack = Sprite::create("/Items/inventory.jpg");
+        auto backpack = Sprite::create(PATH_INVENTORY_SLOT_BG);
         backpack->setPosition(_backpacks[i].x, _backpacks[i].y);
         backpack->setScale(_backpacks[i].scale);
         this->addChild(backpack);
@@ -86,7 +86,7 @@ void InventoryGridScene::createInvertory()
 
 void InventoryGridScene::onButtonClicked(int buttonIndex)
 {
-  
+
     if (buttonIndex == 0) {  // 背包按钮
         // 显示背包
         for (int i = 0; i < INVENTORY_ROWS; i++) {
@@ -109,9 +109,9 @@ void InventoryGridScene::onButtonClicked(int buttonIndex)
             }
         }
         // 清除所有工具
-        if (_placeItems) 
+        if (_placeItems)
             _placeItems->clearAllItems();
-        
+
         // 禁用格子触摸
         setGridsTouchEnabled(false);
         // 取消高亮
@@ -119,7 +119,7 @@ void InventoryGridScene::onButtonClicked(int buttonIndex)
             highlightGrid(_selectedGrid, false);
         }
     }
-    
+
 }
 
 // ========== 初始化 ==========
@@ -168,7 +168,7 @@ bool InventoryGridScene::init()
 
     _placeItems->placeAllItems();
 
-    // 创建可点击格子
+    // 创建可点击格子             
     createClickableGrids();
 
     // 设置事件监听器
@@ -191,25 +191,25 @@ void InventoryGridScene::setupEventListeners()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 }
 
-void InventoryGridScene::refreshInventory() 
+void InventoryGridScene::refreshInventory()
 {
     if (!_placeItems) return;
 
     InventoryManager::setInitPress();
 
     // 准备背包位置
-    float backpackX[3], backpackY[3];
-    for (int i = 0; i < 3; i++) {
+    float backpackX[INVENTORY_ROWS], backpackY[INVENTORY_ROWS];
+    for (int i = 0; i < INVENTORY_ROWS; i++) {
         backpackX[i] = _backpacks[i].x;
         backpackY[i] = _backpacks[i].y;
     }
 
     // 设置PlaceItems的上下文
     _placeItems->setContext(this, _items, ItemCount,
-        backpackX, backpackY,_backpackWidth, _cellWidth);
-     
+        backpackX, backpackY, _backpackWidth, _cellWidth);
+
     // 重新放置所有工具，保持当前高亮状态
-    if (_placeItems) 
+    if (_placeItems)
         _placeItems->placeAllItems(_selectedGrid);
     if (_selectedGrid != -1) {
         highlightGrid(_selectedGrid, true);
@@ -412,7 +412,7 @@ void InventoryGridScene::highlightGrid(int gridIndex, bool highlight)
         }
     }
 }
- 
+
 // ========== 主页面显示辅助函数 ==========
 
 // 增加数量
@@ -440,7 +440,7 @@ int InventoryGridScene::getSelectedGrid()
 // 返回当前物品在数组中的索引
 int InventoryGridScene::findItemGridIndex(ItemType tag)
 {
-    if (!_placeItems) 
+    if (!_placeItems)
         return -1;
 
     return _placeItems->findItemIndex(tag);

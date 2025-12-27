@@ -24,6 +24,7 @@ public:
     CREATE_FUNC(InventoryScene);
     static InventoryScene* getInstance();
     static void destroyInstance();
+
     virtual bool init();
     void updatePreviewTool();
     void setPlayer(Player* player);
@@ -31,6 +32,9 @@ public:
     void ToolUseAnimation();             // 显示工具特效
 
     InventoryGridScene* getInventoryLayer() { return _inventoryLayer; }
+
+    // 从存档数据加载物品（专为存档设计）
+    bool loadItemsFromSaveData(const std::vector<Item>&savedItems);
 
     // 获取物品信息
     ItemType getTap() const;

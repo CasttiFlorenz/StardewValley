@@ -72,6 +72,7 @@ private:
     // 按钮触摸回调
     static bool onButtonTouch(cocos2d::Touch* touch, cocos2d::Event* event);
 
+    // 清除旧界面
     static void removeContainer();
 
     // 静态变量

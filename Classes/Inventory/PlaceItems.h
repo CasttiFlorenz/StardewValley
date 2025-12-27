@@ -26,7 +26,7 @@ public:
 
 private:
     cocos2d::Node* _parent;           // 父节点
-    Item _inventory[INVENTORY_SIZE] ;             // 物品数组
+    Item _inventory[INVENTORY_TOTAL_SLOTS] ;       // 物品数组
     std::vector<Item>* _currentInventory;         // 目前背包内物品
     float _pos[12] =                              // 打印位置
     { 0.65f,1.6f,2.6f,3.6f,4.6f,5.5f,6.5f,7.5f,8.4f,9.4f,10.4f,11.35f };

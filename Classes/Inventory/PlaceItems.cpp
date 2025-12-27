@@ -60,7 +60,7 @@ void PlaceItems::initItem()
     _currentInventory->clear();
 
     // 初始化所有物品为空
-    for (int i = 0; i < INVENTORY_SIZE; i++) {
+    for (int i = 0; i < INVENTORY_TOTAL_SLOTS; i++) {
         _inventory[i] = Item();
     }
 
@@ -122,7 +122,7 @@ void PlaceItems::placeAllItems(int highlightIndex)
         float scale = (i == highlightIndex) ? highlightScale : baseScale;
 
         // 确定在哪一行
-        int row = i / 12;
+        int row = i / INVENTORY_COLS;
         float y = _backpackY[row];
 
         updateItemSprite(i, item.getPath(), scale, x,y);
@@ -168,7 +168,7 @@ void PlaceItems::showItemCount(int itemIndex, int count, float x, float y)
 
     // 创建数量标签
     std::string countText = std::to_string(count);
-    auto countLabel = Label::createWithTTF(countText, "/fonts/arial.ttf", 14);
+    auto countLabel = Label::createWithTTF(countText, PATH_FONT_ARIAL, 14);
 
     if (countLabel) {
         // 计算右下角位置
@@ -252,7 +252,7 @@ bool PlaceItems::addItem(ItemType object, int amount)
     }
 
     // 如果没有找到，在 inventory 中搜索信息
-    for (int i = 0; i < INVENTORY_SIZE; i++) {
+    for (int i = 0; i < INVENTORY_TOTAL_SLOTS; i++) {
         if (_inventory[i].getTag() == object) {
             // 创建新物品并添加到 vector
             Item newItem = _inventory[i];
@@ -319,7 +319,7 @@ void PlaceItems::adjustPos()
     for (size_t i = 0; i < _currentInventory->size(); i++) {
         Item& item = (*_currentInventory)[i];
 
-        item.setPrintPos(_pos[i % 12]);
+        item.setPrintPos(_pos[i % INVENTORY_COLS]);
     }
 
 }
@@ -330,7 +330,7 @@ int PlaceItems::findItemIndex(ItemType tag)
     if (!_currentInventory) 
         return -1;
 
-    for (int i = 0; i < _currentInventory->size(); i++) {
+    for (size_t i = 0; i < _currentInventory->size(); i++) {
         if ((*_currentInventory)[i].getTag() == tag) {
             return i;
         }

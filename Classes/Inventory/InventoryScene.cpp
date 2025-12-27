@@ -38,7 +38,7 @@ bool InventoryScene::init()
     auto origin = Director::getInstance()->getVisibleOrigin();
 
 
-    _previewFrame = Sprite::create("/Items/box.png"); // 预览框图片
+    _previewFrame = Sprite::create(PATH_PREVIEW_BOX); // 预览框图片
 
     // 放在左下角
     float previewX = origin.x + 100;      // 左边距100
@@ -126,7 +126,7 @@ void InventoryScene::showToolUseEffect(int selected, bool clearPrevious)
                     });
 
                 cocos2d::Action* sequence;
-                if (static_cast<int>(item.getTag()) < 5)
+                if (static_cast<int>(item.getTag()) < INVENTORT_TOOL_COUNT)
                     sequence = Sequence::create(rotate, remove, nullptr);   // 组合动画：旋转 -> 停留 -> 移除
                 else {
                     sequence = Sequence::create(delay, remove, nullptr);   // 闪现
@@ -228,7 +228,7 @@ void InventoryScene::updatePreviewTool()
     _selectedGrid = _inventoryLayer->getSelectedGrid();
 
     // 删除旧的标签
-    this->removeChildByTag(999);
+    this->removeChildByTag(PREVIEW_TAG_BASE);
 
     if (_selectedGrid >= 0 && _selectedGrid < _inventoryLayer->getAmount()) { // 只显示前INTEM_COUNT个工具
         // 获取工具图片路径
@@ -246,14 +246,14 @@ void InventoryScene::updatePreviewTool()
                 // 显示数量
                 if (item.getTag() > ItemType::FISHINGROD) {
                     std::string countText = std::to_string(item.getCount());
-                    auto label = Label::createWithTTF(countText, "/fonts/arial.ttf", 18);
+                    auto label = Label::createWithTTF(countText, PATH_FONT_ARIAL, 18);
 
                     if (label) {
                         label->setPosition(_previewTool->getPositionX() + 30,
                             _previewTool->getPositionY() - 30);
                         label->setColor(Color3B::WHITE);
                         label->enableOutline(Color4B::BLACK, 2);  // 黑色描边，更清晰
-                        label->setTag(999);
+                        label->setTag(PREVIEW_TAG_BASE);
                         this->addChild(label, 100);
                     }
                 }
@@ -297,29 +297,29 @@ void InventoryScene::addItemCount(ItemType object, int amount,bool animation)
                 this->removeChildByTag(3000);       // 删除旧的标签
 
                 std::string countText = "+" + std::to_string(amount);
-                auto label = Label::createWithTTF(countText, "/fonts/arial.ttf", 13);
+                auto label = Label::createWithTTF(countText, PATH_FONT_ARIAL, 13);
+                if (_toolUseEffect && _player) {
+                    if (label) {
+                        label->setPosition(_secondEffectPos.x + 25, _secondEffectPos.y - 17);
+                        label->setColor(Color3B::WHITE);
+                        label->enableOutline(Color4B::BLACK, 2);  // 黑色描边，更清晰
+                        label->setTag(3000);
 
-                if (label) {
-                    label->setPosition(_secondEffectPos.x + 25, _secondEffectPos.y - 17);
-                    label->setColor(Color3B::WHITE);
-                    label->enableOutline(Color4B::BLACK, 2);  // 黑色描边，更清晰
-                    label->setTag(3000);
-
-                    // 确保和特效使用相同的CameraMask
-                    label->setCameraMask(_toolUseEffect->getCameraMask());
-                    this->addChild(label, _toolUseEffect->getLocalZOrder() + 10);
+                        // 确保和特效使用相同的CameraMask
+                        label->setCameraMask(_toolUseEffect->getCameraMask());
+                        this->addChild(label, _toolUseEffect->getLocalZOrder() + 10);
 
 
-                    // 0.3秒后直接删除
-                    scheduleOnce([label](float dt) {
-                        if (label) {
-                            label->removeFromParent();
-                        }
-                        }, 0.3f, "remove_label");
+                        // 0.3秒后直接删除
+                        scheduleOnce([label](float dt) {
+                            if (label) {
+                                label->removeFromParent();
+                            }
+                            }, 0.3f, "remove_label");
+                    }
                 }
                 }, 0.2f, "show_second_effect");
-        }
-
+                }
         // 发送事件通知背包刷新
         EventCustom event("INVENTORY_COUNT_CHANGED");
         Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
@@ -350,4 +350,30 @@ void InventoryScene::setPlayer(Player* player)
 {
     if (!player) return;  
     _player = player;
+}
+
+// 从存档数据加载物品
+bool InventoryScene::loadItemsFromSaveData(const std::vector<Item>& savedItems)
+{
+    if (!_inventoryLayer) {
+        return false;
+    }
+
+    // 添加存档物品（不显示动画）
+    size_t successCount = 0;
+    for (const auto& item : savedItems) {
+        if (_inventoryLayer) {
+            // 使用addItemCount添加物品，false表示不显示动画
+            addItemCount(item.getTag(), item.getCount(), false);
+            successCount++;
+        }
+    }
+    // 发送刷新事件
+    EventCustom event("INVENTORY_COUNT_CHANGED");
+    Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
+
+    // 更新预览
+    updatePreviewTool();
+
+    return successCount > 0;
 }

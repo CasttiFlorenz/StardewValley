@@ -67,7 +67,7 @@ Sprite* InventoryManager::createBackground(Node* parent)
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
 
-    auto background = Sprite::create("/Items/background.png");
+    auto background = Sprite::create(PATH_INVENTORY_BG);
     if (background) {
         background->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2 + 70));
         background->setScaleX(1.5f);
@@ -93,7 +93,7 @@ void InventoryManager::createBackpacks(Node* parent, std::array<BackpackInfo, 3>
 
     for (int i = 0; i < INVENTORY_ROWS; i++) {
         // 创建背包精灵
-        auto backpack = Sprite::create("/Items/inventory.jpg");
+        auto backpack = Sprite::create(PATH_INVENTORY_SLOT_BG);
         if (backpack) {
             Vec2 position = Vec2(visibleSize.width / 2, yPositions[i]);
             float scale = 1.65f;
@@ -151,19 +151,11 @@ void InventoryManager::createButtons(
     float buttonSpacing = backpackWidth / INVENTORT_BUTTON_COUNT;
     float startX = background->getPositionX() - backpackWidth / 2 + buttonSpacing / 2;
 
-    // 按钮图片
-    std::string buttonImages[INVENTORT_BUTTON_COUNT] = {
-        "/Items/button/inventory button.png",
-        "/Items/button/skill button.png",
-        "/Items/button/social button.png",
-        "/Items/button/exit button.png"
-    };
-
     // 创建按钮
     for (int i = 0; i < INVENTORT_BUTTON_COUNT; i++) {
         float buttonX = startX + i * buttonSpacing;
 
-        auto button = Sprite::create(buttonImages[i]);
+        auto button = Sprite::create(BUTTON_IMAGES[i]);
         if (button) {
             button->setPosition(Vec2(buttonX, buttonY));
             button->setScale(1.7f);
