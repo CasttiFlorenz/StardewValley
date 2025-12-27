@@ -14,18 +14,19 @@ public:
     virtual void playAnimation() = 0;
     virtual std::vector<std::string> getConversation(bool isFirstMet) = 0;
 
-    // »ù´¡ÊôĞÔÉèÖÃ
+    // åŸºç¡€å±æ€§è®¾ç½®
     void setNPCPosition(const Vec2& position);
     void setNPCScale(float scale);
     void setNPCName(const std::string& name) { _npcName = name; }
+    void setNPCFriendship(int friendship) { _friendship = friendship; };
     std::string getNPCName() const { return _npcName; }
 
-    // --- ºÃ¸Ğ¶ÈÏà¹Ø ---
+    // --- å¥½æ„Ÿåº¦ç›¸å…³ ---
 
-    // ½ÓÊÕÀñÎï
+    // æ¥æ”¶ç¤¼ç‰©
     std::string receiveGift(ItemType  itemTag);
 
-    // »ñÈ¡µ±Ç°ºÃ¸Ğ¶È
+    // è·å–å½“å‰å¥½æ„Ÿåº¦
     int getFriendship() const { return _friendship; }
 
 protected:
@@ -38,7 +39,8 @@ private:
     bool _isTextureLoaded;
     std::string _npcName;
 
-    int _friendship = 0; // ºÃ¸Ğ¶ÈÊıÖµ
+    int _friendship = 0; // å¥½æ„Ÿåº¦æ•°å€¼
 };
+
 
 #endif // __NPC_BASE_H__
