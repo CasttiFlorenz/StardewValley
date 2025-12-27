@@ -1,57 +1,52 @@
 #include "DialogueLayer.h"
-#include "Constant.h" // ÒıÈë³£Á¿¶¨Òå
 
 USING_NS_CC;
 using namespace ui;
 
-// ============================================================================
-// ÉúÃüÖÜÆÚ¹ÜÀí (Lifecycle Management)
-// ============================================================================
-/**
- * ¹¤³§·½·¨£º´´½¨ DialogueLayer ÊµÀı
- * ·ÖÅäÄÚ´æ²¢³õÊ¼»¯¶ÔÏó£¬Ê¹ÓÃ autorelease ½«ÄÚ´æ¹ÜÀíÒÆ½»¸ø Cocos2d-x ×Ô¶¯ÊÍ·Å³Ø
- * @return ³õÊ¼»¯³É¹¦µÄ DialogueLayer Ö¸Õë£¬ÈôÊ§°ÜÔò·µ»Ø nullptr
+ * å·¥å‚æ–¹æ³•ï¼šåˆ›å»º DialogueLayer å®ä¾‹
+ * åˆ†é…å†…å­˜å¹¶åˆå§‹åŒ–å¯¹è±¡ï¼Œä½¿ç”¨ autorelease å°†å†…å­˜ç®¡ç†ç§»äº¤ç»™ Cocos2d-x è‡ªåŠ¨é‡Šæ”¾æ± 
+ * @return åˆå§‹åŒ–æˆåŠŸçš„ DialogueLayer æŒ‡é’ˆï¼Œè‹¥å¤±è´¥åˆ™è¿”å› nullptr
  */
 DialogueLayer* DialogueLayer::create() {
     DialogueLayer* pRet = new(std::nothrow) DialogueLayer();
     if (pRet && pRet->init()) {
-        pRet->autorelease(); // ¹Ø¼ü£º±ê¼ÇÎª×Ô¶¯ÊÍ·Å£¬±ÜÃâÄÚ´æĞ¹Â©
+        pRet->autorelease(); // å…³é”®ï¼šæ ‡è®°ä¸ºè‡ªåŠ¨é‡Šæ”¾ï¼Œé¿å…å†…å­˜æ³„æ¼
         return pRet;
     }
-    // Èç¹û³õÊ¼»¯Ê§°Ü£¬°²È«É¾³ı²¢ÖÃ¿Õ
+    // å¦‚æœåˆå§‹åŒ–å¤±è´¥ï¼Œå®‰å…¨åˆ é™¤å¹¶ç½®ç©º
     delete pRet;
     pRet = nullptr;
     return nullptr;
 }
 
 /**
- * ³õÊ¼»¯²ã×´Ì¬Óë UI ×é¼ş
- * ÉèÖÃ´¥ÃşÍÌÊÉ¼àÌı£¬³õÊ¼»¯±³¾° Sprite¡¢Ãû×Ö Label¡¢ÄÚÈİ Label ¼°Ñ¡Ôñ°´Å¥ÈİÆ÷
- * @return ³õÊ¼»¯³É¹¦·µ»Ø true£¬·ñÔò·µ»Ø false
+ * åˆå§‹åŒ–å±‚çŠ¶æ€ä¸ UI ç»„ä»¶
+ * è®¾ç½®è§¦æ‘¸åå™¬ç›‘å¬ï¼Œåˆå§‹åŒ–èƒŒæ™¯ Spriteã€åå­— Labelã€å†…å®¹ Label åŠé€‰æ‹©æŒ‰é’®å®¹å™¨
+ * @return åˆå§‹åŒ–æˆåŠŸè¿”å› trueï¼Œå¦åˆ™è¿”å› false
  */
 bool DialogueLayer::init() {
     if (!Layer::init()) return false;
 
     Size winSize = Director::getInstance()->getWinSize();
 
-    // 1. ÉèÖÃÊÂ¼ş¼àÌıÆ÷ (ÍÌÊÉ´¥Ãş)
+    // 1. è®¾ç½®äº‹ä»¶ç›‘å¬å™¨ (åå™¬è§¦æ‘¸)
     auto listener = EventListenerTouchOneByOne::create();
-    if (listener == nullptr) return false; // ¿ÕÖ¸Õë¼ì²é
+    if (listener == nullptr) return false; // ç©ºæŒ‡é’ˆæ£€æŸ¥
 
     listener->setSwallowTouches(true);
     listener->onTouchBegan = [this](Touch*, Event*) {
-        // °²È«¼ì²é£ºÈç¹ûÑ¡Ôñ½Úµã²»´æÔÚ»ò²»¿É¼û
+        // å®‰å…¨æ£€æŸ¥ï¼šå¦‚æœé€‰æ‹©èŠ‚ç‚¹ä¸å­˜åœ¨æˆ–ä¸å¯è§
         if (_choiceNode && _choiceNode->isVisible()) {
-            return true; // ÕıÔÚ×öÑ¡ÔñÊ±£¬ÍÌÊÉ´¥Ãş£¬²»ÏìÓ¦µã»÷
+            return true; // æ­£åœ¨åšé€‰æ‹©æ—¶ï¼Œåå™¬è§¦æ‘¸ï¼Œä¸å“åº”ç‚¹å‡»
         }
 
-        // ÆÕÍ¨¶Ô»°Ä£Ê½£ºµã»÷ÆÁÄ»ÏÔÊ¾ÏÂÒ»¾ä
+        // æ™®é€šå¯¹è¯æ¨¡å¼ï¼šç‚¹å‡»å±å¹•æ˜¾ç¤ºä¸‹ä¸€å¥
         this->showNextSentence();
         return true;
         };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-    // 2. ³õÊ¼»¯±³¾°¿ò (Ê¹ÓÃ Constant.h ÖĞµÄ³£Á¿)
+    // 2. åˆå§‹åŒ–èƒŒæ™¯æ¡† (ä½¿ç”¨ Constant.h ä¸­çš„å¸¸é‡)
     _bg = Scale9Sprite::create(PATH_DIALOGUE_BG_DEFAULT);
     if (_bg == nullptr) {
         CCLOG("Error: Failed to load dialogue background: %s", PATH_DIALOGUE_BG_DEFAULT.c_str());
@@ -61,7 +56,7 @@ bool DialogueLayer::init() {
     _bg->setPosition(winSize.width / 2, POS_BG_OFFSET.y);
     this->addChild(_bg);
 
-    // 3. ³õÊ¼»¯Ãû×Ö±êÇ©
+    // 3. åˆå§‹åŒ–åå­—æ ‡ç­¾
     _nameLabel = Label::createWithTTF("", PATH_FONT_PIXEL, FONT_SIZE_NAME);
     if (_nameLabel) {
         _nameLabel->setPosition(POS_NAME_LABEL);
@@ -69,22 +64,22 @@ bool DialogueLayer::init() {
         _bg->addChild(_nameLabel);
     }
 
-    // 4. ³õÊ¼»¯ÄÚÈİ±êÇ©
+    // 4. åˆå§‹åŒ–å†…å®¹æ ‡ç­¾
     _contentLabel = Label::createWithTTF("", PATH_FONT_PIXEL, FONT_SIZE_CONTENT);
     if (_contentLabel) {
         _contentLabel->setPosition(POS_CONTENT_LABEL);
-        // ÉèÖÃÎÄ±¾ÇøÓòÏŞÖÆ£¬×Ô¶¯»»ĞĞ
+        // è®¾ç½®æ–‡æœ¬åŒºåŸŸé™åˆ¶ï¼Œè‡ªåŠ¨æ¢è¡Œ
         _contentLabel->setDimensions(700, 100);
         _contentLabel->setColor(COLOR_CONTENT_TEXT);
         _bg->addChild(_contentLabel);
     }
 
-    // 5. ³õÊ¼»¯Ñ¡Ôñ°´Å¥ÈİÆ÷½Úµã
+    // 5. åˆå§‹åŒ–é€‰æ‹©æŒ‰é’®å®¹å™¨èŠ‚ç‚¹
     _choiceNode = Node::create();
     if (_choiceNode) {
         _bg->addChild(_choiceNode);
-        _choiceNode->setVisible(false); // Ä¬ÈÏÒş²Ø
-        createChoiceButtons();          // ´´½¨¾ßÌå°´Å¥
+        _choiceNode->setVisible(false); // é»˜è®¤éšè—
+        createChoiceButtons();          // åˆ›å»ºå…·ä½“æŒ‰é’®
     }
 
     return true;
@@ -92,13 +87,13 @@ bool DialogueLayer::init() {
 
 
 /**
- * ¹¹½¨ YES/NO Ñ¡Ôñ°´Å¥ UI
- * ´´½¨°´Å¥¶ÔÏó£¬ÉèÖÃÆäÑùÊ½¡¢Î»ÖÃ¡¢±³¾°ÑÕÉ«ÒÔ¼°µã»÷ÊÂ¼ş¼àÌıÆ÷£¬²¢½«ËüÃÇÌí¼Óµ½ _choiceNode ÖĞ
+ * æ„å»º YES/NO é€‰æ‹©æŒ‰é’® UI
+ * åˆ›å»ºæŒ‰é’®å¯¹è±¡ï¼Œè®¾ç½®å…¶æ ·å¼ã€ä½ç½®ã€èƒŒæ™¯é¢œè‰²ä»¥åŠç‚¹å‡»äº‹ä»¶ç›‘å¬å™¨ï¼Œå¹¶å°†å®ƒä»¬æ·»åŠ åˆ° _choiceNode ä¸­
  */
 void DialogueLayer::createChoiceButtons() {
     if (_choiceNode == nullptr) return;
 
-    // --- ´´½¨ YES °´Å¥ ---
+    // --- åˆ›å»º YES æŒ‰é’® ---
     auto btnYes = Button::create();
     if (btnYes) {
         btnYes->setTitleText("YES");
@@ -108,11 +103,11 @@ void DialogueLayer::createChoiceButtons() {
         btnYes->setContentSize(SIZE_CHOICE_BTN);
         btnYes->setPosition(POS_BTN_YES);
 
-        // Ìí¼ÓÂÌÉ«±³¾°²ã
+        // æ·»åŠ ç»¿è‰²èƒŒæ™¯å±‚
         auto yesBg = LayerColor::create(COLOR_BTN_BG_YES, SIZE_CHOICE_BTN.width, SIZE_CHOICE_BTN.height);
         if (yesBg) btnYes->addChild(yesBg, -1);
 
-        // ÉèÖÃµã»÷»Øµ÷
+        // è®¾ç½®ç‚¹å‡»å›è°ƒ
         btnYes->addClickEventListener([this](Ref* sender) {
             this->handleChoiceClick(sender, true);
             });
@@ -120,7 +115,7 @@ void DialogueLayer::createChoiceButtons() {
         _choiceNode->addChild(btnYes);
     }
 
-    // --- ´´½¨ NO °´Å¥ ---
+    // --- åˆ›å»º NO æŒ‰é’® ---
     auto btnNo = Button::create();
     if (btnNo) {
         btnNo->setTitleText("NO");
@@ -130,11 +125,11 @@ void DialogueLayer::createChoiceButtons() {
         btnNo->setContentSize(SIZE_CHOICE_BTN);
         btnNo->setPosition(POS_BTN_NO);
 
-        // Ìí¼ÓºìÉ«±³¾°²ã
+        // æ·»åŠ çº¢è‰²èƒŒæ™¯å±‚
         auto noBg = LayerColor::create(COLOR_BTN_BG_NO, SIZE_CHOICE_BTN.width, SIZE_CHOICE_BTN.height);
         if (noBg) btnNo->addChild(noBg, -1);
 
-        // ÉèÖÃµã»÷»Øµ÷
+        // è®¾ç½®ç‚¹å‡»å›è°ƒ
         btnNo->addClickEventListener([this](Ref* sender) {
             this->handleChoiceClick(sender, false);
             });
@@ -144,43 +139,43 @@ void DialogueLayer::createChoiceButtons() {
 }
 
 /**
- * Í³Ò»´¦ÀíÑ¡Ôñ°´Å¥µã»÷ÊÂ¼ş
- * ½ûÓÃ°´Å¥·ÀÖ¹Á¬µã£¬Í¨¹ı retain/release ÑÓ³¤¶ÔÏóÉúÃüÖÜÆÚÒÔ·ÀÖ¹»Øµ÷Ö´ĞĞÆÚ¼ä±»Ïú»Ù£¬²¢´¥·¢Âß¼­»Øµ÷
- * @param sender µã»÷µÄ°´Å¥¶ÔÏóÒıÓÃ (Ref*)
- * @param isYes  ÓÃ»§µÄÑ¡Ôñ½á¹û (true ´ú±í YES, false ´ú±í NO)
+ * ç»Ÿä¸€å¤„ç†é€‰æ‹©æŒ‰é’®ç‚¹å‡»äº‹ä»¶
+ * ç¦ç”¨æŒ‰é’®é˜²æ­¢è¿ç‚¹ï¼Œé€šè¿‡ retain/release å»¶é•¿å¯¹è±¡ç”Ÿå‘½å‘¨æœŸä»¥é˜²æ­¢å›è°ƒæ‰§è¡ŒæœŸé—´è¢«é”€æ¯ï¼Œå¹¶è§¦å‘é€»è¾‘å›è°ƒ
+ * @param sender ç‚¹å‡»çš„æŒ‰é’®å¯¹è±¡å¼•ç”¨ (Ref*)
+ * @param isYes  ç”¨æˆ·çš„é€‰æ‹©ç»“æœ (true ä»£è¡¨ YES, false ä»£è¡¨ NO)
  */
 
 void DialogueLayer::handleChoiceClick(cocos2d::Ref* sender, bool isYes) {
-    // ÀàĞÍ×ª»»¹æ·¶£ºÊ¹ÓÃ static_cast ½øĞĞÏÔÊ½×ª»»
+    // ç±»å‹è½¬æ¢è§„èŒƒï¼šä½¿ç”¨ static_cast è¿›è¡Œæ˜¾å¼è½¬æ¢
     auto btn = static_cast<ui::Button*>(sender);
     if (btn) {
-        btn->setEnabled(false); // ·ÀÖ¹Á¬µã
+        btn->setEnabled(false); // é˜²æ­¢è¿ç‚¹
     }
 
-    // ÄÚ´æ±£»¤£ºÔÚ»Øµ÷Ö´ĞĞÆÚ¼ä³ÖÓĞ¶ÔÏóÒıÓÃ£¬·ÀÖ¹±»ÒâÍâÎö¹¹
+    // å†…å­˜ä¿æŠ¤ï¼šåœ¨å›è°ƒæ‰§è¡ŒæœŸé—´æŒæœ‰å¯¹è±¡å¼•ç”¨ï¼Œé˜²æ­¢è¢«æ„å¤–ææ„
     this->retain();
 
     CCLOG("Choice made: %s", isYes ? "YES" : "NO");
     onChoiceMade(isYes);
 
-    // °²È«ÒÆ³ı£º¼ì²é¸¸½ÚµãÊÇ·ñ´æÔÚ
+    // å®‰å…¨ç§»é™¤ï¼šæ£€æŸ¥çˆ¶èŠ‚ç‚¹æ˜¯å¦å­˜åœ¨
     if (this->getParent() != nullptr) {
         this->removeFromParent();
     }
 
-    // ¶ÔÓ¦ÉÏÃæµÄ retain£¬ÊÍ·ÅÒıÓÃ
+    // å¯¹åº”ä¸Šé¢çš„ retainï¼Œé‡Šæ”¾å¼•ç”¨
     this->release();
 }
 
 
 /**
- * Ö´ĞĞÑ¡ÔñºóµÄ»Øµ÷Âß¼­
- * ÔÚÖ´ĞĞÇ°¼ì²é»Øµ÷º¯ÊıÊÇ·ñÓĞĞ§£¬½«½á¹û´«µİ¸øÍâ²¿µ÷ÓÃÕß
- * @param choice ÓÃ»§×ö³öµÄÑ¡Ôñ½á¹û
+ * æ‰§è¡Œé€‰æ‹©åçš„å›è°ƒé€»è¾‘
+ * åœ¨æ‰§è¡Œå‰æ£€æŸ¥å›è°ƒå‡½æ•°æ˜¯å¦æœ‰æ•ˆï¼Œå°†ç»“æœä¼ é€’ç»™å¤–éƒ¨è°ƒç”¨è€…
+ * @param choice ç”¨æˆ·åšå‡ºçš„é€‰æ‹©ç»“æœ
  */
 void DialogueLayer::onChoiceMade(bool choice) {
     if (_choiceCallback) {
-        _choiceCallback(choice); // Ö´ĞĞÍâ²¿´«ÈëµÄ»Øµ÷
+        _choiceCallback(choice); // æ‰§è¡Œå¤–éƒ¨ä¼ å…¥çš„å›è°ƒ
     }
     else {
         CCLOG("Warning: DialogueLayer::_choiceCallback is null!");
@@ -188,21 +183,21 @@ void DialogueLayer::onChoiceMade(bool choice) {
 }
 
 /**
- * ÏÔÊ¾ÏÂÒ»¾ä¶Ô»°ÄÚÈİ
- * ´Ó¶ÓÁĞÖĞÈ¡³öÏÂÒ»ÌõÎÄ±¾¸üĞÂÏÔÊ¾£»Èô¶Ô»°¶ÓÁĞÎª¿Õ£¬Ôò´Ó¸¸½ÚµãÒÆ³ıµ±Ç°²ã
+ * æ˜¾ç¤ºä¸‹ä¸€å¥å¯¹è¯å†…å®¹
+ * ä»é˜Ÿåˆ—ä¸­å–å‡ºä¸‹ä¸€æ¡æ–‡æœ¬æ›´æ–°æ˜¾ç¤ºï¼›è‹¥å¯¹è¯é˜Ÿåˆ—ä¸ºç©ºï¼Œåˆ™ä»çˆ¶èŠ‚ç‚¹ç§»é™¤å½“å‰å±‚
  */
 void DialogueLayer::showNextSentence() {
-    // Èç¹û¶ÓÁĞÎª¿Õ£¬ËµÃ÷¶Ô»°½áÊø
+    // å¦‚æœé˜Ÿåˆ—ä¸ºç©ºï¼Œè¯´æ˜å¯¹è¯ç»“æŸ
     if (_dialogueQueue.empty()) {
-        this->removeFromParent(); // ×ÔÎÒÏú»Ù
+        this->removeFromParent(); // è‡ªæˆ‘é”€æ¯
         return;
     }
 
-    // È¡³öÏÂÒ»¾ä
+    // å–å‡ºä¸‹ä¸€å¥
     std::string text = _dialogueQueue.front();
     _dialogueQueue.pop();
 
-    // ¸üĞÂÎÄ±¾ÏÔÊ¾£¨Ç°ÖÃ¼ì²é¿ÕÖ¸Õë£©
+    // æ›´æ–°æ–‡æœ¬æ˜¾ç¤ºï¼ˆå‰ç½®æ£€æŸ¥ç©ºæŒ‡é’ˆï¼‰
     if (_contentLabel) {
         _contentLabel->setString(text);
     }
@@ -210,31 +205,31 @@ void DialogueLayer::showNextSentence() {
 
 
 /**
- * ¸ù¾İ NPC Ãû×Ö¶¯Ì¬¸üĞÂ±³¾°ÎÆÀí
- * Æ´½Ó×ÊÔ´Â·¾¶£¬¼ÓÔØĞÂÎÆÀí²¢¸üĞÂ SpriteFrame£»Èô¼ÓÔØÊ§°ÜÔò´òÓ¡¾¯¸æ
- * @param name NPC Ãû×Ö£¬ÓÃÓÚ½âÎöÍ¼Æ¬Â·¾¶
+ * æ ¹æ® NPC åå­—åŠ¨æ€æ›´æ–°èƒŒæ™¯çº¹ç†
+ * æ‹¼æ¥èµ„æºè·¯å¾„ï¼ŒåŠ è½½æ–°çº¹ç†å¹¶æ›´æ–° SpriteFrameï¼›è‹¥åŠ è½½å¤±è´¥åˆ™æ‰“å°è­¦å‘Š
+ * @param name NPC åå­—ï¼Œç”¨äºè§£æå›¾ç‰‡è·¯å¾„
  */
 void DialogueLayer::updateBackground(const std::string& name) {
     if (_bg == nullptr) return;
 
-    // 1. Æ´½ÓÍ¼Æ¬Â·¾¶ (Ê¹ÓÃ Constant.h ³£Á¿)
+    // 1. æ‹¼æ¥å›¾ç‰‡è·¯å¾„ (ä½¿ç”¨ Constant.h å¸¸é‡)
     std::string path = PATH_DIALOGUE_PREFIX + name + ".png";
 
-    // 2. »ñÈ¡ÎÆÀí»º´æ
+    // 2. è·å–çº¹ç†ç¼“å­˜
     auto textureCache = Director::getInstance()->getTextureCache();
     if (textureCache == nullptr) return;
 
-    // 3. ¼ÓÔØĞÂÎÆÀí
+    // 3. åŠ è½½æ–°çº¹ç†
     auto texture = textureCache->addImage(path);
 
-    // ¿ÕÖ¸Õë°²È«¼ì²é£ºÈ·±£ÎÆÀí¼ÓÔØ³É¹¦
+    // ç©ºæŒ‡é’ˆå®‰å…¨æ£€æŸ¥ï¼šç¡®ä¿çº¹ç†åŠ è½½æˆåŠŸ
     if (texture) {
-        // ´´½¨ SpriteFrame
+        // åˆ›å»º SpriteFrame
         auto frame = SpriteFrame::createWithTexture(texture, Rect(0, 0, texture->getContentSize().width, texture->getContentSize().height));
 
         if (frame) {
             _bg->setSpriteFrame(frame);
-            // ¸üĞÂ³ß´ç (³£ÓÃÓÚ¸ù¾İ½ÇÉ«ÃûÇĞ»»²»Í¬ÑùÊ½µÄ¶Ô»°¿ò)
+            // æ›´æ–°å°ºå¯¸ (å¸¸ç”¨äºæ ¹æ®è§’è‰²ååˆ‡æ¢ä¸åŒæ ·å¼çš„å¯¹è¯æ¡†)
             _bg->setContentSize(SIZE_DIALOGUE_BG_EXPANDED);
         }
     }
@@ -245,10 +240,10 @@ void DialogueLayer::updateBackground(const std::string& name) {
 
 
 /**
- * ¹«¹²½Ó¿Ú£ºÏÔÊ¾ÆÕÍ¨¶Ô»°ÎÄ±¾ĞòÁĞ
- * ÉèÖÃ NPC Ãû×Ö£¬¸üĞÂ¶ÔÓ¦±³¾°£¬½«ÄÚÈİÁĞ±íÌî³ä½ø¶ÓÁĞ£¬²¢ÏÔÊ¾µÚÒ»¾ä
- * @param name        Ëµ»°µÄ NPC Ãû×Ö
- * @param contentList °üº¬¶Ô»°ÄÚÈİµÄ×Ö·û´®ÁĞ±í
+ * å…¬å…±æ¥å£ï¼šæ˜¾ç¤ºæ™®é€šå¯¹è¯æ–‡æœ¬åºåˆ—
+ * è®¾ç½® NPC åå­—ï¼Œæ›´æ–°å¯¹åº”èƒŒæ™¯ï¼Œå°†å†…å®¹åˆ—è¡¨å¡«å……è¿›é˜Ÿåˆ—ï¼Œå¹¶æ˜¾ç¤ºç¬¬ä¸€å¥
+ * @param name        è¯´è¯çš„ NPC åå­—
+ * @param contentList åŒ…å«å¯¹è¯å†…å®¹çš„å­—ç¬¦ä¸²åˆ—è¡¨
  */
 void DialogueLayer::showText(const std::string& name, const std::vector<std::string>& contentList) {
     if (_nameLabel) _nameLabel->setString(name);
@@ -256,12 +251,12 @@ void DialogueLayer::showText(const std::string& name, const std::vector<std::str
 
     updateBackground(name);
 
-    // Çå¿Õ¾É¶ÓÁĞ
+    // æ¸…ç©ºæ—§é˜Ÿåˆ—
     while (!_dialogueQueue.empty()) {
         _dialogueQueue.pop();
     }
 
-    // ÌîÈëĞÂÄÚÈİ
+    // å¡«å…¥æ–°å†…å®¹
     for (const auto& str : contentList) {
         _dialogueQueue.push(str);
     }
@@ -271,33 +266,33 @@ void DialogueLayer::showText(const std::string& name, const std::vector<std::str
 
 
 /**
- * ¹«¹²½Ó¿Ú£ºÏÔÊ¾ÎŞÃû×ÖµÄÑ¡Ôñ¶Ô»°¿ò (ÖØÔØ)
- * µ÷ÓÃÍêÕû°æ showChoice£¬´«Èë¿ÕÃû×Ö
- * @param content  ÏÔÊ¾µÄÌáÎÊ»òÎÄ±¾ÄÚÈİ
- * @param callback ×ö³öÑ¡ÔñºóµÄ»Øµ÷º¯Êı
+ * å…¬å…±æ¥å£ï¼šæ˜¾ç¤ºæ— åå­—çš„é€‰æ‹©å¯¹è¯æ¡† (é‡è½½)
+ * è°ƒç”¨å®Œæ•´ç‰ˆ showChoiceï¼Œä¼ å…¥ç©ºåå­—
+ * @param content  æ˜¾ç¤ºçš„æé—®æˆ–æ–‡æœ¬å†…å®¹
+ * @param callback åšå‡ºé€‰æ‹©åçš„å›è°ƒå‡½æ•°
  */
 void DialogueLayer::showChoice(const std::string& content, ChoiceCallback callback) {
-    // ÖØÓÃÍêÕû°æµÄ showChoice£¬´«Èë¿ÕÃû×Ö¼´¿É
+    // é‡ç”¨å®Œæ•´ç‰ˆçš„ showChoiceï¼Œä¼ å…¥ç©ºåå­—å³å¯
     showChoice("", content, callback);
 }
 
 
 /**
- * ¹«¹²½Ó¿Ú£ºÏÔÊ¾´ø NPC Ãû×ÖµÄÑ¡Ôñ¶Ô»°¿ò
- * Çå¿Õ¾É¶Ô»°¶ÓÁĞ£¬ÉèÖÃÌáÊ¾ÎÄ±¾£¬¸üĞÂ±³¾°£¬±£´æ»Øµ÷º¯Êı²¢ÏÔÊ¾Ñ¡Ôñ°´Å¥
- * @param name     NPC Ãû×Ö
- * @param content  ÏÔÊ¾µÄÌáÎÊ»òÎÄ±¾ÄÚÈİ
- * @param callback ×ö³öÑ¡ÔñºóµÄ»Øµ÷º¯Êı
+ * å…¬å…±æ¥å£ï¼šæ˜¾ç¤ºå¸¦ NPC åå­—çš„é€‰æ‹©å¯¹è¯æ¡†
+ * æ¸…ç©ºæ—§å¯¹è¯é˜Ÿåˆ—ï¼Œè®¾ç½®æç¤ºæ–‡æœ¬ï¼Œæ›´æ–°èƒŒæ™¯ï¼Œä¿å­˜å›è°ƒå‡½æ•°å¹¶æ˜¾ç¤ºé€‰æ‹©æŒ‰é’®
+ * @param name     NPC åå­—
+ * @param content  æ˜¾ç¤ºçš„æé—®æˆ–æ–‡æœ¬å†…å®¹
+ * @param callback åšå‡ºé€‰æ‹©åçš„å›è°ƒå‡½æ•°
  */
 
 void DialogueLayer::showChoice(const std::string& name, const std::string& content, ChoiceCallback callback) {
-    // Çå¿Õ¶ÓÁĞ£¬·ÀÖ¹²ĞÁô
+    // æ¸…ç©ºé˜Ÿåˆ—ï¼Œé˜²æ­¢æ®‹ç•™
     while (!_dialogueQueue.empty()) _dialogueQueue.pop();
 
     if (_nameLabel) _nameLabel->setString(name);
     if (_contentLabel) _contentLabel->setString(content);
 
-    // Èç¹ûÓĞÃû×Ö£¬³¢ÊÔ¸üĞÂ±³¾°£»·ñÔò±£³ÖÄ¬ÈÏ
+    // å¦‚æœæœ‰åå­—ï¼Œå°è¯•æ›´æ–°èƒŒæ™¯ï¼›å¦åˆ™ä¿æŒé»˜è®¤
     if (!name.empty()) {
         updateBackground(name);
     }
@@ -307,4 +302,5 @@ void DialogueLayer::showChoice(const std::string& name, const std::string& conte
     if (_choiceNode) {
         _choiceNode->setVisible(true);
     }
+
 }
