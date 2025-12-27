@@ -124,14 +124,15 @@ void Player::setAnimation(Direction direction, bool moving)
     // 更新状态
     _direction = direction;
     _isMoving = moving;
-
+    int dir = static_cast<int>(direction);
+    
     // 停止当前所有动作
     this->stopAllActions();
 
     if (moving)
     {
         // 动画播放
-        auto  animation = _walkAnimations[(int)direction];
+        auto  animation = _walkAnimations[dir];
         if (animation)
         {
             auto animate = Animate::create(animation);
@@ -140,7 +141,7 @@ void Player::setAnimation(Direction direction, bool moving)
         }
         else
         {
-            CCLOG("Warning: Animation for direction %d not available", (int)direction);
+            CCLOG("Warning: Animation for direction %d not available", dir);
         }
     }
     else
@@ -153,7 +154,7 @@ void Player::setAnimation(Direction direction, bool moving)
             float frameHeight = texture->getContentSize().height / 13;
 
             // direction值直接作为纹理行索引
-            int row = (int)direction;
+            int row = dir;
 
             // 确保行索引在有效范围内
             int totalRows = texture->getContentSize().height / frameHeight;
@@ -257,7 +258,6 @@ void Player::onEnter()
         default:
             break;
         }
-        
         // 更新速度和动画
         updateVelocity();
         updateAnimation();
@@ -376,5 +376,6 @@ void Player::update(float dt)
         }
     }
 }
+
 
 
