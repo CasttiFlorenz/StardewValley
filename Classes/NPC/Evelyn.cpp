@@ -16,7 +16,7 @@ bool Evelyn::init()
         return false;
     }
 
-    if (!loadTexture(NPC_NAME_EVELYN)) {
+    if (!loadTexture(PATH_NPC_EVELYN) ){
         return false;
     }
 

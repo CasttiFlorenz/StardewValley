@@ -10,19 +10,21 @@
 
 USING_NS_CC;
 
-bool Haley::init()
-{
-    if (!NPCBase::init()) {
-        return false;
-    }
+// 以 Haley.cpp 为例
+bool Haley::init() {
+    if (!NPCBase::init()) return false;
 
-    // 使用常量路径
-    if (!loadTexture(NPC_NAME_HALEY)) {
-        return false;
-    }
+    // 【必须】加载图片，路径一定要对！
+    // 检查 Constant.h 里的 PATH_NPC_HALEY 是不是写对了 (比如 "NPC/Haley.png")
+    bool res = this->loadTexture(PATH_NPC_HALEY);
 
-    // 播放动画
-    playAnimation();
+    if (!res) {
+        // 如果这里打印了，说明图片路径不对
+        CCLOG("Error: Haley texture failed to load: %s", PATH_NPC_HALEY.c_str());
+        // 加载失败时，给一个红色色块保底，证明逻辑是通的
+        this->setTextureRect(Rect(0, 0, 32, 48));
+        this->setColor(Color3B::RED);
+    }
 
     return true;
 }

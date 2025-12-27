@@ -17,7 +17,7 @@ bool Sam::init()
     }
 
     // 使用常量路径
-    if (!loadTexture(NPC_NAME_SAM)) {
+    if (!loadTexture(PATH_NPC_SAM)) {
         return false;
     }
 
