@@ -27,6 +27,24 @@ constexpr int FISHING_GAME_TAG = 8998;
 constexpr int SHOP_MENU_TAG = 9999;
 constexpr int TAG_DIALOGUE_LAYER = 9998;
 
+// 技能水平显示
+constexpr char* LEVEL_FILLED1 = "/Player/red block.png";
+constexpr char* LEVEL_EMPTY1 = "/Player/empty block.png";
+constexpr char* LEVEL_FILLED2 = "/Player/orange block.png";
+constexpr char* LEVEL_EMPTY2 = "/Player/long block.png";
+constexpr int MAX_LEVEL = 100;    // 最高经验值
+constexpr int SKILL_COUNT = 4;    // 技能个数
+
+// 好感度显示
+constexpr char* HEART_FILLED = "/NPC/red heart.png";
+constexpr char* HEART_EMPTY = "/NPC/empty heart.png";
+
+// 背包常量
+constexpr int INVENTORY_SIZE = 36;    // 背包总大小
+constexpr int ITEM_TAG_BASE = 1000;   // 物品精灵的tag
+constexpr int COUNT_TAG_BASE = 2000;  // 数量标签的tag
+constexpr int BUTTON_TAG_BASE = 3000; // 背包按钮的tag
+
 // [Section 2] 枚举定义 (Enums)
 
 // --- 基础状态 ---
@@ -325,3 +343,4 @@ constexpr int FONT_SIZE_BTN = 30;
 
 
 #endif // __CONSTANT_H__
+
