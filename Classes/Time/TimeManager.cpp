@@ -208,6 +208,14 @@ void TimeManager::createUI() {
 }
 
 /**
+ * 设定时间
+ */
+void TimeManager::setTime(const GameTime& time)
+{
+    currentTime = time; 
+}；
+
+/**
  * 每帧更新时间逻辑，处理分钟增加和强制昏迷检测
  * @param dt 帧间隔时间
  */
@@ -422,4 +430,5 @@ void TimeManager::startSleepSequence() {
     );
 
     sleepBg->runAction(seq);
+
 }
