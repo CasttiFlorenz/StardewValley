@@ -6,10 +6,10 @@ using namespace CocosDenshion;
 MusicManager* MusicManager::instance = nullptr;
 
 MusicManager::MusicManager() {
-    volume = 0.01f;
-    effectVolume = 1.0f;
+    _volume = 0.01f;
+    _effectVolume = 1.0f;
     currentMusic = "";
-    isPreloaded = false; // 添加预加载状态标记
+    _isPreloaded = false; // 添加预加载状态标记
 }
 
 MusicManager* MusicManager::getInstance() {
@@ -20,7 +20,7 @@ MusicManager* MusicManager::getInstance() {
 }
 
 void MusicManager::preloadMusic() {
-    if (isPreloaded) {
+    if (_isPreloaded) {
         CCLOG("音乐已经预加载过了");
         return;
     }
@@ -34,8 +34,8 @@ void MusicManager::preloadMusic() {
         "music/click.mp3",
     };
 
-    SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(volume);
-    SimpleAudioEngine::getInstance()->setEffectsVolume(effectVolume);
+    SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(_volume);
+    SimpleAudioEngine::getInstance()->setEffectsVolume(_effectVolume);
 
     CCLOG("音乐预加载完成");
 }
@@ -47,19 +47,18 @@ void MusicManager::playButtonClick() {
 
 void MusicManager::playMusicForMap(const std::string& _mapName) {
     std::string musicFile;
-    std::string mapName = _mapName;
 
-    if (mapName == "Farm") {
+    if (_mapName == "Farm") {
         musicFile = "Music/Farm.mp3";
     }
-    else if (mapName == "Town") {
+    else if (_mapName == "Town") {
         musicFile = "Music/Town.mp3";
     }
-    else if (mapName == "FarmHouse") {
+    else if (_mapName == "FarmHouse") {
         musicFile = "Music/FarmHouse.mp3";
     }
 
-    SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(volume);
+    SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(_volume);
 
     if (currentMusic == musicFile) {
         if (SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying()) {
@@ -89,19 +88,19 @@ void MusicManager::stopMusic() {
 }
 
 void MusicManager::setMusicVolume(float vol) {
-    volume = vol;
-    if (volume < 0.0f) volume = 0.0f;
-    if (volume > 1.0f) volume = 1.0f;
+    _volume = vol;
+    if (_volume < 0.0f) _volume = 0.0f;
+    if (_volume > 1.0f) _volume = 1.0f;
 
-    SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(volume);
+    SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(_volume);
 }
 
 void MusicManager::setEffectVolume(float vol) {
-    effectVolume = vol;
-    if (effectVolume < 0.0f) effectVolume = 0.0f;
-    if (effectVolume > 1.0f) effectVolume = 1.0f;
+    _effectVolume = vol;
+    if (_effectVolume < 0.0f) _effectVolume = 0.0f;
+    if (_effectVolume > 1.0f) _effectVolume = 1.0f;
 
-    SimpleAudioEngine::getInstance()->setEffectsVolume(effectVolume);
+    SimpleAudioEngine::getInstance()->setEffectsVolume(_effectVolume);
 }
 
 void MusicManager::pauseMusic() {

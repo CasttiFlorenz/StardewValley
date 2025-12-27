@@ -10,17 +10,17 @@ private:
 
     std::string currentMusic;
 
-    float volume;
-    float effectVolume;
+    float _volume;
+    float _effectVolume;
 
-    bool isPreloaded;
+    bool _isPreloaded;
 
     MusicManager();
 
 public:
     static MusicManager* getInstance();
 
-    // È¢ÑÂä†ËΩΩÈü≥‰πê
+    // ‘§º”‘ÿ“Ù¿÷
     void preloadMusic();
 
     void playMusicForMap(const std::string& _mapName);
