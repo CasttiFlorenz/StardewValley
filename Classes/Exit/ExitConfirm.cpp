@@ -39,7 +39,7 @@ bool ExitConfirm::init()
     // ========== 按钮1：返回菜单 ==========
     auto returnToMenuBtn = Sprite::create("/Items/button/exit to title.png");
     if (returnToMenuBtn) {
-        returnToMenuBtn->setPosition(Vec2(0, 60));  
+        returnToMenuBtn->setPosition(Vec2(0, 60));
         returnToMenuBtn->setScale(1.3f);
 
         // 触摸检测
@@ -72,8 +72,8 @@ bool ExitConfirm::init()
     // ========== 按钮2：退出游戏 ==========
     auto exitGameBtn = Sprite::create("/Items/button/exit to desktop.png");
     if (exitGameBtn) {
-        exitGameBtn->setPosition(Vec2(0, -60));  
-        exitGameBtn->setScale(1.3f);             
+        exitGameBtn->setPosition(Vec2(0, -60));
+        exitGameBtn->setScale(1.3f);
 
         // 触摸检测
         auto listener = EventListenerTouchOneByOne::create();
@@ -90,7 +90,7 @@ bool ExitConfirm::init()
 
                 MusicManager::getInstance()->playButtonClick();
 
-                this->onExitGame();  
+                this->onExitGame();
                 return true;
             }
             return false;
@@ -110,10 +110,21 @@ void ExitConfirm::onReturnToTitle()
 {
     // 这里由外部调用时实现
     this->removeFromParent();
+
+    WeatherManager::getInstance();
+    TimeManager::getInstance();
+    Money::getInstance();
+    NPCManager::getInstance();
 }
 
 // 退出游戏
 void ExitConfirm::onExitGame()
 {
     Director::getInstance()->end();
+
+
+    WeatherManager::destroyInstance();
+    TimeManager::destroyInstance();
+    Money::destroyInstance();
+    NPCManager::destroyInstance();
 }
