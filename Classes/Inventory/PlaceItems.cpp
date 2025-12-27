@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     PlaceItems.cpp
- * File Function: PlaceItemsÀàµÄÊµÏÖ
- * Author:        ÓÚ¶÷Îõ
+ * File Function: PlaceItemsç±»çš„å®ç°
+ * Author:        äºæ©ç†™
  * Update Date:   2025/12/21
  * License:       MIT License
  ****************************************************************/
@@ -11,9 +11,9 @@
 
 USING_NS_CC;
 
-PlaceItems* PlaceItems::_instance = nullptr;  // ³õÊ¼»¯Ö¸Õë
+PlaceItems* PlaceItems::_instance = nullptr;  // åˆå§‹åŒ–æŒ‡é’ˆ
 
-// µ¥Àı·½·¨
+// å•ä¾‹æ–¹æ³•
 PlaceItems* PlaceItems::getInstance() 
 {
     if (!_instance) {
@@ -25,7 +25,7 @@ PlaceItems* PlaceItems::getInstance()
 void PlaceItems::destroyInstance() 
 {
     if (_instance) {
-        delete _instance;  // ¿ÉÒÔÊÖ¶¯É¾³ı
+        delete _instance;  // å¯ä»¥æ‰‹åŠ¨åˆ é™¤
         _instance = nullptr;
     }
 }
@@ -40,7 +40,7 @@ PlaceItems::PlaceItems()
     , _cellWidth(0)
 {}
 
-// ÉèÖÃÉÏÏÂÎÄĞÅÏ¢
+// è®¾ç½®ä¸Šä¸‹æ–‡ä¿¡æ¯
 void PlaceItems::setContext(cocos2d::Node* parent, std::vector<Item>& inventory, int& itemCount,
     float* backpackX, float* backpackY, float backpackWidth, float cellWidth)
 {
@@ -53,24 +53,24 @@ void PlaceItems::setContext(cocos2d::Node* parent, std::vector<Item>& inventory,
     _cellWidth = cellWidth;
 }
 
-// ³õÊ¼»¯ÎïÆ·Êı×é
+// åˆå§‹åŒ–ç‰©å“æ•°ç»„
 void PlaceItems::initItem()
 {
-    // Çå¿Õ vector
+    // æ¸…ç©º vector
     _currentInventory->clear();
 
-    // ³õÊ¼»¯ËùÓĞÎïÆ·Îª¿Õ
+    // åˆå§‹åŒ–æ‰€æœ‰ç‰©å“ä¸ºç©º
     for (int i = 0; i < INVENTORY_TOTAL_SLOTS; i++) {
         _inventory[i] = Item();
     }
 
-    // Ô¤´æÎïÆ·
-    _inventory[0] = Item(ItemType::HOE, 1, 1.5f, 0.0f, "/Items/hoe.png", 0, "Hoe"); // ¹¤¾ß²»¿É¹ºÂò
-    _inventory[1] = Item(ItemType::AXE, 1, 1.4f, 0.0f, "/Items/axe.png", 0, "Axe"); // ¹¤¾ß²»¿É¹ºÂò
-    _inventory[2] = Item(ItemType::WATERING_CAN, 1, 1.6f, 0.0f, "/Items/wateringCan.png", 0, "Watering Can"); // ¹¤¾ß²»¿É¹ºÂò
-    _inventory[3] = Item(ItemType::PICKAXE, 1, 1.4f, 0.0f, "/Items/pickaxe.png", 0, "Pickaxe"); // ¹¤¾ß²»¿É¹ºÂò
-    _inventory[4] = Item(ItemType::SCYTHE, 1, 1.4f, 0.0f, "/Items/scythe.png", 0, "Scythe"); // ¹¤¾ß²»¿É¹ºÂò
-    _inventory[5] = Item(ItemType::FISHINGROD, 1, 1.3f, 0.0f, "/Items/fishingRod.png", 0, "Fishingrod"); // ¹¤¾ß²»¿É¹ºÂò
+    // é¢„å­˜ç‰©å“
+    _inventory[0] = Item(ItemType::HOE, 1, 1.5f, 0.0f, "/Items/hoe.png", 0, "Hoe"); // å·¥å…·ä¸å¯è´­ä¹°
+    _inventory[1] = Item(ItemType::AXE, 1, 1.4f, 0.0f, "/Items/axe.png", 0, "Axe"); // å·¥å…·ä¸å¯è´­ä¹°
+    _inventory[2] = Item(ItemType::WATERING_CAN, 1, 1.6f, 0.0f, "/Items/wateringCan.png", 0, "Watering Can"); // å·¥å…·ä¸å¯è´­ä¹°
+    _inventory[3] = Item(ItemType::PICKAXE, 1, 1.4f, 0.0f, "/Items/pickaxe.png", 0, "Pickaxe"); // å·¥å…·ä¸å¯è´­ä¹°
+    _inventory[4] = Item(ItemType::SCYTHE, 1, 1.4f, 0.0f, "/Items/scythe.png", 0, "Scythe"); // å·¥å…·ä¸å¯è´­ä¹°
+    _inventory[5] = Item(ItemType::FISHINGROD, 1, 1.3f, 0.0f, "/Items/fishingRod.png", 0, "Fishingrod"); // å·¥å…·ä¸å¯è´­ä¹°
     _inventory[6] = Item(ItemType::STONE, 1, 4.3f, 0.0f, "/Items/stone.png", 20, "Stone");
     _inventory[7] = Item(ItemType::WOOD, 1, 2.8f, 0.0f, "/Items/wood.png", 10, "Wood");
     _inventory[8] = Item(ItemType::COPPER_ORE, 1, 3.3f, 0.0f, "/Items/copper ore.png", 75, "Copper Ore");
@@ -91,7 +91,7 @@ void PlaceItems::initItem()
     _inventory[23] = Item(ItemType::MILK, 1, 4.3f, 0.0f, "/Items/milk.png", 125, "Milk");
     _inventory[24] = Item(ItemType::SALAD, 1, 4.3f, 0.0f, "/Items/salad.png", 110, "Salad");
   
-    // ·ÅÖÃ³õÊ¼ÎïÆ·
+    // æ”¾ç½®åˆå§‹ç‰©å“
     _currentInventory->push_back(Item(ItemType::HOE, 1, 1.5f, 0.7f, "/Items/hoe.png", 0, "Hoe"));
     _currentInventory->push_back(Item(ItemType::AXE, 1, 1.4f, 1.6f, "/Items/axe.png", 0, "Axe"));
     _currentInventory->push_back(Item(ItemType::WATERING_CAN, 1, 1.6f, 2.6f, "/Items/wateringCan.png", 0, "Watering Can"));
@@ -103,7 +103,7 @@ void PlaceItems::initItem()
     (*_itemCount) = _currentInventory->size();
 }
 
-// ·ÅÖÃÎïÆ·
+// æ”¾ç½®ç‰©å“
 void PlaceItems::placeAllItems(int highlightIndex)
 {
     if (!_parent || !_currentInventory || !_backpackX || !_backpackY)
@@ -114,19 +114,19 @@ void PlaceItems::placeAllItems(int highlightIndex)
         return;
     }
 
-    // ¼ÆËã±³°ü×ó±ß½ç£¨Ê¹ÓÃµÚÒ»¸ö±³°ü£©
+    // è®¡ç®—èƒŒåŒ…å·¦è¾¹ç•Œï¼ˆä½¿ç”¨ç¬¬ä¸€ä¸ªèƒŒåŒ…ï¼‰
     float backpackLeft0 = _backpackX[0] - _backpackWidth / 2;
 
-    // ±éÀú¹¤¾ß¸ñ
+    // éå†å·¥å…·æ ¼
     for (size_t i = 0; i < _currentInventory->size(); i++) {
         Item& item = (*_currentInventory)[i];
-        float baseScale = item.getScale();       // »ù´¡´óĞ¡
-        float highlightScale = baseScale + 0.2f; // ¸ßÁÁÊ±·Å´ó
+        float baseScale = item.getScale();       // åŸºç¡€å¤§å°
+        float highlightScale = baseScale + 0.2f; // é«˜äº®æ—¶æ”¾å¤§
 
-        float x = backpackLeft0 + _cellWidth * item.getPrintPos(); // ¼òµ¥Î»ÖÃ¼ÆËã
+        float x = backpackLeft0 + _cellWidth * item.getPrintPos(); // ç®€å•ä½ç½®è®¡ç®—
         float scale = (i == highlightIndex) ? highlightScale : baseScale;
 
-        // È·¶¨ÔÚÄÄÒ»ĞĞ
+        // ç¡®å®šåœ¨å“ªä¸€è¡Œ
         int row = i / INVENTORY_COLS;
         float y = _backpackY[row];
 
@@ -134,24 +134,24 @@ void PlaceItems::placeAllItems(int highlightIndex)
     }
 }
 
-// Çå³ıÎïÆ·¾«Áé
+// æ¸…é™¤ç‰©å“ç²¾çµ
 void PlaceItems::clearAllItems()
 {
     if (!_parent) return;
 
-    // ±éÀúËùÓĞ¿ÉÄÜµÄÎïÆ·tag
+    // éå†æ‰€æœ‰å¯èƒ½çš„ç‰©å“tag
     for (int i = 0; i < (*_itemCount); i++) {
         
-        // ¼ÆËãµ±Ç°ÎïÆ·µÄtag
+        // è®¡ç®—å½“å‰ç‰©å“çš„tag
         int tag = ITEM_TAG_BASE + i;
 
-        // ²éÕÒ²¢ÒÆ³ı¸ÃtagµÄ¾«Áé
+        // æŸ¥æ‰¾å¹¶ç§»é™¤è¯¥tagçš„ç²¾çµ
         auto toolSprite = _parent->getChildByTag(tag);
         if (toolSprite) {
             toolSprite->removeFromParent();
         }
 
-        // Í¬Ê±ÒÆ³ıÊıÁ¿±êÇ©
+        // åŒæ—¶ç§»é™¤æ•°é‡æ ‡ç­¾
         int countTag = COUNT_TAG_BASE + i;
         auto countLabel = _parent->getChildByTag(countTag);
         if (countLabel) {
@@ -160,55 +160,55 @@ void PlaceItems::clearAllItems()
     }
 }
 
-// ÏÔÊ¾ÎïÆ·ÊıÁ¿
+// æ˜¾ç¤ºç‰©å“æ•°é‡
 void PlaceItems::showItemCount(int itemIndex, int count, float x, float y)
 {
     if (!_parent) return;
 
-    // ÏÈÇå³ı¸ÃË÷ÒıÔ­ÓĞµÄÊıÁ¿±êÇ©
+    // å…ˆæ¸…é™¤è¯¥ç´¢å¼•åŸæœ‰çš„æ•°é‡æ ‡ç­¾
     int oldCountTag = COUNT_TAG_BASE + itemIndex;
     auto oldCountLabel = _parent->getChildByTag(oldCountTag);
     if (oldCountLabel) {
         oldCountLabel->removeFromParent();
     }
 
-    // ´´½¨ÊıÁ¿±êÇ©
+    // åˆ›å»ºæ•°é‡æ ‡ç­¾
     std::string countText = std::to_string(count);
     auto countLabel = Label::createWithTTF(countText, PATH_FONT_ARIAL, 14);
 
     if (countLabel) {
-        // ¼ÆËãÓÒÏÂ½ÇÎ»ÖÃ
-        float offsetX = 25.0f;  // ÏòÓÒÆ«ÒÆ
-        float offsetY = -22.0f; // ÏòÏÂÆ«ÒÆ
+        // è®¡ç®—å³ä¸‹è§’ä½ç½®
+        float offsetX = 25.0f;  // å‘å³åç§»
+        float offsetY = -22.0f; // å‘ä¸‹åç§»
 
         countLabel->setPosition(Vec2(x + offsetX, y + offsetY));
         countLabel->setColor(Color3B::WHITE);
-        countLabel->enableOutline(Color4B::BLACK, 2);  // ºÚÉ«Ãè±ß£¬¸üÇåÎú
+        countLabel->enableOutline(Color4B::BLACK, 2);  // é»‘è‰²æè¾¹ï¼Œæ›´æ¸…æ™°
 
-        // ÉèÖÃÎ¨Ò»tag
+        // è®¾ç½®å”¯ä¸€tag
         countLabel->setTag(COUNT_TAG_BASE + itemIndex);
 
-        _parent->addChild(countLabel, 2);  // ±È¹¤¾ß¾«Áé¸ü¸ßµÄ²ã¼¶
+        _parent->addChild(countLabel, 2);  // æ¯”å·¥å…·ç²¾çµæ›´é«˜çš„å±‚çº§
     }
 }
 
-// ¸üĞÂ¹¤¾ß¾«Áé
+// æ›´æ–°å·¥å…·ç²¾çµ
 void PlaceItems::updateItemSprite(int toolIndex, const std::string& imagePath,
     float size, float x, float y)
 {
     if (!_parent || !_currentInventory || toolIndex < 0 || toolIndex >= *_itemCount)
         return;
 
-    // ¼ÆËãµ±Ç°¹¤¾ßµÄtag
+    // è®¡ç®—å½“å‰å·¥å…·çš„tag
     int tag = ITEM_TAG_BASE + toolIndex;
 
-    // ²éÕÒÊÇ·ñÒÑ´æÔÚÏàÍ¬tagµÄ¾«Áé
+    // æŸ¥æ‰¾æ˜¯å¦å·²å­˜åœ¨ç›¸åŒtagçš„ç²¾çµ
     auto oldSprite = _parent->getChildByTag(tag);
     if (oldSprite) {
         oldSprite->removeFromParent();
     }
 
-    // ´´½¨ĞÂµÄ¹¤¾ß¾«Áé
+    // åˆ›å»ºæ–°çš„å·¥å…·ç²¾çµ
     auto sprite = Sprite::create(imagePath);
     if (sprite) {
         Item& item = (*_currentInventory)[toolIndex];
@@ -216,104 +216,101 @@ void PlaceItems::updateItemSprite(int toolIndex, const std::string& imagePath,
         sprite->setPosition(Vec2(x, y));
         sprite->setScale(size);
         if (item.getCount() <= 0) {
-            sprite->setOpacity(70); // Í¸Ã÷¶È 
+            sprite->setOpacity(70); // é€æ˜åº¦ 
         }
 
-        // ÉèÖÃÎ¨Ò»tag£¬±ãÓÚºóĞø¹ÜÀí
+        // è®¾ç½®å”¯ä¸€tagï¼Œä¾¿äºåç»­ç®¡ç†
         sprite->setTag(tag);
 
-        // Ìí¼Óµ½³¡¾°ÖĞ
+        // æ·»åŠ åˆ°åœºæ™¯ä¸­
         _parent->addChild(sprite, 1);
 
-        // ÏÔÊ¾ÊıÁ¿
+        // æ˜¾ç¤ºæ•°é‡
         if (item.getTag() > ItemType::FISHINGROD) {
             showItemCount(toolIndex, item.getCount(), x, y);
         }
 
-        // Ìí¼Óµã»÷Ê±µÄÇáÎ¢¶¯»­Ğ§¹û
-        if (size > item.getScale()) {  // Èç¹ûÊÇ¸ßÁÁ×´Ì¬
-            // ÇáÎ¢ÉÏ¸¡¶¯»­
+        // æ·»åŠ ç‚¹å‡»æ—¶çš„è½»å¾®åŠ¨ç”»æ•ˆæœ
+        if (size > item.getScale()) {  // å¦‚æœæ˜¯é«˜äº®çŠ¶æ€
+            // è½»å¾®ä¸Šæµ®åŠ¨ç”»
             auto floatUp = MoveBy::create(0.1f, Vec2(0, 3));
             sprite->runAction(floatUp);
         }
     }
 }
 
-// Ôö¼ÓÎïÆ·
+// å¢åŠ ç‰©å“
 bool PlaceItems::addItem(ItemType object, int amount)
 {
     if (!_currentInventory || amount <= 0)
         return false;
 
-    // ÏÈÔÚ currentInventory ÖĞ²éÕÒÊÇ·ñÒÑÓĞ¸ÃÎïÆ·
+    // å…ˆåœ¨ currentInventory ä¸­æŸ¥æ‰¾æ˜¯å¦å·²æœ‰è¯¥ç‰©å“
     for (auto& item : *_currentInventory) {
         if (item.getTag() == object) {
-            // ÕÒµ½ÎïÆ·£¬Ôö¼ÓÊıÁ¿
+            // æ‰¾åˆ°ç‰©å“ï¼Œå¢åŠ æ•°é‡
             item.addCount(amount);
-            placeAllItems();
             return true;
         }
     }
 
-    // Èç¹ûÃ»ÓĞÕÒµ½£¬ÔÚ inventory ÖĞËÑË÷ĞÅÏ¢
+    // å¦‚æœæ²¡æœ‰æ‰¾åˆ°ï¼Œåœ¨ inventory ä¸­æœç´¢ä¿¡æ¯
     for (int i = 0; i < INVENTORY_TOTAL_SLOTS; i++) {
         if (_inventory[i].getTag() == object) {
-            // ´´½¨ĞÂÎïÆ·²¢Ìí¼Óµ½ vector
+            // åˆ›å»ºæ–°ç‰©å“å¹¶æ·»åŠ åˆ° vector
             Item newItem = _inventory[i];
             newItem.setCount(amount);
             newItem.setPrintPos(_pos[static_cast<int>(_currentInventory->size()) % 12]);
 
             _currentInventory->push_back(newItem);
-            (*_itemCount) = _currentInventory->size();  // ¸üĞÂ¼ÆÊı
-            placeAllItems();
+            (*_itemCount) = _currentInventory->size();  // æ›´æ–°æ•°é‡
             return true;
         }
     }
 
-    // Èç¹û¶¼Ã»ÓĞÕÒµ½£¬·µ»ØÊ§°Ü
+    // å¦‚æœéƒ½æ²¡æœ‰æ‰¾åˆ°ï¼Œè¿”å›å¤±è´¥
     return false;
 }
 
-// ¼õÉÙÎïÆ·ÊıÁ¿
+// å‡å°‘ç‰©å“æ•°é‡
 bool PlaceItems::removeItem(ItemType object, int amount)
 {
     if (!_currentInventory || amount <= 0)
         return false;
+    // æ¸…é™¤æ‰€æœ‰å·²å­˜åœ¨çš„å·¥å…·ç²¾çµ
+    clearAllItems(); 
 
-    clearAllItems(); //Çå¿Õ¹¤¾ß¾«Áé
-
-    // ÔÚ currentInventory ÖĞ²éÕÒÎïÆ·
+    // åœ¨ currentInventory ä¸­æŸ¥æ‰¾ç‰©å“
     for (auto it = _currentInventory->begin(); it != _currentInventory->end(); ++it) {
         if (it->getTag() == object) {
-            // ÕÒµ½ÎïÆ·£¬¼õÉÙÊıÁ¿
+            // æ‰¾åˆ°ç‰©å“ï¼Œå‡å°‘æ•°é‡
             int newCount = it->getCount() - amount;
 
             if (newCount > 0) {
-                // ÊıÁ¿ÈÔ´óÓÚ0£¬¸üĞÂÊıÁ¿
+                // æ•°é‡ä»å¤§äº0ï¼Œæ›´æ–°æ•°é‡
                 it->setCount(newCount);
             }
             else if (newCount <= 0) {
-                // ÊıÁ¿Îª0£¬É¾³ı¸ÃÎïÆ·
+                // æ•°é‡ä¸º0ï¼Œåˆ é™¤è¯¥ç‰©å“
                 _currentInventory->erase(it);
-                (*_itemCount) = _currentInventory->size();  // ¸üĞÂ¼ÆÊı
+                (*_itemCount) = _currentInventory->size();  // æ›´æ–°è®¡æ•°
                 adjustPos();
             }
-            placeAllItems();
             return true;
         }
     }
 
-    // Ã»ÓĞÕÒµ½¸ÃÎïÆ·
-    CCLOG("´íÎó: ÕÒ²»µ½ÎïÆ· %d", static_cast<int>(object));
+    // æ²¡æœ‰æ‰¾åˆ°è¯¥ç‰©å“
+    CCLOG("é”™è¯¯: æ‰¾ä¸åˆ°ç‰©å“ %d", static_cast<int>(object));
     return false;
 }
 
-// µ÷ÕûÉ¾³ıÎ»ÖÃºóÃæµÄÎïÆ·Î»ÖÃ
+// è°ƒæ•´åˆ é™¤ä½ç½®åé¢çš„ç‰©å“ä½ç½®
 void PlaceItems::adjustPos()
 {
     if (!_currentInventory) return;
 
-    // ±éÀúËùÓĞÎïÆ·£¬ÖØĞÂ¼ÆËãÎ»ÖÃ
+    // éå†æ‰€æœ‰ç‰©å“ï¼Œé‡æ–°è®¡ç®—ä½ç½®
     for (size_t i = 0; i < _currentInventory->size(); i++) {
         Item& item = (*_currentInventory)[i];
 
@@ -322,7 +319,7 @@ void PlaceItems::adjustPos()
 
 }
 
-// ·µ»ØÎïÆ·Ë÷Òı
+// è¿”å›ç‰©å“ç´¢å¼•
 int PlaceItems::findItemIndex(ItemType tag)
 {
     if (!_currentInventory) 
@@ -335,3 +332,4 @@ int PlaceItems::findItemIndex(ItemType tag)
     }
     return -1;
 }
+
