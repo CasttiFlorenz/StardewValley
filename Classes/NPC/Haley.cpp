@@ -1,8 +1,8 @@
 /*************************************************************
 * Project Name : StardewValley
 * File Name : Haley.cpp
-* File Function :  HaleyÀàµÄÊµÏÖ
-* Author : ÕÔî£åû¡¢²Ì½õ»Û
+* File Function :  Haleyç±»çš„å®ç°
+* Author : èµµç¿å¦ã€è”¡é”¦æ…§
 * Update Date : 2025 / 12 / 24
 * License : MIT License
 * ***************************************************************/
@@ -10,34 +10,22 @@
 
 USING_NS_CC;
 
-// ÒÔ Haley.cpp ÎªÀı
+
 bool Haley::init() {
     if (!NPCBase::init()) return false;
-
-    // ¡¾±ØĞë¡¿¼ÓÔØÍ¼Æ¬£¬Â·¾¶Ò»¶¨Òª¶Ô£¡
-    // ¼ì²é Constant.h ÀïµÄ PATH_NPC_HALEY ÊÇ²»ÊÇĞ´¶ÔÁË (±ÈÈç "NPC/Haley.png")
     bool res = this->loadTexture(PATH_NPC_HALEY);
-
-    if (!res) {
-        // Èç¹ûÕâÀï´òÓ¡ÁË£¬ËµÃ÷Í¼Æ¬Â·¾¶²»¶Ô
-        CCLOG("Error: Haley texture failed to load: %s", PATH_NPC_HALEY.c_str());
-        // ¼ÓÔØÊ§°ÜÊ±£¬¸øÒ»¸öºìÉ«É«¿é±£µ×£¬Ö¤Ã÷Âß¼­ÊÇÍ¨µÄ
-        this->setTextureRect(Rect(0, 0, 32, 48));
-        this->setColor(Color3B::RED);
-    }
-
     return true;
 }
 
 void Haley::playAnimation()
 {
-    // Haley ÎÆÀí²¼¾Ö: 12ĞĞ 4ÁĞ£¬ĞĞ×ß¶¯»­Î»ÓÚµÚ11ĞĞ(Ë÷Òı10)
+    // Haley çº¹ç†å¸ƒå±€: 12è¡Œ 4åˆ—ï¼Œè¡Œèµ°åŠ¨ç”»ä½äºç¬¬11è¡Œ(ç´¢å¼•10)
     createAnimation(12, 4, 10, 0.15f);
 }
 
 std::vector<std::string> Haley::getConversation(bool isFirstMet)
 {
-    // Ôö¼ÓºÃ¸Ğ¶È
+    // å¢åŠ å¥½æ„Ÿåº¦
     this->increaseFriendship(50);
 
     std::vector<std::string> dialogue;
@@ -69,18 +57,19 @@ std::vector<std::string> Haley::getConversation(bool isFirstMet)
 
 int Haley::checkGiftTaste(ItemType itemTag)
 {
-    // ×î°® (+80)
+    // æœ€çˆ± (+80)
     if (itemTag == ItemType::DAFFODILS) return 80;
     if (itemTag == ItemType::SALAD) return 80;
 
-    // Ï²»¶ (+45)
+    // å–œæ¬¢ (+45)
     if (itemTag == ItemType::FRIED_EGG) return 45;
 
-    // ÌÖÑá (-20)
+    // è®¨åŒ (-20)
     if (itemTag == ItemType::PARSNIP) return -20;
     if (itemTag == ItemType::POTATO) return -20;
     if (itemTag == ItemType::CARP) return -20;
 
-    // Ä¬ÈÏÖµ
+    // é»˜è®¤å€¼
     return NPCBase::checkGiftTaste(itemTag);
+
 }
