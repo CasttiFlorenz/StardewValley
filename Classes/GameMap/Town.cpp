@@ -127,15 +127,17 @@ MouseEvent Town::onRightClick(const Vec2& playerPos,
 
     return MouseEvent::NONE;
 }
-
 void Town::openShopForNPC(const std::string& npcName)
 {
-    std::vector<Item*> itemsToSell;
-    std::vector<ItemType > acceptedSellItems;
+    // 1. 防重入检查
+    auto runningScene = Director::getInstance()->getRunningScene();
+    if (runningScene->getChildByTag(SHOP_MENU_TAG)) return;
 
-    // ==========================================
-    // 1. 皮埃尔的杂货店 (Pierre's General Store)
-    // ==========================================
+    // 2. 准备数据
+    std::vector<Item*> itemsToSell;
+    std::vector<ItemType>  acceptedSellItems;
+
+    // --- 皮埃尔商店配置 ---
     if (npcName == "Pierre") {
         // --- 进货列表 (玩家买) ---
         // 种子类
@@ -169,21 +171,12 @@ void Town::openShopForNPC(const std::string& npcName)
         acceptedSellItems.push_back(ItemType::SALAD);
         acceptedSellItems.push_back(ItemType::CARP); // 假设还没有威利，皮埃尔代收鱼
     }
-    // ==========================================
-    // 2. 玛尼的牧场 (Marnie's Ranch)
-    // ==========================================
-    else if (npcName == "Marnie") {
-        // --- 进货列表 (玩家买) ---
-        // 玛尼专卖牧场用品
-        itemsToSell.push_back(new Item (ItemType::HAY, 1, 1.0f, 0.0f, "Items/hay.png", 50, "Hay"));
-
-        // --- 回收列表 (玩家卖) ---
-        // 逻辑上玛尼更愿意收购动物制品
-        acceptedSellItems.push_back(ItemType::EGG);
-        acceptedSellItems.push_back(ItemType::MILK);
-        acceptedSellItems.push_back(ItemType::HAY); // 也可以把多余的干草卖回去
+    // --- 玛尼牧场配置 ---
+    else if (npcName == SHOP_NAME_MARNIE) {
+        itemsToSell.push_back(new Item(ItemType::HAY, 1, 0, 0, "Items/hay.png", 50, "Hay"));
+        // 特殊：动物
         itemsToSell.push_back(new Item(
-           ItemType::ANIMAL_CHICKEN_TAG,
+            ItemType::ANIMAL_CHICKEN_TAG,
             1,
             1.0f, 0.0f,
             "Items/chicken.png",
@@ -191,99 +184,105 @@ void Town::openShopForNPC(const std::string& npcName)
             "Chicken"
         ));
 
-        // 3. 伪造物品 (牛)
         itemsToSell.push_back(new Item(
-            ItemType::ANIMAL_COW_TAG,    
+            ItemType::ANIMAL_COW_TAG,
             1,
             1.0f, 0.0f,
             "Items/cow.png",
             500,
             "Cow"
         ));
+
+        acceptedSellItems = { ItemType::EGG, ItemType::MILK, ItemType::HAY };
     }
+
+    // 3. 创建 UI
     if (!itemsToSell.empty()) {
-        auto runningScene = Director::getInstance()->getRunningScene();
-        if (runningScene) {
-            const int SHOP_MENU_TAG = 9999;
+        auto shopLayer = ShopMenuLayer::create(npcName, itemsToSell, acceptedSellItems);
+        if (shopLayer) {
+            shopLayer->setTag(SHOP_MENU_TAG);
+            shopLayer->setCameraMask((unsigned short)CameraFlag::DEFAULT);
+            runningScene->addChild(shopLayer, ZORDER_SHOP_MENU);
+        }
+        else {
+            // 如果创建失败，必须清理内存防止泄漏
+            for (auto item : itemsToSell) delete item;
+        }
+    }
+}
 
-            // 防止重复打开
-            auto existingShop = runningScene->getChildByTag(SHOP_MENU_TAG);
-            if (existingShop) {                                                             
-                return;
-            }
+void Town::interactWithNPC(const std::string& npcName, ItemType heldItem)
+{
+    // 1. 获取 NPC
+    NPCBase* npc = getNPCByName(npcName);
+    if (!npc) return;
 
-            auto shopMenu = ShopMenuLayer::create(npcName, itemsToSell, acceptedSellItems);
-            if (shopMenu) {
-                shopMenu->setTag(SHOP_MENU_TAG);
-                runningScene->addChild(shopMenu, 999);
-                shopMenu->setCameraMask((unsigned short)CameraFlag::DEFAULT);
-            }
+    std::vector<std::string> contentList;
+
+    // 2. 判断是否送礼
+    bool isGifting = (heldItem != ItemType::NONE && heldItem > ItemType::FISHINGROD);
+
+    if (isGifting) {
+        // --- 送礼分支 ---
+        std::string reply = npc->receiveGift(heldItem);
+        contentList.push_back(reply);
+
+        // 扣除物品
+        if (auto inv = InventoryScene::getInstance()) {
+            inv->removeItemCount(heldItem, 1);
+        }
+    }
+    else {
+        // --- 对话分支 ---
+        contentList = npc->getConversation(false);
+    }
+
+    // 3. 显示对话框
+    auto runningScene = Director::getInstance()->getRunningScene();
+    if (runningScene) {
+        auto dialog = DialogueLayer::create();
+        if (dialog) {
+            dialog->setTag(TAG_DIALOGUE_LAYER); // 防止重复打开
+            dialog->showText(npcName, contentList);
+            dialog->setCameraMask((unsigned short)CameraFlag::DEFAULT);
+            runningScene->addChild(dialog, ZORDER_UI_CONTAINER);
         }
     }
 }
 void Town::initNPCs()
 {
-    std::vector<std::string>nameGroup = { "Sam","Haley","Evelyn" };
-    for (const auto& name : nameGroup) {
+    // 防止重复初始化
+    if (!_npcMap.empty()) return;
 
-        // 让管理器创建 NPC
+    // 定义本场景包含的 NPC 列表
+    std::vector<std::string> spawnList = { NPC_NAME_SAM, NPC_NAME_HALEY, NPC_NAME_EVELYN };
+
+    for (const auto& name : spawnList) {
+        // 从对象层获取出生位置
+        Rect spawnRect = getObjectRect(name);
+
+        if (spawnRect.equals(Rect::ZERO)) {
+            CCLOG("Warning: Spawn point for NPC '%s' not found in TMX.", name.c_str());
+            continue;
+        }
+
+        // 通过管理器创建 NPC
         NPCBase* npc = NPCManager::getInstance()->createNPC(name);
-
         if (npc) {
-            npc->setPosition(getObjectRect(name).getMidX(), getObjectRect(name).getMidY());
-            // 加到地图上
-            _map->addChild(npc, 5);
+            npc->setPosition(Vec2(spawnRect.getMidX(), spawnRect.getMidY()));
+            // 添加到地图 
+            _map->addChild(npc, ZORDER_MAP_OBJECTS);
+
+            // 存入缓存
             _npcMap[name] = npc;
         }
     }
 }
-NPCBase* Town::getNPCByName(const std::string& name) {
-    if (_npcMap.find(name) != _npcMap.end()) return _npcMap[name];
+NPCBase* Town::getNPCByName(const std::string& name)
+{
+    auto it = _npcMap.find(name);
+    if (it != _npcMap.end()) {
+        return it->second;
+    }
     return nullptr;
 }
-
-void Town::interactWithNPC(const std::string& npcName, ItemType  heldItem)
-{
-    // 1. 检查是否已经有对话框在显示，如果有，直接跳出，不执行任何逻辑
-    auto runningScene = Director::getInstance()->getRunningScene();
-    if (!runningScene || runningScene->getChildByName("DialogueLayer")) {
-        return;
-    }
-
-    // 2. 获取 NPC 对象
-    NPCBase* npc = getNPCByName(npcName);
-    if (!npc) {
-        CCLOG("Error: 找不到 NPC %s", npcName.c_str());
-        return;
-    }
-
-    std::vector<std::string> dialogContentList;
-
-    // 3. 判断是送礼还是对话
-    bool isGifting = (heldItem != ItemType::NONE && heldItem > ItemType::FISHINGROD);
-
-    if (isGifting) {
-        // --- 送礼逻辑 ---
-        CCLOG("Gifting logic triggered for: %s", npcName.c_str()); // 调试用
-
-        std::string giftReply = npc->receiveGift(heldItem);
-        dialogContentList.push_back(giftReply);
-
-        // 在这里扣除物品是安全的，因为上面已经拦截了重复调用
-        InventoryScene::getInstance()->removeItemCount(heldItem, 1);
-    }
-    else {
-        // --- 对话逻辑 ---
-        dialogContentList = npc->getConversation(false);
-    }
-
-    // 4. 创建并显示 UI
-    auto dialog = DialogueLayer::create();
-    if (dialog) {
-        dialog->setName("DialogueLayer");
-        dialog->showText(npcName, dialogContentList);
-        runningScene->addChild(dialog, 9999);
-        dialog->setCameraMask((unsigned short)CameraFlag::DEFAULT);
-    }
-}
-
