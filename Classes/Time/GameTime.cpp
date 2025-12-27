@@ -34,12 +34,7 @@ GameTime::GameTime(int y, Season s, int d, int h, int m)
     , _hour(h)
     , _minute(m) {
 }
-/**
- * 设定时间信息
- */
-void GameTime::setName(const std::string& name) {
-    _name = name;
-}
+
 
 // ==================== 核心进位逻辑 ====================
 
@@ -187,3 +182,4 @@ bool GameTime::isSameHour(const GameTime& other) const {
     return isSameDay(other) && _hour == other._hour;
 
 }
+
