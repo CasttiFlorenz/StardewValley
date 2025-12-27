@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     GameTime.h
- * File Function: GameTimeÀàµÄÉùÃ÷
- * Author:        ÕÔî£åû
+ * File Function: GameTimeç±»çš„å£°æ˜
+ * Author:        èµµç¿å¦
  * Update Date:   2025/12/13
  * License:       MIT License
  ****************************************************************/
@@ -15,40 +15,40 @@
 
 class GameTime {
 public:
-    // Ä¬ÈÏ¹¹Ôìº¯Êı
+    // é»˜è®¤æ„é€ å‡½æ•°
     GameTime();
 
-    // ´ø²Î¹¹Ôìº¯Êı
+    // å¸¦å‚æ„é€ å‡½æ•°
     GameTime(int y, Season s, int d, int h, int m);
 
-    // ==================== ºËĞÄÂß¼­ ====================
-    // Ôö¼Ó·ÖÖÓÊı£¬ÄÚ²¿´¦Àí½øÎ»Âß¼­
+    // ==================== æ ¸å¿ƒé€»è¾‘ ====================
+    // å¢åŠ åˆ†é’Ÿæ•°ï¼Œå†…éƒ¨å¤„ç†è¿›ä½é€»è¾‘
     void addMinutes(int minutesToAdd);
 
-    // Ôö¼ÓÌìÊı£¬ÄÚ²¿´¦Àí¼¾½Ú¸üÌæ
+    // å¢åŠ å¤©æ•°ï¼Œå†…éƒ¨å¤„ç†å­£èŠ‚æ›´æ›¿
     void addDays(int daysToAdd);
 
-    // ==================== Êı¾İ»ñÈ¡Óë¸ñÊ½»¯ ====================
-    // »ñÈ¡¸ñÊ½»¯Ê±¼ä×Ö·û´® (ÀıÈç "6:00 am")
+    // ==================== æ•°æ®è·å–ä¸æ ¼å¼åŒ– ====================
+    // è·å–æ ¼å¼åŒ–æ—¶é—´å­—ç¬¦ä¸² (ä¾‹å¦‚ "6:00 am")
     std::string getTimeString() const;
 
-    // »ñÈ¡¸ñÊ½»¯ÈÕÆÚ×Ö·û´® (ÀıÈç "Mon. 1")
+    // è·å–æ ¼å¼åŒ–æ—¥æœŸå­—ç¬¦ä¸² (ä¾‹å¦‚ "Mon. 1")
     std::string getDateString() const;
 
-    // »ñÈ¡¼¾½ÚÃû³Æ×Ö·û´®
+    // è·å–å­£èŠ‚åç§°å­—ç¬¦ä¸²
     std::string getSeasonString() const;
 
-    // »ñÈ¡ÍêÕûµ÷ÊÔĞÅÏ¢×Ö·û´®
+    // è·å–å®Œæ•´è°ƒè¯•ä¿¡æ¯å­—ç¬¦ä¸²
     std::string getFullString() const;
 
-    // ==================== ¸¨Öú¼ÆËã ====================
-    // ¼ÆËãµ±Ç°ÊÇĞÇÆÚ¼¸
+    // ==================== è¾…åŠ©è®¡ç®— ====================
+    // è®¡ç®—å½“å‰æ˜¯æ˜ŸæœŸå‡ 
     DayOfWeek getDayOfWeek() const;
 
-    // ÅĞ¶ÏÊÇ·ñÎªÍ¬Ò»Ìì
+    // åˆ¤æ–­æ˜¯å¦ä¸ºåŒä¸€å¤©
     bool isSameDay(const GameTime& other) const;
 
-    // ÅĞ¶ÏÊÇ·ñÎªÍ¬Ò»Ğ¡Ê±
+    // åˆ¤æ–­æ˜¯å¦ä¸ºåŒä¸€å°æ—¶
     bool isSameHour(const GameTime& other) const;
 
     // ==================== Getters ====================
@@ -58,8 +58,15 @@ public:
     int getHour() const { return _hour; }
     int getMinute() const { return _minute; }
 
+
+    // ====================è®¾ç½®æ—¶é—´ä¿¡æ¯ ====================
+    void setSeason(Season season) { _season = season; }
+    void setHour(int hour) { _hour = hour; }
+    void setYear(int year) { _year=year; }
+    void setHour(int dayOfMonth) { _dayOfMonth = dayOfMonth; }
+    void setMinute(int minute) { _minute = minute; }
 private:
-    // ´¦ÀíÈÕÆÚ±ä¸üºÍ¼¾½ÚÂÖÌæµÄÄÚ²¿Âß¼­
+    // å¤„ç†æ—¥æœŸå˜æ›´å’Œå­£èŠ‚è½®æ›¿çš„å†…éƒ¨é€»è¾‘
     void handleDayRollover();
 
 private:
@@ -69,5 +76,6 @@ private:
     int _hour;
     int _minute;
 };
+
 
 #endif // GAME_TIME_H
