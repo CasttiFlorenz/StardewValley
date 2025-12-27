@@ -1,36 +1,44 @@
-#include "SaveManage.h"
+ï»¿#include "SaveManage.h"
 
 USING_NS_CC;
 
-// »ñÈ¡µ¥Àı
+// è·å–å•ä¾‹
 SaveManage* SaveManage::getInstance() 
 {
     static SaveManage instance;
     return &instance;
 }
 
-// ========== ¹¤¾ßº¯Êı ==========
+// ========== å·¥å…·å‡½æ•° ==========
 
 std::string SaveManage::getFilePath(const std::string& filename)
 {
-    return FileUtils::getInstance()->getWritablePath() + filename;
+    // æŒ‡å®šå­˜æ”¾ä½ç½®
+    std::string customPath = FileUtils::getInstance()->getDefaultResourceRootPath() + "../../Resources/SaveGame/";
+
+    // åˆ›å»ºç›®å½•ï¼ˆå¦‚æœä¸å­˜åœ¨ï¼‰
+    if (!FileUtils::getInstance()->isDirectoryExist(customPath)) {
+        FileUtils::getInstance()->createDirectory(customPath);
+    }
+
+    return customPath + filename;
 }
 
-// ========== ±³°ü ==========
+// ========== èƒŒåŒ… ==========
 
-// ĞòÁĞ»¯Itemµ½JSON¶ÔÏó
+// åºåˆ—åŒ–Itemåˆ°JSONå¯¹è±¡
 rapidjson::Value SaveManage::serializeItem(const Item& item, rapidjson::Document::AllocatorType& alloc)
 {
     rapidjson::Value itemObj(rapidjson::kObjectType);
 
-    // Ö±½ÓÌí¼ÓËùÓĞ³ÉÔ±
+    // ç›´æ¥æ·»åŠ æ‰€æœ‰æˆå‘˜
     itemObj.AddMember("price", item.getPrice(), alloc);
     itemObj.AddMember("tag", static_cast<int>(item.getTag()), alloc);
     itemObj.AddMember("count", item.getCount(), alloc);
     itemObj.AddMember("scale", item.getScale(), alloc);
     itemObj.AddMember("printPos", item.getPrintPos(), alloc);
 
-    // »ñÈ¡×Ö·û´®
+    // è·å–å­—ç¬¦ä¸²
     std::string name = item.getName();
     std::string path = item.getPath();
 
@@ -40,21 +48,21 @@ rapidjson::Value SaveManage::serializeItem(const Item& item, rapidjson::Document
     return itemObj;
 }
 
-// ±£´æ±³°üµ½ÎÄ¼ş
+// ä¿å­˜èƒŒåŒ…åˆ°æ–‡ä»¶
 bool SaveManage::saveInventory() 
 {
     auto placeItems = PlaceItems::getInstance();
     if (!placeItems) return false;
 
-    // »ñÈ¡µ±Ç°±³°üÊı¾İ
+    // è·å–å½“å‰èƒŒåŒ…æ•°æ®
     const auto& inventory = placeItems->getCurrentInventory();
 
-    // ´´½¨JSONÎÄµµ
+    // åˆ›å»ºJSONæ–‡æ¡£
     rapidjson::Document doc;
     doc.SetObject();
     auto& alloc = doc.GetAllocator();
 
-    // ´´½¨ÎïÆ·Êı×é
+    // åˆ›å»ºç‰©å“æ•°ç»„
     rapidjson::Value itemsArray(rapidjson::kArrayType);
     for (const auto& item : inventory) {
         itemsArray.PushBack(serializeItem(item, alloc), alloc);
@@ -62,48 +70,53 @@ bool SaveManage::saveInventory()
 
     doc.AddMember("inventory", itemsArray, alloc);
 
-    // ĞòÁĞ»¯×Ö·û´®
+    // åºåˆ—åŒ–å­—ç¬¦ä¸²
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
     doc.Accept(writer);
 
-    // ±£´æµ½ÎÄ¼ş
-    return FileUtils::getInstance()->writeStringToFile(buffer.GetString(), getFilePath("save.json"));
+    // ä¿å­˜åˆ°æ–‡ä»¶
+    return FileUtils::getInstance()->writeStringToFile(buffer.GetString(), getFilePath("inventory.json"));
 }
 
-// ´ÓÎÄ¼ş¼ÓÔØ±³°ü
+// ä»æ–‡ä»¶åŠ è½½èƒŒåŒ…
 bool SaveManage::loadInventory() 
 {
     auto placeItems = PlaceItems::getInstance();
     if (!placeItems) return false;
 
-    // »ñÈ¡±³°üÒıÓÃ
+    // è·å–èƒŒåŒ…å¼•ç”¨
     auto& inventory = const_cast<std::vector<Item>&>(placeItems->getCurrentInventory());
 
-    std::string jsonStr = FileUtils::getInstance()->getStringFromFile(getFilePath("save.json"));
+    std::string jsonStr = FileUtils::getInstance()->getStringFromFile(getFilePath("inventory.json"));
     rapidjson::Document doc;
 
-    // ½âÎöJSON²¢¼ì²ì¸ñÊ½
+    // è§£æJSONå¹¶æ£€å¯Ÿæ ¼å¼
     if (doc.Parse(jsonStr.c_str()).HasParseError() || !doc.HasMember("inventory")) {
         return false;
     }
 
     inventory.clear();
 
-    // ´ÓÊı×é´´½¨ÎïÆ·
+    // è§£æç‰©å“åˆ°ä¸´æ—¶åˆ—è¡¨
+    std::vector<Item> savedItems;
     const rapidjson::Value& itemsArray = doc["inventory"];
     for (rapidjson::SizeType i = 0; i < itemsArray.Size(); i++) {
         Item newItem;
-        // ¼ÙÉèÓĞ´ÓJSON´´½¨ItemµÄº¯Êı
         if (Item::createFromJson(itemsArray[i], newItem)) {
-            inventory.push_back(newItem);
+            savedItems.push_back(newItem);
         }
     }
 
-    return true;
+    // ä½¿ç”¨ InventoryScene åŠ è½½æ•°æ®
+    auto inventoryScene = InventoryScene::getInstance();
+    if (inventoryScene) {
+        return inventoryScene->loadItemsFromSaveData(savedItems);
+    }
+    return false;
 }
 
-// ========== ºÃ¸Ğ¶È ==========
+// ========== å¥½æ„Ÿåº¦ ==========
 
 bool SaveManage::saveFriendships()
 {
@@ -114,7 +127,7 @@ bool SaveManage::saveFriendships()
     doc.SetObject();
     auto& alloc = doc.GetAllocator();
 
-    // ´´½¨ºÃ¸Ğ¶È¶ÔÏó
+    // åˆ›å»ºå¥½æ„Ÿåº¦å¯¹è±¡
     rapidjson::Value friendshipsObj(rapidjson::kObjectType);
     for (NPCBase* npc : npcManager->getAllNPCs()) {
         if (npc) {
@@ -125,7 +138,7 @@ bool SaveManage::saveFriendships()
 
     doc.AddMember("friendships", friendshipsObj, alloc);
 
-    // ĞòÁĞ»¯²¢±£´æ
+    // åºåˆ—åŒ–å¹¶ä¿å­˜
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
     doc.Accept(writer);
@@ -133,13 +146,13 @@ bool SaveManage::saveFriendships()
     return FileUtils::getInstance()->writeStringToFile(buffer.GetString(), getFilePath("friendships.json"));
 }
 
-// ¼ÓÔØºÃ¸Ğ¶ÈÊı¾İ
+// åŠ è½½å¥½æ„Ÿåº¦æ•°æ®
 bool SaveManage::loadFriendships()
 {
     auto npcManager = NPCManager::getInstance();
     if (!npcManager) return false;
 
-    // ¶ÁÈ¡ÎÄ¼ş
+    // è¯»å–æ–‡ä»¶
     std::string jsonStr = FileUtils::getInstance()->getStringFromFile(getFilePath("friendships.json"));
     if (jsonStr.empty()) return false;
 
@@ -147,11 +160,11 @@ bool SaveManage::loadFriendships()
     if (doc.Parse(jsonStr.c_str()).HasParseError() || !doc.HasMember("friendships")) {
         return false;
     }
-    // »ñÈ¡NPCÁĞ±í
+    // è·å–NPCåˆ—è¡¨
     const auto& npcList = npcManager->getAllNPCs();
     const rapidjson::Value& friendshipsObj = doc["friendships"];
 
-    // ±éÀúJSON¶ÔÏó£¬ÉèÖÃÃ¿¸öNPCµÄºÃ¸Ğ¶È
+    // éå†JSONå¯¹è±¡ï¼Œè®¾ç½®æ¯ä¸ªNPCçš„å¥½æ„Ÿåº¦
     for (auto it = friendshipsObj.MemberBegin(); it != friendshipsObj.MemberEnd(); ++it) {
         std::string npcName = it->name.GetString();
         for (NPCBase* npc : npcList) {
@@ -164,10 +177,11 @@ bool SaveManage::loadFriendships()
 
     return true;
 }
-// ========== Ê±¼ä ==========
+// ========== æ—¶é—´ ==========
 
-// ĞòÁĞ»¯ÓÎÏ·Ê±¼ä
-/*rapidjson::Value SaveManage::serializeGameTime(const GameTime& time, rapidjson::Document::AllocatorType& alloc)
+/*
+// åºåˆ—åŒ–æ¸¸æˆæ—¶é—´
+rapidjson::Value SaveManage::serializeGameTime(const GameTime& time, rapidjson::Document::AllocatorType& alloc)
 {
     rapidjson::Value timeObj(rapidjson::kObjectType);
     timeObj.AddMember("year", time.getYear(), alloc);
@@ -176,10 +190,10 @@ bool SaveManage::loadFriendships()
     timeObj.AddMember("hour", time.getHour(), alloc);
     timeObj.AddMember("minute", time.getMinute(), alloc);
     return timeObj;
-}*/
+}
 
-// ÓÎÏ·Ê±¼ä·´ĞòÁĞ»¯
-/*bool SaveManage::deserializeGameTime(const rapidjson::Value& timeObj, GameTime& time)
+// æ¸¸æˆæ—¶é—´ååºåˆ—åŒ–
+bool SaveManage::deserializeGameTime(const rapidjson::Value& timeObj, GameTime& time)
 {
     time.year = timeObj["year"].GetInt();
     time.season = static_cast<Season>(timeObj["season"].GetInt());
@@ -187,22 +201,22 @@ bool SaveManage::loadFriendships()
     time.hour = timeObj["hour"].GetInt();
     time.minute = timeObj["minute"].GetInt();
     return true;
-}*/
+}
 
-// ±£´æÓÎÏ·Ê±¼ä
-/*bool SaveManage::saveGameTime()
+// ä¿å­˜æ¸¸æˆæ—¶é—´
+bool SaveManage::saveGameTime()
 {
     auto timeManager = TimeManager::getInstance();
     if (!timeManager) return false;
 
-    // »ñÈ¡µ±Ç°Ê±¼ä
+    // è·å–å½“å‰æ—¶é—´
     GameTime gameTime = timeManager->getCurrentTime();
 
     rapidjson::Document doc;
     doc.SetObject();
     auto& alloc = doc.GetAllocator();
 
-    // Ìí¼ÓÊ±¼äÊı¾İ
+    // æ·»åŠ æ—¶é—´æ•°æ®
     doc.AddMember("gameTime", serializeGameTime(gameTime, alloc), alloc);
 
     rapidjson::StringBuffer buffer;
@@ -212,13 +226,13 @@ bool SaveManage::loadFriendships()
     return FileUtils::getInstance()->writeStringToFile(buffer.GetString(), getFilePath("gametime.json"));
 }
 
-// ¼ÓÔØÓÎÏ·Ê±¼ä
+// åŠ è½½æ¸¸æˆæ—¶é—´
 bool SaveManage::loadGameTime() 
 {
     auto timeManager = TimeManager::getInstance();
     if (!timeManager) return false;
 
-    // ¶ÁÈ¡Ê±¼äÎÄ¼ş
+    // è¯»å–æ—¶é—´æ–‡ä»¶
     std::string jsonStr = FileUtils::getInstance()->getStringFromFile(getFilePath("gametime.json"));
     rapidjson::Document doc;
 
@@ -226,7 +240,7 @@ bool SaveManage::loadGameTime()
         return false;
     }
 
-    // ½âÎöÊ±¼äÊı¾İ
+    // è§£ææ—¶é—´æ•°æ®
     GameTime gameTime;
     if (deserializeGameTime(doc["gameTime"], gameTime)) {
         timeManager->setTime(gameTime);
@@ -236,9 +250,9 @@ bool SaveManage::loadGameTime()
     return false;
 }*/
 
-// ========== ±£´æ¼¼ÄÜ ==========
+// ========== ä¿å­˜æŠ€èƒ½ ==========
 
-// ĞòÁĞ»¯¼¼ÄÜÊı¾İ
+// åºåˆ—åŒ–æŠ€èƒ½æ•°æ®
 rapidjson::Value SaveManage::serializeSkill(const SkillData& skill, rapidjson::Document::AllocatorType& alloc)
 {
     rapidjson::Value skillObj(rapidjson::kObjectType);
@@ -249,13 +263,13 @@ rapidjson::Value SaveManage::serializeSkill(const SkillData& skill, rapidjson::D
     return skillObj;
 }
 
-// ±£´æ¼¼ÄÜÊı¾İ
+// ä¿å­˜æŠ€èƒ½æ•°æ®
 bool SaveManage::saveSkills()
 {
     auto skillLevel = SkillLevel::getInstance();
     if (!skillLevel) return false;
 
-    // »ñÈ¡¼¼ÄÜÊı×é
+    // è·å–æŠ€èƒ½æ•°ç»„
     const SkillData* skills = skillLevel->getSkillData();
     const int count = static_cast<int>(SkillType::SKILL_COUNT);
     if (!skills || count <= 0) return false;
@@ -279,7 +293,7 @@ bool SaveManage::saveSkills()
     return FileUtils::getInstance()->writeStringToFile(buffer.GetString(), getFilePath("skills.json"));
 }
 
-// ¼ÓÔØ¼¼ÄÜÊı¾İ
+// åŠ è½½æŠ€èƒ½æ•°æ®
 bool SaveManage::loadSkills()
 {
     auto skillLevel = SkillLevel::getInstance();
@@ -296,7 +310,7 @@ bool SaveManage::loadSkills()
         return false;
     }
 
-    // ´ÓJSONÊı×é¼ÓÔØ¼¼ÄÜÊı¾İ
+    // ä»JSONæ•°ç»„åŠ è½½æŠ€èƒ½æ•°æ®
     const rapidjson::Value& skillsArray = doc["skills"];
     int loadCount = std::min(count, static_cast<int>(skillsArray.Size()));
 
@@ -311,20 +325,24 @@ bool SaveManage::loadSkills()
     return true;
 }
 
-// ========== ±£´æËùÓĞÊı¾İ ==========
+// ========== ä¿å­˜æ‰€æœ‰æ•°æ® ==========
 
-// ±£´æËùÓĞÊı¾İ
+// ä¿å­˜æ‰€æœ‰æ•°æ®
 bool SaveManage::saveAllData()
 {
-    return saveInventory() &&
-        saveFriendships() &&
-        saveSkills();
+    bool result1 = saveInventory();
+    bool result2 = saveFriendships();
+    bool result3 = saveSkills();
+
+    return result1 && result2 && result3;  // åªæœ‰å…¨éƒ¨æˆåŠŸæ‰è¿”å›true
 }
 
-// ¼ÓÔØËùÓĞÊı¾İ
+// åŠ è½½æ‰€æœ‰æ•°æ®  
 bool SaveManage::loadAllData()
 {
-    return loadInventory() &&
-        loadFriendships() &&
-        loadSkills();
+    bool result1 = loadInventory();
+    bool result2 = loadFriendships();
+    bool result3 = loadSkills();
+
+    return result1 && result2 && result3;  // åªæœ‰å…¨éƒ¨æˆåŠŸæ‰è¿”å›true
 }
