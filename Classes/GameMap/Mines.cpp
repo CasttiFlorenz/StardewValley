@@ -129,7 +129,7 @@ MouseEvent Mines::onLeftClick(const Vec2& playerPos,
                         inv->ToolUseAnimation();
                         inv->addItemCount(ItemType::STONE, 1);
                     }
-                    return MouseEvent::NONE;
+                    return MouseEvent::USE_TOOL;
                 }
                 // ÍÚÍ­¿ó
                 else if (type == EnvironmentItemType::COPPER) {
@@ -138,14 +138,14 @@ MouseEvent Mines::onLeftClick(const Vec2& playerPos,
                         inv->ToolUseAnimation();
                         inv->addItemCount(ItemType::COPPER_ORE, 1);
                     }
-                    return MouseEvent::NONE;
+                    return MouseEvent::USE_TOOL;
                 }
 
             }
         }
     }
 
-    return MouseEvent::NONE;
+    return MouseEvent::USE_TOOL;
 }
 
 // ¿ó¶´Åö×²¼ì²â£¨º¬¿óÊ¯ÓëÊÂ¼ş²ã£©

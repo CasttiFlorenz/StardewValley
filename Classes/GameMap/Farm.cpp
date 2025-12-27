@@ -1,7 +1,8 @@
 #include "Farm.h"
 #include "../Inventory/InventoryScene.h"
+#include "../Scene/GameScene.h"
 
-// Farm åœºæ™¯å•ä¾‹æŒ‡é’ˆ
+// Farm ³¡¾°µ¥ÀıÖ¸Õë
 GameMap* Farm::_instance = nullptr;
 
 Farm* Farm::create() {
@@ -14,29 +15,29 @@ Farm* Farm::create() {
     return nullptr;
 }
 
-// è·å– Farm åœºæ™¯çš„å•ä¾‹å®ä¾‹
+// »ñÈ¡ Farm ³¡¾°µÄµ¥ÀıÊµÀı
 GameMap* Farm::getInstance() {
     if (!_instance) {
         _instance = Farm::create();
-        CC_SAFE_RETAIN(_instance); // å¢åŠ å¼•ç”¨è®¡æ•°ï¼Œé˜²æ­¢è¢«è‡ªåŠ¨é‡Šæ”¾
+        CC_SAFE_RETAIN(_instance); // Ôö¼ÓÒıÓÃ¼ÆÊı£¬·ÀÖ¹±»×Ô¶¯ÊÍ·Å
     }
     return _instance;
 }
 
-// é”€æ¯ Farm åœºæ™¯å•ä¾‹
+// Ïú»Ù Farm ³¡¾°µ¥Àı
 void Farm::destroyInstance() {
     CC_SAFE_RELEASE_NULL(_instance);
 }
 
 bool Farm::init()
 {
-    // åˆå§‹åŒ– Scene åŸºç±»
+    // ³õÊ¼»¯ Scene »ùÀà
     if (!Scene::init()) return false;
 
-    // è®¾ç½®å½“å‰åœ°å›¾ç±»å‹ä¸º FARM
+    // ÉèÖÃµ±Ç°µØÍ¼ÀàĞÍÎª FARM
     _mapName = MapType::FARM;
 
-    // åŠ è½½å†œåœº Tiled åœ°å›¾
+    // ¼ÓÔØÅ©³¡ Tiled µØÍ¼
     _map = TMXTiledMap::create("TiledMap/Farm/Farm.tmx");
     if (_map == nullptr)
     {
@@ -44,13 +45,13 @@ bool Farm::init()
         return false;
     }
 
-    // event å±‚ä»…ç”¨äºé€»è¾‘åˆ¤æ–­ï¼ˆç¢°æ’ã€è§¦å‘å™¨ç­‰ï¼‰ï¼Œä¸éœ€è¦æ˜¾ç¤º
+    // event ²ã½öÓÃÓÚÂß¼­ÅĞ¶Ï£¨Åö×²¡¢´¥·¢Æ÷µÈ£©£¬²»ĞèÒªÏÔÊ¾
     auto eventLayer = _map->getLayer("event");
     if (eventLayer) {
         eventLayer->setVisible(false);
     }
 
-    // åˆå§‹åŒ–å†œåœºç‰©å“ç®¡ç†å™¨ï¼ˆæœ¨å¤´ã€æ‚è‰ã€é‡‡é›†ç‰©ç­‰ï¼‰
+    // ³õÊ¼»¯Å©³¡ÎïÆ·¹ÜÀíÆ÷£¨Ä¾Í·¡¢ÔÓ²İ¡¢²É¼¯ÎïµÈ£©
     _farmItemManager = FarmItemManager::getInstance(this);
     if (_farmItemManager == nullptr)
     {
@@ -58,7 +59,7 @@ bool Farm::init()
         return false;
     }
 
-    // åˆå§‹åŒ–è€•ç§ç®¡ç†å™¨ï¼ˆç¿»åœ°ã€æµ‡æ°´ã€ç§æ¤ã€æ”¶è·ï¼‰
+    // ³õÊ¼»¯¸ûÖÖ¹ÜÀíÆ÷£¨·­µØ¡¢½½Ë®¡¢ÖÖÖ²¡¢ÊÕ»ñ£©
     _cultivationManager = CultivationManager::getInstance(_farmItemManager,this);
     if (_cultivationManager == nullptr)
     {
@@ -66,16 +67,16 @@ bool Farm::init()
         return false;
     }
 
-    // æ·»åŠ åœ°å›¾åˆ°åœºæ™¯
+    // Ìí¼ÓµØÍ¼µ½³¡¾°
     this->addChild(_map, 0);
 
     return true;
 }
 
-// åˆ¤æ–­ç©å®¶æ˜¯å¦éœ€è¦åˆ‡æ¢åœ°å›¾
+// ÅĞ¶ÏÍæ¼ÒÊÇ·ñĞèÒªÇĞ»»µØÍ¼
 MapType Farm::leaveMap(const Vec2& curPos, bool isStart, const Direction& direction)
 {
-    // å‘ä¸Šç§»åŠ¨æ—¶çš„åœ°å›¾åˆ‡æ¢æ£€æµ‹
+    // ÏòÉÏÒÆ¶¯Ê±µÄµØÍ¼ÇĞ»»¼ì²â
     if (direction == Direction::UP) {
         if (getObjectRect(GO_TO_HOUSE).containsPoint(curPos))
             return MapType::FARM_HOUSE;
@@ -87,7 +88,7 @@ MapType Farm::leaveMap(const Vec2& curPos, bool isStart, const Direction& direct
             return MapType::BARN;
     }
 
-    // å‘å³ç§»åŠ¨è¿›å…¥åŸé•‡
+    // ÏòÓÒÒÆ¶¯½øÈë³ÇÕò
     if (direction == Direction::RIGHT) {
         if (getObjectRect(GO_TO_TOWN).containsPoint(curPos))
             return MapType::TOWN;
@@ -96,79 +97,75 @@ MapType Farm::leaveMap(const Vec2& curPos, bool isStart, const Direction& direct
     return MapType::NONE;
 }
 
-// è¿›å…¥ Farm åœ°å›¾æ—¶çš„å¤„ç†
+// ½øÈë Farm µØÍ¼Ê±µÄ´¦Àí
 void Farm::IntoMap(MapType lastMap)
 {
     const Vec2 visibleSize = Director::getInstance()->getVisibleSize();
 
-    // è®¾ç½®åœ°å›¾ç¼©æ”¾
+    // ÉèÖÃµØÍ¼Ëõ·Å
     _map->setScale(TILED_MAP_SCALE);
 
-    // Farm åœ°å›¾ä½¿ç”¨å·¦ä¸‹è§’åŸç‚¹å¯¹é½
+    // Farm µØÍ¼Ê¹ÓÃ×óÏÂ½ÇÔ­µã¶ÔÆë
     _map->setPosition(Vec2::ZERO);
 }
 
-// æ¯å¸§æ›´æ–°ï¼ˆç›®å‰æœªä½¿ç”¨ï¼‰
-void Farm::update(float dt)
-{
-}
 
-// æ ¹æ®æ¥æºåœ°å›¾è®¾ç½®ç©å®¶å‡ºç”Ÿç‚¹
+// ¸ù¾İÀ´Ô´µØÍ¼ÉèÖÃÍæ¼Ò³öÉúµã
 Vec2 Farm::getPlayerStartPosition(MapType lastMap)
 {
-    // ä»æˆ¿å±‹å‡ºæ¥
+    // ´Ó·¿Îİ³öÀ´
     if (lastMap == MapType::FARM_HOUSE) {
         const Rect rect = getObjectRect(GO_TO_HOUSE);
         if (!rect.equals(Rect::ZERO))
             return rect.origin + rect.size / 2;
     }
 
-    // ä»çŸ¿æ´å‡ºæ¥
+    // ´Ó¿ó¶´³öÀ´
     if (lastMap == MapType::MINES) {
         const Rect rect = getObjectRect(GO_TO_MINES);
         if (!rect.equals(Rect::ZERO))
             return rect.origin + rect.size / 2;
     }
 
-    // ä»è°·ä»“å‡ºæ¥
+    // ´Ó¹È²Ö³öÀ´
     if (lastMap == MapType::BARN) {
         const Rect rect = getObjectRect(GO_TO_BARN);
         if (!rect.equals(Rect::ZERO))
             return rect.origin + rect.size / 2;
     }
 
-    // ä»åŸé•‡å›æ¥
+    // ´Ó³ÇÕò»ØÀ´
     if (lastMap == MapType::TOWN) {
         const Rect rect = getObjectRect(GO_TO_TOWN);
         if (!rect.equals(Rect::ZERO))
             return rect.origin + rect.size / 2;
     }
 
-    // å…œåº•å‡ºç”Ÿç‚¹
+    // ¶µµ×³öÉúµã
     return Vec2(100, 100);
 }
 
-// åˆ¤æ–­ä¸–ç•Œåæ ‡æ˜¯å¦å¯ç¢°æ’
+// ÅĞ¶ÏÊÀ½ç×ø±êÊÇ·ñ¿ÉÅö×²
 bool Farm::isCollidable(Vec2 worldPos)
 {
     if (!_map) return false;
 
-    // è½¬æ¢ä¸ºç“¦ç‰‡åæ ‡
+    // ×ª»»ÎªÍßÆ¬×ø±ê
     const Vec2 tilePos = calMapPos(worldPos);
     const int x = static_cast<int>(tilePos.x);
     const int y = static_cast<int>(tilePos.y);
 
     const Size mapSize = _map->getMapSize();
 
-    // è¶…å‡ºåœ°å›¾èŒƒå›´è§†ä¸ºä¸å¯é€šè¡Œ
+    // ³¬³öµØÍ¼·¶Î§ÊÓÎª²»¿ÉÍ¨ĞĞ
     if (x < 0 || x >= mapSize.width || y < 0 || y >= mapSize.height)
         return true;
 
-    // å†œåœºç¯å¢ƒç‰©å“ï¼ˆæœ¨å¤´ã€æ‚è‰ç­‰ï¼‰ç¢°æ’æ£€æµ‹
+    // Å©³¡»·¾³ÎïÆ·£¨Ä¾Í·¡¢ÔÓ²İµÈ£©Åö×²¼ì²â
     if (_farmItemManager && _farmItemManager->isCollidable(tilePos))
         return true;
 
-    // event å±‚ä¸­çš„ Collidable å±æ€§æ£€æµ‹
+    // event ²ãÖĞµÄ Collidable ÊôĞÔ¼ì²â
     auto layer = _map->getLayer("event");
     if (!layer) return false;
 
@@ -185,37 +182,37 @@ bool Farm::isCollidable(Vec2 worldPos)
     return false;
 }
 
-// é¼ æ ‡å·¦é”®ï¼šå·¥å…·ä½¿ç”¨ / ç§æ¤ / ç ä¼ / é’“é±¼
+// Êó±ê×ó¼ü£º¹¤¾ßÊ¹ÓÃ / ÖÖÖ² / ¿³·¥ / µöÓã
 MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction, ItemType objects)
 {
     Vec2 basePos = this->calMapPos(playerPos);
 
-    // é’“é±¼ç«¿ä¼˜å…ˆæ£€æµ‹é’“é±¼åŒºåŸŸ
-    if (objects == ItemType::FISHINGROD) {
-        auto layer = _map->getLayer("event");
-        if (layer) {
-            const int tileGID = layer->getTileGIDAt(basePos);
-            if (tileGID) {
-                auto properties = _map->getPropertiesForGID(tileGID).asValueMap();
-                if (properties.find("Fishing") != properties.end() &&
-                    properties.at("Fishing").asBool()) {
-                    return MouseEvent::FISHING;
-                }
-            }
-        }
-    }
-
-    // è®¡ç®—ç©å®¶æ­£å‰æ–¹äº¤äº’ä½ç½®
+    // ¼ÆËãÍæ¼ÒÕıÇ°·½½»»¥Î»ÖÃ
     ApplyDirectionOffset(basePos, direction);
 
-    // å…è®¸ä¸Šä¸‹ä¸‰æ ¼æ£€æµ‹ï¼Œè§£å†³é«˜åº¦/é®æŒ¡é—®é¢˜
+    // ÔÊĞíÉÏÏÂÈı¸ñ¼ì²â£¬½â¾ö¸ß¶È/ÕÚµ²ÎÊÌâ
     const int yOffsets[] = { 1, 0, -1 };
 
-    for (int offset : yOffsets) {
+    for (const int offset : yOffsets) {
         Vec2 checkPos = basePos;
         checkPos.y += offset;
 
-        // ç æ ‘ / å‰²è‰
+        // µöÓã¸ÍÓÅÏÈ¼ì²âµöÓãÇøÓò
+        if (objects == ItemType::FISHINGROD) {
+            auto layer = _map->getLayer("event");
+            if (layer) {
+                const int tileGID = layer->getTileGIDAt(checkPos);
+                if (tileGID) {
+                    auto properties = _map->getPropertiesForGID(tileGID).asValueMap();
+                    if (properties.find("Fishing") != properties.end() &&
+                        properties.at("Fishing").asBool()) {
+                        return MouseEvent::FISHING;
+                    }
+                }
+            }
+        }
+
+        // ¿³Ê÷ / ¸î²İ
         if (_farmItemManager) {
             EnvironmentItem* item = _farmItemManager->getItem(checkPos);
             if (item) {
@@ -224,61 +221,56 @@ MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction, I
                 if (type == EnvironmentItemType::WOOD && objects == ItemType::AXE) {
                     _farmItemManager->removeItem(checkPos);
                     if (auto inv = InventoryScene::getInstance()) {
-                        inv->ToolUseAnimation();
                         inv->addItemCount(ItemType::WOOD, 1);
                     }
-                    return MouseEvent::NONE;
+                    return MouseEvent::USE_TOOL;
                 }
 
                 if (type == EnvironmentItemType::GRASS && objects == ItemType::SCYTHE) {
                     _farmItemManager->removeItem(checkPos);
                     if (auto inv = InventoryScene::getInstance()) {
-                        inv->ToolUseAnimation();
                         inv->addItemCount(ItemType::FIBER, 1);
                     }
-                    return MouseEvent::NONE;
+                    return MouseEvent::USE_TOOL;
                 }
             }
         }
 
-        // è€•ç§ç³»ç»Ÿäº¤äº’
+        // ¸ûÖÖÏµÍ³½»»¥
         if (_cultivationManager) {
             switch (objects) {
             case ItemType::HOE:
                 _cultivationManager->attemptCultivate(checkPos);
-                return MouseEvent::NONE;
+                return MouseEvent::USE_TOOL;
             
             case ItemType::WATERING_CAN:
                 _cultivationManager->waterSoil(checkPos);
-                return MouseEvent::NONE;
+                return MouseEvent::USE_TOOL;
             
             case ItemType::PARSNIP_SEED:
                 if (_cultivationManager->plantCrop(checkPos, ItemType::PARSNIP))
                     if (auto inv = InventoryScene::getInstance()) {
                         inv->removeItemCount(ItemType::PARSNIP_SEED, 1);
                     }
-                return MouseEvent::NONE;
+                return MouseEvent::USE_TOOL;
 
             case ItemType::POTATO_SEED:
                 if (_cultivationManager->plantCrop(checkPos, ItemType::POTATO))
                     if (auto inv = InventoryScene::getInstance()) {
                         inv->removeItemCount(ItemType::POTATO_SEED, 1);
                     }
-                return MouseEvent::NONE;
+                return MouseEvent::USE_TOOL;
 
             case ItemType::CAULIFLOWER_SEED:
                 if (_cultivationManager->plantCrop(checkPos, ItemType::CAULIFLOWER))
                     if (auto inv = InventoryScene::getInstance()) {
                         inv->removeItemCount(ItemType::CAULIFLOWER_SEED, 1);
                     }
-                return MouseEvent::NONE;
+                return MouseEvent::USE_TOOL;
 
             default:
                 break;
             }
-
-            if (auto inv = InventoryScene::getInstance())
-                inv->ToolUseAnimation();
 
         }
     }
@@ -286,14 +278,14 @@ MouseEvent Farm::onLeftClick(const Vec2& playerPos, const Direction direction, I
     return MouseEvent::USE_TOOL;
 }
 
-// é¼ æ ‡å³é”®ï¼šé‡‡é›† / å•†åº—
+// Êó±êÓÒ¼ü£º²É¼¯ / ÉÌµê
 MouseEvent Farm::onRightClick(const Vec2& playerPos, const Direction direction)
 {
-    // æ£€æµ‹æ˜¯å¦ç‚¹å‡»å‡ºå”®åŒºåŸŸ
+    // ¼ì²âÊÇ·ñµã»÷³öÊÛÇøÓò
     const Rect saleRect = getObjectRect("sale");
     if (saleRect.containsPoint(playerPos)) {
         openShopForNPC();
-        return MouseEvent::NONE;
+        return MouseEvent::OPEN_SHOP;
     }
 
     Vec2 basePos = calMapPos(playerPos);
@@ -305,7 +297,7 @@ MouseEvent Farm::onRightClick(const Vec2& playerPos, const Direction direction)
         Vec2 checkPos = basePos;
         checkPos.y += offset;
 
-        // é‡‡é›†åœ°é¢ç‰©å“
+        // ²É¼¯µØÃæÎïÆ·
         if (_farmItemManager) {
             const EnvironmentItem* item = _farmItemManager->getItem(checkPos);
             if (item) {
@@ -320,11 +312,14 @@ MouseEvent Farm::onRightClick(const Vec2& playerPos, const Direction direction)
                             1
                         );
                     }
+
+                    return MouseEvent::NONE;
                 }
+
             }
         }
 
-        // æ£€æŸ¥æ˜¯å¦åœ¨é‡‡é›†å†œä½œç‰© 
+        // ¼ì²éÊÇ·ñÔÚ²É¼¯Å©×÷Îï 
         const ItemType crop = _cultivationManager ? _cultivationManager->harvestCrop(checkPos) : ItemType::NONE;
         switch (crop) {
         case ItemType::PARSNIP:
@@ -352,36 +347,36 @@ MouseEvent Farm::onRightClick(const Vec2& playerPos, const Direction direction)
 
 void Farm::openShopForNPC()
 {
-    // å†œåœºå‡ºè´§ç®±ï¼šä¸å–ç»™ç©å®¶ä¸œè¥¿ï¼Œåªå›æ”¶
+    // Å©³¡³ö»õÏä£º²»Âô¸øÍæ¼Ò¶«Î÷£¬Ö»»ØÊÕ
     std::vector<Item*> itemsToSell;
 
     std::vector<ItemType > acceptedSellItems;
                                                                 
-    // === å†œä½œç‰© ===
+    // === Å©×÷Îï ===
     acceptedSellItems.push_back(ItemType::PARSNIP);
     acceptedSellItems.push_back(ItemType::CAULIFLOWER);
     acceptedSellItems.push_back(ItemType::POTATO);
 
-    // === ç§å­  ===
+    // === ÖÖ×Ó  ===
     acceptedSellItems.push_back(ItemType::PARSNIP_SEED);
     acceptedSellItems.push_back(ItemType::CAULIFLOWER_SEED);
     acceptedSellItems.push_back(ItemType::POTATO_SEED);
 
-    // === é‡‡é›†å“ ===
+    // === ²É¼¯Æ· ===
     acceptedSellItems.push_back(ItemType::DAFFODILS);
     acceptedSellItems.push_back(ItemType::LEEK);
 
-    // === åŠ¨ç‰©ä¸ç‰§è‰ ===
+    // === ¶¯ÎïÓëÄÁ²İ ===
     acceptedSellItems.push_back(ItemType::HAY);
     acceptedSellItems.push_back(ItemType::EGG);
     acceptedSellItems.push_back(ItemType::MILK);
 
-    // === çƒ¹é¥ªä¸é±¼ç±» ===
+    // === Åëâ¿ÓëÓãÀà ===
     acceptedSellItems.push_back(ItemType::FRIED_EGG);
     acceptedSellItems.push_back(ItemType::SALAD);
     acceptedSellItems.push_back(ItemType::CARP);
 
-    // æ‰“å¼€å•†åº—ç•Œé¢
+    // ´ò¿ªÉÌµê½çÃæ
     auto runningScene = Director::getInstance()->getRunningScene();
     if (runningScene) {
         const int SHOP_MENU_TAG = 9999;

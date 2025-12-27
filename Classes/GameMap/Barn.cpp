@@ -129,6 +129,7 @@ MouseEvent Barn::onLeftClick(const Vec2& playerPos, const Direction direction, I
                 // 成功放置后，从背包中移除一个干草
                 auto inv = InventoryScene::getInstance();
                 if (inv) inv->removeItemCount(ItemType::HAY, 1);
+                return MouseEvent::NONE;
             }
             break;
         default:
@@ -136,8 +137,7 @@ MouseEvent Barn::onLeftClick(const Vec2& playerPos, const Direction direction, I
         }
     }
 
-    // 表示已使用工具
-    return MouseEvent::USE_TOOL;
+    return MouseEvent::NONE;
 }
 
 // 鼠标右键点击事件（通常为采集）

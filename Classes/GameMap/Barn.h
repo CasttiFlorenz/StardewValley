@@ -20,9 +20,6 @@ public:
     // 初始化场景（加载 TMX、隐藏 event 层、初始化管理器）
     virtual bool init() override;
     
-    // 每帧更新（当前无内部逻辑，保留扩展点）
-    virtual void update(float dt) override {}
-    
     // 基于玩家位置与朝向判断是否切换到其他地图
     virtual MapType leaveMap(const Vec2& curPos, bool isStart, const Direction& direction) override;
     

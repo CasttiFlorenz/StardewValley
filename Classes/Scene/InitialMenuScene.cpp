@@ -10,6 +10,7 @@
 #include "InitialMenuScene.h"
 #include "../Button/HoverButton.h"
 #include "SimpleAudioEngine.h"
+#include "../Save/SaveManage.h"
 
 USING_NS_CC;
 
@@ -78,7 +79,7 @@ bool InitialMenuScene::init()
         origin.y + visibleSize.height / 6 + exitButton->getContentSize().height / 2));
     createButton->setPosition(Vec2(origin.x + visibleSize.width / 4 + createButton->getContentSize().width / 2,
         origin.y + visibleSize.height / 6 + createButton->getContentSize().height / 2));
-    loadButton->setPosition(Vec2(origin.x + visibleSize.width / 2, 
+    loadButton->setPosition(Vec2(origin.x + visibleSize.width / 2,
         origin.y + visibleSize.height / 6 + loadButton->getContentSize().height / 2));
 
     // 监听到按下按钮事件时退出
@@ -87,7 +88,7 @@ bool InitialMenuScene::init()
 
             MusicManager::getInstance()->playButtonClick();
 
-            Director::getInstance()->end();
+        Director::getInstance()->end();
         });
     this->addChild(exitButton, 1);
 
@@ -106,11 +107,14 @@ bool InitialMenuScene::init()
         if (type == ui::Widget::TouchEventType::BEGAN);
 
         MusicManager::getInstance()->playButtonClick();
-
-        // 事件待添加
+        if (auto game = GameScene::create()) {
+            if (auto save = SaveManage::getInstance()) {
+                save->loadAllData();
+                Director::getInstance()->replaceScene(game);
+            }
+        }
         });
     this->addChild(loadButton, 1);
 
     return true;
 }
-

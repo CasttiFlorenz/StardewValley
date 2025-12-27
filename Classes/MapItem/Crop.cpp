@@ -3,17 +3,17 @@
 Crop* Crop::create(ItemType type) {
     Crop* p = nullptr;
     switch (type) {
-        case ItemType::PARSNIP:
-            p = Parsnip::create();
-            break;
-        case ItemType::POTATO:
-            p = Potato::create();
-            break;
-        case ItemType::CAULIFLOWER:
-            p = Cauliflower::create();
-            break;
-        default:
-            return nullptr;
+    case ItemType::PARSNIP:
+        p = Parsnip::create();
+        break;
+    case ItemType::POTATO:
+        p = Potato::create();
+        break;
+    case ItemType::CAULIFLOWER:
+        p = Cauliflower::create();
+        break;
+    default:
+        return nullptr;
     }
     return p;
 }
@@ -40,12 +40,12 @@ void Crop::updateGrowth(bool isWatered) {
     }
 
     _growthStage++;
-    
-    // Check if mature
+
     if (_growthStage >= _maxGrowthStage) {
         _status = CropStatus::MATURE;
-        _growthStage = _maxGrowthStage; // Ensure we don't exceed max
-    } else {
+        _growthStage = _maxGrowthStage; 
+    }
+    else {
         _status = CropStatus::GROWING;
     }
 
@@ -58,15 +58,12 @@ void Crop::updateTexture() {
         return;
     }
 
-    // Texture name format: Prefix_Stage.png (e.g., Parsnip_0.png)
-    // Assuming stage 0 is seeds, and max stage is mature
-    // If we have stages 0, 1, 2, 3 and max is 3 (4 images)
-    
-    std::string filename = "EnvironmentObjects/" + _texturePrefix + "_" + std::to_string(_growthStage) + ".png";
+    std::string filename =
+        "EnvironmentObjects/" + _texturePrefix + "_" +
+        std::to_string(_growthStage) + ".png";
     this->setTexture(filename);
 }
 
-// Parsnip Implementation
 Parsnip* Parsnip::create() {
     auto p = new (std::nothrow) Parsnip();
     if (p && p->init()) {
@@ -80,12 +77,11 @@ Parsnip* Parsnip::create() {
 bool Parsnip::init() {
     if (!Crop::init(ItemType::PARSNIP)) return false;
     _texturePrefix = "Parsnip";
-    _maxGrowthStage = 3; // 0, 1, 2, 3 (4 stages)
+    _maxGrowthStage = 3; 
     updateTexture();
     return true;
 }
 
-// Potato Implementation
 Potato* Potato::create() {
     auto p = new (std::nothrow) Potato();
     if (p && p->init()) {
@@ -99,12 +95,11 @@ Potato* Potato::create() {
 bool Potato::init() {
     if (!Crop::init(ItemType::POTATO)) return false;
     _texturePrefix = "Potato";
-    _maxGrowthStage = 4; // 0, 1, 2, 3, 4 (5 stages)
+    _maxGrowthStage = 4;
     updateTexture();
     return true;
 }
 
-// Cauliflower Implementation
 Cauliflower* Cauliflower::create() {
     auto p = new (std::nothrow) Cauliflower();
     if (p && p->init()) {
@@ -118,7 +113,7 @@ Cauliflower* Cauliflower::create() {
 bool Cauliflower::init() {
     if (!Crop::init(ItemType::CAULIFLOWER)) return false;
     _texturePrefix = "Cauliflower";
-    _maxGrowthStage = 4; // 0, 1, 2, 3, 4 (5 stages)
+    _maxGrowthStage = 4; 
     updateTexture();
     return true;
 }

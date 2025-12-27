@@ -41,7 +41,7 @@ bool BarnManager::init(GameMap* barn)
     // 绑定地图与常用图层
     _gameMap = barn;
     _tiledMap = _gameMap ? _gameMap->getTiledMap() : nullptr;
-    _feedLayer = _tiledMap ? _tiledMap->getLayer("feed") : nullptr;
+    _feedLayer = _tiledMap ? _tiledMap->getLayer("feeding") : nullptr;
 
     // 位置缓存与产物队列初始化
     _nestCenters.clear();

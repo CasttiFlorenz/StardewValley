@@ -29,9 +29,6 @@ public:
     // 初始化场景：加载 TMX 地图、隐藏 event 层、初始化管理器
     virtual bool init() override;
 
-    // 每帧更新（当前未实现逻辑，预留扩展）
-    virtual void update(float dt) override;
-
     // 根据玩家位置和朝向判断是否需要切换地图
     virtual MapType leaveMap(const Vec2& curPos, bool isStart, const Direction& direction) override;
 
@@ -39,7 +36,7 @@ public:
     virtual void IntoMap(MapType lastMap) override;
 
     // 是否启用摄像机跟随玩家
-    virtual bool isCameraFollow() const { return true; }
+    virtual bool isCameraFollow() const noexcept { return true; }
 
     // 获取玩家进入农场时的起始位置
     virtual Vec2 getPlayerStartPosition(MapType lastMap) override;
@@ -54,7 +51,7 @@ public:
     virtual MouseEvent onRightClick(const Vec2& playerPos, const Direction direction) override;
 
     // 是否为室外场景（影响天气系统）
-    virtual bool isOutdoor() override { return true; }
+    virtual bool isOutdoor() noexcept override  { return true; }
 
     // 打开 NPC 商店界面
     void openShopForNPC();

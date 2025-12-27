@@ -52,12 +52,12 @@ public:
     // 从 TMX 对象层中获取指定对象的矩形区域
     Rect getObjectRect(const std::string& objectName);
 
-     // 鼠标左键交互（默认无行为）
+     // 鼠标左键交互（默认使用工具）
     virtual MouseEvent onLeftClick(const Vec2& playerPos,
         const Direction direction,
         ItemType objects)
     {
-        return MouseEvent::NONE;
+        return MouseEvent::USE_TOOL;
     }
 
     // 鼠标右键交互（默认无行为）

@@ -65,7 +65,7 @@ MapType FarmHouse::leaveMap(const Vec2& curPos, bool isStart, const Direction& d
 
     // 玩家向下走并进入出口区域，则回到农场
     if (direction == Direction::DOWN) {
-        Rect goToFarm = getObjectRect("goToFarm");
+        const Rect goToFarm = getObjectRect("goToFarm");
         if (goToFarm.containsPoint(curPos)) {
             return MapType::FARM;
         }
@@ -86,33 +86,23 @@ void FarmHouse::IntoMap(MapType lastMap)
     _map->setPosition((visibleSize - _map->getContentSize() * _map->getScale()) / 2);
 }
 
-// 每帧更新（当前未实现逻辑）
-void FarmHouse::update(float dt)
-{
-}
 
 // 根据上一个地图确定玩家出生位置
 Vec2 FarmHouse::getPlayerStartPosition(MapType lastMap)
 {
     // 如果是第一次进入农舍（即初始就在农舍中）
     if (lastMap == _mapName) {
-        const Rect startRect = getObjectRect("start");
+        const Rect startRect = getObjectRect(GAME_START);
         return Vec2(startRect.getMidX(), startRect.getMidY());
     }
     // 如果是从农场进入农舍
     else if (lastMap == MapType::FARM) {
-        const Rect goToFarmRect = getObjectRect("goToFarm");
+        const Rect goToFarmRect = getObjectRect(GO_TO_FARM);
         return Vec2(goToFarmRect.getMidX(), goToFarmRect.getMidY());
     }
 
     // 默认返回无效位置
     return Vec2(-1, -1);
-}
-
-// 鼠标左键点击（农舍内部暂不处理特殊逻辑）
-MouseEvent FarmHouse::onLeftClick(const Vec2& playerPos, const Direction direction, ItemType objects)
-{
-    return MouseEvent::NONE;
 }
 
 // 鼠标右键点击
@@ -121,51 +111,8 @@ MouseEvent FarmHouse::onRightClick(const Vec2& playerPos, const Direction direct
     // 如果点击床的位置，触发睡觉事件
     const auto bedRect = getObjectRect("goToBed");
     if (bedRect.containsPoint(playerPos)) {
-        
         return MouseEvent::SLEEP;
     }
     return MouseEvent::NONE;
 }
 
-// 弹出睡觉确认对话框
-void FarmHouse::sleep() {
-    auto runningScene = Director::getInstance()->getRunningScene();
-    if (runningScene) {
-
-        // 防止重复打开睡觉对话框
-        if (runningScene->getChildByName("goToBed")) return;
-
-        auto dialog = DialogueLayer::create();
-        if (dialog) {
-            dialog->setName("goToBed");
-
-            // 显示是否睡觉的选择框
-            dialog->showChoice(
-                "Are you sure you want to go to sleep?",
-
-                // 玩家选择回调
-                [this, runningScene](bool choice) {
-                    CCLOG("Player choice: %s", choice ? "YES" : "NO");
-
-                    // 关闭对话框
-                    if (auto dlg = runningScene->getChildByName("goToBed")) {
-                        dlg->removeFromParent();
-                    }
-
-                    if (choice) {
-                        CCLOG("Player chose to sleep");
-                        // 这里可扩展：时间流逝、保存、第二天开始等逻辑
-                        // this->performSleep();
-                    }
-                    else {
-                        CCLOG("Player chose not to sleep");
-                    }
-                }
-            );
-
-            // 将对话框加入当前场景
-            runningScene->addChild(dialog, 9999);
-            dialog->setCameraMask((unsigned short)CameraFlag::DEFAULT);
-        }
-    }
-}

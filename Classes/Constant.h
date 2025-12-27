@@ -1,4 +1,4 @@
-ï»¿#ifndef __CONSTANT_H__
+#ifndef __CONSTANT_H__
 #define __CONSTANT_H__
 
 #include "cocos2d.h"
@@ -8,28 +8,28 @@
 #include <unordered_map>
 #include <vector>
 
-// [Section 1] åŸºç¡€å…¨å±€è®¾ç½® (Global Settings)
+// [Section 1] »ù´¡È«¾ÖÉèÖÃ (Global Settings)
 
-// åœ°å›¾ä¸ç‰©ç†
+// µØÍ¼ÓëÎïÀí
 constexpr float TILED_MAP_SCALE = 5.0f;
 constexpr float DEFAULT_SPEED = 250.0f;
 constexpr int CAMERA_POSZ = 200;
 
-// å†œèˆå°ºå¯¸
+// Å©Éá³ß´ç
 constexpr int FARM_HOUSE_WIDTH = 20;
 constexpr int FARM_HOUSE_HEIGHT = 12;
 
-// åˆå§‹æ•°å€¼
+// ³õÊ¼ÊıÖµ
 constexpr int INITIAL_PLAYER_MONEY = 500;
 
-// Tag æ ‡è¯†
+// Tag ±êÊ¶
 constexpr int FISHING_GAME_TAG = 8998;
 constexpr int SHOP_MENU_TAG = 9999;
 constexpr int TAG_DIALOGUE_LAYER = 9998;
 
-// [Section 2] æšä¸¾å®šä¹‰ (Enums)
+// [Section 2] Ã¶¾Ù¶¨Òå (Enums)
 
-// --- åŸºç¡€çŠ¶æ€ ---
+// --- »ù´¡×´Ì¬ ---
 enum class Direction {
     DOWN = 0, RIGHT = 1, UP = 2, LEFT = 3
 };
@@ -46,7 +46,7 @@ enum class DayOfWeek {
     Monday = 0, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
 };
 
-// --- åœ°å›¾ä¸ç¯å¢ƒ ---
+// --- µØÍ¼Óë»·¾³ ---
 enum class MapType {
     NONE = 0, FARM_HOUSE, FARM, BARN, MINES, TOWN
 };
@@ -67,7 +67,7 @@ enum class FarmItemType {
     CULTIVATED
 };
 
-// --- è§’è‰²ä¸ç”Ÿç‰© ---
+// --- ½ÇÉ«ÓëÉúÎï ---
 enum class CharacterType {
     Evelyn = 0, Haley, Sam, CHARACTER_COUNT
 };
@@ -80,86 +80,72 @@ enum class SkillType {
     FARMING = 0, MINING, FORAGING, FISHING, SKILL_COUNT
 };
 
-// --- ç‰©å“ç±»å‹ ---
+// --- ÎïÆ·ÀàĞÍ ---
 enum class ItemType {
     NONE = -1,
-    // å·¥å…·
-    HOE = 0,            // é”„å¤´
-    AXE,                // æ–§å¤´
-    WATERING_CAN,       // æµ‡æ°´å£¶
-    PICKAXE,            // é•
-    SCYTHE,             // é•°åˆ€
-    FISHINGROD,         // é’“é±¼ç«¿
-    // èµ„æº
-    STONE,              // çŸ³å¤´
-    WOOD,               // æœ¨å¤´
-    COPPER_ORE,         // é“œçŸ¿çŸ³
-    FIBER,              // çº¤ç»´
-    HAY,                // å¹²è‰
-    FERTILIZER,         // è‚¥æ–™
-    // ç§å­
-    PARSNIP_SEED,       // é˜²é£è‰ç§å­
-    CAULIFLOWER_SEED,   // èŠ±æ¤°èœç§å­
-    POTATO_SEED,        // åœŸè±†ç§å­
-    // å†œä½œç‰©/é‡‡é›†ç‰©
-    PARSNIP,            // é˜²é£è‰
-    CAULIFLOWER,        // èŠ±æ¤°èœ
-    POTATO,             // åœŸè±†
-    DAFFODILS,          // é»„æ°´ä»™
-    LEEK,               // éŸ­è‘±
-    // äº§ç‰©/é£Ÿç‰©
-    EGG,                // é¸¡è›‹
-    FRIED_EGG,          // ç…é¸¡è›‹
-    MILK,               // ç‰›å¥¶
-    CARP,               // é²¤é±¼
-    SALAD,              // ç”°å›­æ²™æ‹‰
+    // ¹¤¾ß
+    HOE = 0,            // ³úÍ·
+    AXE,                // ¸«Í·
+    WATERING_CAN,       // ½½Ë®ºø
+    PICKAXE,            // ¸ä
+    SCYTHE,             // Á­µ¶
+    FISHINGROD,         // µöÓã¸Í
+    // ×ÊÔ´
+    STONE,              // Ê¯Í·
+    WOOD,               // Ä¾Í·
+    COPPER_ORE,         // Í­¿óÊ¯
+    FIBER,              // ÏËÎ¬
+    HAY,                // ¸É²İ
+    FERTILIZER,         // ·ÊÁÏ
+    // ÖÖ×Ó
+    PARSNIP_SEED,       // ·À·ç²İÖÖ×Ó
+    CAULIFLOWER_SEED,   // »¨Ò¬²ËÖÖ×Ó
+    POTATO_SEED,        // ÍÁ¶¹ÖÖ×Ó
+    // Å©×÷Îï/²É¼¯Îï
+    PARSNIP,            // ·À·ç²İ
+    CAULIFLOWER,        // »¨Ò¬²Ë
+    POTATO,             // ÍÁ¶¹
+    DAFFODILS,          // »ÆË®ÏÉ
+    LEEK,               // ¾Â´Ğ
+    // ²úÎï/Ê³Îï
+    EGG,                // ¼¦µ°
+    FRIED_EGG,          // ¼å¼¦µ°
+    MILK,               // Å£ÄÌ
+    CARP,               // ÀğÓã
+    SALAD,              // ÌïÔ°É³À­
 
-    COUNT,              // æ€»æ•°
+    COUNT,              // ×ÜÊı
 
-    // ç‰¹æ®Š IDï¼šä¸è¿›èƒŒåŒ…
+    // ÌØÊâ ID£º²»½ø±³°ü
     ANIMAL_CHICKEN_TAG = 10001,
     ANIMAL_COW_TAG = 10002,
 };
 
-// --- è¾“å…¥ä¸äº¤äº’ ---
+// --- ÊäÈëÓë½»»¥ ---
 enum class KeyBoardEvent {
     NONE = 0, CHANGE_INVENTORY
 };
 
-enum class MouseEvent {
+enum class MouseEvent
+{
     NONE = 0,
-    // äº¤äº’
-    NPC_CONVERSATION,
+    NPC_CONSERVATION,
     USE_TOOL,
+    OPEN_SHOP,
     SLEEP,
-    FISHING,
-
-    // é‡‡é›†/è·å–
-    GET_WOOD, GET_GRASS, GET_STONE, GET_COPPER,
-    GET_DAFFODILS, GET_LEEK,
-    GET_PARSNIP, GET_POTATO, GET_CAULIFLOWER,
-    GET_EGG, GET_MILK,
-
-    // å•†åº—äº¤äº’
-    SHOP_SALE, SHOP_PIERRE, SHOP_MARNIE,
-
-    // å¯¹è¯è§¦å‘
-    CONVERSATION_HALEY, CONVERSATION_SAM, CONVERSATION_EVELYN,
-
-    // ä½¿ç”¨ç‰©å“
-    USE_PARSNIP_SEED, USE_POTATO_SEED, USE_CAULIFLOWER_SEED, USE_HAY
+    FISHING
 };
 
 
-// [Section 3] èµ„æºè·¯å¾„ (Resource Paths)
+// [Section 3] ×ÊÔ´Â·¾¶ (Resource Paths)
 
-// å¤©æ°”
+// ÌìÆø
 const std::string PATH_IMG_FLOWER = "Weather/flower.png";
 const std::string PATH_IMG_LEAF = "Weather/leaf.png";
 const std::string PATH_IMG_RAINDROP = "Weather/raindrop.png";
 const std::string PATH_IMG_FALLBACK_KEY = "fallback_white_box";
 
-// UI - æ—¶é’Ÿä¸å¤©æ°”å›¾æ ‡
+// UI - Ê±ÖÓÓëÌìÆøÍ¼±ê
 const std::string PATH_UI_CLOCK_BG = "Clock/Clock.png";
 const std::string PATH_UI_CLOCK_HAND = "Clock/hand.png";
 const std::string PATH_UI_WEATHER_SUNNY = "Clock/sunny.png";
@@ -169,7 +155,7 @@ const std::string PATH_UI_WEATHER_WINDY_SPRING = "Clock/windy_spring.png";
 const std::string PATH_UI_WEATHER_WINDY_AUTUMN = "Clock/windy_autumn.png";
 const std::string PATH_UI_SLEEP_BG = "CreateScene/Background-1.png";
 
-// UI - å•†åº—
+// UI - ÉÌµê
 const std::string PATH_SHOP_BG = "Shop/background.png";
 const std::string PATH_SHOP_MINUS = "Shop/minus.png";
 const std::string PATH_SHOP_PLUS = "Shop/plus.png";
@@ -177,27 +163,30 @@ const std::string PATH_SHOP_BUY = "Shop/buy.png";
 const std::string PATH_SHOP_CLOSE = "Shop/close.png";
 const std::string PATH_SHOP_MENU_PREFIX = "Shop/Shop_";
 
-// UI - èƒŒåŒ…
+// UI - ±³°ü
 const std::string PATH_INVENTORY_SLOT_BG = "Items/inventory.jpg";
 
-// UI - ç¡è§‰
+// UI - Ë¯¾õ
 const std::string PATH_UI_YES = "Shop/ok.png";
 const std::string PATH_UI_NO = "Shop/no.png";
 const std::string PATH_UI_SELECT = "Shop/SelectDialogue.png";
 
-// UI-å¯¹è¯
+// UI-¶Ô»°
 const std::string PATH_DIALOGUE_BG_DEFAULT = "Shop/dialogue.png";
 const std::string PATH_DIALOGUE_PREFIX = "Shop/Dialogue_";
 
-// æŠ€èƒ½æ°´å¹³æ˜¾ç¤º
+// ¼¼ÄÜË®Æ½ÏÔÊ¾
 constexpr char* LEVEL_FILLED1 = "/Player/red block.png";
 constexpr char* LEVEL_EMPTY1 = "/Player/empty block.png";
 constexpr char* LEVEL_FILLED2 = "/Player/orange block.png";
 constexpr char* LEVEL_EMPTY2 = "/Player/long block.png";
+constexpr int MAX_LEVEL = 100;    // ×î¸ß¾­ÑéÖµ
+constexpr int SKILL_COUNT = 4;    // ¼¼ÄÜ¸öÊı
 
-// å¥½æ„Ÿåº¦æ˜¾ç¤º
+// ºÃ¸Ğ¶ÈÏÔÊ¾
 constexpr char* HEART_FILLED = "/NPC/red heart.png";
 constexpr char* HEART_EMPTY = "/NPC/empty heart.png";
+
 
 // NPC
 const std::string NPC_NAME_HALEY = "Haley";
@@ -209,22 +198,23 @@ const std::string PATH_NPC_SAM = "NPC/Sam.png";
 const std::string PATH_NPC_EVELYN = "NPC/Evelyn.png";
 const std::string PATH_NPC_HALEY = "NPC/Haley.png";
 
-// å­—ä½“
+// ×ÖÌå
 const std::string PATH_FONT_ARIAL = "fonts/arial.ttf";
 const std::string PATH_FONT_PIXEL = "fonts/pixel.ttf";
 const std::string FONT_DEFAULT_SYSTEM = "Arial";
 
 
-// [Section 4] é€»è¾‘å¸¸é‡ä¸å­—ç¬¦ä¸² (Logic Constants)
+// [Section 4] Âß¼­³£Á¿Óë×Ö·û´® (Logic Constants)
 
-// åœºæ™¯åˆ‡æ¢æ ‡è¯†
+// ³¡¾°ÇĞ»»±êÊ¶
+const std::string GAME_START = "start";
 const std::string GO_TO_FARM = "goToFarm";
 const std::string GO_TO_TOWN = "goToTown";
 const std::string GO_TO_BARN = "goToBarn";
 const std::string GO_TO_MINES = "goToMines";
 const std::string GO_TO_HOUSE = "goToHouse";
 
-// æ˜¾ç¤ºæ–‡æœ¬
+// ÏÔÊ¾ÎÄ±¾
 const std::string STR_TIME_AM = "am";
 const std::string STR_TIME_PM = "pm";
 const std::string STR_SEASON_SPRING = "Spring";
@@ -235,9 +225,9 @@ const std::string STR_UNKNOWN = "Unknown";
 const std::vector<std::string> STR_DAYS_OF_WEEK = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
 
 
-// [Section 5] æ•°å€¼å‚æ•°é…ç½® (Configuration Parameters)
+// [Section 5] ÊıÖµ²ÎÊıÅäÖÃ (Configuration Parameters)
 
-// --- æ¸²æŸ“å±‚çº§ (ZOrder) ---
+// --- äÖÈ¾²ã¼¶ (ZOrder) ---
 constexpr int ZORDER_SHOP_BG = 0;
 constexpr int ZORDER_SHOP_CONTENT = 5;
 constexpr int ZORDER_MAP_OBJECTS = 20;
@@ -249,7 +239,7 @@ constexpr int ZORDER_UI_CONTAINER = 100;
 constexpr int ZORDER_SLEEP_MASK = 10000;
 constexpr int ZORDER_SHOP_MENU = 999;
 
-// --- èµ„æºé‡‡é›†é™åˆ¶ ---
+// --- ×ÊÔ´²É¼¯ÏŞÖÆ ---
 constexpr int MAX_WOOD_COUNT = 15;
 constexpr int MAX_GRASS_COUNT = 15;
 constexpr int MAX_STONE_COUNT = 15;
@@ -257,7 +247,7 @@ constexpr int MAX_COPPER_COUNT = 5;
 constexpr int MAX_DAFFODILS_COUNT = 5;
 constexpr int MAX_LEEK_COUNT = 3;
 
-// --- å¤©æ°”ç®¡ç†å™¨å‚æ•° ---
+// --- ÌìÆø¹ÜÀíÆ÷²ÎÊı ---
 constexpr float PARTICLE_LIFE_DEFAULT = 4.0f;
 constexpr float PARTICLE_LIFE_VAR = 1.0f;
 constexpr float RAIN_LIFE = 1.2f;
@@ -269,7 +259,7 @@ constexpr int CHANCE_SNOW = 20;
 constexpr int MAX_NIGHT_OPACITY = 200;
 constexpr int FALLBACK_TEXTURE_SIZE = 8;
 
-// --- æ—¶é—´ç®¡ç†å™¨å‚æ•° ---
+// --- Ê±¼ä¹ÜÀíÆ÷²ÎÊı ---
 constexpr int MINUTES_PER_HOUR = 60;
 constexpr int HOURS_PER_DAY_STD = 24;
 constexpr int MAX_GAME_HOUR = 28;
@@ -283,7 +273,7 @@ constexpr float TIME_PASS_OUT_DELAY = 3.0f;
 constexpr float ROTATION_PER_MINUTE = 0.15f;
 constexpr float ROTATION_BASE_ANGLE = 180.0f;
 
-// --- å•†åº—å‚æ•° ---
+// --- ÉÌµê²ÎÊı ---
 constexpr int SHOP_MAX_QUANTITY_LIMIT = 99;
 constexpr int SHOP_MIN_QUANTITY = 1;
 constexpr float SHOP_BG_SCALE = 1.4f;
@@ -293,7 +283,7 @@ constexpr float SHOP_MENU_WIDTH = 800.0f;
 constexpr float SHOP_MENU_HEIGHT = 600.0f;
 constexpr float SCROLL_SENSITIVITY = 30.0f;
 
-// --- èƒŒåŒ… UI å‚æ•° ---
+// --- ±³°ü UI ²ÎÊı ---
 constexpr int INVENTORY_ROWS = 3;
 constexpr int INVENTORY_COLS = 12;
 constexpr int INVENTORY_TOTAL_SLOTS = 36;
@@ -304,16 +294,12 @@ constexpr float INV_SLOT_BASE_SIZE = 43.0f;
 constexpr float INV_SLOT_SCALE = 1.35f;
 constexpr float INV_BG_SCALE = 1.45f;
 constexpr float INV_SLOT_TOUCH_SIZE = 50.0f;
-constexpr int INVENTORY_SIZE = 36;    // èƒŒåŒ…æ€»å¤§å°
-constexpr int ITEM_TAG_BASE = 1000;   // ç‰©å“ç²¾çµçš„tag
-constexpr int COUNT_TAG_BASE = 2000;  // æ•°é‡æ ‡ç­¾çš„tag
-constexpr int BUTTON_TAG_BASE = 3000; // èƒŒåŒ…æŒ‰é’®çš„tag
+constexpr int INVENTORY_SIZE = 36;    // ±³°ü×Ü´óĞ¡
+constexpr int ITEM_TAG_BASE = 1000;   // ÎïÆ·¾«ÁéµÄtag
+constexpr int COUNT_TAG_BASE = 2000;  // ÊıÁ¿±êÇ©µÄtag
+constexpr int BUTTON_TAG_BASE = 3000; // ±³°ü°´Å¥µÄtag
 
-// --- æŠ€èƒ½æ°´å¹³å‚æ•° ---
-constexpr int MAX_LEVEL = 100;    // æœ€é«˜ç»éªŒå€¼
-constexpr int SKILL_COUNT = 4;    // æŠ€èƒ½ä¸ªæ•°
-
-// [Section 6] é¢œè‰²å¸¸é‡ (Colors)
+// [Section 6] ÑÕÉ«³£Á¿ (Colors)
 
 const cocos2d::Color4B COLOR_MASK_DARK(0, 0, 0, 180);
 const cocos2d::Color4B COLOR_ROW_EVEN(255, 255, 255, 50);
@@ -324,7 +310,7 @@ const cocos2d::Color3B COLOR_CONTENT_TEXT(0, 0, 0);
 const cocos2d::Color4B COLOR_BTN_BG_YES(0, 128, 0, 200);
 const cocos2d::Color4B COLOR_BTN_BG_NO(200, 0, 0, 200);
 
-// ==================== UI å°ºå¯¸ä¸åæ ‡ ====================
+// ==================== UI ³ß´çÓë×ø±ê ====================
 const cocos2d::Size SIZE_DIALOGUE_BG(800, 200);
 const cocos2d::Size SIZE_DIALOGUE_BG_EXPANDED(1000, 200);
 const cocos2d::Size SIZE_CHOICE_BTN(100, 50);
@@ -335,12 +321,11 @@ const cocos2d::Vec2 POS_CONTENT_LABEL(400, 80);
 const cocos2d::Vec2 POS_BTN_YES(600, 50);
 const cocos2d::Vec2 POS_BTN_NO(700, 50);
 
-// ==================== æ–‡æœ¬è®¾ç½® ====================
+// ==================== ÎÄ±¾ÉèÖÃ ====================
 constexpr int FONT_SIZE_NAME = 28;
 constexpr int FONT_SIZE_CONTENT = 24;
 constexpr int FONT_SIZE_BTN = 30;
 
 
 #endif // __CONSTANT_H__
-
 

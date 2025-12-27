@@ -19,6 +19,7 @@
 #include "../NPC/NPCManager.h"
 #include "../Inventory/InventoryScene.h"
 #include "../Weather/WeatherManager.h"
+#include "../MapItem/CultivationManager.h"
 #include "../Time/TimeManager.h"
 #include "../Shop/ShopLayer.h"
 #include "../Fishing/FishGameLayer.h"

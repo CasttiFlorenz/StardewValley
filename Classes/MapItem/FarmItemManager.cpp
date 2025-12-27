@@ -1,10 +1,12 @@
 #include "FarmItemManager.h"
 
+// 单例实例
 FarmItemManager* FarmItemManager::_instance = nullptr;
 
 FarmItemManager* FarmItemManager::getInstance(GameMap* gameMap)
 {
     if (!_instance) {
+        // 首次创建必须提供 GameMap
         if (!gameMap) {
             CCLOG("FarmItemManager::getInstance failed: gameMap is null");
             return nullptr;
@@ -43,6 +45,7 @@ bool FarmItemManager::init(GameMap* gameMap)
     _daffodilsCount = 0;
     _leekCount = 0;
 
+    // 初始化时生成初始物品
     if (_gameMap) {
         spawnInitialItems();
     }
@@ -50,18 +53,23 @@ bool FarmItemManager::init(GameMap* gameMap)
     return _gameMap != nullptr;
 }
 
-
-long long FarmItemManager::keyFor(const Vec2& tileCoord) {
+long long FarmItemManager::keyFor(const Vec2& tileCoord)
+{
+    // 将瓦片坐标打包为 64 位 key
     long long x = static_cast<long long>(tileCoord.x);
     long long y = static_cast<long long>(tileCoord.y);
     return (x << 32) | (y & 0xffffffffLL);
 }
 
-unsigned int FarmItemManager::stripFlags(unsigned int gid) {
+unsigned int FarmItemManager::stripFlags(unsigned int gid)
+{
+    // 去除 TMX 的翻转标志位
     return gid & ~(0x80000000 | 0x40000000 | 0x20000000);
 }
 
-bool FarmItemManager::isCultivated(const Vec2& tileCoord) const {
+bool FarmItemManager::isCultivated(const Vec2& tileCoord) const
+{
+    // 地图或事件层未准备好
     if (!_eventLayer || !_tiledMap) return false;
 
     unsigned int gid = _eventLayer->getTileGIDAt(tileCoord);
@@ -70,48 +78,46 @@ bool FarmItemManager::isCultivated(const Vec2& tileCoord) const {
     unsigned int rawGid = stripFlags(gid);
 
     auto propsValue = _tiledMap->getPropertiesForGID(rawGid);
-    if (propsValue.getType() != cocos2d::Value::Type::MAP) return false;
+    if (propsValue.getType() != Value::Type::MAP) return false;
 
     auto props = propsValue.asValueMap();
     auto it = props.find("Cultivated");
     if (it == props.end()) return false;
 
-    if (it->second.getType() == cocos2d::Value::Type::BOOLEAN) {
+    // 兼容多种配置写法
+    if (it->second.getType() == Value::Type::BOOLEAN)
         return it->second.asBool();
-    }
-    if (it->second.getType() == cocos2d::Value::Type::INTEGER) {
+    if (it->second.getType() == Value::Type::INTEGER)
         return it->second.asInt() == 1;
-    }
-    if (it->second.getType() == cocos2d::Value::Type::STRING) {
+    if (it->second.getType() == Value::Type::STRING)
         return it->second.asString() == "1" || it->second.asString() == "true";
-    }
 
     return false;
 }
 
-bool FarmItemManager::hasItem(const Vec2& tileCoord) const {
+bool FarmItemManager::hasItem(const Vec2& tileCoord) const
+{
     long long key = keyFor(tileCoord);
-    return (_items.find(key) != _items.end()) || (_cultivatedSoils.find(key) != _cultivatedSoils.end());
+    // 普通物品或耕地任意存在即可
+    return _items.count(key) || _cultivatedSoils.count(key);
 }
 
-EnvironmentItem* FarmItemManager::getItem(const Vec2& tileCoord) const {
+EnvironmentItem* FarmItemManager::getItem(const Vec2& tileCoord) const
+{
     auto it = _items.find(keyFor(tileCoord));
-    if (it != _items.end()) {
-        return it->second;
-    }
-    return nullptr;
+    return it != _items.end() ? it->second : nullptr;
 }
 
-bool FarmItemManager::addItem(EnvironmentItemType type, const Vec2& tileCoord) {
-    if (!isCultivated(tileCoord)) {
-        return false;
-    }
+bool FarmItemManager::addItem(EnvironmentItemType type, const Vec2& tileCoord)
+{
+    // 必须在可耕种区域
+    if (!isCultivated(tileCoord)) return false;
 
-    if (hasItem(tileCoord)) {
-        return false;
-    }
+    // 该位置已有物品
+    if (hasItem(tileCoord)) return false;
 
     EnvironmentItem* item = nullptr;
+
     switch (type) {
     case EnvironmentItemType::WOOD:
         item = WoodItem::create(tileCoord);
@@ -126,134 +132,131 @@ bool FarmItemManager::addItem(EnvironmentItemType type, const Vec2& tileCoord) {
         item = LeekItem::create(tileCoord);
         break;
     case EnvironmentItemType::CULTIVATED_SOIL:
+        // 耕地只记录标记，不生成实体
         _cultivatedSoils[keyFor(tileCoord)] = true;
         return true;
     default:
         return false;
     }
 
-    if (item) {
-        if (_tiledMap && _gameMap) {
-            Vec2 pos = _gameMap->calWorldPos(tileCoord);
-            item->setPosition(pos);
-            _tiledMap->addChild(item, 5);
-        }
+    if (!item) return false;
 
-        item->retain();
-        _items.emplace(keyFor(tileCoord), item);
-
-        if (type == EnvironmentItemType::WOOD) {
-            _woodCount++;
-        } else if (type == EnvironmentItemType::GRASS) {
-            _grassCount++;
-        } else if (type == EnvironmentItemType::DAFFODILS) {
-            _daffodilsCount++;
-        } else if (type == EnvironmentItemType::LEEK) {
-            _leekCount++;
-        }
-
-        return true;
+    // 添加到地图中显示
+    if (_tiledMap && _gameMap) {
+        item->setPosition(_gameMap->calWorldPos(tileCoord));
+        _tiledMap->addChild(item, 5);
     }
 
-    return false;
+    item->retain();
+    _items.emplace(keyFor(tileCoord), item);
+
+    // 数量统计
+    if (type == EnvironmentItemType::WOOD) _woodCount++;
+    else if (type == EnvironmentItemType::GRASS) _grassCount++;
+    else if (type == EnvironmentItemType::DAFFODILS) _daffodilsCount++;
+    else if (type == EnvironmentItemType::LEEK) _leekCount++;
+
+    return true;
 }
 
-bool FarmItemManager::removeItem(const Vec2& tileCoord) {
+bool FarmItemManager::removeItem(const Vec2& tileCoord)
+{
     long long k = keyFor(tileCoord);
 
-    if (_cultivatedSoils.find(k) != _cultivatedSoils.end()) {
-        _cultivatedSoils.erase(k);
+    // 优先移除耕地标记
+    if (_cultivatedSoils.erase(k)) {
         return true;
     }
 
     auto it = _items.find(k);
-    if (it == _items.end()) {
+    if (it == _items.end()) return false;
+
+    EnvironmentItem* item = it->second;
+    if (!item) {
+        _items.erase(it);
         return false;
     }
 
-    EnvironmentItem* item = it->second;
     EnvironmentItemType type = item->getType();
 
-    if (type == EnvironmentItemType::WOOD) {
-        _woodCount--;
-    } else if (type == EnvironmentItemType::GRASS) {
-        _grassCount--;
-    } else if (type == EnvironmentItemType::DAFFODILS) {
-        _daffodilsCount--;
-    } else if (type == EnvironmentItemType::LEEK) {
-        _leekCount--;
-    }
+    // 更新统计
+    if (type == EnvironmentItemType::WOOD) _woodCount--;
+    else if (type == EnvironmentItemType::GRASS) _grassCount--;
+    else if (type == EnvironmentItemType::DAFFODILS) _daffodilsCount--;
+    else if (type == EnvironmentItemType::LEEK) _leekCount--;
 
     item->removeFromParent();
     CC_SAFE_RELEASE(item);
     _items.erase(it);
+
     return true;
 }
 
-bool FarmItemManager::removeCultivation(const Vec2& tileCoord) {
-    long long k = keyFor(tileCoord);
-
-    if (_cultivatedSoils.find(k) != _cultivatedSoils.end()) {
-        _cultivatedSoils.erase(k);
-        return true;
-    }
-
-    return false;
+bool FarmItemManager::removeCultivation(const Vec2& tileCoord)
+{
+    // 仅移除耕地标记
+    return _cultivatedSoils.erase(keyFor(tileCoord)) > 0;
 }
 
-
-void FarmItemManager::spawnInitialItems() {
+void FarmItemManager::spawnInitialItems()
+{
+    // 地图未就绪
     if (!_tiledMap || !_eventLayer) return;
 
     Size mapSize = _eventLayer->getLayerSize();
-
     int attempts = 0;
-    
-    while ((_woodCount < MAX_WOOD_COUNT || _grassCount < MAX_GRASS_COUNT ||
-        _daffodilsCount < MAX_DAFFODILS_COUNT || _leekCount < MAX_LEEK_COUNT) && attempts < 2000) {
+
+    // 随机生成，限制尝试次数
+    while ((_woodCount < MAX_WOOD_COUNT ||
+        _grassCount < MAX_GRASS_COUNT ||
+        _daffodilsCount < MAX_DAFFODILS_COUNT ||
+        _leekCount < MAX_LEEK_COUNT)
+        && attempts < 2000)
+    {
         attempts++;
-        int x = RandomHelper::random_int(0, (int)mapSize.width - 1);
-        int y = RandomHelper::random_int(0, (int)mapSize.height - 1);
-        Vec2 coord((float)x, (float)y);
+
+        Vec2 coord(
+            (float)RandomHelper::random_int(0, (int)mapSize.width - 1),
+            (float)RandomHelper::random_int(0, (int)mapSize.height - 1)
+        );
 
         if (hasItem(coord)) continue;
         if (!isCultivated(coord)) continue;
 
-        EnvironmentItemType type = EnvironmentItemType::NONE;
+        std::vector<EnvironmentItemType> types;
+        if (_woodCount < MAX_WOOD_COUNT) types.push_back(EnvironmentItemType::WOOD);
+        if (_grassCount < MAX_GRASS_COUNT) types.push_back(EnvironmentItemType::GRASS);
+        if (_daffodilsCount < MAX_DAFFODILS_COUNT) types.push_back(EnvironmentItemType::DAFFODILS);
+        if (_leekCount < MAX_LEEK_COUNT) types.push_back(EnvironmentItemType::LEEK);
 
-        std::vector<EnvironmentItemType> availableTypes;
-        if (_woodCount < MAX_WOOD_COUNT) availableTypes.push_back(EnvironmentItemType::WOOD);
-        if (_grassCount < MAX_GRASS_COUNT) availableTypes.push_back(EnvironmentItemType::GRASS);
-        if (_daffodilsCount < MAX_DAFFODILS_COUNT) availableTypes.push_back(EnvironmentItemType::DAFFODILS);
-        if (_leekCount < MAX_LEEK_COUNT) availableTypes.push_back(EnvironmentItemType::LEEK);
+        if (types.empty()) break;
 
-        if (availableTypes.empty()) break;
-
-        type = availableTypes[RandomHelper::random_int(0, (int)availableTypes.size() - 1)];
-
-        addItem(type, coord);
+        addItem(types[RandomHelper::random_int(0, (int)types.size() - 1)], coord);
     }
 }
 
 bool FarmItemManager::isCollidable(const Vec2& tileCoord) const
 {
-    long long key = keyFor(tileCoord);
-    return (_items.find(key) != _items.end());
+    // 有实体物品即可视为可碰撞
+    return _items.count(keyFor(tileCoord)) > 0;
 }
 
 void FarmItemManager::onNewDay()
 {
+    // 新的一天补充物品
     spawnInitialItems();
 }
 
 void FarmItemManager::clear()
 {
+    // 移除并释放所有物品
     for (auto& kv : _items) {
         if (kv.second) {
             kv.second->removeFromParent();
             CC_SAFE_RELEASE(kv.second);
         }
     }
+
     _items.clear();
     _cultivatedSoils.clear();
 

@@ -24,9 +24,6 @@ public:
     // 初始化农舍地图与事件层
     virtual bool init() override;
 
-    // 每帧更新（当前未使用）
-    virtual void update(float dt) override;
-
     // 判断是否需要切换到其他地图
     virtual MapType leaveMap(const Vec2& curPos,
         bool isStart,
@@ -38,17 +35,9 @@ public:
     // 根据来源地图确定玩家出生点
     virtual Vec2 getPlayerStartPosition(MapType lastMap) override;
 
-    // 左键交互（农舍内默认工具使用）
-    virtual MouseEvent onLeftClick(const Vec2& playerPos,
-        const Direction direction,
-        ItemType objects) override;
-
     // 右键交互（检测是否点击床）
     virtual MouseEvent onRightClick(const Vec2& playerPos,
         const Direction direction) override;
-
-    // 弹出睡觉确认对话框
-    void sleep();
 
 private:
     // FarmHouse 单例指针

@@ -1,5 +1,6 @@
 #include "CultivatedSoil.h"
 
+// 工厂方法：创建指定坐标的耕地实例
 CultivatedSoil* CultivatedSoil::create(const cocos2d::Vec2& tileCoord) {
     auto p = new (std::nothrow) CultivatedSoil();
     if (p && p->init(tileCoord)) {
@@ -11,75 +12,96 @@ CultivatedSoil* CultivatedSoil::create(const cocos2d::Vec2& tileCoord) {
 }
 
 bool CultivatedSoil::init(const cocos2d::Vec2& tileCoord) {
+    // 初始化为“耕地”类型的环境物体
     if (!EnvironmentItem::init(EnvironmentItemType::CULTIVATED_SOIL, tileCoord)) {
         return false;
     }
 
+    // 初始状态：干燥、无作物
     _status = SoilStatus::DRY;
     _crop = nullptr;
+
+    // 设置初始贴图
     this->setTexture("EnvironmentObjects/Dry.png");
-    // Explicitly set the anchor point to (0, 0) to match tile map coordinate system
-    // if other items use a different anchor point.
-    // However, usually sprites are (0.5, 0.5). TiledMap coordinates are bottom-left.
-    // If we rely on FarmItemManager's positioning, it sets position to center of tile.
-    
-    // Ensure content size is set correctly if not set by setTexture
-    if (this->getContentSize().width == 0) {
-        // Fallback size if texture fails load, though setTexture usually handles it.
-        // Assuming 16x16 tiles scaled by 5.0f elsewhere, but sprite should be the raw image size.
-    }
 
     return true;
 }
 
+// 防御性地确保作物节点被移除，避免悬空引用
+CultivatedSoil::~CultivatedSoil() {
+    if (_crop) {
+        _crop->removeFromParent();
+        _crop = nullptr;
+    }
+}
+
+// 浇水：仅在干燥状态下生效
 void CultivatedSoil::water() {
-    if (_status == SoilStatus::DRY) {
-        _status = SoilStatus::WET;
-        this->setTexture("EnvironmentObjects/Wet.png");
+    if (_status != SoilStatus::DRY) {
+        return;
     }
+
+    _status = SoilStatus::WET;
+    this->setTexture("EnvironmentObjects/Wet.png");
 }
 
+// 土壤干燥：仅在湿润状态下切换
 void CultivatedSoil::dry() {
-    if (_status == SoilStatus::WET) {
-        _status = SoilStatus::DRY;
-        this->setTexture("EnvironmentObjects/Dry.png");
+    if (_status != SoilStatus::WET) {
+        return;
     }
+
+    _status = SoilStatus::DRY;
+    this->setTexture("EnvironmentObjects/Dry.png");
 }
 
+// 在土壤上种植作物
 bool CultivatedSoil::plant(ItemType type) {
-    if (_crop != nullptr) {
-        return false; // Already has a crop
+    // 已有作物，无法再次种植
+    if (_crop) {
+        return false;
     }
 
     _crop = Crop::create(type);
-    if (_crop) {
-        // Center the crop on the soil
-        Size soilSize = this->getContentSize();
-        _crop->setPosition(Vec2(soilSize.width / 2, soilSize.height / 3 * 2));
-        this->addChild(_crop);
-        return true;
+    if (!_crop) {
+        return false;
     }
-    return false;
+
+    // 将作物显示在土壤中央偏上的位置
+    const cocos2d::Size soilSize = this->getContentSize();
+    _crop->setPosition(cocos2d::Vec2(
+        soilSize.width * 0.5f,
+        soilSize.height * (2.0f / 3.0f)
+    ));
+
+    this->addChild(_crop);
+    return true;
 }
 
+// 收获成熟作物
 ItemType CultivatedSoil::harvest() {
-    if (_crop && _crop->getStatus() == CropStatus::MATURE) {
-        ItemType type = _crop->getCropType();
-        
-        _crop->removeFromParent();
-        _crop = nullptr;
-        
-        return type;
+    if (!_crop) {
+        return ItemType::NONE;
     }
-    return ItemType::NONE;
+
+    if (_crop->getStatus() != CropStatus::MATURE) {
+        return ItemType::NONE;
+    }
+
+    ItemType type = _crop->getCropType();
+    _crop->removeFromParent();
+    _crop = nullptr;
+
+    return type;
 }
 
+// 每日更新逻辑：
+// 1. 根据昨天是否浇水推进作物生长
+// 2. 新的一天开始时，土壤恢复为干燥状态
 void CultivatedSoil::updateDay() {
     if (_crop) {
-        // Pass whether it was watered yesterday (current status is yesterday's status before reset)
         _crop->updateGrowth(_status == SoilStatus::WET);
     }
 
-    // Reset soil to dry for the new day
     dry();
 }

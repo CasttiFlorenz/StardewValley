@@ -6,13 +6,9 @@ Scene* GameScene::createScene()
     return GameScene::create();
 }
 
-// Îö¹¹£ºÊÍ·Å»º´æµÄµØÍ¼
+// Îö¹¹£ºÇå¿Õ»º´æµÄµØÍ¼
 GameScene::~GameScene()
 {
-    for (auto& pair : _mapCache)
-    {
-        CC_SAFE_RELEASE(pair.second);
-    }
     _mapCache.clear();
 }
 
@@ -86,8 +82,18 @@ void GameScene::update(float dt)
             };
     }
 
+    if (auto c = CultivationManager::getInstance())
+    {
+        if (_weatherManager &&
+            _weatherManager->getCurrentWeather() == WeatherType::Rain)
+        {
+            c->waterAllSoils();
+        }
+    }
+
     if (existInterface())this->gamePause();
     else this->gameRestore();
+
 }
 
 // µØÍ¼ÇĞ»»¼ì²â
@@ -358,6 +364,7 @@ void GameScene::onNewDay()
         }
     }
 
+
     if (auto b = BarnManager::getInstance()) b->onNewDay();
     if (auto f = FarmItemManager::getInstance()) f->onNewDay();
     if (auto m = MinesItemManager::getInstance()) m->onNewDay();
@@ -424,6 +431,9 @@ bool GameScene::existInterface()
     if (this->getChildByTag(SHOP_MENU_TAG))return true;
     if (this->getChildByName("DialogueLayer"))return true;
 
+    /*if (auto save = SaveManage::getInstance()) {
+        save->saveAllData();
+    }*/
     return false;
 }
 

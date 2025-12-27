@@ -31,9 +31,6 @@ public:
     // 初始化城镇地图与 NPC
     virtual bool init() override;
 
-    // 每帧更新（NPC 行为等）
-    virtual void update(float dt) override;
-
     // 判断是否离开城镇并切换地图
     virtual MapType leaveMap(const Vec2& curPos,
         bool isStart,
@@ -48,17 +45,12 @@ public:
     // 城镇内摄像机跟随玩家
     virtual bool isCameraFollow() const override { return true; }
 
-    // 左键交互（与 NPC 对话、使用物品）
-    virtual MouseEvent onLeftClick(const Vec2& playerPos,
-        const Direction direction,
-        ItemType objects) override;
-
-    // 右键交互（NPC 互动或功能触发）
+    // 右键交互（NPC 互动）
     virtual MouseEvent onRightClick(const Vec2& playerPos,
         const Direction direction) override;
 
     // 标记为室外地图
-    virtual bool isOutdoor() override { return true; }
+    virtual bool isOutdoor() noexcept override { return true; }
 
     // 与指定 NPC 进行交互
     void interactWithNPC(const std::string& npcName, ItemType heldItem);

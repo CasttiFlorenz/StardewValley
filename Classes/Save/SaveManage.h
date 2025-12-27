@@ -16,7 +16,7 @@ class SaveManage {
 public:
     static SaveManage* getInstance();
 
-    // ç»¼åˆæ“ä½œ
+    // ×ÛºÏ²Ù×÷
     bool saveAllData();
     bool loadAllData();
 
@@ -26,27 +26,27 @@ private:
     SaveManage(const SaveManage&) = delete;
     SaveManage& operator=(const SaveManage&) = delete;
 
-    // å·¥å…·å‡½æ•°
+    // ¹¤¾ßº¯Êı
     std::string getFilePath(const std::string& filename);
 
-    // èƒŒåŒ…å­˜æ¡£/è¯»æ¡£
+    // ±³°ü´æµµ/¶Áµµ
     bool saveInventory();
     bool loadInventory();
 
-    // å¥½æ„Ÿåº¦å­˜æ¡£/è¯»æ¡£
+    // ºÃ¸Ğ¶È´æµµ/¶Áµµ
     bool saveFriendships();
     bool loadFriendships();
 
-    // æ¸¸æˆæ—¶é—´å­˜æ¡£/è¯»æ¡£
+    // ÓÎÏ·Ê±¼ä´æµµ/¶Áµµ
     bool saveGameTime();
     bool loadGameTime();
 
-    // æŠ€èƒ½å­˜æ¡£/è¯»æ¡£
+    // ¼¼ÄÜ´æµµ/¶Áµµ
     bool saveSkills();
     bool loadSkills();
 
 
-    // åºåˆ—åŒ–å‡½æ•°
+    // ĞòÁĞ»¯º¯Êı
     rapidjson::Value serializeItem(const Item& item, rapidjson::Document::AllocatorType& alloc);
     rapidjson::Value serializeGameTime(const GameTime& time, rapidjson::Document::AllocatorType& alloc);
     rapidjson::Value serializeSkill(const SkillData& skill, rapidjson::Document::AllocatorType& alloc);
