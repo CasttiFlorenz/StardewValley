@@ -12,8 +12,16 @@ USING_NS_CC;
 
 
 bool Haley::init() {
-    if (!NPCBase::init()) return false;
-    bool res = this->loadTexture(PATH_NPC_HALEY);
+   if (!NPCBase::init()) {
+        return false;
+    }
+
+    // 使用常量路径
+    if (!loadTexture(PATH_NPC_HALEY)) {
+        return false;
+    }
+
+    playAnimation();
     return true;
 }
 
@@ -73,3 +81,4 @@ int Haley::checkGiftTaste(ItemType itemTag)
     return NPCBase::checkGiftTaste(itemTag);
 
 }
+
