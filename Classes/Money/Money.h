@@ -1,31 +1,41 @@
-// ==========================================
-// File: Money.h
-// ==========================================
 #ifndef __MONEY_H__
 #define __MONEY_H__
 
 #include "cocos2d.h"
-#include "../Inventory/Item.h"    
-#include "Constant.h"  
+#include "Constant.h"
 #include <vector>
+#include<new>
+#include "../Inventory/Item.h"    
 
 class Money {
 public:
     // 获取单例
     static Money* getInstance();
+    // 销毁单例
     static void destroyInstance();
 
-    Money() : money(500) {};
-    int getMoney() { return money; }
-    bool canAfford(int cost);
+    // 获取当前金钱 (只读)
+    int getMoney() const;
+
+    // 检查是否买得起 (只读)
+    bool canAfford(int cost) const;
+
+    // 花费金钱
     void spendMoney(int cost);
+
+    // 增加金钱
     void addMoney(int amount);
 
 private:
-    int money;
+    Money();
+    ~Money();
+
+private:
     static Money* _instance;
 
-    // 统一数据结构：使用 vector 存储指针
+    int _money;
+
+    // 物品库存容器
     std::vector<Item*> _inventory;
 };
 
