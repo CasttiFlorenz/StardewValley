@@ -1,4 +1,14 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     Evelyn.cpp
+ * File Function: Evelyn类的实现
+ * Author:        赵睿妍、蔡锦慧
+ * Update Date:   2025/12/24
+ * License:       MIT License
+ ****************************************************************/
 #include "Evelyn.h"
+
+USING_NS_CC;
 
 bool Evelyn::init()
 {
@@ -6,44 +16,36 @@ bool Evelyn::init()
         return false;
     }
 
-    // 加载Evelyn的纹理
-    if (!loadTexture("NPC/Evelyn..png")) { 
+    if (!loadTexture(NPC_NAME_EVELYN)) {
         return false;
     }
 
-    // 设置静态帧（不播放动画）
+    // 设置为静态帧
     setupStaticFrame();
 
     return true;
 }
 
+void Evelyn::playAnimation()
+{
+    // Evelyn 是静态 NPC，不需要播放行走动画
+}
+
 void Evelyn::setupStaticFrame()
 {
     auto texture = this->getTexture();
-    if (!texture) return;
+    if (texture == nullptr) return;
 
-    // Evelyn纹理是5行4列
-    int totalRows = 5;
-    int totalCols = 4;
+    // Evelyn 纹理: 5行 4列
+    float frameWidth = texture->getContentSize().width / 4.0f;
+    float frameHeight = texture->getContentSize().height / 5.0f;
 
-    // 计算每帧尺寸
-    float frameWidth = texture->getContentSize().width / totalCols;
-    float frameHeight = texture->getContentSize().height / totalRows;
-
-    // 使用第1行第1帧（索引0,0）作为静态显示
-    float x = 0;  // 第1列
-    float y = 0 * frameHeight;  // 第1行（索引0）
-
-    // 设置纹理显示区域
-    this->setTextureRect(Rect(x, y, frameWidth, frameHeight));
-
-    CCLOG("Evelyn设置为静态显示：第1行第1帧");
+    // 使用第1行第1帧 (索引 0,0)
+    this->setTextureRect(Rect(0, 0, frameWidth, frameHeight));
 }
-
 
 std::vector<std::string> Evelyn::getConversation(bool isFirstMet) {
     this->increaseFriendship(50);
-    CCLOG("%d",getFriendship());
     std::vector<std::string> dialogue;
 
     if (isFirstMet) {
@@ -60,40 +62,36 @@ std::vector<std::string> Evelyn::getConversation(bool isFirstMet) {
             dialogue.push_back("I just baked a fresh batch of cookies.");
             dialogue.push_back("Would you like one, dear?");
             break;
-
         case 1:
-            dialogue.push_back("My gardenias are blooming beautifully");
+            dialogue.push_back("My gardenias are blooming beautifully.");
             dialogue.push_back("The secret is talking to them every morning.");
             break;
-
-        case 2: 
-            dialogue.push_back("Remember to take care of yourself");
+        case 2:
+            dialogue.push_back("Remember to take care of yourself.");
             dialogue.push_back("Farming is hard work.");
             dialogue.push_back("Don't forget to eat proper meals!");
             break;
-
-        case 3: 
+        case 3:
             dialogue.push_back("How are you doing, dear?");
             dialogue.push_back("Is the farm keeping you busy?");
             break;
         }
     }
-
     return dialogue;
 }
+
 int Evelyn::checkGiftTaste(ItemType itemTag)
 {
-    // --- 最爱 (+80) ---
- 
+    // 最爱
     if (itemTag == ItemType::CAULIFLOWER) return 80;
     if (itemTag == ItemType::DAFFODILS) return 80;
 
-    // --- 喜欢 (+45) ---
+    // 喜欢
     if (itemTag == ItemType::MILK) return 45;
     if (itemTag == ItemType::SALAD) return 45;
     if (itemTag == ItemType::LEEK) return 45;
 
-    // --- 讨厌 (-20) ---
+    // 讨厌
     if (itemTag == ItemType::FISHINGROD) return -20;
     if (itemTag == ItemType::COPPER_ORE) return -20;
 

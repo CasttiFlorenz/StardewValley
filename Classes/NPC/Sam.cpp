@@ -1,5 +1,14 @@
-// Sam.cpp
+/***************************************************************
+* Project Name : StardewValley
+* File Name : Sam.cpp
+* File Function : Sam类的实现
+* Author : 赵睿妍、蔡锦慧
+* Update Date : 2025 / 12 / 20
+* License : MIT License
+* ***************************************************************/
 #include "Sam.h"
+
+USING_NS_CC;
 
 bool Sam::init()
 {
@@ -7,15 +16,12 @@ bool Sam::init()
         return false;
     }
 
-    // 加载纹理
-    if (!loadTexture("NPC/Sam..png")) {
+    // 使用常量路径
+    if (!loadTexture(NPC_NAME_SAM)) {
         return false;
     }
 
-    // 创建并播放动画
-    createAndPlayAnimation();
-
-    CCLOG("Sam NPC 初始化成功");
+    playAnimation();
     return true;
 }
 
@@ -27,68 +33,48 @@ void Sam::playAnimation()
 void Sam::createAndPlayAnimation()
 {
     auto texture = this->getTexture();
-    if (!texture) return;
+    if (texture == nullptr) return;
 
-    float frameWidth = texture->getContentSize().width / 4;
-    float frameHeight = texture->getContentSize().height / 13;
+    // Sam 纹理布局: 13行 4列
+    float frameWidth = texture->getContentSize().width / 4.0f;
+    float frameHeight = texture->getContentSize().height / 13.0f;
 
-    // 创建帧容器
+    // 动作位于第7行和第8行 (索引6和7)
+    int rowIndex1 = 6;
+    int rowIndex2 = 7;
+
+    // 设置初始显示区域
+    this->setTextureRect(Rect(0, rowIndex1 * frameHeight, frameWidth, frameHeight));
+
     Vector<SpriteFrame*> frames;
 
-    int rowIndex1 = 6; 
-    int rowIndex2 = 7; 
-
-    // 添加第7行的4个帧
+    // 收集第一行帧
     for (int col = 0; col < 4; col++) {
-        float x = col * frameWidth;
-        float y = rowIndex1 * frameHeight;
-
         auto frame = SpriteFrame::createWithTexture(
             texture,
-            Rect(x, y, frameWidth, frameHeight)
+            Rect(col * frameWidth, rowIndex1 * frameHeight, frameWidth, frameHeight)
         );
-
-        if (frame) {
-            frames.pushBack(frame);
-        }
+        if (frame) frames.pushBack(frame);
     }
 
-    // 添加第8行的4个帧（共8帧）
+    // 收集第二行帧
     for (int col = 0; col < 4; col++) {
-        float x = col * frameWidth;
-        float y = rowIndex2 * frameHeight;
-
         auto frame = SpriteFrame::createWithTexture(
             texture,
-            Rect(x, y, frameWidth, frameHeight)
+            Rect(col * frameWidth, rowIndex2 * frameHeight, frameWidth, frameHeight)
         );
-
-        if (frame) {
-            frames.pushBack(frame);
-        }
+        if (frame) frames.pushBack(frame);
     }
 
-    // 检查是否有足够的帧
-    if (frames.size() != 8) {
-        CCLOG("警告：Sam动画帧数量不足");
-        return;
-    }
+    if (frames.empty()) return;
 
-    // 创建动画（每帧0.15秒）
+    // 创建动画
     auto animation = Animation::createWithSpriteFrames(frames, 0.15f);
     animation->setRestoreOriginalFrame(false);
-    animation->setDelayPerUnit(0.15f);
-    animation->setLoops(-1);  // 无限循环
-
-    this->stopAllActions();
+    animation->setLoops(-1);
 
     auto animate = Animate::create(animation);
-
-    auto repeat = RepeatForever::create(animate);
-
-    this->runAction(repeat);
-
-    CCLOG("Sam动画开始播放");
+    this->runAction(RepeatForever::create(animate));
 }
 
 std::vector<std::string> Sam::getConversation(bool isFirstMet) {
@@ -97,13 +83,12 @@ std::vector<std::string> Sam::getConversation(bool isFirstMet) {
     std::vector<std::string> dialogue;
 
     if (isFirstMet) {
-        dialogue.push_back("Hey, you're the new farmer, right? ");
+        dialogue.push_back("Hey, you're the new farmer, right?");
         dialogue.push_back("I'm Sam. I live in town with my mom.");
         dialogue.push_back("I play in a band with Sebastian.");
         dialogue.push_back("If you're into music, you should come listen.");
     }
     else {
-        // 随机对话
         int randomChoice = rand() % 6;
         switch (randomChoice) {
         case 0:
@@ -115,11 +100,10 @@ std::vector<std::string> Sam::getConversation(bool isFirstMet) {
             dialogue.push_back("I can't wait to hear it!");
             break;
         case 2:
-            dialogue.push_back("Mom made pancakes this morning. ");
+            dialogue.push_back("Mom made pancakes this morning.");
             break;
         case 3:
             dialogue.push_back("Vincent keeps trying to play my guitar.");
-            dialogue.push_back("He's getting pretty good for a little kid.");
             break;
         case 4:
             dialogue.push_back("I work part-time at JojaMart.");
@@ -130,21 +114,19 @@ std::vector<std::string> Sam::getConversation(bool isFirstMet) {
             break;
         }
     }
-
     return dialogue;
 }
 
-
-int Sam::checkGiftTaste(ItemType  itemTag)
+int Sam::checkGiftTaste(ItemType itemTag)
 {
-    // --- 最爱 (+80) ---
+    // 最爱
     if (itemTag == ItemType::FRIED_EGG) return 80;
 
-    // --- 喜欢 (+45) ---
+    // 喜欢
     if (itemTag == ItemType::EGG) return 45;
     if (itemTag == ItemType::SALAD) return 45;
 
-    // --- 讨厌 (-20) ---
+    // 讨厌
     if (itemTag == ItemType::CAULIFLOWER) return -20;
     if (itemTag == ItemType::PARSNIP) return -20;
     if (itemTag == ItemType::COPPER_ORE) return -20;

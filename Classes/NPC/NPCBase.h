@@ -1,46 +1,61 @@
-// NPCBase.h
 #ifndef __NPC_BASE_H__
 #define __NPC_BASE_H__
 
 #include "cocos2d.h"
 #include "Constant.h" 
+#include <vector>
+#include <string>
 
-USING_NS_CC;
-
-class NPCBase : public Sprite
+class NPCBase : public cocos2d::Sprite
 {
 public:
+    // ³õÊ¼»¯ NPC »ù´¡ÊôĞÔ
     virtual bool init() override;
+
+    // ²¥·Å NPC ¶¯»­£¨´¿Ğéº¯Êı£¬×ÓÀà±ØĞëÊµÏÖ£©
     virtual void playAnimation() = 0;
+
+    // »ñÈ¡ NPC ¶Ô»°ÁĞ±í£¨´¿Ğéº¯Êı£¬×ÓÀà±ØĞëÊµÏÖ£©
     virtual std::vector<std::string> getConversation(bool isFirstMet) = 0;
 
-    // åŸºç¡€å±æ€§è®¾ç½®
-    void setNPCPosition(const Vec2& position);
+    // ÉèÖÃ NPC ÔÚµØÍ¼ÉÏµÄÎ»ÖÃ
+    void setNPCPosition(const cocos2d::Vec2& position);
+
+    // ÉèÖÃ NPC µÄËõ·Å±ÈÀı
     void setNPCScale(float scale);
+
+    // ÉèÖÃ NPC Ãû×Ö
     void setNPCName(const std::string& name) { _npcName = name; }
-    void setNPCFriendship(int friendship) { _friendship = friendship; };
+
+    // »ñÈ¡ NPC Ãû×Ö
     std::string getNPCName() const { return _npcName; }
 
-    // --- å¥½æ„Ÿåº¦ç›¸å…³ ---
+    // ½ÓÊÕÀñÎï²¢·µ»Ø¶ÔÓ¦µÄ¶Ô»°ÎÄ±¾
+    std::string receiveGift(ItemType itemTag);
 
-    // æ¥æ”¶ç¤¼ç‰©
-    std::string receiveGift(ItemType  itemTag);
-
-    // è·å–å½“å‰å¥½æ„Ÿåº¦
+    // »ñÈ¡µ±Ç°ºÃ¸Ğ¶ÈÊıÖµ
     int getFriendship() const { return _friendship; }
 
+    //ÉèÖÃºÃºÃ¸ĞÖµ
+    void setNPCFriendship(int friendship) { _friendship = friendship; };
+
 protected:
+    // ¼ÓÔØÎÆÀíÍ¼Æ¬
     bool loadTexture(const std::string& path);
+
+    // ´´½¨²¢²¥·ÅÖ¡¶¯»­
     void createAnimation(int totalRows, int totalCols, int animationRow, float frameDelay = 0.15f);
 
+    // ¼ì²éÀñÎïÏ²ºÃ²¢·µ»Ø·ÖÖµ£¨Ğéº¯Êı£©
     virtual int checkGiftTaste(ItemType itemTag);
+
+    // Ôö¼ÓºÃ¸Ğ¶È£¨°üº¬ÊıÖµ·¶Î§ÏŞÖÆ£©
     void increaseFriendship(int amount);
+
 private:
     bool _isTextureLoaded;
     std::string _npcName;
-
-    int _friendship = 0; // å¥½æ„Ÿåº¦æ•°å€¼
+    int _friendship;
 };
-
 
 #endif // __NPC_BASE_H__
