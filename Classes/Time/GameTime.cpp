@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     GameTime.cpp
- * File Function: GameTimeÀàµÄÊµÏÖ
- * Author:        ÕÔî£åû
+ * File Function: GameTimeç±»çš„å®ç°
+ * Author:        èµµç¿å¦
  * Update Date:   2025/12/13
  * License:       MIT License
  ****************************************************************/
@@ -11,10 +11,10 @@
 
 USING_NS_CC;
 
-// ==================== ¹¹Ôìº¯Êı ====================
+// ==================== æ„é€ å‡½æ•° ====================
 
 /**
- * Ä¬ÈÏ¹¹Ôìº¯Êı£¬³õÊ¼»¯Ê±¼äÎªÓÎÏ·¿ªÊ¼µÄÄ¬ÈÏÖµ (µÚ1Äê´º¼¾1ÈÕ 6:00)
+ * é»˜è®¤æ„é€ å‡½æ•°ï¼Œåˆå§‹åŒ–æ—¶é—´ä¸ºæ¸¸æˆå¼€å§‹çš„é»˜è®¤å€¼ (ç¬¬1å¹´æ˜¥å­£1æ—¥ 6:00)
  */
 GameTime::GameTime()
     : _year(START_YEAR)
@@ -25,7 +25,7 @@ GameTime::GameTime()
 }
 
 /**
- * ´ø²Î¹¹Ôìº¯Êı£¬Ê¹ÓÃÖ¸¶¨µÄÄêÔÂÈÕÊ±·Ö³õÊ¼»¯¶ÔÏó
+ * å¸¦å‚æ„é€ å‡½æ•°ï¼Œä½¿ç”¨æŒ‡å®šçš„å¹´æœˆæ—¥æ—¶åˆ†åˆå§‹åŒ–å¯¹è±¡
  */
 GameTime::GameTime(int y, Season s, int d, int h, int m)
     : _year(y)
@@ -34,48 +34,54 @@ GameTime::GameTime(int y, Season s, int d, int h, int m)
     , _hour(h)
     , _minute(m) {
 }
+/**
+ * è®¾å®šæ—¶é—´ä¿¡æ¯
+ */
+void GameTime::setName(const std::string& name) {
+    _name = name;
+}
 
-// ==================== ºËĞÄ½øÎ»Âß¼­ ====================
+// ==================== æ ¸å¿ƒè¿›ä½é€»è¾‘ ====================
 
 /**
- * Ôö¼Ó·ÖÖÓÊı£¬´¦ÀíĞ¡Ê±½øÎ»ÒÔ¼°Áè³¿Ê±¼äµÄÑ­»·»úÖÆ
+ * å¢åŠ åˆ†é’Ÿæ•°ï¼Œå¤„ç†å°æ—¶è¿›ä½ä»¥åŠå‡Œæ™¨æ—¶é—´çš„å¾ªç¯æœºåˆ¶
  */
 void GameTime::addMinutes(int minutesToAdd) {
     _minute += minutesToAdd;
 
-    // ·ÖÖÓ½øÎ»´¦Àí£º³¬¹ı60·ÖÖÓ½øÎ»µ½Ğ¡Ê±
+    // åˆ†é’Ÿè¿›ä½å¤„ç†ï¼šè¶…è¿‡60åˆ†é’Ÿè¿›ä½åˆ°å°æ—¶
     while (_minute >= MINUTES_PER_HOUR) {
         _minute -= MINUTES_PER_HOUR;
         _hour++;
     }
 
-    // Ê±¼ä³¬¹ıËùÔÊĞíµÄ×îÍíÊ±¼ä£¬Ë¯¾õ»òÇ¿ÖÆ»èÃÔ
+    // æ—¶é—´è¶…è¿‡æ‰€å…è®¸çš„æœ€æ™šæ—¶é—´ï¼Œç¡è§‰æˆ–å¼ºåˆ¶æ˜è¿·
     if (_hour >= MAX_GAME_HOUR) {
         _hour -= HOURS_PER_DAY_STD;
     }
 }
 
 /**
- * Ôö¼ÓÌìÊı£¬²¢Á¢¼´´¥·¢ÔÂ·İ/¼¾½Ú/Äê·İµÄ¸üÌæ¼ì²é
+ * å¢åŠ å¤©æ•°ï¼Œå¹¶ç«‹å³è§¦å‘æœˆä»½/å­£èŠ‚/å¹´ä»½çš„æ›´æ›¿æ£€æŸ¥
  */
 void GameTime::addDays(int daysToAdd) {
     _dayOfMonth += daysToAdd;
-    // Ôö¼ÓÌìÊıºóÁ¢¼´¼ì²éÊÇ·ñĞèÒªÇĞ»»¼¾½Ú»òÄê·İ
+    // å¢åŠ å¤©æ•°åç«‹å³æ£€æŸ¥æ˜¯å¦éœ€è¦åˆ‡æ¢å­£èŠ‚æˆ–å¹´ä»½
     handleDayRollover();
 }
 
 /**
- * ´¦ÀíÈÕÆÚ¸üÌæÂß¼­£¬µ±ÈÕÆÚ³¬¹ıÔÂµ×Ê±×Ô¶¯ÇĞ»»µ½ÏÂÒ»¼¾½Ú»òÄê·İ
+ * å¤„ç†æ—¥æœŸæ›´æ›¿é€»è¾‘ï¼Œå½“æ—¥æœŸè¶…è¿‡æœˆåº•æ—¶è‡ªåŠ¨åˆ‡æ¢åˆ°ä¸‹ä¸€å­£èŠ‚æˆ–å¹´ä»½
  */
 void GameTime::handleDayRollover() {
-    // ¼ì²éÊÇ·ñ³¬¹ıµ±ÔÂ×î´óÌìÊı
+    // æ£€æŸ¥æ˜¯å¦è¶…è¿‡å½“æœˆæœ€å¤§å¤©æ•°
     while (_dayOfMonth > DAYS_PER_MONTH) {
         _dayOfMonth -= DAYS_PER_MONTH;
 
-        // ¼¾½Ú¸üÌæÂß¼­
+        // å­£èŠ‚æ›´æ›¿é€»è¾‘
         int nextSeasonIndex = static_cast<int>(_season) + 1;
 
-        // Èç¹û³¬¹ı¶¬¼¾(3)£¬ÖØÖÃÎª´º¼¾(0)²¢Ôö¼ÓÄê·İ
+        // å¦‚æœè¶…è¿‡å†¬å­£(3)ï¼Œé‡ç½®ä¸ºæ˜¥å­£(0)å¹¶å¢åŠ å¹´ä»½
         if (nextSeasonIndex > static_cast<int>(Season::Winter)) {
             nextSeasonIndex = static_cast<int>(Season::Spring);
             _year++;
@@ -84,22 +90,22 @@ void GameTime::handleDayRollover() {
     }
 }
 
-// ==================== ×Ö·û´®¸ñÊ½»¯ ====================
+// ==================== å­—ç¬¦ä¸²æ ¼å¼åŒ– ====================
 
 /**
- * »ñÈ¡¸ñÊ½»¯µÄ 12 Ğ¡Ê±ÖÆÊ±¼ä×Ö·û´® (Èç "6:00 am")£¬°üº¬Áè³¿Ê±¼äµÄÌØÊâÏÔÊ¾´¦Àí
+ * è·å–æ ¼å¼åŒ–çš„ 12 å°æ—¶åˆ¶æ—¶é—´å­—ç¬¦ä¸² (å¦‚ "6:00 am")ï¼ŒåŒ…å«å‡Œæ™¨æ—¶é—´çš„ç‰¹æ®Šæ˜¾ç¤ºå¤„ç†
  */
 std::string GameTime::getTimeString() const {
     std::string period = STR_TIME_AM;
     int displayHour = _hour;
 
-    // ¸ñÊ½»¯¿çÌìÊ±¼äÏÔÊ¾ (ÀıÈç 25:00 Âß¼­ÉÏ¶ÔÓ¦´ÎÈÕ 1:00)
-    // µ«ÔÚÏÔÊ¾Ê±Í¨³£¼õÈ¥24À´¼ÆËã AM/PM
+    // æ ¼å¼åŒ–è·¨å¤©æ—¶é—´æ˜¾ç¤º (ä¾‹å¦‚ 25:00 é€»è¾‘ä¸Šå¯¹åº”æ¬¡æ—¥ 1:00)
+    // ä½†åœ¨æ˜¾ç¤ºæ—¶é€šå¸¸å‡å»24æ¥è®¡ç®— AM/PM
     if (displayHour >= HOURS_PER_DAY_STD) {
         displayHour -= HOURS_PER_DAY_STD;
     }
 
-    // 12Ğ¡Ê±ÖÆ×ª»»Âß¼­
+    // 12å°æ—¶åˆ¶è½¬æ¢é€»è¾‘
     if (displayHour >= 12) {
         period = STR_TIME_PM;
         if (displayHour > 12) {
@@ -107,7 +113,7 @@ std::string GameTime::getTimeString() const {
         }
     }
 
-    // ÌØÊâ´¦Àí£º0µãÏÔÊ¾Îª12µã
+    // ç‰¹æ®Šå¤„ç†ï¼š0ç‚¹æ˜¾ç¤ºä¸º12ç‚¹
     if (displayHour == 0) {
         displayHour = 12;
     }
@@ -117,12 +123,12 @@ std::string GameTime::getTimeString() const {
 }
 
 /**
- * »ñÈ¡¸ñÊ½»¯µÄÈÕÆÚ×Ö·û´® (Èç "Mon. 1")£¬°üº¬ĞÇÆÚ¼¸µÄ¼ÆËã
+ * è·å–æ ¼å¼åŒ–çš„æ—¥æœŸå­—ç¬¦ä¸² (å¦‚ "Mon. 1")ï¼ŒåŒ…å«æ˜ŸæœŸå‡ çš„è®¡ç®—
  */
 std::string GameTime::getDateString() const {
     int dayIndex = static_cast<int>(getDayOfWeek());
 
-    // Ë÷Òı±ß½ç°²È«¼ì²é£¬·ÀÖ¹·ÃÎÊÔ½½ç
+    // ç´¢å¼•è¾¹ç•Œå®‰å…¨æ£€æŸ¥ï¼Œé˜²æ­¢è®¿é—®è¶Šç•Œ
     if (dayIndex >= 0 && dayIndex < static_cast<int>(STR_DAYS_OF_WEEK.size())) {
         return StringUtils::format("%s. %d", STR_DAYS_OF_WEEK[dayIndex].c_str(), _dayOfMonth);
     }
@@ -130,7 +136,7 @@ std::string GameTime::getDateString() const {
 }
 
 /**
- * »ñÈ¡µ±Ç°¼¾½ÚµÄ×Ö·û´®Ãû³Æ (Spring, Summer, Fall, Winter)
+ * è·å–å½“å‰å­£èŠ‚çš„å­—ç¬¦ä¸²åç§° (Spring, Summer, Fall, Winter)
  */
 std::string GameTime::getSeasonString() const {
     switch (_season) {
@@ -143,40 +149,41 @@ std::string GameTime::getSeasonString() const {
 }
 
 /**
- * »ñÈ¡°üº¬Äê¡¢ÔÂ¡¢ÈÕ¡¢Ê±µÄÍêÕûµ÷ÊÔĞÅÏ¢×Ö·û´®
+ * è·å–åŒ…å«å¹´ã€æœˆã€æ—¥ã€æ—¶çš„å®Œæ•´è°ƒè¯•ä¿¡æ¯å­—ç¬¦ä¸²
  */
 std::string GameTime::getFullString() const {
-    // Æ´½ÓÍêÕûµÄÈÕÆÚÊ±¼ä×Ö·û´®£¬ÓÃÓÚµ÷ÊÔ
+    // æ‹¼æ¥å®Œæ•´çš„æ—¥æœŸæ—¶é—´å­—ç¬¦ä¸²ï¼Œç”¨äºè°ƒè¯•
     return StringUtils::format("Year %d %s Day %d - %s",
         _year, getSeasonString().c_str(), _dayOfMonth, getTimeString().c_str());
 }
 
-// ==================== ¸¨Öú¼ÆËã ====================
+// ==================== è¾…åŠ©è®¡ç®— ====================
 
 /**
- * ¸ù¾İµ±Ç°ÈÕÆÚ¼ÆËã½ñÌìÊÇĞÇÆÚ¼¸ (¼ÙÉèÃ¿ÔÂ1ºÅ¾ùÎªÖÜÒ»)
+ * æ ¹æ®å½“å‰æ—¥æœŸè®¡ç®—ä»Šå¤©æ˜¯æ˜ŸæœŸå‡  (å‡è®¾æ¯æœˆ1å·å‡ä¸ºå‘¨ä¸€)
  */
 DayOfWeek GameTime::getDayOfWeek() const {
-    // ¸ù¾İÃ¿ÔÂ1ºÅÎªÖÜÒ»µÄ¹æÔò¼ÆËãĞÇÆÚ
-    // ¼ÆËã¹«Ê½: (ÈÕÆÚ - 1) % 7
+    // æ ¹æ®æ¯æœˆ1å·ä¸ºå‘¨ä¸€çš„è§„åˆ™è®¡ç®—æ˜ŸæœŸ
+    // è®¡ç®—å…¬å¼: (æ—¥æœŸ - 1) % 7
     int dayIndex = (_dayOfMonth - 1) % 7;
     return static_cast<DayOfWeek>(dayIndex);
 }
 
 /**
- * ±È½ÏÁ½¸öÊ±¼ä¶ÔÏóÊÇ·ñ´ú±íÍ¬Ò»Ìì (ºöÂÔ¾ßÌåÊ±·Ö)
+ * æ¯”è¾ƒä¸¤ä¸ªæ—¶é—´å¯¹è±¡æ˜¯å¦ä»£è¡¨åŒä¸€å¤© (å¿½ç•¥å…·ä½“æ—¶åˆ†)
  */
 bool GameTime::isSameDay(const GameTime& other) const {
-    // ±È½ÏÄêÔÂÈÕÊÇ·ñÍêÈ«Ò»ÖÂ
+    // æ¯”è¾ƒå¹´æœˆæ—¥æ˜¯å¦å®Œå…¨ä¸€è‡´
     return _year == other._year &&
         _season == other._season &&
         _dayOfMonth == other._dayOfMonth;
 }
 
 /**
- * ±È½ÏÁ½¸öÊ±¼ä¶ÔÏóÊÇ·ñ´ú±íÍ¬Ò»ÌìµÄÍ¬Ò»Ğ¡Ê±
+ * æ¯”è¾ƒä¸¤ä¸ªæ—¶é—´å¯¹è±¡æ˜¯å¦ä»£è¡¨åŒä¸€å¤©çš„åŒä¸€å°æ—¶
  */
 bool GameTime::isSameHour(const GameTime& other) const {
-    // ±È½ÏÊÇ·ñÎªÍ¬Ò»ÌìµÄÍ¬Ò»Ğ¡Ê±
+    // æ¯”è¾ƒæ˜¯å¦ä¸ºåŒä¸€å¤©çš„åŒä¸€å°æ—¶
     return isSameDay(other) && _hour == other._hour;
+
 }
