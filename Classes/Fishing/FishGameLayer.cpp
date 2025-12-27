@@ -24,14 +24,14 @@ bool FishGameLayer::init()
         return false;
     }
 
-    _currentValue = 50.0f;  // ³õÊ¼Öµ
+    _currentValue = 50.0f;  // åˆå§‹å€¼
     _isGameActive = true;
 
     _progressBarRect = Rect(93, 20, 5, 272);
 
     _fishBasePosition = Vec2(73, 22);
 
-    // ½ø¶ÈÌõ¿ÉÌî³ä¸ß¶È
+    // è¿›åº¦æ¡å¯å¡«å……é«˜åº¦
     _progressBarHeight = 400.0f;
 
     setupUI();
@@ -47,27 +47,27 @@ void FishGameLayer::setupUI()
 {
     auto visibleSize = Director::getInstance()->getVisibleSize();
 
-    //1. ¼ÓÔØ±³¾°Í¼Æ¬
-    _background = Sprite::create("Fishingicons.png");
+    //åŠ è½½èƒŒæ™¯å›¾ç‰‡
+    _background = Sprite::create("Fishing/Fishingicons.png");
 
     _background->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 
-    _background->setScale(2.0f); // ·Å´óµ½2.0±¶
+    _background->setScale(2.0f); // æ”¾å¤§åˆ°2.0å€
 
     this->addChild(_background, 0);
 
-    //2. ÔÚ±³¾°Í¼Æ¬ÉÏ´´½¨½ø¶ÈÌõ
+    //åœ¨èƒŒæ™¯å›¾ç‰‡ä¸Šåˆ›å»ºè¿›åº¦æ¡
     Vec2 backgroundPos = _background->getPosition();
     Size backgroundSize = _background->getContentSize();
     Vec2 backgroundAnchor = _background->getAnchorPoint();
-    float backgroundScale = _background->getScale(); // »ñÈ¡Ëõ·Å±ÈÀý
+    float backgroundScale = _background->getScale(); // èŽ·å–ç¼©æ”¾æ¯”ä¾‹
 
     float progressBarScreenX = backgroundPos.x - backgroundSize.width * backgroundAnchor.x * backgroundScale
         + _progressBarRect.origin.x * backgroundScale;
     float progressBarScreenY = backgroundPos.y - backgroundSize.height * backgroundAnchor.y * backgroundScale
         + _progressBarRect.origin.y * backgroundScale;
 
-    // ´´½¨ÂÌÉ«½ø¶ÈÌõ
+    // åˆ›å»ºç»¿è‰²è¿›åº¦æ¡
     _progressBar = DrawNode::create();
 
     float greenHeight = (_currentValue / 1000.0f) * _progressBarRect.size.height;
@@ -76,17 +76,17 @@ void FishGameLayer::setupUI()
     float progressBarHeight = greenHeight * backgroundScale;
 
     Vec2 greenPoints[4] = {
-        Vec2(progressBarScreenX, progressBarScreenY),  // ×óÏÂ½Ç
-        Vec2(progressBarScreenX + _progressBarRect.size.width, progressBarScreenY),  // ÓÒÏÂ½Ç
-        Vec2(progressBarScreenX + _progressBarRect.size.width, progressBarScreenY + greenHeight),  // ÓÒÉÏ½Ç
-        Vec2(progressBarScreenX, progressBarScreenY + greenHeight)  // ×óÉÏ½Ç
+        Vec2(progressBarScreenX, progressBarScreenY),  // å·¦ä¸‹è§’
+        Vec2(progressBarScreenX + _progressBarRect.size.width, progressBarScreenY),  // å³ä¸‹è§’
+        Vec2(progressBarScreenX + _progressBarRect.size.width, progressBarScreenY + greenHeight),  // å³ä¸Šè§’
+        Vec2(progressBarScreenX, progressBarScreenY + greenHeight)  // å·¦ä¸Šè§’
     };
 
     _progressBar->drawSolidPoly(greenPoints, 4, Color4F(0.0f, 1.0f, 0.0f, 1.0f));
     this->addChild(_progressBar, 1);
 
-    //3. ÔÚ±³¾°Í¼Æ¬ÉÏ´´½¨Óã
-    _fishSprite = Sprite::create("Tuna.png");
+    //åœ¨èƒŒæ™¯å›¾ç‰‡ä¸Šåˆ›å»ºé±¼
+    _fishSprite = Sprite::create("Fishing/Tuna.png");
 
     float fishScreenX = backgroundPos.x - backgroundSize.width * backgroundAnchor.x + _fishBasePosition.x;
     float fishScreenY = backgroundPos.y - backgroundSize.height * backgroundAnchor.y + _fishBasePosition.y +
@@ -96,7 +96,7 @@ void FishGameLayer::setupUI()
     _fishSprite->setScale(1.5f);
     this->addChild(_fishSprite, 2);
 
-    //4. ´´½¨½á¹û±êÇ©
+    //åˆ›å»ºç»“æžœæ ‡ç­¾
     _resultLabel = Label::createWithSystemFont("", "Arial", 48);
     _resultLabel->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 50));
     _resultLabel->setVisible(false);
@@ -123,11 +123,11 @@ void FishGameLayer::onMouseClick()
         _currentValue = 1000.0f;
     }
 
-    // ¸üÐÂ½ø¶ÈÌõºÍÓãµÄÎ»ÖÃ
+    // æ›´æ–°è¿›åº¦æ¡å’Œé±¼çš„ä½ç½®
     updateProgressBar();
     updateFishPosition();
 
-    // ÓãÌø¶¯¶¯»­
+    // é±¼è·³åŠ¨åŠ¨ç”»
     auto jumpUp = ScaleTo::create(0.1f, 1.8f);
     auto jumpDown = ScaleTo::create(0.1f, 1.5f);
     auto sequence = Sequence::create(jumpUp, jumpDown, nullptr);
@@ -148,11 +148,11 @@ void FishGameLayer::update(float delta)
         _currentValue = 0.0f;
     }
 
-    // ¸üÐÂ½ø¶ÈÌõºÍÓãµÄÎ»ÖÃ
+    // æ›´æ–°è¿›åº¦æ¡å’Œé±¼çš„ä½ç½®
     updateProgressBar();
     updateFishPosition();
 
-    // Óã¸¡¶¯¶¯»­
+    // é±¼æµ®åŠ¨åŠ¨ç”»
     static float floatTime = 0;
     floatTime += delta;
     float floatOffset = sin(floatTime * 3.0f) * 12.0f;
@@ -165,14 +165,14 @@ void FishGameLayer::update(float delta)
 
 void FishGameLayer::updateProgressBar()
 {
-    // Çå³ý¾ÉµÄ½ø¶ÈÌõ»æÖÆ
+    // æ¸…é™¤æ—§çš„è¿›åº¦æ¡ç»˜åˆ¶
     _progressBar->clear();
 
-    // »ñÈ¡±³¾°Í¼Æ¬µÄÊÀ½ç×ø±êºÍÃªµãÐÅÏ¢
+    // èŽ·å–èƒŒæ™¯å›¾ç‰‡çš„ä¸–ç•Œåæ ‡å’Œé”šç‚¹ä¿¡æ¯
     Vec2 backgroundPos = _background->getPosition();
     Size backgroundSize = _background->getContentSize();
     Vec2 backgroundAnchor = _background->getAnchorPoint();
-    float backgroundScale = _background->getScale(); // »ñÈ¡Ëõ·Å±ÈÀý
+    float backgroundScale = _background->getScale(); // èŽ·å–ç¼©æ”¾æ¯”ä¾‹
 
     float progressBarScreenX = backgroundPos.x - backgroundSize.width * backgroundAnchor.x * backgroundScale
         + _progressBarRect.origin.x * backgroundScale;
@@ -188,17 +188,17 @@ void FishGameLayer::updateProgressBar()
         Vec2(progressBarScreenX, progressBarScreenY + greenHeight)
     };
 
-    // ¸ù¾Ý½ø¶È¸Ä±äÑÕÉ«
+    // æ ¹æ®è¿›åº¦æ”¹å˜é¢œè‰²
     float percentage = _currentValue / 1000.0f;
     Color4F barColor;
     if (percentage > 0.7f) {
-        barColor = Color4F(0.0f, 1.0f, 0.0f, 1.0f); // ÂÌÉ«
+        barColor = Color4F(0.0f, 1.0f, 0.0f, 1.0f); // ç»¿è‰²
     }
     else if (percentage > 0.3f) {
-        barColor = Color4F(1.0f, 1.0f, 0.0f, 1.0f); // »ÆÉ«
+        barColor = Color4F(1.0f, 1.0f, 0.0f, 1.0f); // é»„è‰²
     }
     else {
-        barColor = Color4F(1.0f, 0.0f, 0.0f, 1.0f); // ºìÉ«
+        barColor = Color4F(1.0f, 0.0f, 0.0f, 1.0f); // çº¢è‰²
     }
 
     _progressBar->drawSolidPoly(greenPoints, 4, barColor);
@@ -237,9 +237,10 @@ void FishGameLayer::endGame(bool isSuccess)
     this->unscheduleUpdate();
 
     this->scheduleOnce([this](float dt) {
-        // µ¯³öÏÖÓÐ³¡¾°£¨·µ»ØÅ©³¡£©
+        // å¼¹å‡ºçŽ°æœ‰åœºæ™¯ï¼ˆè¿”å›žå†œåœºï¼‰
         this->removeFromParent();
-        // ×¢Òâ£ºÕâÀïÐèÒªÔÚGameSceneÖÐ»Ö¸´Ê±¼äºÍÍæ¼ÒÒÆ¶¯
-        // ÎÒÃÇÐèÒªÔÚFishGameSceneÖÐ´«µÝÏûÏ¢£¬»òÕßÈÃGameScene×Ô¼º»Ö¸´
+        // æ³¨æ„ï¼šè¿™é‡Œéœ€è¦åœ¨GameSceneä¸­æ¢å¤æ—¶é—´å’ŒçŽ©å®¶ç§»åŠ¨
+        // æˆ‘ä»¬éœ€è¦åœ¨FishGameSceneä¸­ä¼ é€’æ¶ˆæ¯ï¼Œæˆ–è€…è®©GameSceneè‡ªå·±æ¢å¤
         }, 2.0f, "return_to_farm");
+
 }
