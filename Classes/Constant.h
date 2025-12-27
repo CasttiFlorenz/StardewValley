@@ -26,6 +26,11 @@ constexpr int INITIAL_PLAYER_MONEY = 500;
 constexpr int FISHING_GAME_TAG = 8998;
 constexpr int SHOP_MENU_TAG = 9999;
 constexpr int TAG_DIALOGUE_LAYER = 9998;
+constexpr int ITEM_TAG_BASE = 1000;   
+constexpr int COUNT_TAG_BASE = 2000;  
+constexpr int BUTTON_TAG_BASE = 3000; 
+constexpr int PREVIEW_TAG_BASE = 999;
+
 
 // [Section 2] 枚举定义 (Enums)
 
@@ -164,7 +169,25 @@ const std::string PATH_SHOP_CLOSE = "Shop/close.png";
 const std::string PATH_SHOP_MENU_PREFIX = "Shop/Shop_";
 
 // UI - 背包
+const std::string PATH_INVENTORY_BG = "Items/background.png";
 const std::string PATH_INVENTORY_SLOT_BG = "Items/inventory.jpg";
+const std::string PATH_PREVIEW_BOX = "/Items/box.png";
+const std::string BUTTON_IMAGES[4] = {     // 按钮图片
+    "/Items/button/inventory button.png",
+    "/Items/button/skill button.png",
+    "/Items/button/social button.png",
+    "/Items/button/exit button.png"
+};
+// 技能水平显示
+const std::string LEVEL_FILLED1 = "/Player/red block.png";
+const std::string LEVEL_EMPTY1 = "/Player/empty block.png";
+const std::string LEVEL_FILLED2 = "/Player/orange block.png";
+const std::string LEVEL_EMPTY2 = "/Player/long block.png";
+
+// 好感度显示
+const std::string HEART_FILLED = "/NPC/red heart.png";
+const std::string HEART_EMPTY = "/NPC/empty heart.png";
+
 
 // UI - 睡觉
 const std::string PATH_UI_YES = "Shop/ok.png";
@@ -174,19 +197,6 @@ const std::string PATH_UI_SELECT = "Shop/SelectDialogue.png";
 // UI-对话
 const std::string PATH_DIALOGUE_BG_DEFAULT = "Shop/dialogue.png";
 const std::string PATH_DIALOGUE_PREFIX = "Shop/Dialogue_";
-
-// 技能水平显示
-constexpr char* LEVEL_FILLED1 = "/Player/red block.png";
-constexpr char* LEVEL_EMPTY1 = "/Player/empty block.png";
-constexpr char* LEVEL_FILLED2 = "/Player/orange block.png";
-constexpr char* LEVEL_EMPTY2 = "/Player/long block.png";
-constexpr int MAX_LEVEL = 100;    // 最高经验值
-constexpr int SKILL_COUNT = 4;    // 技能个数
-
-// 好感度显示
-constexpr char* HEART_FILLED = "/NPC/red heart.png";
-constexpr char* HEART_EMPTY = "/NPC/empty heart.png";
-
 
 // NPC
 const std::string NPC_NAME_HALEY = "Haley";
@@ -199,9 +209,11 @@ const std::string PATH_NPC_EVELYN = "NPC/Evelyn.png";
 const std::string PATH_NPC_HALEY = "NPC/Haley.png";
 
 // 字体
+const std::string FONT_DEFAULT_SYSTEM = "Arial";
 const std::string PATH_FONT_ARIAL = "fonts/arial.ttf";
 const std::string PATH_FONT_PIXEL = "fonts/pixel.ttf";
-const std::string FONT_DEFAULT_SYSTEM = "Arial";
+const std::string PATH_FONT_LOUIS = "fonts/Louis George Cafe Bold.ttf";
+const std::string PATH_FONT_HANDRON= "fonts/Handron-Filled.otf";
 
 
 // [Section 4] 逻辑常量与字符串 (Logic Constants)
@@ -287,6 +299,8 @@ constexpr float SCROLL_SENSITIVITY = 30.0f;
 constexpr int INVENTORY_ROWS = 3;
 constexpr int INVENTORY_COLS = 12;
 constexpr int INVENTORY_TOTAL_SLOTS = 36;
+constexpr int INVENTORT_BUTTON_COUNT = 4;
+constexpr int INVENTORT_TOOL_COUNT = 5;
 constexpr float INV_GRID_CENTER_X = 400.0f;
 constexpr float INV_GRID_START_Y = 220.0f;
 constexpr float INV_GRID_GAP_Y = 75.0f;
@@ -294,10 +308,11 @@ constexpr float INV_SLOT_BASE_SIZE = 43.0f;
 constexpr float INV_SLOT_SCALE = 1.35f;
 constexpr float INV_BG_SCALE = 1.45f;
 constexpr float INV_SLOT_TOUCH_SIZE = 50.0f;
-constexpr int INVENTORY_SIZE = 36;    // 背包总大小
-constexpr int ITEM_TAG_BASE = 1000;   // 物品精灵的tag
-constexpr int COUNT_TAG_BASE = 2000;  // 数量标签的tag
-constexpr int BUTTON_TAG_BASE = 3000; // 背包按钮的tag
+
+constexpr int MAX_LEVEL = 100;    // 最高经验值
+constexpr int SKILL_COUNT = 4;    // 技能个数
+constexpr int TOTAL_HEARTS = 10;  // 好感度显示总个数
+
 
 // [Section 6] 颜色常量 (Colors)
 
@@ -309,6 +324,7 @@ const cocos2d::Color3B COLOR_NAME_TEXT(100, 50, 20);
 const cocos2d::Color3B COLOR_CONTENT_TEXT(0, 0, 0);
 const cocos2d::Color4B COLOR_BTN_BG_YES(0, 128, 0, 200);
 const cocos2d::Color4B COLOR_BTN_BG_NO(200, 0, 0, 200);
+const cocos2d::Color4B COLOR_SKILL_LEVEL_NUM(210, 105, 30, 255);
 
 // ==================== UI 尺寸与坐标 ====================
 const cocos2d::Size SIZE_DIALOGUE_BG(800, 200);
