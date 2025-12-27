@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     TimeManager.h
- * File Function: TimeManagerÀàµÄÉùÃ÷
- * Author:        ÕÔî£åû
+ * File Function: TimeManagerç±»çš„å£°æ˜
+ * Author:        èµµç¿å¦
  * Update Date:   2025/12/13
  * License:       MIT License
  ****************************************************************/
@@ -11,73 +11,76 @@
 #define __TIME_MANAGER_H__
 
 #include "cocos2d.h"
-#include "Constant.h" // ÒıÓÃ³£Á¿
+#include "Constant.h" // å¼•ç”¨å¸¸é‡
 #include "GameTime.h"
 #include <functional> 
 
- // ±£³ÖÄúÒªÇóµÄÔ­Ê¼ÒıÓÃÂ·¾¶
+ // ä¿æŒæ‚¨è¦æ±‚çš„åŸå§‹å¼•ç”¨è·¯å¾„
 #include "../Weather/WeatherManager.h"
 #include "../Money/Money.h"
 
 class TimeManager : public cocos2d::Node {
 public:
-    // µ¥Àı»ñÈ¡
+    // å•ä¾‹è·å–
     static TimeManager* getInstance();
-    // µ¥ÀıÏú»Ù
+    // å•ä¾‹é”€æ¯
     static void destroyInstance();
 
-    // ³õÊ¼»¯
+    // åˆå§‹åŒ–
     virtual bool init();
 
-    // Ê±¼ä¸üĞÂÂß¼­
+    // æ—¶é—´æ›´æ–°é€»è¾‘
     void update(float dt) override;
 
-    // »ñÈ¡µ±Ç°Ê±¼äÊı¾İ
+    // è·å–å½“å‰æ—¶é—´æ•°æ®
     GameTime getCurrentTime() const { return _currentTime; }
 
-    // ÇĞ»»¸üĞÂ×´Ì¬ (ÔİÍ£/»Ö¸´Ê±¼ä)
+    // åˆ‡æ¢æ›´æ–°çŠ¶æ€ (æš‚åœ/æ¢å¤æ—¶é—´)
     void changeUpdateStatus();
 
-    // ¿ªÆôĞÂµÄÒ»Ìì
+    // å¼€å¯æ–°çš„ä¸€å¤©
     void startNextDay();
 
-    // ´¥·¢Ç¿ÖÆ»èÃÔ
+    // è§¦å‘å¼ºåˆ¶æ˜è¿·
     void triggerPassOut();
 
-    // ¿ªÆôË¯¾õÁ÷³Ì¶¯»­
+    // å¼€å¯ç¡è§‰æµç¨‹åŠ¨ç”»
     void startSleepSequence();
 
-    // ÌìÊı¿ªÊ¼»Øµ÷
+    // å¤©æ•°å¼€å§‹å›è°ƒ
     std::function<void()> onDayStartCallback; 
 
+    // è®¾å®šæ—¶é—´
+    void setTime(const GameTime& time)ï¼›
 private:
     TimeManager();
     ~TimeManager();
 
-    // ÄÚ²¿UI·½·¨
+    // å†…éƒ¨UIæ–¹æ³•
     void createUI();
     void refreshUI();
 
 private:
     static TimeManager* _instance;
 
-    // ×´Ì¬±êÖ¾
-    bool _isTransitioning; // ÊÇ·ñÕıÔÚ×ª³¡
-    bool _isInputAllowed;  // ÊÇ·ñÔÊĞíÊäÈë
-    bool _isUpdating;      // ÊÇ·ñÕıÔÚ¸üĞÂÊ±¼ä
+    // çŠ¶æ€æ ‡å¿—
+    bool _isTransitioning; // æ˜¯å¦æ­£åœ¨è½¬åœº
+    bool _isInputAllowed;  // æ˜¯å¦å…è®¸è¾“å…¥
+    bool _isUpdating;      // æ˜¯å¦æ­£åœ¨æ›´æ–°æ—¶é—´
 
-    // ºËĞÄÊı¾İ
+    // æ ¸å¿ƒæ•°æ®
     GameTime _currentTime;
-    float _accumulatedTime; // ÀÛ»ıÊ±¼ä
+    float _accumulatedTime; // ç´¯ç§¯æ—¶é—´
 
-    // UI ¿Ø¼ş
-    cocos2d::Node* _uiContainer;    // ÈİÆ÷
-    cocos2d::Sprite* _clockBg;      // ±³¾°
-    cocos2d::Sprite* _clockHand;    // Ö¸Õë
-    cocos2d::Label* _timeLabel;     // Ê±¼äÎÄ±¾
-    cocos2d::Label* _dateLabel;     // ÈÕÆÚÎÄ±¾
-    cocos2d::Label* _moneyLabel;    // ½ğ±ÒÎÄ±¾
-    cocos2d::Sprite* _weatherIcon;  // ÌìÆøÍ¼±ê
+    // UI æ§ä»¶
+    cocos2d::Node* _uiContainer;    // å®¹å™¨
+    cocos2d::Sprite* _clockBg;      // èƒŒæ™¯
+    cocos2d::Sprite* _clockHand;    // æŒ‡é’ˆ
+    cocos2d::Label* _timeLabel;     // æ—¶é—´æ–‡æœ¬
+    cocos2d::Label* _dateLabel;     // æ—¥æœŸæ–‡æœ¬
+    cocos2d::Label* _moneyLabel;    // é‡‘å¸æ–‡æœ¬
+    cocos2d::Sprite* _weatherIcon;  // å¤©æ°”å›¾æ ‡
 };
+
 
 #endif // __TIME_MANAGER_H__
