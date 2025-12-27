@@ -28,13 +28,13 @@ void InventoryGridScene::createBackpacks()
     auto visibleSize = Director::getInstance()->getVisibleSize();
 
     // 计算每行背包的Y坐标
-    float yPositions[3] = {
+    float yPositions[INVENTORY_ROWS] = {
         visibleSize.height * 0.75f,  // 第一行：3/4高度
         visibleSize.height * 0.6f,   // 第二行：1/2高度
         visibleSize.height * 0.45f   // 第三行：1/4高度
     };
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < INVENTORY_ROWS; i++) {
         _backpacks[i].x = visibleSize.width / 2;  // X居中
         _backpacks[i].y = yPositions[i];
         _backpacks[i].scale = 1.65f;
@@ -68,7 +68,7 @@ void InventoryGridScene::createInvertory()
     );
 
     // 将背包信息转换到原来的_backpacks数组
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < INVENTORY_ROWS; i++) {
         _backpacks[i].backpack = backpackInfos[i].sprite;
         _backpacks[i].x = backpackInfos[i].position.x;
         _backpacks[i].y = backpackInfos[i].position.y;
@@ -89,7 +89,7 @@ void InventoryGridScene::onButtonClicked(int buttonIndex)
   
     if (buttonIndex == 0) {  // 背包按钮
         // 显示背包
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < INVENTORY_ROWS; i++) {
             if (_backpacks[i].backpack) {
                 _backpacks[i].backpack->setVisible(true);
             }
@@ -103,7 +103,7 @@ void InventoryGridScene::onButtonClicked(int buttonIndex)
 
     else {
         // 隐藏背包
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < INVENTORY_ROWS; i++) {
             if (_backpacks[i].backpack) {
                 _backpacks[i].backpack->setVisible(false);
             }
@@ -134,7 +134,7 @@ bool InventoryGridScene::init()
 
     createInvertory();
     // 检查背包是否创建成功
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < INVENTORY_ROWS; i++) {
         if (!_backpacks[i].backpack) {
             CCLOG("Failed to create backpack %d", i);
             return false;
@@ -142,7 +142,7 @@ bool InventoryGridScene::init()
     }
 
     _selectedGrid = -1;  // 初始没有选中格子
-    for (int i = 0; i < INVENTORY_SIZE; i++)
+    for (int i = 0; i < INVENTORY_TOTAL_SLOTS; i++)
         _gridHighlights[i] = nullptr;
 
     // 创建PlaceItems
@@ -153,8 +153,8 @@ bool InventoryGridScene::init()
     }
 
     // 准备背包位置数组
-    float backpackX[3], backpackY[3];
-    for (int i = 0; i < 3; i++) {
+    float backpackX[INVENTORY_ROWS], backpackY[INVENTORY_ROWS];
+    for (int i = 0; i < INVENTORY_ROWS; i++) {
         backpackX[i] = _backpacks[i].backpack->getPosition().x;
         backpackY[i] = _backpacks[i].backpack->getPosition().y;
     }
@@ -218,14 +218,17 @@ void InventoryGridScene::refreshInventory()
 
 // ========== 点击高光效果 ==========
 
-// 为指定格子创建触摸监听器
+
+
+
 void InventoryGridScene::createTouchListenerForGrid(int gridIndex, cocos2d::Sprite* grid)
 {
     auto listener = EventListenerTouchOneByOne::create();
     listener->setSwallowTouches(true);
 
-    // 触摸开始事件
-    listener->onTouchBegan = [this, gridIndex](cocos2d::Touch* touch, cocos2d::Event* event) {
+    // 使用 std::function 包装
+    std::function<bool(cocos2d::Touch*, cocos2d::Event*)> callback =
+        [this, gridIndex](cocos2d::Touch* touch, cocos2d::Event* event) -> bool {
         auto target = event->getCurrentTarget();
         cocos2d::Vec2 locationInNode = target->convertToNodeSpace(touch->getLocation());
         cocos2d::Size size = target->getContentSize();
@@ -238,12 +241,16 @@ void InventoryGridScene::createTouchListenerForGrid(int gridIndex, cocos2d::Spri
         return false;
         };
 
+    listener->onTouchBegan = callback;
+
     // 保存监听器到映射表
     _gridListeners[gridIndex] = listener;
 
     // 将监听器添加到事件分发器
     Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, grid);
 }
+
+
 
 // 启用或禁用所有格子的触摸监听
 void InventoryGridScene::setGridsTouchEnabled(bool enabled)
@@ -266,14 +273,14 @@ void InventoryGridScene::setGridsTouchEnabled(bool enabled)
 // 创建可点击格子
 void InventoryGridScene::createClickableGrids()
 {
-    for (int row = 0; row < 3; row++) {
+    for (int row = 0; row < INVENTORY_ROWS; row++) {
         float backpackLeft = _backpacks[row].x - _backpackWidth / 2;
 
         float clickHeight = _backpackHeight;
         float clickY = _backpacks[row].y + _backpackHeight * 0.5;
 
-        for (int col = 0; col < 12; col++) {
-            int gridIndex = row * 12 + col;
+        for (int col = 0; col < INVENTORY_COLS; col++) {
+            int gridIndex = row * INVENTORY_COLS + col;
             float gridX = backpackLeft + _cellWidth * (col + 0.82f);
 
             // 创建格子精灵
@@ -301,8 +308,8 @@ void InventoryGridScene::createClickableGrids()
 void InventoryGridScene::onGridClicked(int gridIndex)
 {
     // 计算行号和列号
-    int row = gridIndex / 12;  // 行号：0, 1, 2
-    int col = gridIndex % 12;  // 列号：0-11
+    int row = gridIndex / INVENTORY_COLS;  // 行号：0, 1, 2
+    int col = gridIndex % INVENTORY_COLS;  // 列号：0-11
 
     // 取消之前格子的高光
     if (_selectedGrid != -1) {
@@ -345,11 +352,11 @@ float InventoryGridScene::getGridOffset(int colIndex)
 void InventoryGridScene::highlightGrid(int gridIndex, bool highlight)
 {
     // 计算行号和列号
-    int row = gridIndex / 12;    // 行号：0, 1, 2
-    int col = gridIndex % 12;    // 列号：0-11
+    int row = gridIndex / INVENTORY_COLS;    // 行号：0, 1, 2
+    int col = gridIndex % INVENTORY_COLS;    // 列号：0-11
 
     // 检查索引有效性
-    if (row < 0 || row >= 3 || col < 0 || col >= 12)
+    if (row < 0 || row >= INVENTORY_ROWS || col < 0 || col >= INVENTORY_COLS)
         return;
 
     auto highlightNode = _gridHighlights[gridIndex];
