@@ -6,6 +6,7 @@
 #include "json/document.h"
 #include "json/writer.h"
 #include "json/stringbuffer.h"
+#include "Constant.h"
 #include "../Inventory/InventoryScene.h"
 #include "../NPC/SocialLevel.h"
 #include "../Time/TimeManager.h"
@@ -15,7 +16,7 @@ class SaveManage {
 public:
     static SaveManage* getInstance();
 
-    // ×ÛºÏ²Ù×÷
+    // ç»¼åˆæ“ä½œ
     bool saveAllData();
     bool loadAllData();
 
@@ -25,33 +26,32 @@ private:
     SaveManage(const SaveManage&) = delete;
     SaveManage& operator=(const SaveManage&) = delete;
 
-    // ¹¤¾ßº¯Êı
+    // å·¥å…·å‡½æ•°
     std::string getFilePath(const std::string& filename);
 
-    // ±³°ü´æµµ/¶Áµµ
+    // èƒŒåŒ…å­˜æ¡£/è¯»æ¡£
     bool saveInventory();
     bool loadInventory();
 
-    // ºÃ¸Ğ¶È´æµµ/¶Áµµ
+    // å¥½æ„Ÿåº¦å­˜æ¡£/è¯»æ¡£
     bool saveFriendships();
     bool loadFriendships();
 
-    // ÓÎÏ·Ê±¼ä´æµµ/¶Áµµ
+    // æ¸¸æˆæ—¶é—´å­˜æ¡£/è¯»æ¡£
     bool saveGameTime();
     bool loadGameTime();
 
-    // ¼¼ÄÜ´æµµ/¶Áµµ
+    // æŠ€èƒ½å­˜æ¡£/è¯»æ¡£
     bool saveSkills();
     bool loadSkills();
 
 
-    // ĞòÁĞ»¯º¯Êı
+    // åºåˆ—åŒ–å‡½æ•°
     rapidjson::Value serializeItem(const Item& item, rapidjson::Document::AllocatorType& alloc);
     rapidjson::Value serializeGameTime(const GameTime& time, rapidjson::Document::AllocatorType& alloc);
     rapidjson::Value serializeSkill(const SkillData& skill, rapidjson::Document::AllocatorType& alloc);
     bool deserializeGameTime(const rapidjson::Value& timeObj, GameTime& time);
 
-    std::string _lastError;
 };
 
 #endif // SAVEMANAGE_H
