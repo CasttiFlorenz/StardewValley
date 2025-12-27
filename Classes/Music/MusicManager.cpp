@@ -8,8 +8,8 @@ MusicManager* MusicManager::instance = nullptr;
 MusicManager::MusicManager() {
     _volume = 0.01f;
     _effectVolume = 1.0f;
-    currentMusic = "";
-    _isPreloaded = false; // Ìí¼ÓÔ¤¼ÓÔØ×´Ì¬±ê¼Ç
+    _currentMusic = "";
+    _isPreloaded = false; // æ·»åŠ é¢„åŠ è½½çŠ¶æ€æ ‡è®°
 }
 
 MusicManager* MusicManager::getInstance() {
@@ -21,11 +21,11 @@ MusicManager* MusicManager::getInstance() {
 
 void MusicManager::preloadMusic() {
     if (_isPreloaded) {
-        CCLOG("ÒôÀÖÒÑ¾­Ô¤¼ÓÔØ¹ıÁË");
+        CCLOG("éŸ³ä¹å·²ç»é¢„åŠ è½½è¿‡äº†");
         return;
     }
 
-    CCLOG("¿ªÊ¼Ô¤¼ÓÔØÒôÀÖ...");
+    CCLOG("å¼€å§‹é¢„åŠ è½½éŸ³ä¹...");
 
     std::vector<std::string> musicFiles = {
         "music/FarmHouse.mp3",
@@ -37,12 +37,12 @@ void MusicManager::preloadMusic() {
     SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(_volume);
     SimpleAudioEngine::getInstance()->setEffectsVolume(_effectVolume);
 
-    CCLOG("ÒôÀÖÔ¤¼ÓÔØÍê³É");
+    CCLOG("éŸ³ä¹é¢„åŠ è½½å®Œæˆ");
 }
 
 void MusicManager::playButtonClick() {
     SimpleAudioEngine::getInstance()->playEffect("Music/click.mp3");
-    CCLOG("²¥·Å°´Å¥µã»÷ÒôĞ§");
+    CCLOG("æ’­æ”¾æŒ‰é’®ç‚¹å‡»éŸ³æ•ˆ");
 }
 
 void MusicManager::playMusicForMap(const std::string& _mapName) {
@@ -60,31 +60,31 @@ void MusicManager::playMusicForMap(const std::string& _mapName) {
 
     SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(_volume);
 
-    if (currentMusic == musicFile) {
+    if (_currentMusic == musicFile) {
         if (SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying()) {
-            CCLOG("ÒôÀÖÒÑ¾­ÔÚ²¥·Å£¬Ìø¹ı");
+            CCLOG("éŸ³ä¹å·²ç»åœ¨æ’­æ”¾ï¼Œè·³è¿‡");
             return;
         }
     }
 
-    if (!currentMusic.empty() && SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying()) {
-        CCLOG("Í£Ö¹µ±Ç°ÒôÀÖ: %s", currentMusic.c_str());
+    if (!_currentMusic.empty() && SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying()) {
+        CCLOG("åœæ­¢å½“å‰éŸ³ä¹: %s", _currentMusic.c_str());
         SimpleAudioEngine::getInstance()->stopBackgroundMusic();
     }
 
-    CCLOG("¿ªÊ¼²¥·Å: %s", musicFile.c_str());
+    CCLOG("å¼€å§‹æ’­æ”¾: %s", musicFile.c_str());
 
-    // Ìí¼ÓÑÓ³ÙÒÔ±ÜÃâ¿¨¶Ù
+    // æ·»åŠ å»¶è¿Ÿä»¥é¿å…å¡é¡¿
     cocos2d::Director::getInstance()->getScheduler()->schedule([this, musicFile](float dt) {
         SimpleAudioEngine::getInstance()->playBackgroundMusic(musicFile.c_str(), true);
         }, this, 0.0f, 0, 0.05f, false, "play_music");
 
-    currentMusic = musicFile;
+    _currentMusic = musicFile;
 }
 
 void MusicManager::stopMusic() {
     SimpleAudioEngine::getInstance()->stopBackgroundMusic();
-    currentMusic = "";
+    _currentMusic = "";
 }
 
 void MusicManager::setMusicVolume(float vol) {
@@ -113,4 +113,5 @@ void MusicManager::resumeMusic() {
 
 bool MusicManager::isMusicPlaying() {
     return SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying();
+
 }
