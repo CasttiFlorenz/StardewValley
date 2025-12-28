@@ -30,3 +30,27 @@
 | 2025-12-26 | CasttiFlorenz | ✅修复了玩家在进行钓鱼、对话、商店等活动时玩家仍然可以走动与打开背包的问题<br>||
 | 2025-12-27 | enxi-yu       | ✅初步实现存档背包、好感度、时间和技能水平<br>|| 
 | 2025-12-28 | CasttiFlorenz | ✅完成了大部分bug的修复、整个项目的整理<br>|| 
+
+
+
+| 成员               | 主要负责模块   | 具体工作内容                                                 |
+| ------------------ | -------------- | ------------------------------------------------------------ |
+| **郭芷烟**（组长） | 场景与底层架构 | 完成了InitialMenuScene、CreateScene、GameScene类<br />实现Farm、Town、Mines、Barn、FarmHouse 五大地图类 |
+|                    | 美术资源       | 搭建了Farm、Town、Mines、Barn、FarmHouse 五大地图类的瓦片地图 |
+|                    | 地图资源生成   | 实现了 FarmItemManager、CultivationManager、MinesItemManager、BarnManager 等管理类，并构建了其对应的物品继承体系，包括 EnvironmentItem（如 WoodItem、GrassItem、StoneItem 等）、Crop 及其派生作物类，以及 BarnAnimal及其派生动物类<br />负责了以上地图数据的存档与读取 |
+|                    | 项目统筹       | 负责整体架构设计、任务分配、代码整合、Bug 修复与最终测试     |
+| **于恩熙**         | UI 状态机      | 设计 InventoryManager UI 状态机，实现背包 / 技能 / 社交 / 退出界面的切换 |
+|                    | 背包系统       | 实现 InventoryGridScene，完成格子点击、物品选择、高亮与堆叠逻辑 |
+|                    | 数值可视化     | 实现 SkillLevel 技能等级显示；实现 SocialLevel 好感度界面与爱心渲染 |
+|                    | 玩家动画       | 构建 Player 动画状态机，控制移动与工具使用动画；实现玩家碰撞检测 |
+|                    | 系统界面       | 实现退出确认弹窗（ExitConfirm）                              |
+|                    | 存档           | 实现背包、时间、技能等级、NPC 好感度的存档与读取             |
+| **赵睿妍**         | 商店系统       | 设计并实现 Pierre、Marnie、Sale 三类商店的差异化买卖逻辑     |
+|                    | 经济系统       | 实现 Money 单例，处理金钱变化与交易校验                      |
+|                    | 时间系统       | 实现 TimeManager，控制时间流逝、昼夜变化与日期推进           |
+|                    | 天气系统       | 实现 WeatherManager，完成天气切换与环境光照变化              |
+|                    | NPC 核心逻辑   | 实现 NPC 对话树、送礼判定与好感度计算                        |
+|                    | NPC 管理       | 实现 NPCManager，负责 NPC 创建、内存管理与场景恢复           |
+| **蔡锦慧**         | NPC 表现       | 实现 NPC 的动画创建与播放                                    |
+|                    | 音频系统       | 实现 MusicManager，支持 BGM 场景切换与音效播放               |
+|                    | 小游戏         | 独立开发钓鱼小游戏                                           |
