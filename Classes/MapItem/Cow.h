@@ -1,29 +1,38 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     Cow.h
+ * File Function: Cowç±»çš„å®ç°
+ * Author:        éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/16
+ * License:       MIT License
+ ****************************************************************/
 #pragma once
 #ifndef __COW_H__
 #define __COW_H__
 
 #include "BarnAnimal.h"
 
-// Å£Àà£¬¼Ì³Ğ×ÔÅ©³¡¶¯Îï
+// ç‰›ç±»ï¼Œç»§æ‰¿è‡ªå†œåœºåŠ¨ç‰©
 class Cow : public BarnAnimal {
 public:
-    // ¾²Ì¬´´½¨º¯Êı
+    // é™æ€åˆ›å»ºå‡½æ•°
     static Cow* create();
 
-    // »ñÈ¡²úÎïÂ·¾¶
+    // è·å–äº§ç‰©è·¯å¾„
     virtual std::string getProducePath() const override;
 
-    // »ñÈ¡²úÎïÀàĞÍ
+    // è·å–äº§ç‰©ç±»å‹
     virtual ItemType getProduceObject() const override;
 
-    // »ñÈ¡¶¯ÎïÀàĞÍ
+    // è·å–åŠ¨ç‰©ç±»å‹
     virtual AnimalType getType() const noexcept override {
         return AnimalType::COW;
     }
 
-    // ¶¯»­¿ØÖÆ
+    // åŠ¨ç”»æ§åˆ¶
     virtual void startAnimation() override;
     virtual void stopAnimation() override;
 };
+
 
 #endif // __COW_H__
