@@ -45,12 +45,12 @@
 |                    | 玩家动画       | ✅实现了 Player 类，控制人物移动与工具使用动画，完善了玩家碰撞检测 |
 |                    | 系统界面       | ✅完成了 ExitConfirm 类，弹窗退出确认选项                        |
 |                    | 存档           | ✅实现了 SaveManage 类，负责背包、时间、天气、金钱、技能等级、NPC 好感度的存档与读取    |
-| **赵睿妍**         | 商店系统       | 设计并实现 Pierre、Marnie、Sale 三类商店的差异化买卖逻辑     |
-|                    | 经济系统       | 实现 Money 单例，处理金钱变化与交易校验                      |
-|                    | 时间系统       | 实现 TimeManager，控制时间流逝、昼夜变化与日期推进           |
-|                    | 天气系统       | 实现 WeatherManager，完成天气切换与环境光照变化              |
-|                    | NPC 核心逻辑   | 实现 NPC 对话树、送礼判定与好感度计算                        |
-|                    | NPC 管理       | 实现 NPCManager，负责 NPC 创建、内存管理与场景恢复           |
+| **赵睿妍**         | 商店系统       | ✅设计并实现 Pierre、Marnie、Sale 三类商店     |
+|                    | 经济系统       | ✅实现 Money 类，处理金钱变化与交易校验                      |
+|                    | 时间系统       | ✅实现 TimeManager，控制时间流逝、昼夜变化与日期推进           |
+|                    | 天气系统       | ✅实现 WeatherManager，完成天气切换与环境光照变化              |
+|                    | NPC 核心逻辑   | ✅实现 DialogueLayer类，完成与NPC的对话管理                        |
+|                    | NPC 管理       | ✅实现 NPCManager类，负责 NPC 管理           |
 | **蔡锦慧**         | NPC 表现       | ✅实现 NPC 的动画创建与播放                                    |
 |                    | 音频系统       | ✅实现 MusicManager类，支持 BGM 场景切换与音效播放               |
 |                    | 小游戏         | ✅实现了FishGameLayer类，独立开发钓鱼小游戏                                           |
