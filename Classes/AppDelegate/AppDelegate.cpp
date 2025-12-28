@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     AppDelegate.cpp
+ * File Function: AppDelegateç±»çš„å®žçŽ°
+ * Author:        éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/07
+ * License:       MIT License
+ ****************************************************************/
 /****************************************************************************
  Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
  
@@ -118,10 +126,10 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     register_all_packages();
 
-    // ´´½¨³õÊ¼²Ëµ¥³¡¾°
+    // åˆ›å»ºåˆå§‹èœå•åœºæ™¯
     auto scene = InitialMenuScene::createScene();
     
-    // ½øÈë³õÊ¼²Ëµ¥£¬¿ªÊ¼ÔËÐÐ
+    // è¿›å…¥åˆå§‹èœå•ï¼Œå¼€å§‹è¿è¡Œ
     director->runWithScene(scene);
 
     return true;
@@ -150,3 +158,4 @@ void AppDelegate::applicationWillEnterForeground() {
     SimpleAudioEngine::getInstance()->resumeAllEffects();
 #endif
 }
+
