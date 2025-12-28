@@ -1,10 +1,18 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     FarmHouse.cpp
+ * File Function: FarmHouseç±»çš„å®ç°
+ * Author:        éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/23
+ * License:       MIT License
+ ****************************************************************/
 #include "FarmHouse.h"
 #include "../Inventory/InventoryScene.h"
 
-// µ¥ÀıÊµÀı
+// å•ä¾‹å®ä¾‹
 GameMap* FarmHouse::_instance = nullptr;
 
-// ´´½¨ÊµÀı
+// åˆ›å»ºå®ä¾‹
 FarmHouse* FarmHouse::create() {
     auto p = new (std::nothrow) FarmHouse();
     if (p && p->init()) {
@@ -15,7 +23,7 @@ FarmHouse* FarmHouse::create() {
     return nullptr;
 }
 
-// »ñÈ¡µ¥Àı
+// è·å–å•ä¾‹
 GameMap* FarmHouse::getInstance() {
     if (!_instance) {
         _instance = FarmHouse::create();
@@ -24,26 +32,26 @@ GameMap* FarmHouse::getInstance() {
     return _instance;
 }
 
-// Ïú»Ùµ¥Àı
+// é”€æ¯å•ä¾‹
 void FarmHouse::destroyInstance() {
     CC_SAFE_RELEASE_NULL(_instance);
 }
 
-// ³õÊ¼»¯
+// åˆå§‹åŒ–
 bool FarmHouse::init()
 {
     if (!Scene::init()) return false;
 
     _mapName = MapType::FARM_HOUSE;
 
-    // ¼ÓÔØµØÍ¼
+    // åŠ è½½åœ°å›¾
     _map = TMXTiledMap::create(TILED_MAP_FARM_HOUSE_PATH);
     if (_map == nullptr) {
         CCLOG("Failed to load map: %s", TILED_MAP_FARM_HOUSE_PATH.c_str());
         return false;
     }
 
-    // Òş²ØÅö×²²ã
+    // éšè—ç¢°æ’å±‚
     if (auto collisionLayer = _map->getLayer(EVENT_LAYER_NAME)) {
         collisionLayer->setVisible(false);
     }
@@ -53,14 +61,14 @@ bool FarmHouse::init()
     return true;
 }
 
-// Àë¿ªµØÍ¼Âß¼­
+// ç¦»å¼€åœ°å›¾é€»è¾‘
 MapType FarmHouse::leaveMap(const Vec2& curPos, bool isStart, const Direction& direction)
 {
     if (isStart) {
         return _mapName;
     }
 
-    // ÏòÏÂÒÆ¶¯Ê±¼ì²éÊÇ·ñ»Øµ½Å©³¡
+    // å‘ä¸‹ç§»åŠ¨æ—¶æ£€æŸ¥æ˜¯å¦å›åˆ°å†œåœº
     if (direction == Direction::DOWN) {
         const Rect goToFarm = getObjectRect(GO_TO_FARM);
         if (goToFarm.containsPoint(curPos)) {
@@ -71,7 +79,7 @@ MapType FarmHouse::leaveMap(const Vec2& curPos, bool isStart, const Direction& d
     return MapType::NONE;
 }
 
-// ½øÈëµØÍ¼Âß¼­
+// è¿›å…¥åœ°å›¾é€»è¾‘
 void FarmHouse::IntoMap(MapType lastMap)
 {
     const Vec2 visibleSize = Director::getInstance()->getVisibleSize();
@@ -80,15 +88,15 @@ void FarmHouse::IntoMap(MapType lastMap)
     _map->setPosition((visibleSize - _map->getContentSize() * _map->getScale()) / 2);
 }
 
-// »ñÈ¡Íæ¼Ò³õÊ¼Î»ÖÃ
+// è·å–ç©å®¶åˆå§‹ä½ç½®
 Vec2 FarmHouse::getPlayerStartPosition(MapType lastMap)
 {
-    // ÓÎÏ·¿ªÊ¼
+    // æ¸¸æˆå¼€å§‹
     if (lastMap == _mapName) {
         const Rect startRect = getObjectRect(GAME_START);
         return Vec2(startRect.getMidX(), startRect.getMidY());
     }
-    // ´ÓÅ©³¡½øÈë
+    // ä»å†œåœºè¿›å…¥
     else if (lastMap == MapType::FARM) {
         const Rect goToFarmRect = getObjectRect(GO_TO_FARM);
         return Vec2(goToFarmRect.getMidX(), goToFarmRect.getMidY());
@@ -97,13 +105,14 @@ Vec2 FarmHouse::getPlayerStartPosition(MapType lastMap)
     return Vec2(PLAYER_DEFAULT_POS_X, PLAYER_DEFAULT_POS_Y);
 }
 
-// ÓÒ¼üµã»÷´¦Àí
+// å³é”®ç‚¹å‡»å¤„ç†
 MouseEvent FarmHouse::onRightClick(const Vec2& playerPos, const Direction direction)
 {
-    // ¼ì²éÊÇ·ñµã»÷ÁË´²£¨´¥·¢Ë¯¾õ£©
+    // æ£€æŸ¥æ˜¯å¦ç‚¹å‡»äº†åºŠï¼ˆè§¦å‘ç¡è§‰ï¼‰
     const auto bedRect = getObjectRect(GO_TO_BED_OBJECT_NAME);
     if (bedRect.containsPoint(playerPos)) {
         return MouseEvent::SLEEP;
     }
     return MouseEvent::NONE;
+
 }
