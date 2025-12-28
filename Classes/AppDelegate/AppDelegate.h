@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     AppDelegate.h
+ * File Function: AppDelegate类的实现
+ * Author:        郭芷烟
+ * Update Date:   2025/12/07
+ * License:       MIT License
+ ****************************************************************/
 /****************************************************************************
  Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
  
@@ -61,4 +69,5 @@ public:
 };
 
 #endif // _APP_DELEGATE_H_
+
 
