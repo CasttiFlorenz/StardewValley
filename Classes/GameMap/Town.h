@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     Town.h
+ * File Function: Townç±»çš„å®ç°
+ * Author:        éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/23
+ * License:       MIT License
+ ****************************************************************/
 #pragma once
 #ifndef __TOWN_H__
 #define __TOWN_H__
@@ -15,54 +23,55 @@
 
 USING_NS_CC;
 
-// ³ÇÕòµØÍ¼Àà£¨°üº¬ NPC ºÍÉÌµê£©
+// åŸé•‡åœ°å›¾ç±»ï¼ˆåŒ…å« NPC å’Œå•†åº—ï¼‰
 class Town : public GameMap
 {
 public:
-    // ¾²Ì¬´´½¨ÓëÏú»Ù
+    // é™æ€åˆ›å»ºä¸é”€æ¯
     static Town* create();
     static GameMap* getInstance();
     static void destroyInstance();
 
-    // ³õÊ¼»¯
+    // åˆå§‹åŒ–
     virtual bool init() override;
 
-    // ³¡¾°ÇĞ»»Âß¼­
+    // åœºæ™¯åˆ‡æ¢é€»è¾‘
     virtual MapType leaveMap(const Vec2& curPos,
         bool isStart,
         const Direction& direction) override;
 
-    // ½øÈëµØÍ¼³õÊ¼»¯
+    // è¿›å…¥åœ°å›¾åˆå§‹åŒ–
     virtual void IntoMap(MapType lastMap) override;
 
-    // »ñÈ¡Íæ¼Ò³õÊ¼Î»ÖÃ
+    // è·å–ç©å®¶åˆå§‹ä½ç½®
     virtual Vec2 getPlayerStartPosition(MapType lastMap) override;
 
-    // ÉãÏñ»ú¸úËæÓë»§ÍâÅĞ¶Ï
+    // æ‘„åƒæœºè·Ÿéšä¸æˆ·å¤–åˆ¤æ–­
     virtual bool isCameraFollow() const noexcept override { return true; }
     virtual bool isOutdoor() noexcept override { return true; }
 
-    // ÓÒ¼üµã»÷´¦Àí£¨Óë NPC ½»»¥»ò´ò¿ªÉÌµê£©
+    // å³é”®ç‚¹å‡»å¤„ç†ï¼ˆä¸ NPC äº¤äº’æˆ–æ‰“å¼€å•†åº—ï¼‰
     virtual MouseEvent onRightClick(const Vec2& playerPos,
         const Direction direction) override;
 
-    // ÓëÖ¸¶¨ NPC ½øĞĞ½»»¥
+    // ä¸æŒ‡å®š NPC è¿›è¡Œäº¤äº’
     void interactWithNPC(const std::string& npcName, ItemType heldItem);
 
-    // »ñÈ¡ NPC ¶ÔÏó
+    // è·å– NPC å¯¹è±¡
     NPCBase* getNPCByName(const std::string& name);
 
-    // ´ò¿ªÖ¸¶¨ NPC µÄÉÌµê
+    // æ‰“å¼€æŒ‡å®š NPC çš„å•†åº—
     void openShopForNPC(const std::string& npcName);
 
-    // ³õÊ¼»¯ËùÓĞ NPC
+    // åˆå§‹åŒ–æ‰€æœ‰ NPC
     void initNPCs();
 
 private:
     static GameMap* _instance;
 
-    // NPC Ãû³ÆÓë¶ÔÏóÓ³Éä
+    // NPC åç§°ä¸å¯¹è±¡æ˜ å°„
     std::map<std::string, NPCBase*> _npcMap;
 };
+
 
 #endif // __TOWN_H__
