@@ -89,8 +89,8 @@ void InventoryManager::createInterface(
         cellWidth = backpackWidth / INVENTORY_COLS;  // 12个格子
     }
 
-    auto cantainer = SkillLevel::createSkillsInterface(s_parent, s_background);
-    cantainer->setVisible(false);
+    auto cantainer0 = SkillLevel::createSkillsInterface(s_parent, s_background);
+    cantainer0->setVisible(false);
 
     // 创建按钮
     createButtons(parent, background, buttons, backpackWidth);
