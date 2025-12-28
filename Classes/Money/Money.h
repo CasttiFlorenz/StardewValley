@@ -9,22 +9,25 @@
 
 class Money {
 public:
-    // »ñÈ¡µ¥Àı
+    // è·å–å•ä¾‹
     static Money* getInstance();
-    // Ïú»Ùµ¥Àı
+    // é”€æ¯å•ä¾‹
     static void destroyInstance();
 
-    // »ñÈ¡µ±Ç°½ğÇ® (Ö»¶Á)
+    // è·å–å½“å‰é‡‘é’± (åªè¯»)
     int getMoney() const;
 
-    // ¼ì²éÊÇ·ñÂòµÃÆğ (Ö»¶Á)
+    // æ£€æŸ¥æ˜¯å¦ä¹°å¾—èµ· (åªè¯»)
     bool canAfford(int cost) const;
 
-    // »¨·Ñ½ğÇ®
+    // èŠ±è´¹é‡‘é’±
     void spendMoney(int cost);
 
-    // Ôö¼Ó½ğÇ®
+    // å¢åŠ é‡‘é’±
     void addMoney(int amount);
+
+   // è®¾ç½®é‡‘é’±
+   void setMoney(int money) { _money = money; }
 
 private:
     Money();
@@ -35,8 +38,9 @@ private:
 
     int _money;
 
-    // ÎïÆ·¿â´æÈİÆ÷
+    // ç‰©å“åº“å­˜å®¹å™¨
     std::vector<Item*> _inventory;
 };
+
 
 #endif // __MONEY_H__
