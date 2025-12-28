@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     SkillLevel.cpp
- * File Function: SkillLevelÀàµÄÊµÏÖ
- * Author:        ÓÚ¶÷Îõ
- * Update Date:   2025/12/21
+ * File Function: SkillLevelç±»çš„å®ç°
+ * Author:        äºæ©ç†™
+ * Update Date:   2025/12/25
  * License:       MIT License
  ****************************************************************/
 
@@ -11,11 +11,11 @@
 
 USING_NS_CC;
 
-// ³õÊ¼»¯¾²Ì¬³ÉÔ±
+// åˆå§‹åŒ–é™æ€æˆå‘˜
 SkillData SkillLevel::s_skillData[SKILL_COUNT];
 SkillLevel* SkillLevel::_instance = nullptr;
 
-// »ñÈ¡µ¥Àı
+// è·å–å•ä¾‹
 SkillLevel* SkillLevel::getInstance() {
     if (!_instance) {
         _instance = new SkillLevel();
@@ -23,7 +23,7 @@ SkillLevel* SkillLevel::getInstance() {
     return _instance;
 }
 
-// Ïú»Ùµ¥Àı
+// é”€æ¯å•ä¾‹
 void SkillLevel::destroyInstance()
 {
     if (_instance) {
@@ -32,10 +32,10 @@ void SkillLevel::destroyInstance()
     }
 }
 
-// ³õÊ¼»¯¼¼ÄÜÊı¾İ
+// åˆå§‹åŒ–æŠ€èƒ½æ•°æ®
 void SkillLevel::initSkillData()
 {
-    // ³õÊ¼»¯¼¼ÄÜÊı¾İ
+    // åˆå§‹åŒ–æŠ€èƒ½æ•°æ®
     s_skillData[static_cast<int>(SkillType::FARMING)] = { "Farming", 0, 4.0f,PATH_FARMING_LEVEL };
     s_skillData[static_cast<int>(SkillType::MINING)] = { "Mining", 0,1.2f, PATH_MINING_LEVEL };
     s_skillData[static_cast<int>(SkillType::FORAGING)] = { "Foraging", 0,4.0f, PATH_FORAGING_LEVEL };
@@ -43,24 +43,16 @@ void SkillLevel::initSkillData()
 
 }
 
-// ÉèÖÃ¼¼ÄÜµÈ¼¶
-void SkillLevel::setSkillLevel(SkillType skillType, int level)
-{
-    if (static_cast<int>(skillType) >= 0 && static_cast<int>(skillType) < SKILL_COUNT) {
-        s_skillData[static_cast<int>(skillType)].level = level;
-    }
-}
-
-// ´´½¨µÈ¼¶ÏÔÊ¾
+// åˆ›å»ºç­‰çº§æ˜¾ç¤º
 Node* SkillLevel::createLevelStars(int level)
 {
     Node* starContainer = Node::create();
     float spacing = 30.0f;
     float specialSpacing = spacing * 1.2f;
 
-    // ×Ü¿í¶È¼ÆËã
-    float totalWidth = 4 * spacing + specialSpacing; // Ç°5¸ö
-    totalWidth += 4 * spacing + specialSpacing; // ºó5¸ö
+    // æ€»å®½åº¦è®¡ç®—
+    float totalWidth = 4 * spacing + specialSpacing; // å‰5ä¸ª
+    totalWidth += 4 * spacing + specialSpacing; // å5ä¸ª
 
     float startX = -totalWidth / 2 + spacing / 2;
     float currentX = startX;
@@ -68,7 +60,7 @@ Node* SkillLevel::createLevelStars(int level)
     for (int i = 0; i < MAX_LEVEL / 10; i++) {
         bool isFilled = (i < level);
 
-        // Ñ¡ÔñÀàĞÍ
+        // é€‰æ‹©ç±»å‹
         const std::string filledPath = ((i + 1) % 5 == 0) ? LEVEL_FILLED2 : LEVEL_FILLED1;
         const std::string emptyPath = ((i + 1) % 5 == 0) ? LEVEL_EMPTY2 : LEVEL_EMPTY1;
 
@@ -76,7 +68,7 @@ Node* SkillLevel::createLevelStars(int level)
         starSprite->setPosition(Vec2(currentX, 0));
         starContainer->addChild(starSprite);
 
-        // ¸üĞÂÎ»ÖÃ
+        // æ›´æ–°ä½ç½®
         if (i == 3 || i == 8 || ((i + 1) % 5 == 0))
             currentX += specialSpacing;
         else
@@ -85,7 +77,7 @@ Node* SkillLevel::createLevelStars(int level)
     return starContainer;
 }
 
-// ´´½¨µ¥¸ö¼¼ÄÜÏî
+// åˆ›å»ºå•ä¸ªæŠ€èƒ½é¡¹
 Node* SkillLevel::createSkillItem(SkillType skillType, const Vec2& position)
 {
     if (static_cast<int>(skillType) < 0 || static_cast<int>(skillType) >= SKILL_COUNT) {
@@ -95,72 +87,72 @@ Node* SkillLevel::createSkillItem(SkillType skillType, const Vec2& position)
     SkillData& skill = s_skillData[static_cast<int>(skillType)];
     int currentLevel = static_cast<int>(skill.level / 10);
 
-    // ´´½¨¼¼ÄÜÏîÈİÆ÷
+    // åˆ›å»ºæŠ€èƒ½é¡¹å®¹å™¨
     Node* skillItem = Node::create();
     skillItem->setPosition(position);
 
-    // ========== ´òÓ¡¼¼ÄÜÃû×Ö£¨×î×ó²à£© ==========
+    // ========== æ‰“å°æŠ€èƒ½åå­—ï¼ˆæœ€å·¦ä¾§ï¼‰ ==========
     auto nameLabel = Label::createWithTTF(skill.name, PATH_FONT_LOUIS, 24);
     if (nameLabel) {
         nameLabel->setTextColor(Color4B::BLACK);
-        nameLabel->setAnchorPoint(Vec2(0, 0.5f));  // ×ó¶ÔÆë
-        nameLabel->setPosition(Vec2(-430, 0));     // ×î×ó±ß
+        nameLabel->setAnchorPoint(Vec2(0, 0.5f));  // å·¦å¯¹é½
+        nameLabel->setPosition(Vec2(-430, 0));     // æœ€å·¦è¾¹
         skillItem->addChild(nameLabel);
     }
 
-    // ========== ´òÓ¡¼¼ÄÜÍ¼±ê£¨Ãû×ÖÓÒ²à£© ==========
+    // ========== æ‰“å°æŠ€èƒ½å›¾æ ‡ï¼ˆåå­—å³ä¾§ï¼‰ ==========
     auto skillIcon = Sprite::create(skill.iconPath);
    
     skillIcon->setScale(skill.scale);
-    skillIcon->setPosition(Vec2(-300, 0));  // Ãû×ÖÓÒ²à
+    skillIcon->setPosition(Vec2(-300, 0));  // åå­—å³ä¾§
     skillItem->addChild(skillIcon);
 
-    // ========== ´òÓ¡µÈ¼¶£¨Í¼±êÓÒ²à£© ==========
+    // ========== æ‰“å°ç­‰çº§ï¼ˆå›¾æ ‡å³ä¾§ï¼‰ ==========
     Node* starContainer = createLevelStars(currentLevel);
     if (starContainer) {
-        starContainer->setPosition(Vec2(50, 0));  // ÖĞ¼äÎ»ÖÃ
+        starContainer->setPosition(Vec2(50, 0));  // ä¸­é—´ä½ç½®
         starContainer->setScale(2.0f);
         skillItem->addChild(starContainer);
     }
 
-    // ========== ÏÔÊ¾×îÖÕµÈ¼¶ÎÄ×Ö£¨×îÓÒ²à£© ==========
+    // ========== æ˜¾ç¤ºæœ€ç»ˆç­‰çº§æ–‡å­—ï¼ˆæœ€å³ä¾§ï¼‰ ==========
     auto levelText = Label::createWithTTF(std::to_string(currentLevel), PATH_FONT_HANDRON, 45);
     if (levelText) {
         levelText->setTextColor(COLOR_SKILL_LEVEL_NUM);
-        levelText->setAnchorPoint(Vec2(0, 0.5f));  // ×ó¶ÔÆë
-        levelText->setPosition(Vec2(400, 0));      // ×îÓÒ±ß
+        levelText->setAnchorPoint(Vec2(0, 0.5f));  // å·¦å¯¹é½
+        levelText->setPosition(Vec2(400, 0));      // æœ€å³è¾¹
         skillItem->addChild(levelText);
 
     }
     return skillItem;
 }
 
-// ´´½¨¼¼ÄÜ½çÃæ
+// åˆ›å»ºæŠ€èƒ½ç•Œé¢
 Node* SkillLevel::createSkillsInterface(Node* parent, Sprite* background)
 {
     if (!parent || !background) {
         return nullptr;
     }
 
-    // È·±£¼¼ÄÜÊı¾İÒÑ³õÊ¼»¯
+    // ç¡®ä¿æŠ€èƒ½æ•°æ®å·²åˆå§‹åŒ–
     static bool isInitialized = false;
     if (!isInitialized) {
         initSkillData();
         isInitialized = true;
     }
 
-    // ´´½¨ÈİÆ÷
+    // åˆ›å»ºå®¹å™¨
     Node* container = Node::create();
 
-    // »ñÈ¡±³¾°Î»ÖÃ
+    // è·å–èƒŒæ™¯ä½ç½®
     Vec2 bgPos = background->getPosition();
 
-    // ¼ÆËãÆğÊ¼Î»ÖÃ£¨±³¾°ÉÏ²¿£©
+    // è®¡ç®—èµ·å§‹ä½ç½®ï¼ˆèƒŒæ™¯ä¸Šéƒ¨ï¼‰
     float startY = bgPos.y + 140;
-    float spacing = 90;  // Ã¿¸ö¼¼ÄÜÏîµÄ¼ä¾à
+    float spacing = 90;  // æ¯ä¸ªæŠ€èƒ½é¡¹çš„é—´è·
 
 
-    // ´´½¨ËùÓĞ¼¼ÄÜÏî
+    // åˆ›å»ºæ‰€æœ‰æŠ€èƒ½é¡¹
     for (int i = 0; i < SKILL_COUNT; i++) {
         SkillType skillType = static_cast<SkillType>(i);
         Vec2 position = Vec2(bgPos.x, startY - i * spacing);
@@ -171,13 +163,13 @@ Node* SkillLevel::createSkillsInterface(Node* parent, Sprite* background)
         }
     }
 
-    // ½«ÈİÆ÷Ìí¼Óµ½¸¸½Úµã
+    // å°†å®¹å™¨æ·»åŠ åˆ°çˆ¶èŠ‚ç‚¹
     parent->addChild(container, 100);
 
     return container;
 }
 
-// Ôö¼Ó¼¼ÄÜË®Æ½
+// å¢åŠ æŠ€èƒ½æ°´å¹³
 bool SkillLevel::increaseSkillLevel(SkillType skillType, int amount)
 {
     if (static_cast<int>(skillType) < 0 || static_cast<int>(skillType) >= SKILL_COUNT || amount <= 0) {
@@ -187,22 +179,22 @@ bool SkillLevel::increaseSkillLevel(SkillType skillType, int amount)
     SkillData& skill = s_skillData[static_cast<int>(skillType)];
     int oldLevel = skill.level;
 
-    // ¼ÆËãĞÂµÈ¼¶£¬²»³¬¹ı×î´óµÈ¼¶
+    // è®¡ç®—æ–°ç­‰çº§ï¼Œä¸è¶…è¿‡æœ€å¤§ç­‰çº§
     int newLevel = oldLevel + amount;
     if (newLevel > MAX_LEVEL) {
         newLevel = MAX_LEVEL;
     }
 
-    // Èç¹ûµÈ¼¶ÓĞ±ä»¯£¬¸üĞÂ²¢·µ»Øtrue
+    // å¦‚æœç­‰çº§æœ‰å˜åŒ–ï¼Œæ›´æ–°å¹¶è¿”å›true
     if (newLevel != oldLevel) {
         skill.level = newLevel;
         return true;
     }
 
-    return false;  // µÈ¼¶Ã»ÓĞ±ä»¯
+    return false;  // ç­‰çº§æ²¡æœ‰å˜åŒ–
 }
 
-// ¼õÉÙ¼¼ÄÜË®Æ½
+// å‡å°‘æŠ€èƒ½æ°´å¹³
 bool SkillLevel::decreaseSkillLevel(SkillType skillType, int amount)
 {
     if (static_cast<int>(skillType) < 0 || static_cast<int>(skillType) >= SKILL_COUNT || amount <= 0) {
@@ -212,26 +204,27 @@ bool SkillLevel::decreaseSkillLevel(SkillType skillType, int amount)
     SkillData& skill = s_skillData[static_cast<int>(skillType)];
     int oldLevel = skill.level;
 
-    // ¼ÆËãĞÂµÈ¼¶£¬²»µÍÓÚ0
+    // è®¡ç®—æ–°ç­‰çº§ï¼Œä¸ä½äº0
     int newLevel = oldLevel - amount;
     if (newLevel < 0) {
         newLevel = 0;
     }
 
-    // Èç¹ûµÈ¼¶ÓĞ±ä»¯£¬¸üĞÂ²¢·µ»Øtrue
+    // å¦‚æœç­‰çº§æœ‰å˜åŒ–ï¼Œæ›´æ–°å¹¶è¿”å›true
     if (newLevel != oldLevel) {
         skill.level = newLevel;
         return true;
     }
 
-    return false;  // µÈ¼¶Ã»ÓĞ±ä»¯
+    return false;  // ç­‰çº§æ²¡æœ‰å˜åŒ–
 }
 
-// »ñÈ¡¼¼ÄÜµÈ¼¶
+// è·å–æŠ€èƒ½ç­‰çº§
 int SkillLevel::getSkillLevel(SkillType skillType)
 {
     if (static_cast<int>(skillType) >= 0 && static_cast<int>(skillType) < SKILL_COUNT) {
         return s_skillData[static_cast<int>(skillType)].level;
     }
-    return 0;  // ÎŞĞ§ÀàĞÍ·µ»Ø0
+    return 0;  // æ— æ•ˆç±»å‹è¿”å›0
+
 }
