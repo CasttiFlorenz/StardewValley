@@ -27,6 +27,9 @@ public:
     // 根据名字获取NPC
     NPCBase* getNPCByName(const std::string& name);
 
+    void resumeAllNPCAnimations();
+
+    void stopAllNPCAnimations();
 private:
     // 私有构造
     NPCManager();

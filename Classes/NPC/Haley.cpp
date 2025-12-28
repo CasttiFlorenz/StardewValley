@@ -1,8 +1,8 @@
 /*************************************************************
 * Project Name : StardewValley
 * File Name : Haley.cpp
-* File Function :  Haleyç±»çš„å®žçŽ°
-* Author : èµµç¿å¦ã€è”¡é”¦æ…§
+* File Function :  HaleyÀàµÄÊµÏÖ
+* Author : ÕÔî£åû¡¢²Ì½õ»Û
 * Update Date : 2025 / 12 / 24
 * License : MIT License
 * ***************************************************************/
@@ -10,30 +10,24 @@
 
 USING_NS_CC;
 
-
 bool Haley::init() {
-   if (!NPCBase::init()) {
-        return false;
-    }
+    if (!NPCBase::init()) return false;
+    _totalRows = 12;     
+    _totalCols = 4;    
+    _currentAnimRow = 10; 
+    _frameDelay = 0.15f;
 
-    // ä½¿ç”¨å¸¸é‡è·¯å¾„
-    if (!loadTexture(PATH_NPC_HALEY)) {
-        return false;
-    }
-
+    if (!loadTexture(PATH_NPC_HALEY)) return false;
     playAnimation();
     return true;
 }
 
-void Haley::playAnimation()
-{
-    // Haley çº¹ç†å¸ƒå±€: 12è¡Œ 4åˆ—ï¼Œè¡Œèµ°åŠ¨ç”»ä½äºŽç¬¬11è¡Œ(ç´¢å¼•10)
-    createAnimation(12, 4, 10, 0.15f);
+void Haley::playAnimation() {
+    this->startWalkingAnimation(_currentAnimRow);
 }
-
 std::vector<std::string> Haley::getConversation(bool isFirstMet)
 {
-    // å¢žåŠ å¥½æ„Ÿåº¦
+    // Ôö¼ÓºÃ¸Ð¶È
     this->increaseFriendship(50);
 
     std::vector<std::string> dialogue;
@@ -65,20 +59,20 @@ std::vector<std::string> Haley::getConversation(bool isFirstMet)
 
 int Haley::checkGiftTaste(ItemType itemTag)
 {
-    // æœ€çˆ± (+80)
+    // ×î°® (+80)
     if (itemTag == ItemType::DAFFODILS) return 80;
     if (itemTag == ItemType::SALAD) return 80;
 
-    // å–œæ¬¢ (+45)
+    // Ï²»¶ (+45)
     if (itemTag == ItemType::FRIED_EGG) return 45;
 
-    // è®¨åŽŒ (-20)
+
+    // ÌÖÑá (-20)
     if (itemTag == ItemType::PARSNIP) return -20;
     if (itemTag == ItemType::POTATO) return -20;
     if (itemTag == ItemType::CARP) return -20;
 
-    // é»˜è®¤å€¼
+    // Ä¬ÈÏÖµ
     return NPCBase::checkGiftTaste(itemTag);
 
 }
-

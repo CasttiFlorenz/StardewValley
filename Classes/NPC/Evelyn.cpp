@@ -12,18 +12,31 @@ USING_NS_CC;
 
 bool Evelyn::init()
 {
-    if (!NPCBase::init()) {
-        return false;
-    }
+    if (!NPCBase::init()) return false;
 
-    if (!loadTexture(PATH_NPC_EVELYN) ){
-        return false;
-    }
+    // 1. 设置 Evelyn 特有的规格
+    _totalRows = 5;
+    _totalCols = 4;
+    _frameDelay = 0.2f;
 
-    // 设置为静态帧
+    if (!loadTexture(PATH_NPC_EVELYN)) return false;
+
     setupStaticFrame();
-
     return true;
+}
+
+void Evelyn::startWalkingAnimation(int animationRow)
+{
+    // 记录行数，但只设置静态帧，不运行 runAction
+    _currentAnimRow = animationRow;
+    setupStaticFrame();
+}
+
+// 重写：停止动画逻辑
+void Evelyn::stopWalkingAnimation()
+{
+    this->stopAllActions();
+    setupStaticFrame();
 }
 
 void Evelyn::playAnimation()

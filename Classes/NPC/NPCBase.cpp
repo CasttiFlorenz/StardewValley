@@ -122,3 +122,47 @@ void NPCBase::setNPCScale(float scale)
 {
     this->setScale(scale);
 }
+
+void NPCBase::onEnter() {
+    Sprite::onEnter();
+    if (this->getNumberOfRunningActions() == 0 && _isTextureLoaded) {
+        this->startWalkingAnimation(_currentAnimRow);
+    }
+}
+void NPCBase::startWalkingAnimation(int animationRow)
+{
+    if (!_isTextureLoaded) return;
+    _currentAnimRow = animationRow;
+
+    this->stopAllActions(); // 确保开始新动画前清理旧的
+
+    auto texture = this->getTexture();
+    // 使用子类自己设置的 _totalCols 和 _totalRows
+    float frameWidth = texture->getContentSize().width / _totalCols;
+    float frameHeight = texture->getContentSize().height / _totalRows;
+
+    Vector<SpriteFrame*> frames;
+    for (int col = 0; col < _totalCols; col++) {
+        auto frame = SpriteFrame::createWithTexture(texture,
+            Rect(col * frameWidth, animationRow * frameHeight, frameWidth, frameHeight));
+        if (frame) frames.pushBack(frame);
+    }
+
+    if (frames.empty()) return;
+
+    auto animation = Animation::createWithSpriteFrames(frames, _frameDelay);
+    animation->setLoops(-1);
+    this->runAction(RepeatForever::create(Animate::create(animation)));
+}
+
+void NPCBase::stopWalkingAnimation()
+{
+    this->stopAllActions();
+    // 停在当前朝向的第一帧
+    auto texture = this->getTexture();
+    if (texture) {
+        float frameWidth = texture->getContentSize().width / _totalCols;
+        float frameHeight = texture->getContentSize().height / _totalRows;
+        this->setTextureRect(Rect(0, _currentAnimRow * frameHeight, frameWidth, frameHeight));
+    }
+}

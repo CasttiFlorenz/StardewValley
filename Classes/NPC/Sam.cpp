@@ -133,3 +133,43 @@ int Sam::checkGiftTaste(ItemType itemTag)
 
     return NPCBase::checkGiftTaste(itemTag);
 }
+
+
+void Sam::startWalkingAnimation(int animationRow) {
+    this->stopAllActions(); // 同样要先停止旧动作
+
+    auto texture = this->getTexture();
+    float fw = texture->getContentSize().width / 4.0f;
+    float fh = texture->getContentSize().height / 13.0f;
+
+    // Sam 独特的两行采样逻辑
+    cocos2d::Vector<cocos2d::SpriteFrame*> frames;
+    for (int r = 6; r <= 7; r++) { // 遍历索引6和7两行
+        for (int c = 0; c < 4; c++) {
+            frames.pushBack(SpriteFrame::createWithTexture(texture, Rect(c * fw, r * fh, fw, fh)));
+        }
+    }
+    auto animate = Animate::create(Animation::createWithSpriteFrames(frames, 0.15f));
+    this->runAction(RepeatForever::create(animate));
+}
+
+/**
+ * Sam 专属的停止函数
+ * 确保他停在第7行（索引6）的第一帧，而不是随机停在第8行
+ */
+void Sam::stopWalkingAnimation()
+{
+    // 1. 停止所有的动作（RepeatForever）
+    this->stopAllActions();
+
+    // 2. 强制回到第7行（索引6）的第一帧
+    auto texture = this->getTexture();
+    if (texture) {
+        // Sam 是 13行 4列
+        float fw = texture->getContentSize().width / 4.0f;
+        float fh = texture->getContentSize().height / 13.0f;
+
+        // 索引 6 代表第 7 行（通常是他的默认站立/行走起始行）
+        this->setTextureRect(Rect(0, 6 * fh, fw, fh));
+    }
+}

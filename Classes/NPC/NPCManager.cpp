@@ -98,3 +98,26 @@ NPCBase* NPCManager::createNPC(const std::string& name) {
 
     return npc;
 }
+/**
+ * 恢复所有 NPC 动画
+ */
+void NPCManager::resumeAllNPCAnimations() {
+    for (auto it = _npcMap.begin(); it != _npcMap.end(); ++it) {
+        NPCBase* npc = it->second; // it->first 是名字，it->second 是 NPC 指针
+        if (npc != nullptr) {
+            npc->playAnimation();
+        }
+    }
+}
+
+/**
+ * 停止所有 NPC 动画
+ */
+void NPCManager::stopAllNPCAnimations() {
+    for (auto it = _npcMap.begin(); it != _npcMap.end(); ++it) {
+        NPCBase* npc = it->second;
+        if (npc != nullptr) {
+            npc->stopWalkingAnimation();
+        }
+    }
+}

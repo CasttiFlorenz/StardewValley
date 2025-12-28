@@ -20,6 +20,9 @@ public:
     // 检查 Sam 对礼物的喜好
     virtual int checkGiftTaste(ItemType itemTag) override;
 
+    virtual void startWalkingAnimation(int animationRow) override;
+
+    virtual void stopWalkingAnimation()override;
 private:
     // 创建具体的动画动作（可能涉及拼接）
     void createAndPlayAnimation();

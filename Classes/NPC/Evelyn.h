@@ -20,6 +20,9 @@ public:
     // 检查 Evelyn 对礼物的喜好
     virtual int checkGiftTaste(ItemType itemTag) override;
 
+    virtual void startWalkingAnimation(int animationRow) override;
+
+    virtual void stopWalkingAnimation()override;
 private:
     // 设置静态纹理帧
     void setupStaticFrame();

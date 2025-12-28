@@ -39,6 +39,15 @@ public:
     //设置好好感值
     void setNPCFriendship(int friendship) { _friendship = friendship; };
 
+    // 进入地图后播放动画
+    void onEnter();
+
+    // 动画开始
+    virtual void startWalkingAnimation(int animationRow);
+    
+    // 动画停止
+    virtual void stopWalkingAnimation();
+
 protected:
     // 加载纹理图片
     bool loadTexture(const std::string& path);
@@ -51,6 +60,12 @@ protected:
 
     // 增加好感度（包含数值范围限制）
     void increaseFriendship(int amount);
+
+
+    int _totalRows = 1;
+    int _totalCols = 1;
+    float _frameDelay = 0.15f;
+    int _currentAnimRow = 0;
 
 private:
     bool _isTextureLoaded;
