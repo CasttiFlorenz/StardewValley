@@ -323,6 +323,11 @@ constexpr int MAX_LEVEL = 100;    // 最高经验值
 constexpr int SKILL_COUNT = 4;    // 技能个数
 constexpr int TOTAL_HEARTS = 10;  // 好感度显示总个数
 
+//钓鱼游戏参数
+constexpr float INITIAL_VALUE = 50.0f;
+constexpr float CLICK_INCREMENT = 30.0f;
+constexpr float DECREMENT_PER_SECOND = 60.0f;
+constexpr float MAX_VALUE = 1000.0f;
 
 // [Section 6] 颜色常量 (Colors)
 
@@ -354,5 +359,6 @@ constexpr int FONT_SIZE_BTN = 30;
 
 
 #endif // __CONSTANT_H__
+
 
 
