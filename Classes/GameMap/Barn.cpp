@@ -1,10 +1,18 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     Barn.cpp
+ * File Function: Barnç±»çš„å®žçŽ°
+ * Author:        éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/23
+ * License:       MIT License
+ ****************************************************************/
 #include "Barn.h"
 #include "../Inventory/InventoryScene.h"
 
-// µ¥ÀýÊµÀý
+// å•ä¾‹å®žä¾‹
 GameMap* Barn::_instance = nullptr;
 
-// ´´½¨ÊµÀý
+// åˆ›å»ºå®žä¾‹
 Barn* Barn::create() {
     auto p = new (std::nothrow) Barn();
     if (p && p->init()) {
@@ -15,7 +23,7 @@ Barn* Barn::create() {
     return nullptr;
 }
 
-// »ñÈ¡µ¥Àý
+// èŽ·å–å•ä¾‹
 GameMap* Barn::getInstance() {
     if (!_instance) {
         _instance = Barn::create();
@@ -24,47 +32,47 @@ GameMap* Barn::getInstance() {
     return _instance;
 }
 
-// Ïú»Ùµ¥Àý
+// é”€æ¯å•ä¾‹
 void Barn::destroyInstance() {
     CC_SAFE_RELEASE_NULL(_instance);
 }
 
-// ³õÊ¼»¯
+// åˆå§‹åŒ–
 bool Barn::init()
 {
     if (!Scene::init()) return false;
 
-    // ÉèÖÃµØÍ¼ÀàÐÍ
+    // è®¾ç½®åœ°å›¾ç±»åž‹
     _mapName = MapType::BARN;
 
-    // ¼ÓÔØ Tiled µØÍ¼
+    // åŠ è½½ Tiled åœ°å›¾
     _map = TMXTiledMap::create(TILED_MAP_BARN_PATH);
     if (_map == nullptr) {
         CCLOG("Failed to load map: %s", TILED_MAP_BARN_PATH.c_str());
         return false;
     }
 
-    // Òþ²ØÊÂ¼þ²ã
+    // éšè—äº‹ä»¶å±‚
     auto eventLayer = _map->getLayer(EVENT_LAYER_NAME);
     if (eventLayer != nullptr) {
         eventLayer->setVisible(false);
     }
 
-    // »ñÈ¡¹ÜÀíÆ÷
+    // èŽ·å–ç®¡ç†å™¨
     _barnManager = BarnManager::getInstance(this);
 
     this->addChild(_map);
     return true;
 }
 
-// Àë¿ªµØÍ¼Âß¼­
+// ç¦»å¼€åœ°å›¾é€»è¾‘
 MapType Barn::leaveMap(const Vec2& curPos, bool isStart, const Direction& direction)
 {
-    // ÏòÏÂÒÆ¶¯Ê±¼ì²éÊÇ·ñµ½´ï´«ËÍµã
+    // å‘ä¸‹ç§»åŠ¨æ—¶æ£€æŸ¥æ˜¯å¦åˆ°è¾¾ä¼ é€ç‚¹
     if (direction == Direction::DOWN) {
         const Rect goToFarmRect = getObjectRect(GO_TO_FARM);
         if (goToFarmRect.containsPoint(curPos)) {
-            // ÇÐ»»Ç°Í£Ö¹¶¯»­
+            // åˆ‡æ¢å‰åœæ­¢åŠ¨ç”»
             if (_barnManager != nullptr) {
                 _barnManager->stopAnimations();
             }
@@ -74,7 +82,7 @@ MapType Barn::leaveMap(const Vec2& curPos, bool isStart, const Direction& direct
     return MapType::NONE;
 }
 
-// ½øÈëµØÍ¼Âß¼­
+// è¿›å…¥åœ°å›¾é€»è¾‘
 void Barn::IntoMap(MapType lastMap)
 {
     const Vec2 visibleSize = Director::getInstance()->getVisibleSize();
@@ -82,13 +90,13 @@ void Barn::IntoMap(MapType lastMap)
     _map->setScale(TILED_MAP_SCALE);
     _map->setPosition((visibleSize - _map->getContentSize() * _map->getScale()) / 2);
 
-    // »Ö¸´¶¯»­
+    // æ¢å¤åŠ¨ç”»
     if (_barnManager != nullptr) {
         _barnManager->startAnimations();
     }
 }
 
-// »ñÈ¡Íæ¼Ò³õÊ¼Î»ÖÃ
+// èŽ·å–çŽ©å®¶åˆå§‹ä½ç½®
 Vec2 Barn::getPlayerStartPosition(MapType lastMap)
 {
     const Rect goToFarmRect = getObjectRect(GO_TO_FARM);
@@ -98,13 +106,13 @@ Vec2 Barn::getPlayerStartPosition(MapType lastMap)
     return Vec2(PLAYER_DEFAULT_POS_X, PLAYER_DEFAULT_POS_Y);
 }
 
-// ×ó¼üµã»÷´¦Àí£¨·ÅÖÃ¸É²Ý£©
+// å·¦é”®ç‚¹å‡»å¤„ç†ï¼ˆæ”¾ç½®å¹²è‰ï¼‰
 MouseEvent Barn::onLeftClick(const Vec2& playerPos, const Direction direction, ItemType objects)
 {
     Vec2 basePos = this->calMapPos(playerPos);
     this->ApplyDirectionOffset(basePos, direction);
 
-    // ¼ì²éÉÏÏÂÆ«ÒÆ·¶Î§
+    // æ£€æŸ¥ä¸Šä¸‹åç§»èŒƒå›´
     const int yOffsets[] = { Y_OFFSET_1, Y_OFFSET_0, Y_OFFSET_NEG_1 };
 
     for (const int offset : yOffsets) {
@@ -113,7 +121,7 @@ MouseEvent Barn::onLeftClick(const Vec2& playerPos, const Direction direction, I
 
         switch (objects) {
         case ItemType::HAY:
-            // ³¢ÊÔÌí¼Ó¸É²Ý
+            // å°è¯•æ·»åŠ å¹²è‰
             if (_barnManager != nullptr && _barnManager->addHayAt(checkPos)) {
                 auto inv = InventoryScene::getInstance();
                 if (inv) inv->removeItemCount(ItemType::HAY, static_cast<int>(HAY_ITEM_COUNT));
@@ -128,7 +136,7 @@ MouseEvent Barn::onLeftClick(const Vec2& playerPos, const Direction direction, I
     return MouseEvent::NONE;
 }
 
-// ÓÒ¼üµã»÷´¦Àí£¨ÊÕ¼¯²úÎï£©
+// å³é”®ç‚¹å‡»å¤„ç†ï¼ˆæ”¶é›†äº§ç‰©ï¼‰
 MouseEvent Barn::onRightClick(const Vec2& playerPos, const Direction direction)
 {
     Vec2 basePos = this->calMapPos(playerPos);
@@ -140,7 +148,7 @@ MouseEvent Barn::onRightClick(const Vec2& playerPos, const Direction direction)
         Vec2 checkPos = basePos;
         checkPos.y += static_cast<float>(offset);
 
-        // ³¢ÊÔÊÕ¼¯²úÎï
+        // å°è¯•æ”¶é›†äº§ç‰©
         const ItemType collected = (_barnManager != nullptr)
             ? _barnManager->collectProductionAt(checkPos)
             : ItemType::NONE;
@@ -159,4 +167,5 @@ MouseEvent Barn::onRightClick(const Vec2& playerPos, const Direction direction)
     }
 
     return MouseEvent::NONE;
+
 }
