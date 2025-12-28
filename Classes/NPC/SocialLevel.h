@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     SocialLevel.cpp
+ * File Function: SocialLevel类的实现
+ * Author:        于恩熙
+ * Update Date:   2025/12/21
+ * License:       MIT License
+ ****************************************************************/
 #ifndef __SOCIAL_LEVEL_H__
 #define __SOCIAL_LEVEL_H__
 

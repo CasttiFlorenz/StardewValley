@@ -13,7 +13,6 @@
 #include "cocos2d.h"
 #include "Constant.h" 
 #include "GameTime.h"
-#include <functional> 
 #include "../Weather/WeatherManager.h"
 #include "../Money/Money.h"
 

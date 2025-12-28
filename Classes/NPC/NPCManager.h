@@ -1,11 +1,16 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     NPCManager.cpp
+ * File Function: NPCManager类的实现
+ * Author:        赵睿妍、蔡锦慧
+ * Update Date:   2025/12/24
+ * License:       MIT License
+ ****************************************************************/
 #ifndef __NPC_MANAGER_H__
 #define __NPC_MANAGER_H__
 
 #include "cocos2d.h"
-#include <map>
-#include <string>
-#include <vector>
-#include <new> 
+#include "Constant.h"
 #include "Haley.h"
 #include "Sam.h"
 #include "Evelyn.h"

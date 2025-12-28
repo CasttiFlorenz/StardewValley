@@ -1,11 +1,11 @@
-/***************************************************************
-* Project Name : StardewValley
-* File Name : NPCBase.cpp
-* File Function : NPCBase类的实现
-* Author : 赵睿妍、蔡锦慧
-* Update Date : 2025 / 12 / 20
-* License : MIT License
-* ***************************************************************/
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     NPCBase.cpp
+ * File Function: NPCBase类的实现
+ * Author:        赵睿妍、蔡锦慧
+ * Update Date:   2025/12/24
+ * License:       MIT License
+ ****************************************************************/
 #include "NPCBase.h"
 
 USING_NS_CC;

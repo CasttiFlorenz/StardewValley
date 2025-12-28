@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     SkillLevel.h
- * File Function: SkillLevelç±»çš„å®ç°
- * Author:        äºæ©ç†™
+ * File Function: SkillLevelÀàµÄÊµÏÖ
+ * Author:        ÓÚ¶÷Îõ
  * Update Date:   2025/12/21
  * License:       MIT License
  ****************************************************************/
@@ -15,7 +15,7 @@
 
 USING_NS_CC;
 
-// æŠ€èƒ½æ•°æ®ç»“æ„
+// ¼¼ÄÜÊı¾İ½á¹¹
 struct SkillData {
     std::string name;
     int level;
@@ -27,20 +27,20 @@ struct SkillData {
 class SkillLevel {
 
 public:
-    // å•ä¾‹æ–¹æ³•
+    // µ¥Àı·½·¨
     static SkillLevel* getInstance();
     static void destroyInstance();
 
-    // åˆ›å»ºæŠ€èƒ½ç•Œé¢
+    // ´´½¨¼¼ÄÜ½çÃæ
     static cocos2d::Node* createSkillsInterface(cocos2d::Node* parent, cocos2d::Sprite* background);
 
-    // å¢åŠ æŠ€èƒ½æ°´å¹³ï¼ˆåœ¨åŸæœ‰ç­‰çº§ä¸Šå¢åŠ ï¼‰
+    // Ôö¼Ó¼¼ÄÜË®Æ½£¨ÔÚÔ­ÓĞµÈ¼¶ÉÏÔö¼Ó£©
     static bool increaseSkillLevel(SkillType skillType, int amount = 1);
 
-    // å‡å°‘æŠ€èƒ½æ°´å¹³ï¼ˆåœ¨åŸæœ‰ç­‰çº§ä¸Šå‡å°‘ï¼‰
+    // ¼õÉÙ¼¼ÄÜË®Æ½£¨ÔÚÔ­ÓĞµÈ¼¶ÉÏ¼õÉÙ£©
     static bool decreaseSkillLevel(SkillType skillType, int amount = 1);
 
-    // è·å–æŠ€èƒ½ç­‰çº§
+    // »ñÈ¡¼¼ÄÜµÈ¼¶
     static int getSkillLevel(SkillType skillType);
 
     static SkillData* getSkillData() { return s_skillData; };
@@ -50,16 +50,16 @@ private:
 
     static SkillLevel* _instance;
 
-    // åˆå§‹åŒ–æŠ€èƒ½æ•°æ®
+    // ³õÊ¼»¯¼¼ÄÜÊı¾İ
     static void initSkillData();
 
-    // å…¨å±€æŠ€èƒ½æ•°æ®æ•°ç»„
+    // È«¾Ö¼¼ÄÜÊı¾İÊı×é
     static SkillData s_skillData[SKILL_COUNT];
 
-    // åˆ›å»ºå•ä¸ªæŠ€èƒ½é¡¹
+    // ´´½¨µ¥¸ö¼¼ÄÜÏî
     static cocos2d::Node* createSkillItem(SkillType skillType, const cocos2d::Vec2& position);
 
-    // åˆ›å»ºç­‰çº§æ˜Ÿæ˜Ÿæ˜¾ç¤º
+    // ´´½¨µÈ¼¶ĞÇĞÇÏÔÊ¾
     static cocos2d::Node* createLevelStars(int level);
 };
 

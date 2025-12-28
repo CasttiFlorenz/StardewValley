@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     NPCBase.h
+ * File Function: NPCBase类的实现
+ * Author:        赵睿妍、蔡锦慧
+ * Update Date:   2025/12/24
+ * License:       MIT License
+ ****************************************************************/
 #ifndef __NPC_BASE_H__
 #define __NPC_BASE_H__
 

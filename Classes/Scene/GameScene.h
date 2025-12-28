@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     GameScene.h
- * File Function: GameSceneç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: GameSceneÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #ifndef _GAME_SCENE_H_
@@ -12,18 +12,18 @@
 #include "cocos2d.h"
 #include "Constant.h"
 
-// ç©å®¶ä¸æ¸¸æˆåœ°å›¾
+// Íæ¼ÒÓëÓÎÏ·µØÍ¼
 #include "../Player/Player.h"
 #include "../GameMap/GameMap.h"
 
-// å…·ä½“åœ°å›¾
+// ¾ßÌåµØÍ¼
 #include "../GameMap/FarmHouse.h"
 #include "../GameMap/Farm.h"
 #include "../GameMap/Barn.h"
 #include "../GameMap/Mines.h"
 #include "../GameMap/Town.h"
 
-// ç³»ç»Ÿæ¨¡å—
+// ÏµÍ³Ä£¿é
 #include "../NPC/NPCManager.h"
 #include "../Inventory/InventoryScene.h"
 #include "../Weather/WeatherManager.h"
@@ -35,109 +35,109 @@
 
 USING_NS_CC;
 
-// æ¸¸æˆä¸»åœºæ™¯
-// è´Ÿè´£ç®¡ç†æ‰€æœ‰åœ°å›¾åˆ‡æ¢ã€ç©å®¶ã€æ—¶é—´ã€å¤©æ°”ç­‰æ ¸å¿ƒé€»è¾‘
+// ÓÎÏ·Ö÷³¡¾°
+// ¸ºÔğ¹ÜÀíËùÓĞµØÍ¼ÇĞ»»¡¢Íæ¼Ò¡¢Ê±¼ä¡¢ÌìÆøµÈºËĞÄÂß¼­
 class GameScene : public cocos2d::Scene
 {
 public:
-    // åˆ›å»ºåœºæ™¯
+    // ´´½¨³¡¾°
     static cocos2d::Scene* createScene();
 
-    // ææ„å‡½æ•°
+    // Îö¹¹º¯Êı
     ~GameScene();
 
-    // åˆå§‹åŒ–
+    // ³õÊ¼»¯
     virtual bool init() override;
 
-    // å¸§æ›´æ–°
+    // Ö¡¸üĞÂ
     virtual void update(float dt) override;
 
-    // å®å®šä¹‰ CREATE_FUNC
+    // ºê¶¨Òå CREATE_FUNC
     CREATE_FUNC(GameScene);
 
-    // --- æ¸¸æˆé€»è¾‘æ§åˆ¶ ---
+    // --- ÓÎÏ·Âß¼­¿ØÖÆ ---
 
-    // åˆå§‹åŒ–æ‰€æœ‰åœ°å›¾
+    // ³õÊ¼»¯ËùÓĞµØÍ¼
     void initGameMap();
 
-    // åˆ‡æ¢åœ°å›¾é€»è¾‘
+    // ÇĞ»»µØÍ¼Âß¼­
     void switchMap();
 
-    // é‡ç½®ç©å®¶ä½ç½®åˆ°åˆå§‹ç‚¹
+    // ÖØÖÃÍæ¼ÒÎ»ÖÃµ½³õÊ¼µã
     void setPlayerToStart();
 
-    // æ‰“å¼€é’“é±¼å°æ¸¸æˆ
+    // ´ò¿ªµöÓãĞ¡ÓÎÏ·
     void openFishingGame();
 
-    // æ–°çš„ä¸€å¤©é€»è¾‘
+    // ĞÂµÄÒ»ÌìÂß¼­
     void onNewDay();
 
-    // ç¡è§‰é€»è¾‘
+    // Ë¯¾õÂß¼­
     void sleep();
 
-    // æ¸¸æˆæš‚åœï¼ˆåœæ­¢æ›´æ–°å’Œè¾“å…¥ï¼‰
+    // ÓÎÏ·ÔİÍ££¨Í£Ö¹¸üĞÂºÍÊäÈë£©
     void gamePause();
 
-    // æ¸¸æˆæ¢å¤
+    // ÓÎÏ·»Ö¸´
     void gameRestore();
 
-    // æ£€æŸ¥æ˜¯å¦å­˜åœ¨æ‰“å¼€çš„ç•Œé¢ï¼ˆå¦‚å¯¹è¯æ¡†ã€èƒŒåŒ…ç­‰ï¼‰
+    // ¼ì²éÊÇ·ñ´æÔÚ´ò¿ªµÄ½çÃæ£¨Èç¶Ô»°¿ò¡¢±³°üµÈ£©
     bool existInterface();
 
-    // --- è¾“å…¥æ§åˆ¶ ---
+    // --- ÊäÈë¿ØÖÆ ---
 
-    // åˆå§‹åŒ–è¾“å…¥ç›‘å¬å™¨
+    // ³õÊ¼»¯ÊäÈë¼àÌıÆ÷
     void setupMouseListener();
     void setupKeyboardListener();
 
-    // å¯ç”¨/ç¦ç”¨è¾“å…¥
+    // ÆôÓÃ/½ûÓÃÊäÈë
     void enableMouse(bool enable);
     void enableKeyboard(bool enable);
 
-    // è·å–è¾“å…¥çŠ¶æ€
+    // »ñÈ¡ÊäÈë×´Ì¬
     bool isMouseLeftPressed() const noexcept { return _mouseLeftPressed; }
     bool isMouseRightPressed() const noexcept { return _mouseRightPressed; }
     bool isKeyEPressed() const noexcept { return _keyEPressed; }
 
-    // å¤„ç†è¾“å…¥äº‹ä»¶åˆ†å‘
+    // ´¦ÀíÊäÈëÊÂ¼ş·Ö·¢
     void carryMouseEvent(const MouseEvent event);
     void carryKeyBoardEvent(const KeyBoardEvent event);
 
 private:
-    // --- å†…éƒ¨è¾…åŠ©å‡½æ•° ---
+    // --- ÄÚ²¿¸¨Öúº¯Êı ---
 
-    // æ›´æ–°ç›¸æœºä½ç½®
+    // ¸üĞÂÏà»úÎ»ÖÃ
     void updateCamera();
-    // é‡ç½®ç›¸æœº
+    // ÖØÖÃÏà»ú
     void resetCamera();
 
 private:
-    // æ¸¸æˆçŠ¶æ€
+    // ÓÎÏ·×´Ì¬
     bool _isStart = false;
 
-    // å½“å‰åœ°å›¾å¼•ç”¨
+    // µ±Ç°µØÍ¼ÒıÓÃ
     GameMap* _map = nullptr;
 
-    // ç©å®¶å¼•ç”¨
+    // Íæ¼ÒÒıÓÃ
     Player* _player = nullptr;
 
-    // åœ°å›¾ç¼“å­˜ (MapType -> GameMap*)
+    // µØÍ¼»º´æ (MapType -> GameMap*)
     std::map<MapType, GameMap*> _mapCache;
 
-    // ç³»ç»Ÿç®¡ç†å™¨å¼•ç”¨
+    // ÏµÍ³¹ÜÀíÆ÷ÒıÓÃ
     InventoryScene* _inventory = nullptr;
     WeatherManager* _weatherManager = nullptr;
     TimeManager* _timeManager = nullptr;
     NPCManager* _npcManager = nullptr;
 
-    // è·Ÿéšç›¸æœº
+    // ¸úËæÏà»ú
     Camera* _followCamera = nullptr;
 
-    // è¾“å…¥ç›‘å¬å™¨
+    // ÊäÈë¼àÌıÆ÷
     EventListenerMouse* _mouseListener = nullptr;
     EventListenerKeyboard* _keyboardListener = nullptr;
 
-    // è¾“å…¥çŠ¶æ€æ ‡å¿—
+    // ÊäÈë×´Ì¬±êÖ¾
     bool _mouseLeftPressed = false;
     bool _mouseRightPressed = false;
     bool _keyEPressed = false;

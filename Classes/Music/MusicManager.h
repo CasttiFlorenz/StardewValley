@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     MusicManager.h
- * File Function: MusicManagerç±»çš„å®žçŽ°
- * Author:        è”¡é”¦æ…§
- * Update Date:   2025/12/21
+ * File Function: MusicManagerÀàµÄÊµÏÖ
+ * Author:        ²Ì½õ»Û
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #ifndef __MUSIC_MANAGER_H__

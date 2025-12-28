@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     CreateScene.h
- * File Function: CreateSceneç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
+ * File Function: CreateSceneÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
  * Update Date:   2025/12/11
  * License:       MIT License
  ****************************************************************/
@@ -16,17 +16,17 @@
 #include "GameScene.h"
 #include "SimpleAudioEngine.h"
 
-// åˆ›å»ºè§’è‰²åœºæ™¯
+// ´´½¨½ÇÉ«³¡¾°
 class CreateScene : public cocos2d::Scene
 {
 public:
-    // åˆ›å»ºåœºæ™¯é™æ€æ–¹æ³•
+    // ´´½¨³¡¾°¾²Ì¬·½·¨
     static cocos2d::Scene* createScene();
 
-    // åˆå§‹åŒ–
+    // ³õÊ¼»¯
     virtual bool init();
 
-    // å®å®šä¹‰ CREATE_FUNC
+    // ºê¶¨Òå CREATE_FUNC
     CREATE_FUNC(CreateScene);
 };
 

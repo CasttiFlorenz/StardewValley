@@ -8,8 +8,6 @@
  ****************************************************************/
 
 #include "TimeManager.h"
-#include <string>
-#include <new> 
 
 USING_NS_CC;
 

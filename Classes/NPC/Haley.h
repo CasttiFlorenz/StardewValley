@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     Haley.h
+ * File Function: Haley类的实现
+ * Author:        赵睿妍、蔡锦慧
+ * Update Date:   2025/12/24
+ * License:       MIT License
+ ****************************************************************/
 #ifndef __HALEY_NPC_H__
 #define __HALEY_NPC_H__
 

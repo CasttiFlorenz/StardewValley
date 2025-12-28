@@ -11,22 +11,23 @@
 #include <new>
 #include <algorithm>
 #include <functional>
+#include <queue>
 
-// [Section 1] åŸºç¡€å…¨å±€è®¾ç½® (Global Settings)
+// [Section 1] »ù´¡È«¾ÖÉèÖÃ (Global Settings)
 
-// åœ°å›¾ä¸ç‰©ç†
+// µØÍ¼ÓëÎïÀí
 constexpr float TILED_MAP_SCALE = 5.0f;
 constexpr float DEFAULT_SPEED = 250.0f;
 constexpr int CAMERA_POSZ = 200;
 
-// å†œèˆå°ºå¯¸
+// Å©Éá³ß´ç
 constexpr int FARM_HOUSE_WIDTH = 20;
 constexpr int FARM_HOUSE_HEIGHT = 12;
 
-// åˆå§‹æ•°å€¼
+// ³õÊ¼ÊıÖµ
 constexpr int INITIAL_PLAYER_MONEY = 500;
 
-// Tag æ ‡è¯†
+// Tag ±êÊ¶
 constexpr int FISHING_GAME_TAG = 8998;
 constexpr int SHOP_MENU_TAG = 9999;
 constexpr int TAG_DIALOGUE_LAYER = 9998;
@@ -37,9 +38,9 @@ constexpr int PREVIEW_TAG_BASE = 999;
 constexpr int SLEEPING_TAG = 9997;
 
 
-// [Section 2] æšä¸¾å®šä¹‰ (Enums)
+// [Section 2] Ã¶¾Ù¶¨Òå (Enums)
 
-// --- åŸºç¡€çŠ¶æ€ ---
+// --- »ù´¡×´Ì¬ ---
 enum class Direction {
     DOWN = 0, RIGHT = 1, UP = 2, LEFT = 3
 };
@@ -56,7 +57,7 @@ enum class DayOfWeek {
     Monday = 0, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
 };
 
-// --- åœ°å›¾ä¸ç¯å¢ƒ ---
+// --- µØÍ¼Óë»·¾³ ---
 enum class MapType {
     NONE = 0, FARM_HOUSE, FARM, BARN, MINES, TOWN
 };
@@ -77,7 +78,7 @@ enum class FarmItemType {
     CULTIVATED
 };
 
-// --- è§’è‰²ä¸ç”Ÿç‰© ---
+// --- ½ÇÉ«ÓëÉúÎï ---
 enum class CharacterType {
     Evelyn = 0, Haley, Sam, CHARACTER_COUNT
 };
@@ -90,48 +91,48 @@ enum class SkillType {
     FARMING = 0, MINING, FORAGING, FISHING, SKILL_COUNT
 };
 
-// --- ç‰©å“ç±»å‹ ---
+// --- ÎïÆ·ÀàĞÍ ---
 enum class ItemType {
     NONE = -1,
-    // å·¥å…·
-    HOE = 0,            // é”„å¤´
-    AXE,                // æ–§å¤´
-    WATERING_CAN,       // æµ‡æ°´å£¶
-    PICKAXE,            // é•
-    SCYTHE,             // é•°åˆ€
-    FISHINGROD,         // é’“é±¼ç«¿
-    // èµ„æº
-    STONE,              // çŸ³å¤´
-    WOOD,               // æœ¨å¤´
-    COPPER_ORE,         // é“œçŸ¿çŸ³
-    FIBER,              // çº¤ç»´
-    HAY,                // å¹²è‰
-    FERTILIZER,         // è‚¥æ–™
-    // ç§å­
-    PARSNIP_SEED,       // é˜²é£è‰ç§å­
-    CAULIFLOWER_SEED,   // èŠ±æ¤°èœç§å­
-    POTATO_SEED,        // åœŸè±†ç§å­
-    // å†œä½œç‰©/é‡‡é›†ç‰©
-    PARSNIP,            // é˜²é£è‰
-    CAULIFLOWER,        // èŠ±æ¤°èœ
-    POTATO,             // åœŸè±†
-    DAFFODILS,          // é»„æ°´ä»™
-    LEEK,               // éŸ­è‘±
-    // äº§ç‰©/é£Ÿç‰©
-    EGG,                // é¸¡è›‹
-    FRIED_EGG,          // ç…é¸¡è›‹
-    MILK,               // ç‰›å¥¶
-    CARP,               // é²¤é±¼
-    SALAD,              // ç”°å›­æ²™æ‹‰
+    // ¹¤¾ß
+    HOE = 0,            // ³úÍ·
+    AXE,                // ¸«Í·
+    WATERING_CAN,       // ½½Ë®ºø
+    PICKAXE,            // ¸ä
+    SCYTHE,             // Á­µ¶
+    FISHINGROD,         // µöÓã¸Í
+    // ×ÊÔ´
+    STONE,              // Ê¯Í·
+    WOOD,               // Ä¾Í·
+    COPPER_ORE,         // Í­¿óÊ¯
+    FIBER,              // ÏËÎ¬
+    HAY,                // ¸É²İ
+    FERTILIZER,         // ·ÊÁÏ
+    // ÖÖ×Ó
+    PARSNIP_SEED,       // ·À·ç²İÖÖ×Ó
+    CAULIFLOWER_SEED,   // »¨Ò¬²ËÖÖ×Ó
+    POTATO_SEED,        // ÍÁ¶¹ÖÖ×Ó
+    // Å©×÷Îï/²É¼¯Îï
+    PARSNIP,            // ·À·ç²İ
+    CAULIFLOWER,        // »¨Ò¬²Ë
+    POTATO,             // ÍÁ¶¹
+    DAFFODILS,          // »ÆË®ÏÉ
+    LEEK,               // ¾Â´Ğ
+    // ²úÎï/Ê³Îï
+    EGG,                // ¼¦µ°
+    FRIED_EGG,          // ¼å¼¦µ°
+    MILK,               // Å£ÄÌ
+    CARP,               // ÀğÓã
+    SALAD,              // ÌïÔ°É³À­
 
-    COUNT,              // æ€»æ•°
+    COUNT,              // ×ÜÊı
 
-    // ç‰¹æ®Š IDï¼šä¸è¿›èƒŒåŒ…
+    // ÌØÊâ ID£º²»½ø±³°ü
     ANIMAL_CHICKEN_TAG = 10001,
     ANIMAL_COW_TAG = 10002,
 };
 
-// --- è¾“å…¥ä¸äº¤äº’ ---
+// --- ÊäÈëÓë½»»¥ ---
 enum class KeyBoardEvent {
     NONE = 0, CHANGE_INVENTORY
 };
@@ -147,15 +148,15 @@ enum class MouseEvent
 };
 
 
-// [Section 3] èµ„æºè·¯å¾„ (Resource Paths)
+// [Section 3] ×ÊÔ´Â·¾¶ (Resource Paths)
 
-// å¤©æ°”
+// ÌìÆø
 const std::string PATH_IMG_FLOWER = "Weather/flower.png";
 const std::string PATH_IMG_LEAF = "Weather/leaf.png";
 const std::string PATH_IMG_RAINDROP = "Weather/raindrop.png";
 const std::string PATH_IMG_FALLBACK_KEY = "fallback_white_box";
 
-// UI - æ—¶é’Ÿä¸å¤©æ°”å›¾æ ‡
+// UI - Ê±ÖÓÓëÌìÆøÍ¼±ê
 const std::string PATH_UI_CLOCK_BG = "Clock/Clock.png";
 const std::string PATH_UI_CLOCK_HAND = "Clock/hand.png";
 const std::string PATH_UI_WEATHER_SUNNY = "Clock/sunny.png";
@@ -165,7 +166,7 @@ const std::string PATH_UI_WEATHER_WINDY_SPRING = "Clock/windy_spring.png";
 const std::string PATH_UI_WEATHER_WINDY_AUTUMN = "Clock/windy_autumn.png";
 const std::string PATH_UI_SLEEP_BG = "CreateScene/Background-1.png";
 
-// UI - å•†åº—
+// UI - ÉÌµê
 const std::string PATH_SHOP_BG = "Shop/background.png";
 const std::string PATH_SHOP_MINUS = "Shop/minus.png";
 const std::string PATH_SHOP_PLUS = "Shop/plus.png";
@@ -173,23 +174,23 @@ const std::string PATH_SHOP_BUY = "Shop/buy.png";
 const std::string PATH_SHOP_CLOSE = "Shop/close.png";
 const std::string PATH_SHOP_MENU_PREFIX = "Shop/Shop_";
 
-// UI - èƒŒåŒ…
+// UI - ±³°ü
 const std::string PATH_INVENTORY_BG = "Items/background.png";
 const std::string PATH_INVENTORY_SLOT_BG = "Items/inventory.jpg";
 const std::string PATH_PREVIEW_BOX = "/Items/box.png";
-const std::string BUTTON_IMAGES[4] = {     // æŒ‰é’®å›¾ç‰‡
+const std::string BUTTON_IMAGES[4] = {     // °´Å¥Í¼Æ¬
     "/Items/button/inventory button.png",
     "/Items/button/skill button.png",
     "/Items/button/social button.png",
     "/Items/button/exit button.png"
 };
 
-// UI - ç¡è§‰
+// UI - Ë¯¾õ
 const std::string PATH_UI_YES = "Shop/ok.png";
 const std::string PATH_UI_NO = "Shop/no.png";
 const std::string PATH_UI_SELECT = "Shop/SelectDialogue.png";
 
-// UI-å¯¹è¯
+// UI-¶Ô»°
 const std::string PATH_DIALOGUE_BG_DEFAULT = "Shop/dialogue.png";
 const std::string PATH_DIALOGUE_PREFIX = "Shop/Dialogue_";
 
@@ -208,13 +209,13 @@ const std::string PATH_SOCIAL_HALEY = "NPC/HaleyPhoto.png";
 const std::string HEART_FILLED = "NPC/red heart.png";
 const std::string HEART_EMPTY = "NPC/empty heart.png";
 
-//éŸ³ä¹
+//ÒôÀÖ
 const std::string MUSIC_FARM_HOUSE = "music/FarmHouse.mp3";
 const std::string MUSIC_FARM = "music/Farm.mp3";
 const std::string MUSIC_TOWN = "music/Town.mp3";
 const std::string EFFECT_CLICK = "music/click.mp3";
 
-// æŠ€èƒ½
+// ¼¼ÄÜ
 const std::string LEVEL_FILLED1 = "Player/red block.png";
 const std::string LEVEL_EMPTY1 = "Player/empty block.png";
 const std::string LEVEL_FILLED2 = "Player/orange block.png";
@@ -224,11 +225,11 @@ const std::string PATH_MINING_LEVEL = "Items/pickaxe.png";
 const std::string PATH_FORAGING_LEVEL = "Items/cabbage.png";
 const std::string PATH_FISHING_LEVEL = "Items/anchovy.png";
 
-//é’“é±¼
+//µöÓã
 const std::string PATH_IMG_FISHING_BACKGROUND = "Fishing/Fishingicons.png";
 const std::string PATH_IMG_FISH = "Fishing/Tuna.png";
 
-// å­—ä½“
+// ×ÖÌå
 const std::string FONT_DEFAULT_SYSTEM = "Arial";
 const std::string PATH_FONT_ARIAL = "fonts/arial.ttf";
 const std::string PATH_FONT_PIXEL = "fonts/pixel.ttf";
@@ -236,9 +237,9 @@ const std::string PATH_FONT_LOUIS = "fonts/Louis George Cafe Bold.ttf";
 const std::string PATH_FONT_HANDRON = "fonts/Handron-Filled.otf";
 
 
-// [Section 4] é€»è¾‘å¸¸é‡ä¸å­—ç¬¦ä¸² (Logic Constants)
+// [Section 4] Âß¼­³£Á¿Óë×Ö·û´® (Logic Constants)
 
-// åœºæ™¯åˆ‡æ¢æ ‡è¯†
+// ³¡¾°ÇĞ»»±êÊ¶
 const std::string GAME_START = "start";
 const std::string GO_TO_FARM = "goToFarm";
 const std::string GO_TO_TOWN = "goToTown";
@@ -246,7 +247,7 @@ const std::string GO_TO_BARN = "goToBarn";
 const std::string GO_TO_MINES = "goToMines";
 const std::string GO_TO_HOUSE = "goToHouse";
 
-// æ˜¾ç¤ºæ–‡æœ¬
+// ÏÔÊ¾ÎÄ±¾
 const std::string STR_TIME_AM = "am";
 const std::string STR_TIME_PM = "pm";
 const std::string STR_SEASON_SPRING = "Spring";
@@ -257,9 +258,9 @@ const std::string STR_UNKNOWN = "Unknown";
 const std::vector<std::string> STR_DAYS_OF_WEEK = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
 
 
-// [Section 5] æ•°å€¼å‚æ•°é…ç½® (Configuration Parameters)
+// [Section 5] ÊıÖµ²ÎÊıÅäÖÃ (Configuration Parameters)
 
-// --- æ¸²æŸ“å±‚çº§ (ZOrder) ---
+// --- äÖÈ¾²ã¼¶ (ZOrder) ---
 constexpr int ZORDER_SHOP_BG = 0;
 constexpr int ZORDER_SHOP_CONTENT = 5;
 constexpr int ZORDER_MAP_OBJECTS = 20;
@@ -271,7 +272,7 @@ constexpr int ZORDER_UI_CONTAINER = 100;
 constexpr int ZORDER_SLEEP_MASK = 10000;
 constexpr int ZORDER_SHOP_MENU = 999;
 
-// --- èµ„æºé‡‡é›†é™åˆ¶ ---
+// --- ×ÊÔ´²É¼¯ÏŞÖÆ ---
 constexpr int MAX_WOOD_COUNT = 15;
 constexpr int MAX_GRASS_COUNT = 15;
 constexpr int MAX_STONE_COUNT = 15;
@@ -279,7 +280,7 @@ constexpr int MAX_COPPER_COUNT = 5;
 constexpr int MAX_DAFFODILS_COUNT = 5;
 constexpr int MAX_LEEK_COUNT = 3;
 
-// --- å¤©æ°”ç®¡ç†å™¨å‚æ•° ---
+// --- ÌìÆø¹ÜÀíÆ÷²ÎÊı ---
 constexpr float PARTICLE_LIFE_DEFAULT = 4.0f;
 constexpr float PARTICLE_LIFE_VAR = 1.0f;
 constexpr float RAIN_LIFE = 1.2f;
@@ -291,7 +292,7 @@ constexpr int CHANCE_SNOW = 20;
 constexpr int MAX_NIGHT_OPACITY = 200;
 constexpr int FALLBACK_TEXTURE_SIZE = 8;
 
-// --- æ—¶é—´ç®¡ç†å™¨å‚æ•° ---
+// --- Ê±¼ä¹ÜÀíÆ÷²ÎÊı ---
 constexpr int MINUTES_PER_HOUR = 60;
 constexpr int HOURS_PER_DAY_STD = 24;
 constexpr int MAX_GAME_HOUR = 28;
@@ -305,7 +306,7 @@ constexpr float TIME_PASS_OUT_DELAY = 3.0f;
 constexpr float ROTATION_PER_MINUTE = 0.15f;
 constexpr float ROTATION_BASE_ANGLE = 180.0f;
 
-// --- å•†åº—å‚æ•° ---
+// --- ÉÌµê²ÎÊı ---
 constexpr int SHOP_MAX_QUANTITY_LIMIT = 99;
 constexpr int SHOP_MIN_QUANTITY = 1;
 constexpr float SHOP_BG_SCALE = 1.4f;
@@ -315,7 +316,7 @@ constexpr float SHOP_MENU_WIDTH = 800.0f;
 constexpr float SHOP_MENU_HEIGHT = 600.0f;
 constexpr float SCROLL_SENSITIVITY = 30.0f;
 
-// --- èƒŒåŒ… UI å‚æ•° ---
+// --- ±³°ü UI ²ÎÊı ---
 constexpr int INVENTORY_ROWS = 3;
 constexpr int INVENTORY_COLS = 12;
 constexpr int INVENTORY_TOTAL_SLOTS = 36;
@@ -329,18 +330,18 @@ constexpr float INV_SLOT_SCALE = 1.35f;
 constexpr float INV_BG_SCALE = 1.45f;
 constexpr float INV_SLOT_TOUCH_SIZE = 50.0f;
 
-constexpr int MAX_LEVEL = 100;    // æœ€é«˜ç»éªŒå€¼
-constexpr int SKILL_COUNT = 4;    // æŠ€èƒ½ä¸ªæ•°
-constexpr int TOTAL_HEARTS = 10;  // å¥½æ„Ÿåº¦æ˜¾ç¤ºæ€»ä¸ªæ•°
+constexpr int MAX_LEVEL = 100;    // ×î¸ß¾­ÑéÖµ
+constexpr int SKILL_COUNT = 4;    // ¼¼ÄÜ¸öÊı
+constexpr int TOTAL_HEARTS = 10;  // ºÃ¸Ğ¶ÈÏÔÊ¾×Ü¸öÊı
 
-//é’“é±¼æ¸¸æˆå‚æ•°
+//µöÓãÓÎÏ·²ÎÊı
 constexpr float INITIAL_VALUE = 50.0f;
 constexpr float CLICK_INCREMENT = 30.0f;
 constexpr float DECREMENT_PER_SECOND = 60.0f;
 constexpr float MAX_VALUE = 1000.0f;
 
 
-// [Section 6] é¢œè‰²å¸¸é‡ (Colors)
+// [Section 6] ÑÕÉ«³£Á¿ (Colors)
 
 const cocos2d::Color4B COLOR_MASK_DARK(0, 0, 0, 180);
 const cocos2d::Color4B COLOR_ROW_EVEN(255, 255, 255, 50);
@@ -352,7 +353,7 @@ const cocos2d::Color4B COLOR_BTN_BG_YES(0, 128, 0, 200);
 const cocos2d::Color4B COLOR_BTN_BG_NO(200, 0, 0, 200);
 const cocos2d::Color4B COLOR_SKILL_LEVEL_NUM(210, 105, 30, 255);
 
-// ==================== UI å°ºå¯¸ä¸åæ ‡ ====================
+// ==================== UI ³ß´çÓë×ø±ê ====================
 const cocos2d::Size SIZE_DIALOGUE_BG(800, 200);
 const cocos2d::Size SIZE_DIALOGUE_BG_EXPANDED(1000, 200);
 const cocos2d::Size SIZE_CHOICE_BTN(100, 50);
@@ -363,115 +364,115 @@ const cocos2d::Vec2 POS_CONTENT_LABEL(400, 80);
 const cocos2d::Vec2 POS_BTN_YES(600, 50);
 const cocos2d::Vec2 POS_BTN_NO(700, 50);
 
-// ==================== æ–‡æœ¬è®¾ç½® ====================
+// ==================== ÎÄ±¾ÉèÖÃ ====================
 constexpr int FONT_SIZE_NAME = 28;
 constexpr int FONT_SIZE_CONTENT = 24;
 constexpr int FONT_SIZE_BTN = 30;
 
-// ==================== åœ°å›¾è·¯å¾„ç›¸å…³ ====================
+// ==================== µØÍ¼Â·¾¶Ïà¹Ø ====================
 
-// è°·ä»“åœ°å›¾è·¯å¾„
+// ¹È²ÖµØÍ¼Â·¾¶
 const std::string TILED_MAP_BARN_PATH = "/TiledMap/Barn/Barn.tmx";
 
-// å†œåœºåœ°å›¾è·¯å¾„
+// Å©³¡µØÍ¼Â·¾¶
 const std::string TILED_MAP_FARM_PATH = "TiledMap/Farm/Farm.tmx";
 
-// å†œèˆåœ°å›¾è·¯å¾„
+// Å©ÉáµØÍ¼Â·¾¶
 const std::string TILED_MAP_FARM_HOUSE_PATH = "TiledMap/FarmHouse/FarmHouse.tmx";
 
-// çŸ¿æ´åœ°å›¾è·¯å¾„
+// ¿ó¶´µØÍ¼Â·¾¶
 const std::string TILED_MAP_MINES_PATH = "/TiledMap/Mines/Mines.tmx";
 
-// åŸé•‡åœ°å›¾è·¯å¾„
+// ³ÇÕòµØÍ¼Â·¾¶
 const std::string TILED_MAP_TOWN_PATH = "TiledMap/Town/Town.tmx";
 
 
-// Tiled å›¾å±‚ / å±æ€§ / å¯¹è±¡é€šç”¨åç§°
+// Tiled Í¼²ã / ÊôĞÔ / ¶ÔÏóÍ¨ÓÃÃû³Æ
 
-// äº‹ä»¶å±‚åç§°
+// ÊÂ¼ş²ãÃû³Æ
 const std::string EVENT_LAYER_NAME = "event";
 
-// å¯ç¢°æ’å±æ€§å
+// ¿ÉÅö×²ÊôĞÔÃû
 const std::string COLLIDABLE_PROPERTY_NAME = "Collidable";
 
-// é’“é±¼å±æ€§å
+// µöÓãÊôĞÔÃû
 const std::string FISHING_PROPERTY_NAME = "Fishing";
 
-// å·²è€•ç§å±æ€§å
+// ÒÑ¸ûÖÖÊôĞÔÃû
 const std::string CULTIVATED_PROPERTY_NAME = "Cultivated";
 
-// çŸ³å¤´å±æ€§å
+// Ê¯Í·ÊôĞÔÃû
 const std::string STONE_PROPERTY_NAME = "Stone";
 
-// å¯¹è±¡å±æ€§å­—æ®µ
+// ¶ÔÏóÊôĞÔ×Ö¶Î
 const std::string OBJECT_PROPERTY_X = "x";
 const std::string OBJECT_PROPERTY_Y = "y";
 const std::string OBJECT_PROPERTY_WIDTH = "width";
 const std::string OBJECT_PROPERTY_HEIGHT = "height";
 
-// true çš„å­—ç¬¦ä¸²è¡¨ç¤ºï¼ˆTiled ä¸­å¸¸è§ï¼‰
+// true µÄ×Ö·û´®±íÊ¾£¨Tiled ÖĞ³£¼û£©
 const std::string TRUE_STRING_VALUE_1 = "true";
 const std::string TRUE_STRING_VALUE_2 = "1";
 
-// true çš„æ•´æ•°è¡¨ç¤º
+// true µÄÕûÊı±íÊ¾
 constexpr float TRUE_INTEGER_VALUE = 1;
 
 
-// ==================== ç©å®¶åˆå§‹ä½ç½® / åç§» ====================
+// ==================== Íæ¼Ò³õÊ¼Î»ÖÃ / Æ«ÒÆ ====================
 
-// ç©å®¶é»˜è®¤å‡ºç”Ÿåæ ‡
+// Íæ¼ÒÄ¬ÈÏ³öÉú×ø±ê
 constexpr float PLAYER_DEFAULT_POS_X = 0;
 constexpr float PLAYER_DEFAULT_POS_Y = 0;
 
-// Y è½´åç§»å€¼
+// Y ÖáÆ«ÒÆÖµ
 constexpr int Y_OFFSET_1 = 1;
 constexpr int Y_OFFSET_0 = 0;
 constexpr int Y_OFFSET_NEG_1 = -1;
 
 
-// ==================== é€šç”¨æ•°é‡ / è®¡æ•° ====================
+// ==================== Í¨ÓÃÊıÁ¿ / ¼ÆÊı ====================
 
-// é€šç”¨æ•°é‡ 1
+// Í¨ÓÃÊıÁ¿ 1
 constexpr float ITEM_COUNT_1 = 1;
 
-// å¹²è‰æ•°é‡
+// ¸É²İÊıÁ¿
 constexpr float HAY_ITEM_COUNT = 1;
 
-// ç‰›å¥¶æ•°é‡
+// Å£ÄÌÊıÁ¿
 constexpr float MILK_ITEM_COUNT = 1;
 
-// é¸¡è›‹æ•°é‡
+// ¼¦µ°ÊıÁ¿
 constexpr float EGG_ITEM_COUNT = 1;
 
-// ==================== å•†åº— / UIï¼ˆå†œåœº & åŸé•‡ï¼‰====================
+// ==================== ÉÌµê / UI£¨Å©³¡ & ³ÇÕò£©====================
 
-// å”®å–å¯¹è±¡å
+// ÊÛÂô¶ÔÏóÃû
 const std::string SALE_OBJECT_NAME = "sale";
 
-// å•†åº—æ ‡é¢˜
+// ÉÌµê±êÌâ
 const std::string SHOP_TITLE_SALE = "Sale";
 
-// å•†åº—èœå•å±‚çº§
+// ÉÌµê²Ëµ¥²ã¼¶
 constexpr float SHOP_MENU_Z_ORDER = 999;
 
 
-// å†œèˆäº¤äº’å¯¹è±¡
-// è¿”å›å†œåœºå¯¹è±¡å
+// Å©Éá½»»¥¶ÔÏó
+// ·µ»ØÅ©³¡¶ÔÏóÃû
 const std::string GO_TO_FARM_OBJECT_NAME = "goToFarm";
 
-// ä¸ŠåºŠç¡è§‰å¯¹è±¡å
+// ÉÏ´²Ë¯¾õ¶ÔÏóÃû
 const std::string GO_TO_BED_OBJECT_NAME = "goToBed";
 
-// ç‰©å“æœ€å¤§å †å æ•°é‡
+// ÎïÆ·×î´ó¶ÑµşÊıÁ¿
 constexpr float ITEM_STACK_SIZE_3 = 3;
 constexpr float ITEM_STACK_SIZE_1 = 1;
 
-// ç‰©å“ç¼©æ”¾
+// ÎïÆ·Ëõ·Å
 const float ITEM_SCALE_1_0 = 1.0f;
 const float ITEM_SCALE_0_0 = 0.0f;
 
 
-// å•†åº—ç‰©å“è´´å›¾è·¯å¾„
+// ÉÌµêÎïÆ·ÌùÍ¼Â·¾¶
 const std::string ITEM_TEXTURE_PARSNIP_SEED = "Items/parsnip seed.png";
 const std::string ITEM_TEXTURE_POTATO_SEED = "Items/potato seed.png";
 const std::string ITEM_TEXTURE_CAULIFLOWER_SEED = "Items/cauliflower seed.png";
@@ -481,7 +482,7 @@ const std::string ITEM_TEXTURE_HAY = "Items/hay.png";
 const std::string ITEM_TEXTURE_CHICKEN = "Items/chicken.png";
 const std::string ITEM_TEXTURE_COW = "Items/cow.png";
 
-// å•†åº—ç‰©å“ä»·æ ¼
+// ÉÌµêÎïÆ·¼Û¸ñ
 constexpr float ITEM_PRICE_PARSNIP_SEED = 20;
 constexpr float ITEM_PRICE_POTATO_SEED = 50;
 constexpr float ITEM_PRICE_CAULIFLOWER_SEED = 80;
@@ -491,7 +492,7 @@ constexpr float ITEM_PRICE_HAY = 50;
 constexpr float ITEM_PRICE_CHICKEN = 300;
 constexpr float ITEM_PRICE_COW = 500;
 
-// å•†åº—ç‰©å“åç§°
+// ÉÌµêÎïÆ·Ãû³Æ
 const std::string ITEM_NAME_PARSNIP_SEEDS = "Parsnip Seeds";
 const std::string ITEM_NAME_POTATO_SEEDS = "Potato Seeds";
 const std::string ITEM_NAME_CAULIFLOWER_SEEDS = "Cauliflower Seeds";
@@ -502,18 +503,18 @@ const std::string ITEM_NAME_CHICKEN = "Chicken";
 const std::string ITEM_NAME_COW = "Cow";
 
 
-// ==================== åŠ¨ç‰©ç³»ç»Ÿ====================
-// å–‚é£Ÿå±‚
+// ==================== ¶¯ÎïÏµÍ³====================
+// Î¹Ê³²ã
 const std::string FEED_LAYER_NAME = "feeding";
 
-// å·¢ / äº§å‡ºå¯¹è±¡å‰ç¼€
+// ³² / ²ú³ö¶ÔÏóÇ°×º
 const std::string NEST_OBJECT_PREFIX = "nest";
 const std::string PRODUCTION_OBJECT_PREFIX = "production";
 
-// æœ€å¤§åŠ¨ç‰©æ•°é‡
+// ×î´ó¶¯ÎïÊıÁ¿
 constexpr float MAX_ANIMAL_COUNT = 5;
 
-// å·¢åç§»è®¡ç®—é™¤æ•°
+// ³²Æ«ÒÆ¼ÆËã³ıÊı
 constexpr float NEST_OFFSET_DIVISOR = 6;
 
 // Z Order
@@ -522,7 +523,7 @@ constexpr float ANIMAL_SPRITE_Z_ORDER = 60;
 constexpr float PRODUCTION_SPRITE_Z_ORDER = 70;
 
 
-// é¸¡ï¼ˆChickenï¼‰
+// ¼¦£¨Chicken£©
 const std::string CHICKEN_DEFAULT_TEXTURE_PATH = "Animal/chicken_0.png";
 const std::string CHICKEN_PRODUCE_TEXTURE_PATH = "EnvironmentObjects/egg.png";
 
@@ -531,7 +532,7 @@ const std::string CHICKEN_ANIM_FRAME_1 = "Animal/chicken_1.png";
 const std::string CHICKEN_ANIM_FRAME_2 = "Animal/chicken_2.png";
 const std::string CHICKEN_ANIM_FRAME_3 = "Animal/chicken_3.png";
 
-// åŠ¨ç”»å‚æ•°ï¼ˆé¸¡ & ç‰›å…±ç”¨ï¼‰
+// ¶¯»­²ÎÊı£¨¼¦ & Å£¹²ÓÃ£©
 constexpr float ANIMATION_INTERVAL = 0.3f;
 constexpr float ANIM_FRAME_0_UNITS = 3.0f / ANIMATION_INTERVAL;
 constexpr float ANIM_FRAME_2_UNITS = 2.0f / ANIMATION_INTERVAL;
@@ -540,7 +541,7 @@ constexpr float ANIM_FRAME_OTHER_UNITS = 1.0f;
 constexpr float   ANIMATION_LOOP_COUNT = 1;
 
 
-// ç‰›ï¼ˆCowï¼‰
+// Å££¨Cow£©
 const std::string COW_DEFAULT_TEXTURE_PATH = "Animal/cow_0.png";
 const std::string COW_PRODUCE_TEXTURE_PATH = "EnvironmentObjects/milk.png";
 
@@ -552,7 +553,7 @@ const std::string COW_ANIM_FRAME_4 = "Animal/cow_4.png";
 const std::string COW_ANIM_FRAME_5 = "Animal/cow_5.png";
 
 
-// å†œä½œç‰©ï¼ˆCropï¼‰
+// Å©×÷Îï£¨Crop£©
 const std::string CROP_DEAD_TEXTURE_PATH = "EnvironmentObjects/dead.png";
 const std::string CROP_TEXTURE_BASE_PATH_PREFIX = "EnvironmentObjects/";
 const std::string CROP_TEXTURE_STAGE_SUFFIX = ".png";
@@ -565,7 +566,7 @@ constexpr float CAULIFLOWER_MAX_GROWTH_STAGE = 4;
 constexpr float INITIAL_GROWTH_STAGE = 0;
 
 
-// åœŸå£¤ï¼ˆSoilï¼‰
+// ÍÁÈÀ£¨Soil£©
 const std::string SOIL_DRY_TEXTURE_PATH = "EnvironmentObjects/Dry.png";
 const std::string SOIL_WET_TEXTURE_PATH = "EnvironmentObjects/Wet.png";
 const float CROP_POSITION_X_SCALE = 0.5f;
@@ -574,7 +575,7 @@ const float CROP_POSITION_Y_DENOMINATOR = 3.0f;
 constexpr float SOIL_SPRITE_Z_ORDER = 100;
 
 
-// æ‰è½ç‰© / èµ„æº
+// µôÂäÎï / ×ÊÔ´
 const std::string HAY_SPRITE_TEXTURE_PATH = "EnvironmentObjects/Hay.png";
 const std::string COPPER_ITEM_TEXTURE_PATH = "EnvironmentObjects/Copper.png";
 const std::string DAFFODILS_ITEM_TEXTURE_PATH = "EnvironmentObjects/Daffodils.png";
@@ -584,7 +585,7 @@ const std::string STONE_ITEM_TEXTURE_PATH = "EnvironmentObjects/Stone.png";
 const std::string WOOD_ITEM_TEXTURE_PATH = "EnvironmentObjects/Wood.png";
 
 
-// Tile / GID / åæ ‡ç¼–ç 
+// Tile / GID / ×ø±ê±àÂë
 constexpr long long TILE_COORD_MASK = 0xffffffffLL;
 
 constexpr unsigned int TMX_FLIP_FLAGS_MASK =
@@ -592,17 +593,17 @@ constexpr unsigned int TMX_FLIP_FLAGS_MASK =
 
 const unsigned int INVALID_TILE_GID = 0;
 
-// Tile è®¡ç®—ç”¨
+// Tile ¼ÆËãÓÃ
 constexpr float TILE_SIZE_HALF_DIVISOR = 2;
 
 
-// æ‰è½ç”Ÿæˆ / éšæœº
+// µôÂäÉú³É / Ëæ»ú
 constexpr float ITEM_SPRITE_Z_ORDER = 5;
 constexpr float MAX_SPAWN_ATTEMPTS = 1000;
 constexpr float RANDOM_TYPE_THRESHOLD = 0;
 
 
-// ==================== æ¸²æŸ“å±‚çº§ / ç›¸æœº / UI ====================
+// ==================== äÖÈ¾²ã¼¶ / Ïà»ú / UI ====================
 constexpr float MAP_Z_ORDER = 0;
 constexpr float PLAYER_Z_ORDER = 4;
 constexpr float WEATHER_MANAGER_Z_ORDER = 5;
@@ -612,11 +613,11 @@ constexpr float INVENTORY_Z_ORDER = 7;
 constexpr float FISHING_GAME_Z_ORDER = 10;
 constexpr float SLEEP_DIALOG_Z_ORDER = 9999;
 
-// ==================== ç›¸æœºå‚æ•° ====================
+// ==================== Ïà»ú²ÎÊı ====================
 const float CAMERA_NEAR_PLANE = 1.0f;
 const float CAMERA_FAR_PLANE = 1000.0f;
 
-// ==================== é’“é±¼ / ç¡è§‰å¯¹è¯æ¡† ====================
+// ==================== µöÓã / Ë¯¾õ¶Ô»°¿ò ====================
 const std::string SLEEP_DIALOG_NAME = "goToBed";
 const std::string DIALOGUE_LAYER_NAME = "DialogueLayer";
 const std::string SELECT_DIALOGUE_TEXTURE_PATH = "Shop/SelectDialogue.png";

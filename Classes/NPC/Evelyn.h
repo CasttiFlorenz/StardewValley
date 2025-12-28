@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     Evelyn.cpp
+ * File Function: Evelyn类的实现
+ * Author:        赵睿妍、蔡锦慧
+ * Update Date:   2025/12/24
+ * License:       MIT License
+ ****************************************************************/
 #ifndef __EVELYN_NPC_H__
 #define __EVELYN_NPC_H__
 

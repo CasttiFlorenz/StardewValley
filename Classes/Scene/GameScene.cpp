@@ -1,40 +1,40 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     GameScene.cpp
- * File Function: GameSceneç±»çš„å®žçŽ°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: GameSceneÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #include "GameScene.h"
 
-// åˆ›å»ºåœºæ™¯
+// ´´½¨³¡¾°
 Scene* GameScene::createScene()
 {
     return GameScene::create();
 }
 
-// æžæž„å‡½æ•°
+// Îö¹¹º¯Êý
 GameScene::~GameScene()
 {
     _mapCache.clear();
 }
 
-// åˆå§‹åŒ–
+// ³õÊ¼»¯
 bool GameScene::init()
 {
     if (!Scene::init()) return false;
 
     _isStart = true;
 
-    // èŽ·å–çŽ©å®¶å®žä¾‹
+    // »ñÈ¡Íæ¼ÒÊµÀý
     _player = Player::getInstance();
     if (!_player) return false;
 
-    // åˆå§‹åŒ–æ‰€æœ‰åœ°å›¾
+    // ³õÊ¼»¯ËùÓÐµØÍ¼
     initGameMap();
 
-    // èŽ·å–ç³»ç»Ÿç®¡ç†å™¨
+    // »ñÈ¡ÏµÍ³¹ÜÀíÆ÷
     _inventory = InventoryScene::getInstance();
     _weatherManager = WeatherManager::getInstance();
     _timeManager = TimeManager::getInstance();
@@ -42,7 +42,7 @@ bool GameScene::init()
 
     if (_inventory) _inventory->setPlayer(_player);
 
-    // æ·»åŠ å­èŠ‚ç‚¹
+    // Ìí¼Ó×Ó½Úµã
     this->addChild(_player, PLAYER_Z_ORDER);
     if (_weatherManager) this->addChild(_weatherManager, WEATHER_MANAGER_Z_ORDER);
     if (_timeManager) this->addChild(_timeManager, TIME_MANAGER_Z_ORDER);
@@ -50,14 +50,14 @@ bool GameScene::init()
 
     this->scheduleUpdate();
 
-    // åˆå§‹åŒ–è¾“å…¥ç›‘å¬
+    // ³õÊ¼»¯ÊäÈë¼àÌý
     setupMouseListener();
     setupKeyboardListener();
 
     return true;
 }
 
-// åˆå§‹åŒ–æ¸¸æˆåœ°å›¾
+// ³õÊ¼»¯ÓÎÏ·µØÍ¼
 void GameScene::initGameMap()
 {
     auto addMap = [this](GameMap* map) {
@@ -75,7 +75,7 @@ void GameScene::initGameMap()
     if (_map) this->addChild(_map, MAP_Z_ORDER);
 }
 
-// å¸§æ›´æ–°
+// Ö¡¸üÐÂ
 void GameScene::update(float dt)
 {
     switchMap();
@@ -83,11 +83,11 @@ void GameScene::update(float dt)
     if (_map && _map->isCameraFollow())
         updateCamera();
 
-    // æ£€æŸ¥ç•Œé¢çŠ¶æ€ä»¥æš‚åœ/æ¢å¤æ¸¸æˆ
+    // ¼ì²é½çÃæ×´Ì¬ÒÔÔÝÍ£/»Ö¸´ÓÎÏ·
     if (existInterface()) this->gamePause();
     else this->gameRestore();
 
-    // ç¡®ä¿æ¯å¤©åªè§¦å‘ä¸€æ¬¡æ–°çš„ä¸€å¤©å›žè°ƒ
+    // È·±£Ã¿ÌìÖ»´¥·¢Ò»´ÎÐÂµÄÒ»Ìì»Øµ÷
     if (_timeManager)
     {
         _timeManager->onDayStartCallback = [this]() {
@@ -95,7 +95,7 @@ void GameScene::update(float dt)
             };
     }
 
-    // é›¨å¤©è‡ªåŠ¨æµ‡æ°´
+    // ÓêÌì×Ô¶¯½½Ë®
     if (auto c = CultivationManager::getInstance())
     {
         if (_weatherManager &&
@@ -105,7 +105,7 @@ void GameScene::update(float dt)
         }
     }
 
-    // æˆ·å¤–æ˜¾ç¤ºå¤©æ°”æ•ˆæžœ
+    // »§ÍâÏÔÊ¾ÌìÆøÐ§¹û
     if (_map && _weatherManager) {
         if (_map->isOutdoor())
             _weatherManager->setVisible(true);
@@ -114,7 +114,7 @@ void GameScene::update(float dt)
     }
 }
 
-// åˆ‡æ¢åœ°å›¾é€»è¾‘
+// ÇÐ»»µØÍ¼Âß¼­
 void GameScene::switchMap()
 {
     if (!_player || !_map) return;
@@ -141,7 +141,7 @@ void GameScene::switchMap()
     _player->setPosition(_map->getPlayerStartPosition(lastMap));
     _player->setGameMap(_map);
 
-    // ç›¸æœºè·Ÿéšè®¾ç½®
+    // Ïà»ú¸úËæÉèÖÃ
     if (_map->isCameraFollow())
     {
         if (!_followCamera)
@@ -171,7 +171,7 @@ void GameScene::switchMap()
     }
 }
 
-// é‡ç½®ç›¸æœº
+// ÖØÖÃÏà»ú
 void GameScene::resetCamera()
 {
     if (_followCamera)
@@ -186,7 +186,7 @@ void GameScene::resetCamera()
     );
 }
 
-// æ›´æ–°ç›¸æœºä½ç½®
+// ¸üÐÂÏà»úÎ»ÖÃ
 void GameScene::updateCamera()
 {
     if (!_followCamera || !_player || !_map || !_map->getTiledMap()) return;
@@ -206,7 +206,7 @@ void GameScene::updateCamera()
     _followCamera->setPosition3D(Vec3(x, y, CAMERA_POSZ));
 }
 
-// è®¾ç½®çŽ©å®¶å›žåˆå§‹ç‚¹
+// ÉèÖÃÍæ¼Ò»Ø³õÊ¼µã
 void GameScene::setPlayerToStart()
 {
     if (!_map || !_player) return;
@@ -227,7 +227,7 @@ void GameScene::setPlayerToStart()
     _player->setGameMap(_map);
 }
 
-// è®¾ç½®é¼ æ ‡ç›‘å¬
+// ÉèÖÃÊó±ê¼àÌý
 void GameScene::setupMouseListener()
 {
     _mouseLeftPressed = false;
@@ -236,7 +236,7 @@ void GameScene::setupMouseListener()
     _mouseListener = EventListenerMouse::create();
     if (!_mouseListener) return;
 
-    // é¼ æ ‡æŒ‰ä¸‹
+    // Êó±ê°´ÏÂ
     _mouseListener->onMouseDown = [this](EventMouse* e) {
         if (!_map || !_player) return;
 
@@ -263,7 +263,7 @@ void GameScene::setupMouseListener()
         }
         };
 
-    // é¼ æ ‡æŠ¬èµ·
+    // Êó±êÌ§Æð
     _mouseListener->onMouseUp = [this](EventMouse* e) {
         if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
             _mouseLeftPressed = false;
@@ -274,7 +274,7 @@ void GameScene::setupMouseListener()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(_mouseListener, this);
 }
 
-// è®¾ç½®é”®ç›˜ç›‘å¬
+// ÉèÖÃ¼üÅÌ¼àÌý
 void GameScene::setupKeyboardListener()
 {
     _keyEPressed = false;
@@ -298,7 +298,7 @@ void GameScene::setupKeyboardListener()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(_keyboardListener, this);
 }
 
-// å¯ç”¨/ç¦ç”¨é¼ æ ‡
+// ÆôÓÃ/½ûÓÃÊó±ê
 void GameScene::enableMouse(bool enable)
 {
     if (_mouseListener)
@@ -307,14 +307,14 @@ void GameScene::enableMouse(bool enable)
     if (enable) _mouseLeftPressed = _mouseRightPressed = false;
 }
 
-// å¯ç”¨/ç¦ç”¨é”®ç›˜
+// ÆôÓÃ/½ûÓÃ¼üÅÌ
 void GameScene::enableKeyboard(bool enable)
 {
     if (_keyboardListener)
         _keyboardListener->setEnabled(enable);
 }
 
-// å¤„ç†é¼ æ ‡äº‹ä»¶
+// ´¦ÀíÊó±êÊÂ¼þ
 void GameScene::carryMouseEvent(const MouseEvent event)
 {
     switch (event)
@@ -340,7 +340,7 @@ void GameScene::carryMouseEvent(const MouseEvent event)
 }
 
 
-// å¤„ç†é”®ç›˜äº‹ä»¶
+// ´¦Àí¼üÅÌÊÂ¼þ
 void GameScene::carryKeyBoardEvent(const KeyBoardEvent event)
 {
     switch (event)
@@ -354,7 +354,7 @@ void GameScene::carryKeyBoardEvent(const KeyBoardEvent event)
     }
 }
 
-// æ‰“å¼€é’“é±¼æ¸¸æˆ
+// ´ò¿ªµöÓãÓÎÏ·
 void GameScene::openFishingGame()
 {
     if (this->getChildByTag(FISHING_GAME_TAG)) return;
@@ -367,7 +367,7 @@ void GameScene::openFishingGame()
     this->addChild(fishing, FISHING_GAME_Z_ORDER);
 }
 
-// æ–°çš„ä¸€å¤©
+// ÐÂµÄÒ»Ìì
 void GameScene::onNewDay()
 {
     setPlayerToStart();
@@ -391,7 +391,7 @@ void GameScene::onNewDay()
     }
 }
 
-// ç¡è§‰ç¡®è®¤å¯¹è¯æ¡†
+// Ë¯¾õÈ·ÈÏ¶Ô»°¿ò
 void GameScene::sleep()
 {
     if (this->getChildByName(SLEEP_DIALOG_NAME)) return;
@@ -419,7 +419,7 @@ void GameScene::sleep()
     label->setPosition(bgSize.width / 2, bgSize.height * LABEL_POS_Y_RATIO);
     bg->addChild(label);
 
-    // ç¡®è®¤æŒ‰é’®
+    // È·ÈÏ°´Å¥
     auto btnOk = ui::Button::create(OK_BUTTON_TEXTURE_PATH);
     btnOk->setScale(BUTTON_SCALE);
     btnOk->setPosition(Vec2(bgSize.width * OK_BUTTON_POS_X_RATIO, bgSize.height * BUTTON_POS_Y_RATIO));
@@ -429,7 +429,7 @@ void GameScene::sleep()
         });
     bg->addChild(btnOk);
 
-    // å–æ¶ˆæŒ‰é’®
+    // È¡Ïû°´Å¥
     auto btnNo = ui::Button::create(NO_BUTTON_TEXTURE_PATH);
     btnNo->setScale(BUTTON_SCALE);
     btnNo->setPosition(Vec2(bgSize.width * NO_BUTTON_POS_X_RATIO, bgSize.height * BUTTON_POS_Y_RATIO));
@@ -441,7 +441,7 @@ void GameScene::sleep()
     this->addChild(dialog, SLEEP_DIALOG_Z_ORDER);
 }
 
-// æ£€æŸ¥ç•Œé¢çŠ¶æ€
+// ¼ì²é½çÃæ×´Ì¬
 bool GameScene::existInterface()
 {
     if (_inventory) {
@@ -456,7 +456,7 @@ bool GameScene::existInterface()
     return false;
 }
 
-// æš‚åœæ¸¸æˆ
+// ÔÝÍ£ÓÎÏ·
 void GameScene::gamePause()
 {
     if (_player) _player->unscheduleUpdate();
@@ -464,7 +464,7 @@ void GameScene::gamePause()
     enableMouse(false);
 }
 
-// æ¢å¤æ¸¸æˆ
+// »Ö¸´ÓÎÏ·
 void GameScene::gameRestore()
 {
     if (_player) _player->scheduleUpdate();

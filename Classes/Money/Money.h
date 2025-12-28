@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     Money.h
+ * File Function: Money类的实现
+ * Author:        赵睿妍
+ * Update Date:   2025/12/28
+ * License:       MIT License
+ ****************************************************************/
 #ifndef __MONEY_H__
 #define __MONEY_H__
 
