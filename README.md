@@ -40,7 +40,7 @@
 |                    | 地图资源生成   | ✅实现了 FarmItemManager、CultivationManager、MinesItemManager、BarnManager 等管理类，并构建了其对应的物品继承体系，包括 EnvironmentItem（如 WoodItem、GrassItem、StoneItem 等）、Crop 及其派生作物类，以及 BarnAnimal及其派生动物类<br />✅负责了以上地图数据的存档与读取 |
 |                    | 项目统筹       | ✅负责整体架构设计、任务分配、代码整合、Bug 修复与最终测试     |
 | **于恩熙**         | UI状态机       | ✅设计了 InventoryManager 类，实现背包 / 技能 / 社交 / 退出界面的切换 |
-|                    | 背包系统       | ✅完成了 InventoryGridScene 和 InventoryScene 类，实现背包界面物品选择、高亮与增减物品和主界面所选物品的预览 |
+|                    | 背包系统       | ✅完成了 Items 和 PlaceItems 类，实现背包内物品增减和放置<br />✅完成了 InventoryGridScene 和 InventoryScene 类，实现背包界面物品选择、高亮和主界面所选物品的预览 |
 |                    | 数值可视化     | ✅实现了 SkillLevel 类，显示技能等级<br />✅实现了 SocialLevel 类，显示NPC好感度 |
 |                    | 玩家动画       | ✅实现了 Player 类，控制人物移动与工具使用动画，完善了玩家碰撞检测 |
 |                    | 系统界面       | ✅完成了 ExitConfirm 类，弹窗退出确认选项                        |
