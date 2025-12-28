@@ -1,6 +1,14 @@
 /****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     InitialMenuScene.cpp
+ * File Function: InitialMenuSceneç±»çš„å®žçŽ°
+ * Author:        éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/16
+ * License:       MIT License
+ ****************************************************************/
+/****************************************************************
  * InitialMenuScene.cpp
- * ³õÊ¼²Ëµ¥³¡¾°µÄÊµÏÖ£¬°üº¬¿ªÊ¼¡¢¶ÁµµºÍÍË³ö°´Å¥
+ * åˆå§‹èœå•åœºæ™¯çš„å®žçŽ°ï¼ŒåŒ…å«å¼€å§‹ã€è¯»æ¡£å’Œé€€å‡ºæŒ‰é’®
  ****************************************************************/
 
 #include "InitialMenuScene.h"
@@ -17,7 +25,7 @@ Scene* InitialMenuScene::createScene()
     return scene;
 }
 
-// ×ÊÔ´¼ÓÔØÊ§°ÜÊ±µÄ¼òµ¥ÌáÊ¾
+// èµ„æºåŠ è½½å¤±è´¥æ—¶çš„ç®€å•æç¤º
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
@@ -30,14 +38,14 @@ bool InitialMenuScene::init()
         return false;
     }
 
-    // »ñÈ¡ÆÁÄ»´óÐ¡ÓëÔ­µã
+    // èŽ·å–å±å¹•å¤§å°ä¸ŽåŽŸç‚¹
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    // ²¥·Å²Ëµ¥±³¾°ÒôÀÖ
+    // æ’­æ”¾èœå•èƒŒæ™¯éŸ³ä¹
     MusicManager::getInstance()->playMusicForMap("FarmHouse");
 
-    // ===== ±³¾° =====
+    // ===== èƒŒæ™¯ =====
     auto backGround = Sprite::create("/InitialMenuScene/InitialMenu_bg.png");
     if (!backGround) {
         problemLoading("'InitialMenu_bg.png'");
@@ -48,7 +56,7 @@ bool InitialMenuScene::init()
             origin.y + visibleSize.height / 2
         ));
 
-        // °´±ÈÀýËõ·ÅÌîÂúÆÁÄ»
+        // æŒ‰æ¯”ä¾‹ç¼©æ”¾å¡«æ»¡å±å¹•
         float scale = MAX(
             visibleSize.width / backGround->getContentSize().width,
             visibleSize.height / backGround->getContentSize().height
@@ -57,7 +65,7 @@ bool InitialMenuScene::init()
         this->addChild(backGround, 0);
     }
 
-    // ===== ±êÌâ =====
+    // ===== æ ‡é¢˜ =====
     auto title = Sprite::create("/InitialMenuScene/Title.png");
     if (!title) {
         problemLoading("'Title.png'");
@@ -70,7 +78,7 @@ bool InitialMenuScene::init()
         this->addChild(title, 1);
     }
 
-    // ===== °´Å¥ =====
+    // ===== æŒ‰é’® =====
     auto exitButton = HoverButton::create(
         "/InitialMenuScene/ExitDefaultButton.png",
         "/InitialMenuScene/ExitHoverButton.png",
@@ -89,7 +97,7 @@ bool InitialMenuScene::init()
         "/InitialMenuScene/LoadHoverButton.png"
     );
 
-    // ÉèÖÃ°´Å¥Î»ÖÃ
+    // è®¾ç½®æŒ‰é’®ä½ç½®
     exitButton->setPosition(Vec2(
         origin.x + visibleSize.width * 3 / 4 - exitButton->getContentSize().width / 2,
         origin.y + visibleSize.height / 6 + exitButton->getContentSize().height / 2
@@ -105,7 +113,7 @@ bool InitialMenuScene::init()
         origin.y + visibleSize.height / 6 + loadButton->getContentSize().height / 2
     ));
 
-    // ===== ÍË³ö°´Å¥ =====
+    // ===== é€€å‡ºæŒ‰é’® =====
     exitButton->addTouchEventListener([&](Ref*, ui::Widget::TouchEventType type) {
         if (type == ui::Widget::TouchEventType::BEGAN) {
             if(auto music=MusicManager::getInstance())
@@ -115,7 +123,7 @@ bool InitialMenuScene::init()
         });
     this->addChild(exitButton, 1);
 
-    // ===== ´´½¨½ÇÉ«°´Å¥ =====
+    // ===== åˆ›å»ºè§’è‰²æŒ‰é’® =====
     createButton->addTouchEventListener([&](Ref*, ui::Widget::TouchEventType type) {
         if (type == ui::Widget::TouchEventType::BEGAN) {
             if (auto music = MusicManager::getInstance())
@@ -125,7 +133,7 @@ bool InitialMenuScene::init()
         });
     this->addChild(createButton, 1);
 
-    // ===== ¶Áµµ°´Å¥ =====
+    // ===== è¯»æ¡£æŒ‰é’® =====
     loadButton->addTouchEventListener([&](Ref*, ui::Widget::TouchEventType type) {
         if (type == ui::Widget::TouchEventType::BEGAN) {
             if (auto music = MusicManager::getInstance())
@@ -142,3 +150,4 @@ bool InitialMenuScene::init()
 
     return true;
 }
+
