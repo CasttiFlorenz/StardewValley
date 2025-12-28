@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     SaveManage.h
+ * File Function: SaveManageç±»çš„å®ç°
+ * Author:        äºæ©ç†™ã€éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/28
+ * License:       MIT License
+ ****************************************************************/
 #ifndef SAVEMANAGE_H
 #define SAVEMANAGE_H
 
@@ -16,12 +24,12 @@
 #include "../MapItem/FarmItemManager.h"
 #include "../MapItem/MinesItemManager.h"
 
-// ´æµµ¹ÜÀíÆ÷£¨µ¥Àı£©
+// å­˜æ¡£ç®¡ç†å™¨ï¼ˆå•ä¾‹ï¼‰
 class SaveManage {
 public:
     static SaveManage* getInstance();
 
-    // ×ÛºÏ²Ù×÷
+    // ç»¼åˆæ“ä½œ
     bool saveAllData();
     bool loadAllData();
 
@@ -31,44 +39,45 @@ private:
     SaveManage(const SaveManage&) = delete;
     SaveManage& operator=(const SaveManage&) = delete;
 
-    // »ñÈ¡ÎÄ¼şÍêÕûÂ·¾¶
+    // è·å–æ–‡ä»¶å®Œæ•´è·¯å¾„
     std::string getFilePath(const std::string& filename);
 
-    // ÎïÆ·À¸Êı¾İ
+    // ç‰©å“æ æ•°æ®
     bool saveInventory();
     bool loadInventory();
 
-    // ºÃ¸Ğ¶ÈÊı¾İ
+    // å¥½æ„Ÿåº¦æ•°æ®
     bool saveFriendships();
     bool loadFriendships();
 
-    // ÓÎÏ·Ê±¼ä¡¢ÌìÆø¡¢½ğÇ®
+    // æ¸¸æˆæ—¶é—´ã€å¤©æ°”ã€é‡‘é’±
     bool saveGameConditions();
     bool loadGameConditions();
 
-    // ¼¼ÄÜÊı¾İ
+    // æŠ€èƒ½æ•°æ®
     bool saveSkills();
     bool loadSkills();
 
-    // ĞóÅïÊı¾İ
+    // ç•œæ£šæ•°æ®
     bool saveBarnData();
     bool loadBarnData();
 
-    // Å©³¡Êı¾İ
+    // å†œåœºæ•°æ®
     bool saveFarmData();
     bool loadFarmData();
 
-    // ¿ó¶´Êı¾İ
+    // çŸ¿æ´æ•°æ®
     bool saveMinesData();
     bool loadMinesData();
 
-    // ĞòÁĞ»¯¸¨Öú
+    // åºåˆ—åŒ–è¾…åŠ©
     rapidjson::Value serializeItem(const Item& item, rapidjson::Document::AllocatorType& alloc);
     rapidjson::Value serializeGameTime(const GameTime& time, rapidjson::Document::AllocatorType& alloc);
     rapidjson::Value serializeSkill(const SkillData& skill, rapidjson::Document::AllocatorType& alloc);
 
-    // ·´ĞòÁĞ»¯¸¨Öú
+    // ååºåˆ—åŒ–è¾…åŠ©
     bool deserializeGameTime(const rapidjson::Value& timeObj, GameTime& time);
 };
+
 
 #endif // SAVEMANAGE_H
