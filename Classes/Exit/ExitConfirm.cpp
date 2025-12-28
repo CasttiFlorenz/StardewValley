@@ -108,6 +108,7 @@ void ExitConfirm::onReturnToTitle()
     NPCManager::destroyInstance();
     TimeManager::destroyInstance();
     WeatherManager::destroyInstance();
+    MusicManager::destroyInstance();
 
     game->removeFromParent();
     Director::getInstance()->replaceScene(init);
@@ -120,6 +121,7 @@ void ExitConfirm::onExitGame()
     BarnManager::destroyInstance();
     FarmItemManager::destroyInstance();
     MinesItemManager::destroyInstance();
+    MusicManager::destroyInstance();
 
     Player::destroyInstance();
     Farm::destroyInstance();
@@ -129,4 +131,5 @@ void ExitConfirm::onExitGame()
     Mines::destroyInstance();
 
     Director::getInstance()->end();
+
 }
