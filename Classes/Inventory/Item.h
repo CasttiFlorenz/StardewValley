@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
- * File Name:     Item.cpp
- * File Function: ItemÀàµÄÊµÏÖ
- * Author:        ÓÚ¶÷Îõ
+ * File Name:     Item.h
+ * File Function: Itemç±»çš„å®ç°
+ * Author:        äºæ©ç†™
  * Update Date:   2025/12/19
  * License:       MIT License
  ****************************************************************/
@@ -17,15 +17,15 @@
 class Item
 {
 public:
-    // ¹¹Ôìº¯Êı
+    // æ„é€ å‡½æ•°
     Item();
     Item(ItemType tag , int count, float scale,float printPos ,
         const std::string& path,int price, const std::string& name);
 
-    // ´æµµĞÅÏ¢
+    // å­˜æ¡£ä¿¡æ¯
     static bool createFromJson(const rapidjson::Value& jsonObj, Item& item);
 
-    // »ñÈ¡ÎïÆ·ĞÅÏ¢
+    // è·å–ç‰©å“ä¿¡æ¯
     std::string getPath() const;
     ItemType getTag() const;
     int getCount() const;
@@ -35,7 +35,7 @@ public:
     std::string getName() const;
 
 
-    // ÉèÖÃÎïÆ·ĞÅÏ¢
+    // è®¾ç½®ç‰©å“ä¿¡æ¯
     void setName(const std::string& name) { _name = name; }
     void setPrice(int price) { _price = price; }
     void setTag(ItemType tag) { _tag = tag; }
@@ -44,18 +44,19 @@ public:
     void setPrintPos(float printPos) { _printPos = printPos; }
     void setPath(const std::string& path) { _path = path; }
 
-    // ÎïÆ·ÊıÁ¿²Ù×÷
+    // ç‰©å“æ•°é‡æ“ä½œ
     void addCount(int amount = 1);
     void removeCount(int amount = 1);
 
 private:
-    int _price;                // µ¥¼Û
-    std::string _name;         // ÎïÆ·Ãû×Ö
-    std::string _path;         // ÎïÆ·Â·¾¶
-    ItemType _tag;             // ÎïÆ·±êÇ©
-    int _count;                // ÎïÆ·ÊıÁ¿
-    float _scale;              // Ëõ·Å´óĞ¡
-    float _printPos;           // ÏÔÊ¾µØÖ·
+    int _price;                // å•ä»·
+    std::string _name;         // ç‰©å“åå­—
+    std::string _path;         // ç‰©å“è·¯å¾„
+    ItemType _tag;             // ç‰©å“æ ‡ç­¾
+    int _count;                // ç‰©å“æ•°é‡
+    float _scale;              // ç¼©æ”¾å¤§å°
+    float _printPos;           // æ˜¾ç¤ºåœ°å€
 };
 
 #endif // __ITEM_H__#pragma once
+
