@@ -10,36 +10,40 @@
 
 USING_NS_CC;
 
+// 畜棚场景类
 class Barn : public GameMap
 {
 public:
+    // 静态创建与销毁
     static Barn* create();
     static GameMap* getInstance();
     static void destroyInstance();
 
-    // 初始化场景（加载 TMX、隐藏 event 层、初始化管理器）
+    // 初始化
     virtual bool init() override;
-    
-    // 基于玩家位置与朝向判断是否切换到其他地图
+
+    // 场景切换逻辑
     virtual MapType leaveMap(const Vec2& curPos, bool isStart, const Direction& direction) override;
-    
-    // 设置场景起始参数（摄像机与地图定位）
     virtual void IntoMap(MapType lastMap) override;
-    
-    // 计算玩家在本场景的起始位置（基于入口对象）
+
+    // 获取玩家初始位置
     virtual Vec2 getPlayerStartPosition(MapType lastMap) override;
+
+    // 摄像机是否跟随
     virtual bool isCameraFollow() const { return true; }
 
-    // 左键交互：支持在 feed 区域投放干草
-    virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction, ItemType object)override;
-    // 右键交互：支持从生产点位收集产物
+    // 交互事件处理
+    virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction, ItemType object) override;
     virtual MouseEvent onRightClick(const Vec2& playerPos, const Direction direction) override;
 
 private:
     static GameMap* _instance;
 
-    // 管理器指针仅引用单例，生命周期由管理器自身负责
+    // 畜棚管理器
     BarnManager* _barnManager = nullptr;
+
+    // 禁用拷贝赋值
     Barn& operator=(const Barn&) = delete;
 };
+
 #endif // _BARN_H_

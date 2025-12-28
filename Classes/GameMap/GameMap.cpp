@@ -15,7 +15,7 @@ bool GameMap::init()
     return true;
 }
 
- // 世界坐标 -> 瓦片坐标
+// 世界坐标 -> 瓦片坐标
 Vec2 GameMap::calMapPos(Vec2 worldPos)
 {
     // 转换到 TMXTiledMap 的节点坐标系
@@ -40,8 +40,8 @@ Vec2 GameMap::calWorldPos(const Vec2& tileCoord)
     const Size mapSize = _map->getMapSize();
 
     // TiledMap 中瓦片索引原点在左上角
-    float x = tileCoord.x * tileSize + tileSize / 2;
-    float y = (mapSize.height - tileCoord.y - 1) * tileSize + tileSize / 2;
+    float x = tileCoord.x * tileSize + tileSize / TILE_SIZE_HALF_DIVISOR;
+    float y = (mapSize.height - tileCoord.y - 1) * tileSize + tileSize / TILE_SIZE_HALF_DIVISOR;
 
     return Vec2(x, y);
 }
@@ -58,10 +58,10 @@ Rect GameMap::getObjectRect(const std::string& objectName)
         if (!object.empty())
         {
             // 读取对象在 TMX 中的数据
-            const float x = object.at("x").asFloat();
-            const float y = object.at("y").asFloat();
-            const float width = object.at("width").asFloat();
-            const float height = object.at("height").asFloat();
+            const float x = object.at(OBJECT_PROPERTY_X).asFloat();
+            const float y = object.at(OBJECT_PROPERTY_Y).asFloat();
+            const float width = object.at(OBJECT_PROPERTY_WIDTH).asFloat();
+            const float height = object.at(OBJECT_PROPERTY_HEIGHT).asFloat();
 
             Rect nodeRect(x, y, width, height);
 
@@ -81,7 +81,7 @@ Rect GameMap::getObjectRect(const std::string& objectName)
     return Rect::ZERO;
 }
 
- // 判断世界坐标是否发生碰撞
+// 判断世界坐标是否发生碰撞
 bool GameMap::isCollidable(Vec2 worldPos)
 {
     if (!_map) return false;
@@ -99,7 +99,7 @@ bool GameMap::isCollidable(Vec2 worldPos)
     }
 
     // 获取事件层（通常用于碰撞/触发）
-    auto layer = _map->getLayer("event");
+    auto layer = _map->getLayer(EVENT_LAYER_NAME);
     if (!layer) return false;
 
     // 检查该瓦片是否有 Collidable 属性
@@ -107,8 +107,8 @@ bool GameMap::isCollidable(Vec2 worldPos)
     if (tileGID) {
         auto properties = _map->getPropertiesForGID(tileGID).asValueMap();
         if (!properties.empty() &&
-            properties.find("Collidable") != properties.end() &&
-            properties.at("Collidable").asBool()) {
+            properties.find(COLLIDABLE_PROPERTY_NAME) != properties.end() &&
+            properties.at(COLLIDABLE_PROPERTY_NAME).asBool()) {
             return true;
         }
     }
@@ -116,7 +116,7 @@ bool GameMap::isCollidable(Vec2 worldPos)
     return false;
 }
 
- // 根据玩家朝向，对瓦片坐标进行偏移（前方一格）
+// 根据玩家朝向，对瓦片坐标进行偏移（前方一格）
 void GameMap::ApplyDirectionOffset(Vec2& basePos, Direction direction)
 {
     switch (direction) {
@@ -135,10 +135,10 @@ bool GameMap::IsTrueProperty(const Value& v)
     case Value::Type::BOOLEAN:
         return v.asBool();
     case Value::Type::INTEGER:
-        return v.asInt() == 1;
+        return v.asInt() == TRUE_INTEGER_VALUE;
     case Value::Type::STRING: {
         auto s = v.asString();
-        return s == "true" || s == "1";
+        return s == TRUE_STRING_VALUE_1 || s == TRUE_STRING_VALUE_2;
     }
     default:
         return false;

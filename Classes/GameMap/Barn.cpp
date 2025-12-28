@@ -1,9 +1,10 @@
 #include "Barn.h"
 #include "../Inventory/InventoryScene.h"
 
-// Barn 单例实例指针
+// 单例实例
 GameMap* Barn::_instance = nullptr;
 
+// 创建实例
 Barn* Barn::create() {
     auto p = new (std::nothrow) Barn();
     if (p && p->init()) {
@@ -14,59 +15,56 @@ Barn* Barn::create() {
     return nullptr;
 }
 
-// 获取 Barn 场景的单例实例
+// 获取单例
 GameMap* Barn::getInstance() {
     if (!_instance) {
         _instance = Barn::create();
-        CC_SAFE_RETAIN(_instance); // 引用计数 +1，防止被自动释放
+        CC_SAFE_RETAIN(_instance);
     }
     return _instance;
 }
 
-// 销毁 Barn 单例实例
+// 销毁单例
 void Barn::destroyInstance() {
-    CC_SAFE_RELEASE_NULL(_instance); // 安全释放并置空
+    CC_SAFE_RELEASE_NULL(_instance);
 }
 
-// Barn 场景初始化
+// 初始化
 bool Barn::init()
 {
-    // 初始化 Scene 基类，失败直接返回
     if (!Scene::init()) return false;
 
-    // 设置当前地图类型为 Barn
+    // 设置地图类型
     _mapName = MapType::BARN;
 
-    // 加载 Tiled 地图文件
-    _map = TMXTiledMap::create("/TiledMap/Barn/Barn.tmx");
+    // 加载 Tiled 地图
+    _map = TMXTiledMap::create(TILED_MAP_BARN_PATH);
     if (_map == nullptr) {
-        CCLOG("Failed to load map: /TiledMap/Barn/Barn.tmx");
+        CCLOG("Failed to load map: %s", TILED_MAP_BARN_PATH.c_str());
         return false;
     }
 
-    // 获取事件层（仅用于逻辑，不显示）
-    auto eventLayer = _map->getLayer("event");
+    // 隐藏事件层
+    auto eventLayer = _map->getLayer(EVENT_LAYER_NAME);
     if (eventLayer != nullptr) {
         eventLayer->setVisible(false);
     }
 
-    // 获取并初始化 BarnManager（管理牲畜、产物等）
+    // 获取管理器
     _barnManager = BarnManager::getInstance(this);
-    _barnManager->addAnimal(AnimalType::CHICKEN);
 
-    // 将地图加入场景
     this->addChild(_map);
     return true;
 }
 
-// 判断是否需要从当前地图切换到新地图
+// 离开地图逻辑
 MapType Barn::leaveMap(const Vec2& curPos, bool isStart, const Direction& direction)
 {
-    // 玩家向下移动时，检测是否进入通往农场的出口区域
+    // 向下移动时检查是否到达传送点
     if (direction == Direction::DOWN) {
         const Rect goToFarmRect = getObjectRect(GO_TO_FARM);
         if (goToFarmRect.containsPoint(curPos)) {
-            // 切换地图前停止牲畜动画
+            // 切换前停止动画
             if (_barnManager != nullptr) {
                 _barnManager->stopAnimations();
             }
@@ -76,59 +74,49 @@ MapType Barn::leaveMap(const Vec2& curPos, bool isStart, const Direction& direct
     return MapType::NONE;
 }
 
-// 设置 Barn 场景显示时的初始状态
+// 进入地图逻辑
 void Barn::IntoMap(MapType lastMap)
 {
-    // 获取屏幕可见区域大小
     const Vec2 visibleSize = Director::getInstance()->getVisibleSize();
 
-    // 设置瓦片地图缩放比例
     _map->setScale(TILED_MAP_SCALE);
-
-    // 居中显示地图
     _map->setPosition((visibleSize - _map->getContentSize() * _map->getScale()) / 2);
 
-    // 启动牲畜动画
+    // 恢复动画
     if (_barnManager != nullptr) {
         _barnManager->startAnimations();
     }
 }
 
-// 获取玩家进入 Barn 时的起始位置
+// 获取玩家初始位置
 Vec2 Barn::getPlayerStartPosition(MapType lastMap)
 {
-    // 使用 goToFarm 对象中心作为出生点
     const Rect goToFarmRect = getObjectRect(GO_TO_FARM);
     if (!goToFarmRect.equals(Rect::ZERO))
         return Vec2(goToFarmRect.getMidX(), goToFarmRect.getMidY());
 
-    // 兜底位置
-    return Vec2(100, 100);
+    return Vec2(PLAYER_DEFAULT_POS_X, PLAYER_DEFAULT_POS_Y);
 }
 
-// 鼠标左键点击事件（通常为使用物品 / 放置）
+// 左键点击处理（放置干草）
 MouseEvent Barn::onLeftClick(const Vec2& playerPos, const Direction direction, ItemType objects)
 {
-    // 计算玩家所在的瓦片坐标
     Vec2 basePos = this->calMapPos(playerPos);
-
-    // 根据玩家朝向，偏移到正前方
     this->ApplyDirectionOffset(basePos, direction);
 
-    // y 方向额外检测（扩大检测范围）
-    const int yOffsets[] = { 1, 0, -1 };
+    // 检查上下偏移范围
+    const int yOffsets[] = { Y_OFFSET_1, Y_OFFSET_0, Y_OFFSET_NEG_1 };
 
     for (int offset : yOffsets) {
         Vec2 checkPos = basePos;
-        checkPos.y += offset;
+        checkPos.y += static_cast<float>(offset);
 
         switch (objects) {
         case ItemType::HAY:
-            // 尝试在指定位置放置干草
+            // 尝试添加干草
             if (_barnManager != nullptr && _barnManager->addHayAt(checkPos)) {
-                // 成功放置后，从背包中移除一个干草
                 auto inv = InventoryScene::getInstance();
-                if (inv) inv->removeItemCount(ItemType::HAY, 1);
+                if (inv) inv->removeItemCount(ItemType::HAY, static_cast<int>(HAY_ITEM_COUNT));
                 return MouseEvent::NONE;
             }
             break;
@@ -140,36 +128,31 @@ MouseEvent Barn::onLeftClick(const Vec2& playerPos, const Direction direction, I
     return MouseEvent::NONE;
 }
 
-// 鼠标右键点击事件（通常为采集）
+// 右键点击处理（收集产物）
 MouseEvent Barn::onRightClick(const Vec2& playerPos, const Direction direction)
 {
-    // 计算玩家所在的瓦片坐标
     Vec2 basePos = this->calMapPos(playerPos);
-
-    // 根据朝向偏移到前方
     this->ApplyDirectionOffset(basePos, direction);
 
-    // y 方向额外检测（扩大检测范围）
-    const int yOffsets[] = { 1, 0, -1 };
+    const int yOffsets[] = { Y_OFFSET_1, Y_OFFSET_0, Y_OFFSET_NEG_1 };
 
     for (int offset : yOffsets) {
         Vec2 checkPos = basePos;
-        checkPos.y += offset;
+        checkPos.y += static_cast<float>(offset);
 
-        // 尝试采集该位置的产物
+        // 尝试收集产物
         const ItemType collected = (_barnManager != nullptr)
             ? _barnManager->collectProductionAt(checkPos)
             : ItemType::NONE;
 
-        // 根据采集到的物品类型加入背包
         switch (collected) {
         case ItemType::MILK:
             if (auto inv = InventoryScene::getInstance())
-                inv->addItemCount(ItemType::MILK, 1);
+                inv->addItemCount(ItemType::MILK, static_cast<int>(MILK_ITEM_COUNT));
             break;
         case ItemType::EGG:
             if (auto inv = InventoryScene::getInstance())
-                inv->addItemCount(ItemType::EGG, 1);
+                inv->addItemCount(ItemType::EGG, static_cast<int>(EGG_ITEM_COUNT));
         default:
             break;
         }

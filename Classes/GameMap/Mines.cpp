@@ -39,11 +39,11 @@ bool Mines::init()
     _mapName = MapType::MINES;
 
     // 加载矿洞 TMX 地图
-    _map = TMXTiledMap::create("/TiledMap/Mines/Mines.tmx");
+    _map = TMXTiledMap::create(TILED_MAP_MINES_PATH);
     if (!_map) return false;
 
     // 隐藏事件层
-    if (auto eventLayer = _map->getLayer("event")) {
+    if (auto eventLayer = _map->getLayer(EVENT_LAYER_NAME)) {
         eventLayer->setVisible(false);
     }
 
@@ -94,7 +94,7 @@ Vec2 Mines::getPlayerStartPosition(MapType lastMap)
     if (!goToFarmRect.equals(Rect::ZERO)) {
         return Vec2(goToFarmRect.getMidX(), goToFarmRect.getMidY());
     }
-    return Vec2(100, 100);
+    return Vec2(PLAYER_DEFAULT_POS_X, PLAYER_DEFAULT_POS_Y);
 }
 
 // 左键交互（使用镐子挖矿）
@@ -109,7 +109,7 @@ MouseEvent Mines::onLeftClick(const Vec2& playerPos,
         Vec2 basePos = calMapPos(playerPos);
         ApplyDirectionOffset(basePos, direction);
 
-        const int yOffsets[] = { 1, 0, -1 };
+        const int yOffsets[] = { Y_OFFSET_1, Y_OFFSET_0, Y_OFFSET_NEG_1 };
 
         // 检测前方及上下三个格子
         for (const int offset : yOffsets) {
@@ -127,7 +127,11 @@ MouseEvent Mines::onLeftClick(const Vec2& playerPos,
                     _minesItemManager->removeItem(checkPos);
                     if (auto inv = InventoryScene::getInstance()) {
                         inv->ToolUseAnimation();
-                        inv->addItemCount(ItemType::STONE, 1);
+                        inv->addItemCount(ItemType::STONE, ITEM_COUNT_1);
+
+                        if (auto skill = SkillLevel::getInstance()) {
+                            skill->increaseSkillLevel(SkillType::MINING);
+                        }
                     }
                     return MouseEvent::USE_TOOL;
                 }
@@ -136,7 +140,11 @@ MouseEvent Mines::onLeftClick(const Vec2& playerPos,
                     _minesItemManager->removeItem(checkPos);
                     if (auto inv = InventoryScene::getInstance()) {
                         inv->ToolUseAnimation();
-                        inv->addItemCount(ItemType::COPPER_ORE, 1);
+                        inv->addItemCount(ItemType::COPPER_ORE, ITEM_COUNT_1);
+
+                        if (auto skill = SkillLevel::getInstance()) {
+                            skill->increaseSkillLevel(SkillType::MINING);
+                        }
                     }
                     return MouseEvent::USE_TOOL;
                 }
@@ -170,15 +178,15 @@ bool Mines::isCollidable(Vec2 worldPos)
         return true;
 
     // 检测事件层的 Collidable 属性
-    auto layer = _map->getLayer("event");
+    auto layer = _map->getLayer(EVENT_LAYER_NAME);
     if (!layer) return false;
 
     const int tileGID = layer->getTileGIDAt(tilePos);
     if (tileGID) {
         auto properties = _map->getPropertiesForGID(tileGID).asValueMap();
         if (!properties.empty() &&
-            properties.find("Collidable") != properties.end() &&
-            properties.at("Collidable").asBool()) {
+            properties.find(COLLIDABLE_PROPERTY_NAME) != properties.end() &&
+            properties.at(COLLIDABLE_PROPERTY_NAME).asBool()) {
             return true;
         }
     }

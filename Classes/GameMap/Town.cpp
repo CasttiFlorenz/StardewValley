@@ -37,11 +37,11 @@ bool Town::init()
     _mapName = MapType::TOWN;
 
     // 加载城镇 TMX 地图
-    _map = TMXTiledMap::create("TiledMap/Town/Town.tmx");
+    _map = TMXTiledMap::create(TILED_MAP_TOWN_PATH);
     if (!_map) return false;
 
     // 隐藏事件层
-    if (auto eventLayer = _map->getLayer("event")) {
+    if (auto eventLayer = _map->getLayer(EVENT_LAYER_NAME)) {
         eventLayer->setVisible(false);
     }
 
@@ -67,6 +67,7 @@ MapType Town::leaveMap(const Vec2& curPos, bool isStart, const Direction& direct
 // 进入城镇时设置地图参数
 void Town::IntoMap(MapType lastMap)
 {
+    MusicManager::getInstance()->playMusicForMap("Town");
     _map->setScale(TILED_MAP_SCALE);
     _map->setPosition(Vec2::ZERO);
 }
@@ -80,7 +81,7 @@ Vec2 Town::getPlayerStartPosition(MapType lastMap)
         if (!rect.equals(Rect::ZERO))
             return Vec2(rect.getMidX(), rect.getMidY());
     }
-    return Vec2(100, 100);
+    return Vec2(PLAYER_DEFAULT_POS_X, PLAYER_DEFAULT_POS_Y);
 }
 
 // 右键交互（检测 NPC 并打开商店）
@@ -89,12 +90,12 @@ MouseEvent Town::onRightClick(const Vec2& playerPos,
 {
     // NPC 名称列表
     static const std::vector<std::string> npcNames = {
-        "Evelyn", "Haley", "Sam"
+        NPC_NAME_EVELYN, NPC_NAME_HALEY, NPC_NAME_SAM
     };
 
     // Shop 名称列表
     static const std::vector<std::string> shopNames = {
-        "Pierre", "Marnie"
+        SHOP_NAME_PIERRE, SHOP_NAME_MARNIE
     };
 
     // 检测是否点击 NPC
@@ -131,18 +132,18 @@ void Town::openShopForNPC(const std::string& npcName)
     std::vector<ItemType>  acceptedSellItems;
 
     // --- 皮埃尔商店配置 ---
-    if (npcName == "Pierre") {
+    if (npcName == SHOP_NAME_PIERRE) {
         // --- 进货列表 (玩家买) ---
         // 种子类
-        itemsToSell.push_back(new Item(ItemType::PARSNIP_SEED, 3, 1.0f, 0.0f, "Items/parsnip seed.png", 20, "Parsnip Seeds"));
-        itemsToSell.push_back(new Item(ItemType::POTATO_SEED, 3, 1.0f, 0.0f, "Items/potato seed.png", 50, "Potato Seeds"));
-        itemsToSell.push_back(new Item(ItemType::CAULIFLOWER_SEED, 3, 1.0f, 0.0f, "Items/cauliflower seed.png", 80, "Cauliflower Seeds")); // 新增花椰菜
+        itemsToSell.push_back(new Item(ItemType::PARSNIP_SEED, ITEM_STACK_SIZE_3, ITEM_SCALE_1_0, ITEM_SCALE_0_0, ITEM_TEXTURE_PARSNIP_SEED, ITEM_PRICE_PARSNIP_SEED, ITEM_NAME_PARSNIP_SEEDS));
+        itemsToSell.push_back(new Item(ItemType::POTATO_SEED, ITEM_STACK_SIZE_3, ITEM_SCALE_1_0, ITEM_SCALE_0_0, ITEM_TEXTURE_POTATO_SEED, ITEM_PRICE_POTATO_SEED, ITEM_NAME_POTATO_SEEDS));
+        itemsToSell.push_back(new Item(ItemType::CAULIFLOWER_SEED, ITEM_STACK_SIZE_3, ITEM_SCALE_1_0, ITEM_SCALE_0_0, ITEM_TEXTURE_CAULIFLOWER_SEED, ITEM_PRICE_CAULIFLOWER_SEED, ITEM_NAME_CAULIFLOWER_SEEDS)); // 新增花椰菜
 
         // 农业用品
-        itemsToSell.push_back(new Item(ItemType::FERTILIZER, 1, 1.0f, 0.0f, "Items/fertilizer.png", 100, "Fertilizer"));
+        itemsToSell.push_back(new Item(ItemType::FERTILIZER, ITEM_STACK_SIZE_1, ITEM_SCALE_1_0, ITEM_SCALE_0_0, ITEM_TEXTURE_FERTILIZER, ITEM_PRICE_FERTILIZER, ITEM_NAME_FERTILIZER));
 
         // 食品 (皮埃尔也会卖一些现成的食物)
-        itemsToSell.push_back(new Item(ItemType::SALAD, 1, 1.0f, 0.0f, "Items/salad.png", 220, "Salad"));
+        itemsToSell.push_back(new Item(ItemType::SALAD, ITEM_STACK_SIZE_1, ITEM_SCALE_1_0, ITEM_SCALE_0_0, ITEM_TEXTURE_SALAD, ITEM_PRICE_SALAD, ITEM_NAME_SALAD));
 
         // --- 回收列表 (玩家卖) ---
         // 1. 农作物
@@ -166,24 +167,24 @@ void Town::openShopForNPC(const std::string& npcName)
     }
     // --- 玛尼牧场配置 ---
     else if (npcName == SHOP_NAME_MARNIE) {
-        itemsToSell.push_back(new Item(ItemType::HAY, 1, 0, 0, "Items/hay.png", 50, "Hay"));
+        itemsToSell.push_back(new Item(ItemType::HAY, ITEM_STACK_SIZE_1, ITEM_SCALE_0_0, ITEM_SCALE_0_0, ITEM_TEXTURE_HAY, ITEM_PRICE_HAY, ITEM_NAME_HAY));
         // 特殊：动物
         itemsToSell.push_back(new Item(
             ItemType::ANIMAL_CHICKEN_TAG,
-            1,
-            1.0f, 0.0f,
-            "Items/chicken.png",
-            300,
-            "Chicken"
+            ITEM_STACK_SIZE_1,
+            ITEM_SCALE_1_0, ITEM_SCALE_0_0,
+            ITEM_TEXTURE_CHICKEN,
+            ITEM_PRICE_CHICKEN,
+            ITEM_NAME_CHICKEN
         ));
 
         itemsToSell.push_back(new Item(
             ItemType::ANIMAL_COW_TAG,
-            1,
-            1.0f, 0.0f,
-            "Items/cow.png",
-            500,
-            "Cow"
+            ITEM_STACK_SIZE_1,
+            ITEM_SCALE_1_0, ITEM_SCALE_0_0,
+            ITEM_TEXTURE_COW,
+            ITEM_PRICE_COW,
+            ITEM_NAME_COW
         ));
 
         acceptedSellItems = { ItemType::EGG, ItemType::MILK, ItemType::HAY };
@@ -222,7 +223,7 @@ void Town::interactWithNPC(const std::string& npcName, ItemType heldItem)
 
         // 扣除物品
         if (auto inv = InventoryScene::getInstance()) {
-            inv->removeItemCount(heldItem, 1);
+            inv->removeItemCount(heldItem, ITEM_COUNT_1);
         }
     }
     else {
@@ -265,7 +266,7 @@ void Town::initNPCs()
             npc->setPosition(Vec2(spawnRect.getMidX(), spawnRect.getMidY()));
             // 添加到地图 
             _map->addChild(npc, ZORDER_MAP_OBJECTS);
-
+            _map->setCameraMask(static_cast<unsigned short>(CameraFlag::USER1), true);
             // 存入缓存
             _npcMap[name] = npc;
         }
