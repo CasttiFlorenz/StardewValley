@@ -1,3 +1,12 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     ExitComfirm.cpp
+ * File Function: ExitComfirm类的实现
+ * Author:        于恩熙
+ * Update Date:   2025/12/28
+ * License:       MIT License
+ ****************************************************************/
+
 #include "ExitConfirm.h"
 #include "../Scene/InitialMenuScene.h"
 #include "cocos2d.h"
@@ -172,3 +181,4 @@ void ExitConfirm::onExitGame()
     Director::getInstance()->end();
 
 }
+
