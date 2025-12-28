@@ -1,29 +1,38 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     Chicken.h
+ * File Function: Chickenç±»çš„å®ç°
+ * Author:        éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/16
+ * License:       MIT License
+ ****************************************************************/
 #pragma once
 #ifndef __CHICKEN_H__
 #define __CHICKEN_H__
 
 #include "BarnAnimal.h"
 
-// ¼¦Àà£¬¼Ì³Ğ×ÔÅ©³¡¶¯Îï
+// é¸¡ç±»ï¼Œç»§æ‰¿è‡ªå†œåœºåŠ¨ç‰©
 class Chicken : public BarnAnimal {
 public:
-    // ¾²Ì¬´´½¨º¯Êı
+    // é™æ€åˆ›å»ºå‡½æ•°
     static Chicken* create();
 
-    // »ñÈ¡²úÎïÂ·¾¶
+    // è·å–äº§ç‰©è·¯å¾„
     virtual std::string getProducePath() const override;
 
-    // »ñÈ¡²úÎïÀàĞÍ
+    // è·å–äº§ç‰©ç±»å‹
     virtual ItemType getProduceObject() const override;
 
-    // »ñÈ¡¶¯ÎïÀàĞÍ
+    // è·å–åŠ¨ç‰©ç±»å‹
     virtual AnimalType getType() const noexcept override {
         return AnimalType::CHICKEN;
     }
 
-    // ¶¯»­¿ØÖÆ
+    // åŠ¨ç”»æ§åˆ¶
     virtual void startAnimation() override;
     virtual void stopAnimation() override;
 };
+
 
 #endif // __CHICKEN_H__
