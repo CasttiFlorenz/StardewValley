@@ -25,22 +25,24 @@ public:
     static InventoryScene* getInstance();
     static void destroyInstance();
 
+    // 背包物品显示
     virtual bool init();
     void updatePreviewTool();
-    void setPlayer(Player* player);
     void toggleInventory();              // 切换背包显示/隐藏
     void ToolUseAnimation();             // 显示工具特效
 
     InventoryGridScene* getInventoryLayer() { return _inventoryLayer; }
+    bool getInventoryVisible() { return _inventoryVisible; }
+
+    void setPlayer(Player* player);   // 设置玩家
 
     // 从存档数据加载物品（专为存档设计）
     bool loadItemsFromSaveData(const std::vector<Item>&savedItems);
 
-    // 获取物品信息
+    // 物品信息
     ItemType getTap() const;
     void addItemCount(ItemType object, int amount, bool animation = true);        // 增加指定物品的数量
     void removeItemCount(ItemType object, int amount);      // 减少指定物品的数量
-    bool getInventoryVisible() { return _inventoryVisible; }
 
 private:
     static InventoryScene* _instance;

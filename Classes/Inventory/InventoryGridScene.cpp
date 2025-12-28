@@ -178,6 +178,7 @@ bool InventoryGridScene::init()
 }
 
 
+
 // ========== 事件监听 ==========
 
 void InventoryGridScene::setupEventListeners()
@@ -216,10 +217,9 @@ void InventoryGridScene::refreshInventory()
     }
 }
 
+
+
 // ========== 点击高光效果 ==========
-
-
-
 
 void InventoryGridScene::createTouchListenerForGrid(int gridIndex, cocos2d::Sprite* grid)
 {
@@ -249,7 +249,6 @@ void InventoryGridScene::createTouchListenerForGrid(int gridIndex, cocos2d::Spri
     // 将监听器添加到事件分发器
     Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, grid);
 }
-
 
 
 // 启用或禁用所有格子的触摸监听

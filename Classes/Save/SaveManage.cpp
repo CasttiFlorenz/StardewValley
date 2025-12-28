@@ -97,10 +97,6 @@ bool SaveManage::loadInventory()
     }
 
     inventory.clear();
-    // 发送刷新事件
-    EventCustom event("INVENTORY_COUNT_CHANGED");
-    Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
-
 
     // 解析物品到临时列表
     std::vector<Item> savedItems;
@@ -181,9 +177,9 @@ bool SaveManage::loadFriendships()
 
     return true;
 }
-// ========== 时间 ==========
+// ========== 时间和金钱 ==========
 
-/*
+
 // 序列化游戏时间
 rapidjson::Value SaveManage::serializeGameTime(const GameTime& time, rapidjson::Document::AllocatorType& alloc)
 {
@@ -199,15 +195,25 @@ rapidjson::Value SaveManage::serializeGameTime(const GameTime& time, rapidjson::
 // 游戏时间反序列化
 bool SaveManage::deserializeGameTime(const rapidjson::Value& timeObj, GameTime& time)
 {
-    time.year = timeObj["year"].GetInt();
-    time.season = static_cast<Season>(timeObj["season"].GetInt());
-    time.dayOfMonth = timeObj["day"].GetInt();
-    time.hour = timeObj["hour"].GetInt();
-    time.minute = timeObj["minute"].GetInt();
+    if (!timeObj.IsObject()) return false;
+
+    // 检查字段是否存在
+    const char* requiredFields[] = { "year", "season", "day", "hour", "minute" };
+    for (const char* field : requiredFields) {
+        if (!timeObj.HasMember(field)) return false;
+    }
+
+    // 使用setter函数
+    time.setYear(timeObj["year"].GetInt());
+    time.setSeason(static_cast<Season>(timeObj["season"].GetInt()));
+    time.setDayOfMonth(timeObj["day"].GetInt());
+    time.setHour(timeObj["hour"].GetInt());
+    time.setMinute(timeObj["minute"].GetInt());
+
     return true;
 }
 
-// 保存游戏时间
+// 保存游戏时间和金钱
 bool SaveManage::saveGameTime()
 {
     auto timeManager = TimeManager::getInstance();
@@ -216,12 +222,20 @@ bool SaveManage::saveGameTime()
     // 获取当前时间
     GameTime gameTime = timeManager->getCurrentTime();
 
+    int money = 0;
+    auto moneyManager = Money::getInstance();  // 假设存在
+    if (moneyManager) {
+        money = moneyManager->getMoney();
+    }
+
     rapidjson::Document doc;
     doc.SetObject();
     auto& alloc = doc.GetAllocator();
 
     // 添加时间数据
     doc.AddMember("gameTime", serializeGameTime(gameTime, alloc), alloc);
+    // 添加金钱数据
+    doc.AddMember("money", money, alloc);
 
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
@@ -244,15 +258,27 @@ bool SaveManage::loadGameTime()
         return false;
     }
 
+    bool timeLoaded = false;
+    bool moneyLoaded = false;
+
     // 解析时间数据
     GameTime gameTime;
     if (deserializeGameTime(doc["gameTime"], gameTime)) {
         timeManager->setTime(gameTime);
-        return true;
+        timeLoaded = true;
+    }
+    // 解析金钱数据
+    if (doc.HasMember("money") && doc["money"].IsInt()) {
+        int money = doc["money"].GetInt();
+        auto moneyManager = Money::getInstance();  // 假设存在
+        if (moneyManager) {
+            moneyManager->setMoney(money);
+            moneyLoaded = true;
+        }
     }
 
-    return false;
-}*/
+    return timeLoaded && moneyLoaded;
+}
 
 // ========== 保存技能 ==========
 
@@ -337,8 +363,9 @@ bool SaveManage::saveAllData()
     bool result1 = saveInventory();
     bool result2 = saveFriendships();
     bool result3 = saveSkills();
+    bool result4 = saveGameTime();
 
-    return result1 && result2 && result3;  // 只有全部成功才返回true
+    return result1 && result2 && result3 && result4;  // 只有全部成功才返回true
 }
 
 // 加载所有数据  
@@ -347,6 +374,7 @@ bool SaveManage::loadAllData()
     bool result1 = loadInventory();
     bool result2 = loadFriendships();
     bool result3 = loadSkills();
+    bool result4 = loadGameTime();
 
-    return result1 && result2 && result3;  // 只有全部成功才返回true
+    return result1 && result2 && result3 && result4; // 只有全部成功才返回true
 }

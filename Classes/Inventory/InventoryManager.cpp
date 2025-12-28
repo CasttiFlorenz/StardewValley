@@ -17,11 +17,44 @@ Sprite* InventoryManager::s_background = nullptr;
 std::array<InventoryManager::BackpackInfo, 3> InventoryManager::s_backpacks;
 std::array<Sprite*, 4> InventoryManager::s_buttons;
 std::array<Vec2, 4> InventoryManager::s_buttonPositions;
-cocos2d::RefPtr<cocos2d::Node> InventoryManager::s_container = nullptr; 
+Node* InventoryManager::s_container = nullptr;
 InventoryManager::ButtonCallback InventoryManager::s_buttonCallback = nullptr;
 float InventoryManager::s_backpackWidth = 0;
 float InventoryManager::s_backpackHeight = 0;
 int InventoryManager::s_currentPressedIndex = 0;
+
+
+// 重置所有静态变量
+void InventoryManager::resetStaticVariables()
+{
+    // 重置指针类型变量
+    s_parent = nullptr;
+    s_background = nullptr;
+    s_container = nullptr;  // RefPtr会自动管理释放
+
+    // 重置按钮回调
+    s_buttonCallback = nullptr;
+
+    // 重置数组
+    for (auto& backpack : s_backpacks) {
+        backpack.sprite = nullptr;
+        backpack.position = Vec2::ZERO;
+        backpack.scale = 0.0f;
+    }
+
+    for (auto& button : s_buttons) {
+        button = nullptr;
+    }
+
+    for (auto& pos : s_buttonPositions) {
+        pos = Vec2::ZERO;
+    }
+
+    // 重置标量变量
+    s_backpackWidth = 0.0f;
+    s_backpackHeight = 0.0f;
+    s_currentPressedIndex = 0;
+}
 
 // 创建整个界面
 void InventoryManager::createInterface(
@@ -186,10 +219,12 @@ void InventoryManager::createButtons(
     }
 }
 
+
+// 设置回调
 void InventoryManager::setButtonCallback(ButtonCallback callback)
 {
     s_buttonCallback = callback;
-}
+} 
 
 // 按钮触摸回调
 bool InventoryManager::onButtonTouch(Touch* touch, Event* event)
@@ -310,6 +345,7 @@ void InventoryManager::switchToExit()
     }
 }
 
+// 清除旧界面
 void InventoryManager::removeContainer()
 {
     if (!s_container) return;  

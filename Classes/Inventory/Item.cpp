@@ -20,6 +20,7 @@ Item::Item(ItemType tag, int count, float scale, float printPos,
     : _tag(tag), _count(count), _scale(scale), _printPos(printPos),
     _path(path), _price(price), _name(name) {}
 
+// 存档物品
 bool Item::createFromJson(const rapidjson::Value& jsonObj, Item& item)
 {
     if (!jsonObj.IsObject()) return false;

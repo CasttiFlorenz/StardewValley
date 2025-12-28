@@ -18,16 +18,9 @@ class PlaceItems {
     friend class InventoryGridScene;
 
 public:
+    // 单例方法
     static PlaceItems* getInstance();
     static void destroyInstance();
-
-    // 清除所有工具精灵
-    void clearAllItems();
-
-    // 改变物品数量
-    bool addItem(ItemType object, int amount);
-    bool removeItem(ItemType object, int amount);
-
 
     // 返回当前物品数组
     std::vector<Item>& getCurrentInventory() { return *_currentInventory; }
@@ -54,8 +47,15 @@ private:
     // 放置工具
     void placeAllItems(int highlightIndex = -1);
 
+    // 清除所有工具精灵
+    void clearAllItems();
+
     // 显示物品数量
     void showItemCount(int itemIndex, int count, float x, float y);
+
+    // 改变物品数量
+    bool addItem(ItemType object, int amount);
+    bool removeItem(ItemType object, int amount);
 
     // 更新单个工具精灵
     void updateItemSprite(int toolIndex, const std::string& imagePath,

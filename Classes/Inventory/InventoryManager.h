@@ -49,11 +49,15 @@ public:
     static int getCurrentButtonIndex();
 
     typedef std::function<void(int)> ButtonCallback;   // 添加回调函数类型
+
     // 设置回调
     static void setButtonCallback(ButtonCallback callback);
 
     //设置打开呈现背包界面
     static void InventoryManager::setInitPress();   
+
+    // 重置静态变量
+    static void resetStaticVariables();
 
 private:
     static int s_currentPressedIndex ;
@@ -81,12 +85,10 @@ private:
     static std::array<BackpackInfo, 3> s_backpacks;
     static std::array<cocos2d::Sprite*, 4> s_buttons;
     static std::array<cocos2d::Vec2, 4> s_buttonPositions;
-    static cocos2d::RefPtr<cocos2d::Node> s_container;
+    static cocos2d::Node* s_container;
     static float s_backpackWidth;
     static float s_backpackHeight;
     static ButtonCallback s_buttonCallback;
-   
-
 };
 
 #endif // INVENTORYMANAGER_H

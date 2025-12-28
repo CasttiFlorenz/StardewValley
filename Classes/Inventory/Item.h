@@ -22,6 +22,7 @@ public:
     Item(ItemType tag , int count, float scale,float printPos ,
         const std::string& path,int price, const std::string& name);
 
+    // 存档信息
     static bool createFromJson(const rapidjson::Value& jsonObj, Item& item);
 
     // 获取物品信息

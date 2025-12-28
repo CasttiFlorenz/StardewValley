@@ -24,6 +24,7 @@ InventoryScene* InventoryScene::getInstance()
 
 void InventoryScene::destroyInstance() 
 {
+    InventoryManager::resetStaticVariables();
     CC_SAFE_RELEASE_NULL(_instance);
 }
 
@@ -152,7 +153,8 @@ void InventoryScene::setToolUse()
         playerScene->addChild(_toolUseEffect, 10);
 
         // 设置和玩家相同的摄像机
-        _toolUseEffect->setCameraMask(_player->getCameraMask(), true);
+        if (_player->getCameraMask())
+            _toolUseEffect->setCameraMask(_player->getCameraMask());
 
         // 使用玩家的位置（相对坐标）
         Vec2 offset = Vec2::ZERO;
@@ -305,7 +307,8 @@ void InventoryScene::addItemCount(ItemType object, int amount,bool animation)
                         label->setTag(3000);
 
                         // 确保和特效使用相同的CameraMask
-                        label->setCameraMask(_toolUseEffect->getCameraMask());
+                        if (_toolUseEffect->getCameraMask())
+                            label->setCameraMask(_toolUseEffect->getCameraMask());
                         this->addChild(label, _toolUseEffect->getLocalZOrder() + 10);
 
 
@@ -366,9 +369,5 @@ bool InventoryScene::loadItemsFromSaveData(const std::vector<Item>& savedItems)
             successCount++;
         }
     }
-    // 发送刷新事件
-    EventCustom refreshEvent("INVENTORY_COUNT_CHANGED");
-    Director::getInstance()->getEventDispatcher()->dispatchEvent(&refreshEvent);
-
     return successCount > 0;
 }
