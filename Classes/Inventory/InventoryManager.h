@@ -15,8 +15,7 @@
 #include "../Player/SkillLevel.h"
 #include "../NPC/SocialLevel.h"
 #include "../Exit/ExitConfirm.h"
-#include <array>
-#include <functional>
+
 
 class InventoryManager
 {
@@ -54,13 +53,13 @@ public:
     static void setButtonCallback(ButtonCallback callback);
 
     //设置打开呈现背包界面
-    static void InventoryManager::setInitPress();
+    static void InventoryManager::setInitPress();   
 
     // 重置静态变量
     static void resetStaticVariables();
 
 private:
-    static int s_currentPressedIndex;
+    static int s_currentPressedIndex ;
 
     // 创建背包
     static void createBackpacks(cocos2d::Node* parent, std::array<BackpackInfo, 3>& backpacks);

@@ -20,7 +20,6 @@ private:
 public:
     static MusicManager* getInstance();
 
-    // Ô¤¼ÓÔØÒôÀÖ
     void preloadMusic();
 
     void playMusicForMap(const std::string& _mapName);

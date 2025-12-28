@@ -2,7 +2,7 @@
 
 CultivationManager* CultivationManager::_instance = nullptr;
 
-// 获取单例（首次可传入依赖）
+// 获取单例
 CultivationManager* CultivationManager::getInstance(
     FarmItemManager* farmItemManager,
     GameMap* gameMap
@@ -17,7 +17,7 @@ CultivationManager* CultivationManager::getInstance(
             CC_SAFE_DELETE(_instance);
         }
     }
-    // 已存在实例但尚未绑定地图（如管理器提前创建）
+    // 重新初始化（切换地图时可能需要）
     else if ((farmItemManager || gameMap) && !_instance->_gameMap) {
         _instance->init(farmItemManager, gameMap);
     }
@@ -31,6 +31,7 @@ void CultivationManager::destroyInstance()
     CC_SAFE_RELEASE_NULL(_instance);
 }
 
+// 构造函数
 CultivationManager::CultivationManager()
     : _farmItemManager(nullptr)
     , _gameMap(nullptr)
@@ -38,9 +39,9 @@ CultivationManager::CultivationManager()
 {
 }
 
+// 析构函数
 CultivationManager::~CultivationManager()
 {
-    // 清理并释放所有耕地
     for (auto& kv : _soils) {
         if (kv.second) {
             kv.second->removeFromParent();
@@ -52,10 +53,10 @@ CultivationManager::~CultivationManager()
     CC_SAFE_RELEASE_NULL(_farmItemManager);
 }
 
-// 初始化 / 重新初始化（地图切换时）
+// 初始化
 bool CultivationManager::init(FarmItemManager* farmItemManager, GameMap* gameMap)
 {
-    // 清空旧耕地数据
+    // 清理现有数据
     for (auto& kv : _soils) {
         if (kv.second) {
             kv.second->removeFromParent();
@@ -64,7 +65,7 @@ bool CultivationManager::init(FarmItemManager* farmItemManager, GameMap* gameMap
     }
     _soils.clear();
 
-    // 更新 FarmItemManager 引用
+    // 更新引用
     if (_farmItemManager != farmItemManager) {
         CC_SAFE_RELEASE_NULL(_farmItemManager);
         _farmItemManager = farmItemManager;
@@ -76,25 +77,25 @@ bool CultivationManager::init(FarmItemManager* farmItemManager, GameMap* gameMap
     return _farmItemManager && _gameMap;
 }
 
-// 根据瓦片坐标生成唯一 key
+// 获取键值
 long long CultivationManager::keyFor(const Vec2& tileCoord) {
     long long x = static_cast<long long>(tileCoord.x);
     long long y = static_cast<long long>(tileCoord.y);
-    return (x << 32) | (y & 0xffffffffLL);
+    return (x << 32) | (y & TILE_COORD_MASK);
 }
 
-// 尝试开垦指定瓦片
+// 尝试开垦
 bool CultivationManager::attemptCultivate(const Vec2& tileCoord) {
     if (!_farmItemManager || !_gameMap) {
         return false;
     }
 
-    // 必须是可耕作区域
+    // 检查是否可开垦
     if (!_farmItemManager->isCultivated(tileCoord)) {
         return false;
     }
 
-    // 不能被其他物体占用
+    // 检查是否有障碍物
     if (_farmItemManager->hasItem(tileCoord)) {
         return false;
     }
@@ -109,13 +110,13 @@ bool CultivationManager::attemptCultivate(const Vec2& tileCoord) {
         return false;
     }
 
-    // 逻辑层登记
+    // 注册到 FarmItemManager
     _farmItemManager->addItem(EnvironmentItemType::CULTIVATED_SOIL, tileCoord);
 
-    // 添加到地图显示
+    // 添加到地图
     if (_tiledMap) {
         soil->setPosition(_gameMap->calWorldPos(tileCoord));
-        _tiledMap->addChild(soil, 100);
+        _tiledMap->addChild(soil, SOIL_SPRITE_Z_ORDER);
     }
 
     _soils.emplace(key, soil);
@@ -124,7 +125,7 @@ bool CultivationManager::attemptCultivate(const Vec2& tileCoord) {
     return true;
 }
 
-// 给指定耕地浇水
+// 浇水
 bool CultivationManager::waterSoil(const Vec2& tileCoord) {
     auto it = _soils.find(keyFor(tileCoord));
     if (it == _soils.end() || !it->second) {
@@ -135,7 +136,7 @@ bool CultivationManager::waterSoil(const Vec2& tileCoord) {
     return true;
 }
 
-// 在指定耕地上种植作物
+// 种植
 bool CultivationManager::plantCrop(const Vec2& tileCoord, ItemType type) {
     auto it = _soils.find(keyFor(tileCoord));
     if (it == _soils.end() || !it->second) {
@@ -145,7 +146,7 @@ bool CultivationManager::plantCrop(const Vec2& tileCoord, ItemType type) {
     return it->second->plant(type);
 }
 
-// 新的一天到来时调用
+// 新的一天
 void CultivationManager::onNewDay() {
     for (auto& pair : _soils) {
         if (pair.second) {
@@ -154,7 +155,7 @@ void CultivationManager::onNewDay() {
     }
 }
 
-// 移除指定耕地
+// 移除耕地
 bool CultivationManager::removeSoil(const Vec2& tileCoord) {
     auto it = _soils.find(keyFor(tileCoord));
     if (it == _soils.end()) {
@@ -175,7 +176,7 @@ bool CultivationManager::removeSoil(const Vec2& tileCoord) {
     return true;
 }
 
-// 收获指定耕地上的作物
+// 收获作物
 ItemType CultivationManager::harvestCrop(const Vec2& tileCoord) {
     auto it = _soils.find(keyFor(tileCoord));
     if (it == _soils.end() || !it->second) {
@@ -185,12 +186,90 @@ ItemType CultivationManager::harvestCrop(const Vec2& tileCoord) {
     return it->second->harvest();
 }
 
-// 给所有耕地浇水
+// 全部浇水
 void CultivationManager::waterAllSoils()
 {
     for (auto& pair : _soils) {
         if (pair.second) {
             pair.second->water();
         }
+    }
+}
+
+// 获取存档数据
+std::vector<CultivationManager::SoilSaveData> CultivationManager::getSoilsData() const
+{
+    std::vector<SoilSaveData> data;
+    for (const auto& kv : _soils) {
+        auto* soil = kv.second;
+        if (!soil) continue;
+
+        SoilSaveData d;
+        Vec2 pos = soil->getTileCoord();
+        d.x = pos.x;
+        d.y = pos.y;
+        d.status = static_cast<int>(soil->getStatus());
+
+        if (soil->hasCrop()) {
+            d.cropType = static_cast<int>(soil->getCrop()->getCropType());
+            d.cropStage = soil->getCrop()->getGrowthStage();
+            d.cropStatus = static_cast<int>(soil->getCrop()->getStatus());
+        }
+        else {
+            d.cropType = static_cast<int>(ItemType::NONE);
+            d.cropStage = 0;
+            d.cropStatus = static_cast<int>(CropStatus::SEEDS);
+        }
+
+        data.push_back(d);
+    }
+    return data;
+}
+
+// 恢复存档数据
+void CultivationManager::restoreData(const std::vector<SoilSaveData>& data)
+{
+    // 清理现有数据
+    for (auto& kv : _soils) {
+        if (kv.second) {
+            kv.second->removeFromParent();
+            kv.second->release();
+        }
+    }
+    _soils.clear();
+
+    if (!_farmItemManager || !_gameMap) return;
+
+    for (const auto& d : data) {
+        Vec2 coord(d.x, d.y);
+
+        // 确保 FarmItemManager 状态同步
+        if (!_farmItemManager->isCultivated(coord)) {
+            _farmItemManager->addItem(EnvironmentItemType::CULTIVATED_SOIL, coord);
+        }
+
+        auto soil = CultivatedSoil::create(coord);
+        if (!soil) continue;
+
+        // 添加到地图
+        if (_tiledMap) {
+            soil->setPosition(_gameMap->calWorldPos(coord));
+            _tiledMap->addChild(soil, SOIL_SPRITE_Z_ORDER);
+        }
+
+        // 恢复状态
+        soil->setStatus(SoilStatus::DRY); // 默认干土，如需恢复湿润可修改此处
+
+        // 恢复作物
+        if (static_cast<ItemType>(d.cropType) != ItemType::NONE) {
+            soil->plant(static_cast<ItemType>(d.cropType));
+            if (soil->hasCrop()) {
+                soil->getCrop()->setGrowthStage(d.cropStage, static_cast<CropStatus>(d.cropStatus));
+            }
+        }
+
+        long long key = keyFor(coord);
+        _soils.emplace(key, soil);
+        soil->retain();
     }
 }

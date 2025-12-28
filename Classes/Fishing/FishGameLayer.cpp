@@ -1,11 +1,13 @@
 #include "FishGameLayer.h"
-#include "ui/CocosGUI.h"
+#include "../Inventory/InventoryScene.h"
+#include "../Player/SkillLevel.h" 
 
 USING_NS_CC;
 
+// ´´½¨ÊµÀý
 FishGameLayer* FishGameLayer::create()
 {
-    FishGameLayer* layer = new FishGameLayer();
+    FishGameLayer* layer = new (std::nothrow) FishGameLayer();
     if (layer && layer->init())
     {
         layer->autorelease();
@@ -13,11 +15,12 @@ FishGameLayer* FishGameLayer::create()
     }
     else
     {
-        delete layer;
+        CC_SAFE_DELETE(layer);
         return nullptr;
     }
 }
 
+// ³õÊ¼»¯
 bool FishGameLayer::init()
 {
     if (!Layer::init())
@@ -25,137 +28,118 @@ bool FishGameLayer::init()
         return false;
     }
 
-    _currentValue = 50.0f;  // åˆå§‹å€¼
+    // ³õÊ¼»¯ÓÎÏ·²ÎÊý
+    _currentValue = 50.0f;
     _isGameActive = true;
 
+    // ³õÊ¼»¯²¼¾Ö²ÎÊý
     _progressBarRect = Rect(93, 20, 5, 272);
-
     _fishBasePosition = Vec2(73, 22);
+    _progressBarHeight = 400.0f;
 
-    if (!setupUI()) {
-        return false;
-    }
+    // ÉèÖÃ½çÃæÓëÊÂ¼þ
+    setupUI();
+    setupEvents();
 
-    if (!setupEvents()) {
-        return false;
-    }
-
+    // ¿ªÆôÃ¿Ö¡¸üÐÂ
     this->scheduleUpdate();
 
     return true;
 }
 
-bool FishGameLayer::setupUI()
+// ÉèÖÃUI
+void FishGameLayer::setupUI()
 {
-    auto visibleSize = Director::getInstance()->getVisibleSize();
+    const auto visibleSize = Director::getInstance()->getVisibleSize();
 
-    //åŠ è½½èƒŒæ™¯å›¾ç‰‡
+    // 1. ¼ÓÔØ±³¾°Í¼Æ¬
     _background = Sprite::create("Fishing/Fishingicons.png");
-    if (!_background) {
-        CCLOG("Failed to load background image");
-        return false;
+    if (_background) {
+        _background->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+        _background->setScale(2.0f); // ·Å´ó2±¶
+        this->addChild(_background, 0);
     }
 
-    _background->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+    if (!_background) return;
 
-    _background->setScale(2.0f); // æ”¾å¤§åˆ°2.0å€
+    // 2. ¼ÆËã½ø¶ÈÌõÔÚÆÁÄ»ÉÏµÄÎ»ÖÃ
+    const Vec2 backgroundPos = _background->getPosition();
+    const Size backgroundSize = _background->getContentSize();
+    const Vec2 backgroundAnchor = _background->getAnchorPoint();
+    const float backgroundScale = _background->getScale();
 
-    this->addChild(_background, 0);
-
-    //åœ¨èƒŒæ™¯å›¾ç‰‡ä¸Šåˆ›å»ºè¿›åº¦æ¡
-    Vec2 backgroundPos = _background->getPosition();
-    Size backgroundSize = _background->getContentSize();
-    Vec2 backgroundAnchor = _background->getAnchorPoint();
-    float backgroundScale = _background->getScale(); // èŽ·å–ç¼©æ”¾æ¯”ä¾‹
-
-    float progressBarScreenX = backgroundPos.x - backgroundSize.width * backgroundAnchor.x * backgroundScale
+    const float progressBarScreenX = backgroundPos.x - backgroundSize.width * backgroundAnchor.x * backgroundScale
         + _progressBarRect.origin.x * backgroundScale;
-    float progressBarScreenY = backgroundPos.y - backgroundSize.height * backgroundAnchor.y * backgroundScale
+    const float progressBarScreenY = backgroundPos.y - backgroundSize.height * backgroundAnchor.y * backgroundScale
         + _progressBarRect.origin.y * backgroundScale;
 
-    // åˆ›å»ºç»¿è‰²è¿›åº¦æ¡
+    // ´´½¨½ø¶ÈÌõ»æÖÆ½Úµã
     _progressBar = DrawNode::create();
-    if (!_progressBar) {
-        CCLOG("Failed to create progress bar");
-        return false;
-    }
 
-    float greenHeight = (_currentValue / 1000.0f) * _progressBarRect.size.height;
-
-    float progressBarWidth = _progressBarRect.size.width * backgroundScale;
-    float progressBarHeight = greenHeight * backgroundScale;
+    // ³õÊ¼»æÖÆ
+    const float greenHeight = (_currentValue / 1000.0f) * _progressBarRect.size.height;
 
     Vec2 greenPoints[4] = {
-        Vec2(progressBarScreenX, progressBarScreenY),  // å·¦ä¸‹è§’
-        Vec2(progressBarScreenX + _progressBarRect.size.width, progressBarScreenY),  // å³ä¸‹è§’
-        Vec2(progressBarScreenX + _progressBarRect.size.width, progressBarScreenY + greenHeight),  // å³ä¸Šè§’
-        Vec2(progressBarScreenX, progressBarScreenY + greenHeight)  // å·¦ä¸Šè§’
+        Vec2(progressBarScreenX, progressBarScreenY),  // ×óÏÂ
+        Vec2(progressBarScreenX + _progressBarRect.size.width * backgroundScale, progressBarScreenY),  // ÓÒÏÂ
+        Vec2(progressBarScreenX + _progressBarRect.size.width * backgroundScale, progressBarScreenY + greenHeight * backgroundScale),  // ÓÒÉÏ
+        Vec2(progressBarScreenX, progressBarScreenY + greenHeight * backgroundScale)  // ×óÉÏ
     };
 
     _progressBar->drawSolidPoly(greenPoints, 4, Color4F(0.0f, 1.0f, 0.0f, 1.0f));
     this->addChild(_progressBar, 1);
 
-    //åœ¨èƒŒæ™¯å›¾ç‰‡ä¸Šåˆ›å»ºé±¼
+    // 3. ¼ÓÔØÓãµÄ¾«Áé
     _fishSprite = Sprite::create("Fishing/Tuna.png");
-    if (!_fishSprite) {
-        CCLOG("Failed to load fish sprite");
-        return false;
+    if (_fishSprite) {
+        const float fishScreenX = backgroundPos.x - backgroundSize.width * backgroundAnchor.x * backgroundScale
+            + _fishBasePosition.x * backgroundScale;
+        const float fishScreenY = backgroundPos.y - backgroundSize.height * backgroundAnchor.y * backgroundScale
+            + _fishBasePosition.y * backgroundScale
+            + (_currentValue / 1000.0f) * _progressBarRect.size.height * backgroundScale;
+
+        _fishSprite->setPosition(Vec2(fishScreenX, fishScreenY));
+        _fishSprite->setScale(1.5f);
+        this->addChild(_fishSprite, 2);
     }
 
-    float fishScreenX = backgroundPos.x - backgroundSize.width * backgroundAnchor.x + _fishBasePosition.x;
-    float fishScreenY = backgroundPos.y - backgroundSize.height * backgroundAnchor.y + _fishBasePosition.y +
-        (_currentValue / 1000.0f) * _progressBarRect.size.height;
-
-    _fishSprite->setPosition(Vec2(fishScreenX, fishScreenY));
-    _fishSprite->setScale(1.5f);
-    this->addChild(_fishSprite, 2);
-
-    //åˆ›å»ºç»“æžœæ ‡ç­¾
+    // 4. ´´½¨½á¹û±êÇ©
     _resultLabel = Label::createWithSystemFont("", "Arial", 48);
-    if (!_resultLabel) {
-        CCLOG("Failed to create result label");
-        return false;
+    if (_resultLabel) {
+        _resultLabel->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 50));
+        _resultLabel->setVisible(false);
+        this->addChild(_resultLabel, 3);
     }
-
-    _resultLabel->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 50));
-    _resultLabel->setVisible(false);
-    this->addChild(_resultLabel, 3);
-
-    return true;
 }
 
-bool FishGameLayer::setupEvents()
+// ÉèÖÃÊÂ¼þ¼àÌý
+void FishGameLayer::setupEvents()
 {
     auto mouseListener = EventListenerMouse::create();
-    if (!mouseListener) {
-        CCLOG("Failed to create mouse listener");
-        return false;
-    }
-
     mouseListener->onMouseDown = [this](EventMouse* event) {
         if (_isGameActive && event->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT) {
             this->onMouseClick();
         }
         };
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
-
-    return true;
 }
 
+// Êó±êµã»÷´¦Àí
 void FishGameLayer::onMouseClick()
 {
-    if (!_isGameActive || !_fishSprite) return;
+    if (!_isGameActive) return;
 
+    // µã»÷Ôö¼Ó½ø¶È
     _currentValue += 30.0f;
     if (_currentValue > 1000.0f) {
         _currentValue = 1000.0f;
     }
 
-    // æ›´æ–°è¿›åº¦æ¡å’Œé±¼çš„ä½ç½®
+    // ¸üÐÂÊÓÍ¼
     updateProgressBar();
     updateFishPosition();
 
-    // é±¼è·³åŠ¨åŠ¨ç”»
+    // ²¥·ÅÓãµÄÌøÔ¾¶¯»­
     auto jumpUp = ScaleTo::create(0.1f, 1.8f);
     auto jumpDown = ScaleTo::create(0.1f, 1.5f);
     auto sequence = Sequence::create(jumpUp, jumpDown, nullptr);
@@ -165,56 +149,62 @@ void FishGameLayer::onMouseClick()
         _fishSprite->runAction(sequence);
     }
 
+    // ¼ì²éÊ¤ÀûÌõ¼þ
     if (_currentValue >= 1000.0f) {
         endGame(true);
     }
 }
 
+// Ö¡¸üÐÂ
 void FishGameLayer::update(float delta)
 {
-    if (!_isGameActive || !_fishSprite) return;
+    if (!_isGameActive) return;
 
+    // ½ø¶È×ÔÈ»Ë¥¼õ
     _currentValue -= 60.0f * delta;
     if (_currentValue < 0.0f) {
         _currentValue = 0.0f;
     }
 
-    // æ›´æ–°è¿›åº¦æ¡å’Œé±¼çš„ä½ç½®
+    // ¸üÐÂÊÓÍ¼
     updateProgressBar();
     updateFishPosition();
 
-    // é±¼æµ®åŠ¨åŠ¨ç”»
+    // ÓãµÄÐü¸¡¶¯»­£¨ÕýÏÒ²¨ÔË¶¯£©
     static float floatTime = 0;
     floatTime += delta;
-    float floatOffset = sin(floatTime * 3.0f) * 12.0f;
+    const float floatOffset = std::sin(floatTime * 3.0f) * 12.0f;
+
     if (_fishSprite) {
         _fishSprite->setPositionY(_fishSprite->getPositionY() + floatOffset);
     }
 
+    // ¼ì²éÊ§°ÜÌõ¼þ
     if (_currentValue <= 0.0f) {
         endGame(false);
     }
 }
 
+// ¸üÐÂ½ø¶ÈÌõ
 void FishGameLayer::updateProgressBar()
 {
-    if (!_progressBar) return;
+    if (!_progressBar || !_background) return;
 
-    // æ¸…é™¤æ—§çš„è¿›åº¦æ¡ç»˜åˆ¶
+    // Çå³ý¾ÉµÄ»æÖÆ
     _progressBar->clear();
 
-    // èŽ·å–èƒŒæ™¯å›¾ç‰‡çš„ä¸–ç•Œåæ ‡å’Œé”šç‚¹ä¿¡æ¯
-    Vec2 backgroundPos = _background->getPosition();
-    Size backgroundSize = _background->getContentSize();
-    Vec2 backgroundAnchor = _background->getAnchorPoint();
-    float backgroundScale = _background->getScale(); // èŽ·å–ç¼©æ”¾æ¯”ä¾‹
+    // ÖØÐÂ¼ÆËã»æÖÆ²ÎÊý
+    const Vec2 backgroundPos = _background->getPosition();
+    const Size backgroundSize = _background->getContentSize();
+    const Vec2 backgroundAnchor = _background->getAnchorPoint();
+    const float backgroundScale = _background->getScale();
 
-    float progressBarScreenX = backgroundPos.x - backgroundSize.width * backgroundAnchor.x * backgroundScale
+    const float progressBarScreenX = backgroundPos.x - backgroundSize.width * backgroundAnchor.x * backgroundScale
         + _progressBarRect.origin.x * backgroundScale;
-    float progressBarScreenY = backgroundPos.y - backgroundSize.height * backgroundAnchor.y * backgroundScale
+    const float progressBarScreenY = backgroundPos.y - backgroundSize.height * backgroundAnchor.y * backgroundScale
         + _progressBarRect.origin.y * backgroundScale;
 
-    float greenHeight = (_currentValue / 1000.0f) * _progressBarRect.size.height * backgroundScale;
+    const float greenHeight = (_currentValue / 1000.0f) * _progressBarRect.size.height * backgroundScale;
 
     Vec2 greenPoints[4] = {
         Vec2(progressBarScreenX, progressBarScreenY),
@@ -223,42 +213,42 @@ void FishGameLayer::updateProgressBar()
         Vec2(progressBarScreenX, progressBarScreenY + greenHeight)
     };
 
-    // æ ¹æ®è¿›åº¦æ”¹å˜é¢œè‰²
-    float percentage = _currentValue / 1000.0f;
+    // ¸ù¾Ý½ø¶ÈÖµ¸Ä±äÑÕÉ«
+    const float percentage = _currentValue / 1000.0f;
     Color4F barColor;
     if (percentage > 0.7f) {
-        barColor = Color4F(0.0f, 1.0f, 0.0f, 1.0f); // ç»¿è‰²
+        barColor = Color4F(0.0f, 1.0f, 0.0f, 1.0f); // ÂÌÉ«
     }
     else if (percentage > 0.3f) {
-        barColor = Color4F(1.0f, 1.0f, 0.0f, 1.0f); // é»„è‰²
+        barColor = Color4F(1.0f, 1.0f, 0.0f, 1.0f); // »ÆÉ«
     }
     else {
-        barColor = Color4F(1.0f, 0.0f, 0.0f, 1.0f); // çº¢è‰²
+        barColor = Color4F(1.0f, 0.0f, 0.0f, 1.0f); // ºìÉ«
     }
 
-    if (_progressBar) {
-        _progressBar->drawSolidPoly(greenPoints, 4, barColor);
-    }
+    _progressBar->drawSolidPoly(greenPoints, 4, barColor);
 }
 
+// ¸üÐÂÓãµÄÎ»ÖÃ
 void FishGameLayer::updateFishPosition()
 {
     if (!_fishSprite || !_background) return;
 
-    Vec2 backgroundPos = _background->getPosition();
-    Size backgroundSize = _background->getContentSize();
-    Vec2 backgroundAnchor = _background->getAnchorPoint();
-    float backgroundScale = _background->getScale();
+    const Vec2 backgroundPos = _background->getPosition();
+    const Size backgroundSize = _background->getContentSize();
+    const Vec2 backgroundAnchor = _background->getAnchorPoint();
+    const float backgroundScale = _background->getScale();
 
-    float fishScreenX = backgroundPos.x - backgroundSize.width * backgroundAnchor.x * backgroundScale
+    const float fishScreenX = backgroundPos.x - backgroundSize.width * backgroundAnchor.x * backgroundScale
         + _fishBasePosition.x * backgroundScale;
-    float fishScreenY = backgroundPos.y - backgroundSize.height * backgroundAnchor.y * backgroundScale
+    const float fishScreenY = backgroundPos.y - backgroundSize.height * backgroundAnchor.y * backgroundScale
         + _fishBasePosition.y * backgroundScale
         + (_currentValue / 1000.0f) * _progressBarRect.size.height * backgroundScale;
 
     _fishSprite->setPosition(Vec2(fishScreenX, fishScreenY));
 }
 
+// ½áÊøÓÎÏ·
 void FishGameLayer::endGame(bool isSuccess)
 {
     _isGameActive = false;
@@ -268,6 +258,16 @@ void FishGameLayer::endGame(bool isSuccess)
     if (isSuccess) {
         _resultLabel->setString("Success!");
         _resultLabel->setColor(Color3B::GREEN);
+
+        // Ôö¼ÓÎïÆ·
+        if (auto inv = InventoryScene::getInstance()) {
+            inv->addItemCount(ItemType::CARP, 1);
+        }
+
+        // Ôö¼Ó¼¼ÄÜ¾­Ñé
+        if (auto skill = SkillLevel::getInstance()) {
+            skill->increaseSkillLevel(SkillType::FISHING);
+        }
     }
     else {
         _resultLabel->setString("Failed!");
@@ -277,9 +277,8 @@ void FishGameLayer::endGame(bool isSuccess)
     _resultLabel->setVisible(true);
     this->unscheduleUpdate();
 
+    // 2ÃëºóÒÆ³ý×ÔÉí
     this->scheduleOnce([this](float dt) {
         this->removeFromParent();
         }, 2.0f, "return_to_farm");
-
 }
-

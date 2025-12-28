@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     ShopMenuLayer.h
- * File Function: ShopMenuLayerç±»çš„å£°æ˜
- * Author:        èµµç¿å¦
+ * File Function: ShopMenuLayerÀàµÄÉùÃ÷
+ * Author:        ÕÔî£åû
  * Update Date:   2025/12/17
  * License:       MIT License
  ****************************************************************/
@@ -23,44 +23,44 @@
 #include "../MapItem/BarnManager.h" 
 #include "../Inventory/InventoryScene.h" 
 
-class Item; // å‰å‘å£°æ˜
+class Item; // Ç°ÏòÉùÃ÷
 
 class ShopMenuLayer : public cocos2d::Layer {
 public:
-    // åˆ›å»ºå‡½æ•°
+    // ´´½¨º¯Êı
     static ShopMenuLayer* create(const std::string& shopName,
         const std::vector<Item*>& shopItems,
         const std::vector<ItemType>& acceptedTags);
 
-    // åˆå§‹åŒ–å‡½æ•°
+    // ³õÊ¼»¯º¯Êı
     virtual bool init(const std::string& shopName,
         const std::vector<Item*>& shopItems,
         const std::vector<ItemType>& acceptedTags);
 
-    // åˆ·æ–°UIæ˜¾ç¤º
+    // Ë¢ĞÂUIÏÔÊ¾
     void refreshUI();
 
 private:
-    // å”®å–ç‰©å“é€»è¾‘
+    // ÊÛÂôÎïÆ·Âß¼­
     void sellItem(Item item);
 
-    // æ˜¾ç¤ºæç¤ºä¿¡æ¯
+    // ÏÔÊ¾ÌáÊ¾ĞÅÏ¢
     void showTip(const std::string& message, const cocos2d::Color3B& color);
 
-    // ç»˜åˆ¶é€‰ä¸­é«˜äº®æ¡†
+    // »æÖÆÑ¡ÖĞ¸ßÁÁ¿ò
     void drawHighlight(float x, float y, float size);
 
-    // åˆ›å»ºå¸¦ä¿åº•é€»è¾‘çš„æŒ‰é’® (å†…éƒ¨è¾…åŠ©)
+    // ´´½¨´ø±£µ×Âß¼­µÄ°´Å¥ (ÄÚ²¿¸¨Öú)
     cocos2d::ui::Button* createFallbackButton(const std::string& imagePath, const std::string& text, const cocos2d::Size& size, cocos2d::Color3B color);
 
 private:
-    // UI ç»„ä»¶
+    // UI ×é¼ş
     cocos2d::DrawNode* _highlightNode;
     cocos2d::Label* _moneyLabel;
     cocos2d::ui::ListView* _listView;
     cocos2d::Node* _inventoryNode;
 
-    // æ•°æ®çŠ¶æ€
+    // Êı¾İ×´Ì¬
     int _selectedSlotIndex;
     std::vector<ItemType> _acceptedSellTags;
 };

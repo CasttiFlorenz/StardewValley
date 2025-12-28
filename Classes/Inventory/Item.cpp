@@ -1,31 +1,31 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     Item.h
- * File Function: Itemç±»çš„å®ç°
- * Author:        äºæ©ç†™
+ * File Function: ItemÀàµÄÊµÏÖ
+ * Author:        ÓÚ¶÷Îõ
  * Update Date:   2025/12/19
  * License:       MIT License
  ****************************************************************/
 
 #include "Item.h"
 
-// é»˜è®¤æ„é€ å‡½æ•°
+// Ä¬ÈÏ¹¹Ôìº¯Êı
 Item::Item() : _tag(ItemType::NONE), _count(0), _scale(1.0f),
 _printPos(0.0f), _path(""), _price(0), _name("") {
 }
 
-// å¸¦å‚æ•°æ„é€ å‡½æ•°
+// ´ø²ÎÊı¹¹Ôìº¯Êı
 Item::Item(ItemType tag, int count, float scale, float printPos,
     const std::string& path, int price, const std::string& name)
     : _tag(tag), _count(count), _scale(scale), _printPos(printPos),
     _path(path), _price(price), _name(name) {}
 
-// å­˜æ¡£ç‰©å“
+// ´æµµÎïÆ·
 bool Item::createFromJson(const rapidjson::Value& jsonObj, Item& item)
 {
     if (!jsonObj.IsObject()) return false;
 
-    // æ£€æŸ¥å¿…éœ€å­—æ®µ
+    // ¼ì²é±ØĞè×Ö¶Î
     if (!jsonObj.HasMember("name") || !jsonObj["name"].IsString()) return false;
     if (!jsonObj.HasMember("path") || !jsonObj["path"].IsString()) return false;
     if (!jsonObj.HasMember("tag") || !jsonObj["tag"].IsInt()) return false;
@@ -34,7 +34,7 @@ bool Item::createFromJson(const rapidjson::Value& jsonObj, Item& item)
     if (!jsonObj.HasMember("printPos") || !jsonObj["printPos"].IsFloat()) return false;
     if (!jsonObj.HasMember("price") || !jsonObj["price"].IsInt()) return false;
 
-    // ç›´æ¥èµ‹å€¼ç»™std::string
+    // Ö±½Ó¸³Öµ¸østd::string
     item.setName(jsonObj["name"].GetString());
     item.setPath(jsonObj["path"].GetString());
     item.setTag(static_cast<ItemType>(jsonObj["tag"].GetInt()));
@@ -46,49 +46,49 @@ bool Item::createFromJson(const rapidjson::Value& jsonObj, Item& item)
     return true;
 }
 
-// è·å–ç‰©å“è·¯å¾„
+// »ñÈ¡ÎïÆ·Â·¾¶
 std::string Item::getPath() const
 {
     return _path;
 }
 
-// è·å–ç‰©å“æ ‡ç­¾
+// »ñÈ¡ÎïÆ·±êÇ©
 ItemType Item::getTag() const
 {
     return _tag;
 }
 
-// è·å–ç‰©å“æ•°é‡
+// »ñÈ¡ÎïÆ·ÊıÁ¿
 int Item::getCount() const
 {
     return _count;
 }
 
-// è·å–ç‰©å“ç¼©æ”¾å¤§å°
+// »ñÈ¡ÎïÆ·Ëõ·Å´óĞ¡
 float Item::getScale() const
 {
     return _scale;
 }
 
-// è·å–ç‰©å“æ‰“å°ä½ç½®
+// »ñÈ¡ÎïÆ·´òÓ¡Î»ÖÃ
 float Item::getPrintPos() const
 {
     return _printPos;
 }
 
-// è·å–ç‰©å“ä»·æ ¼ 
+// »ñÈ¡ÎïÆ·¼Û¸ñ 
 int Item::getPrice() const
 {
     return _price;
 }
 
-// è·å–ç‰©å“åå­—
+// »ñÈ¡ÎïÆ·Ãû×Ö
 std::string Item::getName() const
 {
     return _name;
 }
 
-// å¢åŠ ç‰©å“æ•°é‡
+// Ôö¼ÓÎïÆ·ÊıÁ¿
 void Item::addCount(int amount)
 {
     if (amount > 0) {
@@ -96,7 +96,7 @@ void Item::addCount(int amount)
     }
 }
 
-// å‡å°‘ç‰©å“æ•°é‡
+// ¼õÉÙÎïÆ·ÊıÁ¿
 void Item::removeCount(int amount)
 {
     if (amount > 0) {

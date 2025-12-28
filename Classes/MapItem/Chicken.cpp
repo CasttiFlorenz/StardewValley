@@ -2,7 +2,7 @@
 
 Chicken* Chicken::create() {
     auto p = new (std::nothrow) Chicken();
-    if (p && p->initWithFile("Animal/chicken_0.png")) {
+    if (p && p->initWithFile(CHICKEN_DEFAULT_TEXTURE_PATH)) {
         p->autorelease();
         return p;
     }
@@ -11,7 +11,7 @@ Chicken* Chicken::create() {
 }
 
 std::string Chicken::getProducePath() const {
-    return "EnvironmentObjects/egg.png";
+    return CHICKEN_PRODUCE_TEXTURE_PATH;
 }
 
 ItemType Chicken::getProduceObject() const {
@@ -20,10 +20,10 @@ ItemType Chicken::getProduceObject() const {
 
 void Chicken::startAnimation() {
     std::vector<std::string> paths = {
-        "Animal/chicken_0.png",
-        "Animal/chicken_1.png",
-        "Animal/chicken_2.png",
-        "Animal/chicken_3.png"
+        CHICKEN_ANIM_FRAME_0,
+        CHICKEN_ANIM_FRAME_1,
+        CHICKEN_ANIM_FRAME_2,
+        CHICKEN_ANIM_FRAME_3
     };
     Vector<AnimationFrame*> afs;
     for (size_t i = 0; i < paths.size(); ++i) {
@@ -31,14 +31,14 @@ void Chicken::startAnimation() {
         if (!spr) continue;
         auto f = spr->getSpriteFrame();
         if (!f) continue;
-        float units = 1.0f;
-        if (i == 0) units = 3.0f / 0.3f;
-        else if (i == 2) units = 2.0f / 0.3f;
+        float units = ANIM_FRAME_OTHER_UNITS;
+        if (i == 0) units = ANIM_FRAME_0_UNITS;
+        else if (i == 2) units = ANIM_FRAME_2_UNITS;
         afs.pushBack(AnimationFrame::create(f, units, ValueMap()));
     }
     if (afs.empty()) return;
     auto anim = Animation::create();
-    anim->initWithAnimationFrames(afs, 0.3f, 1);
+    anim->initWithAnimationFrames(afs, ANIMATION_INTERVAL, ANIMATION_LOOP_COUNT);
     runAction(RepeatForever::create(Animate::create(anim)));
 }
 

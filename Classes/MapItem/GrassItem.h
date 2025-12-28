@@ -4,11 +4,10 @@
 
 #include "EnvironmentItem.h"
 
+// 草丛物品
 class GrassItem : public EnvironmentItem {
 public:
-    // 创建一个位于指定瓦片坐标的草丛环境物体
     static GrassItem* create(const cocos2d::Vec2& tileCoord);
-    // 初始化草丛环境物体（设置类型与纹理）
     bool init(const cocos2d::Vec2& tileCoord);
 };
 

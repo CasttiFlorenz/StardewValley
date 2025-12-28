@@ -15,60 +15,53 @@
 
 USING_NS_CC;
 
-// 城镇地图（室外场景，包含 NPC 与商店）
+// 城镇地图类（包含 NPC 和商店）
 class Town : public GameMap
 {
 public:
-    // 创建 Town 对象
+    // 静态创建与销毁
     static Town* create();
-
-    // 获取 Town 单例
     static GameMap* getInstance();
-
-    // 销毁 Town 单例
     static void destroyInstance();
 
-    // 初始化城镇地图与 NPC
+    // 初始化
     virtual bool init() override;
 
-    // 判断是否离开城镇并切换地图
+    // 场景切换逻辑
     virtual MapType leaveMap(const Vec2& curPos,
         bool isStart,
         const Direction& direction) override;
 
-    // 进入城镇时设置地图参数
+    // 进入地图初始化
     virtual void IntoMap(MapType lastMap) override;
 
-    // 根据来源地图确定玩家出生点
+    // 获取玩家初始位置
     virtual Vec2 getPlayerStartPosition(MapType lastMap) override;
 
-    // 城镇内摄像机跟随玩家
-    virtual bool isCameraFollow() const override { return true; }
+    // 摄像机跟随与户外判断
+    virtual bool isCameraFollow() const noexcept override { return true; }
+    virtual bool isOutdoor() noexcept override { return true; }
 
-    // 右键交互（NPC 互动）
+    // 右键点击处理（与 NPC 交互或打开商店）
     virtual MouseEvent onRightClick(const Vec2& playerPos,
         const Direction direction) override;
-
-    // 标记为室外地图
-    virtual bool isOutdoor() noexcept override { return true; }
 
     // 与指定 NPC 进行交互
     void interactWithNPC(const std::string& npcName, ItemType heldItem);
 
-    // 根据名字获取 NPC 对象
+    // 获取 NPC 对象
     NPCBase* getNPCByName(const std::string& name);
 
-    // 为指定 NPC 打开商店界面
+    // 打开指定 NPC 的商店
     void openShopForNPC(const std::string& npcName);
 
-    // 初始化城镇中的所有 NPC
+    // 初始化所有 NPC
     void initNPCs();
 
 private:
-    // Town 单例指针
     static GameMap* _instance;
 
-    // NPC 名字到对象的映射表
+    // NPC 名称与对象映射
     std::map<std::string, NPCBase*> _npcMap;
 };
 

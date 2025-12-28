@@ -1,5 +1,6 @@
 #include "Crop.h"
 
+// 工厂创建方法
 Crop* Crop::create(ItemType type) {
     Crop* p = nullptr;
     switch (type) {
@@ -18,16 +19,18 @@ Crop* Crop::create(ItemType type) {
     return p;
 }
 
+// 初始化基类
 bool Crop::init(ItemType type) {
     if (!Sprite::init()) {
         return false;
     }
     _type = type;
     _status = CropStatus::SEEDS;
-    _growthStage = 0;
+    _growthStage = INITIAL_GROWTH_STAGE;
     return true;
 }
 
+// 更新生长
 void Crop::updateGrowth(bool isWatered) {
     if (_status == CropStatus::DEAD || _status == CropStatus::MATURE) {
         return;
@@ -35,7 +38,7 @@ void Crop::updateGrowth(bool isWatered) {
 
     if (!isWatered) {
         _status = CropStatus::DEAD;
-        this->setTexture("EnvironmentObjects/dead.png");
+        this->setTexture(CROP_DEAD_TEXTURE_PATH);
         return;
     }
 
@@ -43,7 +46,7 @@ void Crop::updateGrowth(bool isWatered) {
 
     if (_growthStage >= _maxGrowthStage) {
         _status = CropStatus::MATURE;
-        _growthStage = _maxGrowthStage; 
+        _growthStage = _maxGrowthStage;
     }
     else {
         _status = CropStatus::GROWING;
@@ -52,18 +55,51 @@ void Crop::updateGrowth(bool isWatered) {
     updateTexture();
 }
 
+// 更新纹理
 void Crop::updateTexture() {
     if (_status == CropStatus::DEAD) {
-        this->setTexture("EnvironmentObjects/dead.png");
+        this->setTexture(CROP_DEAD_TEXTURE_PATH);
         return;
     }
 
     std::string filename =
-        "EnvironmentObjects/" + _texturePrefix + "_" +
-        std::to_string(_growthStage) + ".png";
+        CROP_TEXTURE_BASE_PATH_PREFIX + _texturePrefix + "_" +
+        std::to_string(_growthStage) + CROP_TEXTURE_STAGE_SUFFIX;
     this->setTexture(filename);
 }
 
+// 设置生长阶段
+void Crop::setGrowthStage(int stage) {
+    _growthStage = std::max(0, std::min(stage, _maxGrowthStage));
+    updateTexture();
+    if (_growthStage >= _maxGrowthStage) {
+        _status = CropStatus::MATURE;
+    }
+    else {
+        _status = CropStatus::GROWING;
+    }
+}
+
+// 设置阶段与状态
+void Crop::setGrowthStage(int stage, CropStatus status) {
+    _growthStage = std::max(0, std::min(stage, _maxGrowthStage));
+    _status = status;
+
+    if (_status != CropStatus::DEAD) {
+        if (_growthStage >= _maxGrowthStage) {
+            _status = CropStatus::MATURE;
+        }
+        else {
+            _status = CropStatus::GROWING;
+        }
+    }
+
+    updateTexture();
+}
+
+// --- 子类实现 ---
+
+// 防风草
 Parsnip* Parsnip::create() {
     auto p = new (std::nothrow) Parsnip();
     if (p && p->init()) {
@@ -76,12 +112,13 @@ Parsnip* Parsnip::create() {
 
 bool Parsnip::init() {
     if (!Crop::init(ItemType::PARSNIP)) return false;
-    _texturePrefix = "Parsnip";
-    _maxGrowthStage = 3; 
+    _texturePrefix = CROP_TEXTURE_PARSNIP_PREFIX;
+    _maxGrowthStage = PARSNIP_MAX_GROWTH_STAGE;
     updateTexture();
     return true;
 }
 
+// 土豆
 Potato* Potato::create() {
     auto p = new (std::nothrow) Potato();
     if (p && p->init()) {
@@ -94,12 +131,13 @@ Potato* Potato::create() {
 
 bool Potato::init() {
     if (!Crop::init(ItemType::POTATO)) return false;
-    _texturePrefix = "Potato";
-    _maxGrowthStage = 4;
+    _texturePrefix = CROP_TEXTURE_POTATO_PREFIX;
+    _maxGrowthStage = POTATO_MAX_GROWTH_STAGE;
     updateTexture();
     return true;
 }
 
+// 花椰菜
 Cauliflower* Cauliflower::create() {
     auto p = new (std::nothrow) Cauliflower();
     if (p && p->init()) {
@@ -112,8 +150,8 @@ Cauliflower* Cauliflower::create() {
 
 bool Cauliflower::init() {
     if (!Crop::init(ItemType::CAULIFLOWER)) return false;
-    _texturePrefix = "Cauliflower";
-    _maxGrowthStage = 4; 
+    _texturePrefix = CROP_TEXTURE_CAULIFLOWER_PREFIX;
+    _maxGrowthStage = CAULIFLOWER_MAX_GROWTH_STAGE;
     updateTexture();
     return true;
 }

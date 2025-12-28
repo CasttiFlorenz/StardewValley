@@ -4,13 +4,26 @@
 
 #include "BarnAnimal.h"
 
+// 鸡类，继承自农场动物
 class Chicken : public BarnAnimal {
 public:
+    // 静态创建函数
     static Chicken* create();
-    std::string getProducePath() const override;
-    ItemType getProduceObject() const override;
-    void startAnimation() override;
-    void stopAnimation() override;
+
+    // 获取产物路径
+    virtual std::string getProducePath() const override;
+
+    // 获取产物类型
+    virtual ItemType getProduceObject() const override;
+
+    // 获取动物类型
+    virtual AnimalType getType() const noexcept override {
+        return AnimalType::CHICKEN;
+    }
+
+    // 动画控制
+    virtual void startAnimation() override;
+    virtual void stopAnimation() override;
 };
 
 #endif // __CHICKEN_H__

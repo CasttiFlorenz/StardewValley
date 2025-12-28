@@ -1,16 +1,11 @@
 /****************************************************************
- * Project Name:  StardewValley
- * File Name:     InitialMenuScene.cpp
- * File Function: InitialMenuScene类的实现
- * Author:        郭芷烟
- * Update Date:   2025/12/07
- * License:       MIT License
+ * InitialMenuScene.cpp
+ * 初始菜单场景的实现，包含开始、读档和退出按钮
  ****************************************************************/
 
 #include "InitialMenuScene.h"
 #include "../Button/HoverButton.h"
 #include "SimpleAudioEngine.h"
-#include "../Save/SaveManage.h"
 
 USING_NS_CC;
 
@@ -18,98 +13,127 @@ Scene* InitialMenuScene::createScene()
 {
     auto scene = Scene::create();
     auto layer = InitialMenuScene::create();
-
     scene->addChild(layer);
-
     return scene;
 }
 
+// 资源加载失败时的简单提示
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
-    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in InitialMenuScene.cpp\n");
+    printf("Check resource path in InitialMenuScene.cpp\n");
 }
 
 bool InitialMenuScene::init()
 {
-    if (!Scene::init())
-    {
+    if (!Scene::init()) {
         return false;
     }
 
+    // 获取屏幕大小与原点
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    // 加载背景
+    // 播放菜单背景音乐
+    MusicManager::getInstance()->playMusicForMap("FarmHouse");
+
+    // ===== 背景 =====
     auto backGround = Sprite::create("/InitialMenuScene/InitialMenu_bg.png");
-    if (backGround == nullptr)
-    {
+    if (!backGround) {
         problemLoading("'InitialMenu_bg.png'");
     }
-    else
-    {
-        backGround->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-        float scale = MAX(visibleSize.width / backGround->getContentSize().width, visibleSize.height / backGround->getContentSize().height);
+    else {
+        backGround->setPosition(Vec2(
+            origin.x + visibleSize.width / 2,
+            origin.y + visibleSize.height / 2
+        ));
+
+        // 按比例缩放填满屏幕
+        float scale = MAX(
+            visibleSize.width / backGround->getContentSize().width,
+            visibleSize.height / backGround->getContentSize().height
+        );
         backGround->setScale(scale);
         this->addChild(backGround, 0);
     }
 
-    // 加载标题
+    // ===== 标题 =====
     auto title = Sprite::create("/InitialMenuScene/Title.png");
-    if (title == nullptr)problemLoading("'Title.png'");
+    if (!title) {
+        problemLoading("'Title.png'");
+    }
     else {
-        title->setPosition(visibleSize.width / 2 + origin.x, visibleSize.height / 3 * 2 + origin.y);
+        title->setPosition(Vec2(
+            origin.x + visibleSize.width / 2,
+            origin.y + visibleSize.height * 2 / 3
+        ));
         this->addChild(title, 1);
     }
 
-    // 创建三个按钮
-    auto exitButton = HoverButton::create("/InitialMenuScene/ExitDefaultButton.png",
+    // ===== 按钮 =====
+    auto exitButton = HoverButton::create(
+        "/InitialMenuScene/ExitDefaultButton.png",
         "/InitialMenuScene/ExitHoverButton.png",
-        "/InitialMenuScene/ExitHoverButton.png");
-    auto createButton = HoverButton::create("/InitialMenuScene/CreateDefualtButton.png",
+        "/InitialMenuScene/ExitHoverButton.png"
+    );
+
+    auto createButton = HoverButton::create(
+        "/InitialMenuScene/CreateDefualtButton.png",
         "/InitialMenuScene/CreateHoverButton.png",
-        "/InitialMenuScene/CreateHoverButton.png");
-    auto loadButton = HoverButton::create("/InitialMenuScene/LoadDefaultButton.png",
+        "/InitialMenuScene/CreateHoverButton.png"
+    );
+
+    auto loadButton = HoverButton::create(
+        "/InitialMenuScene/LoadDefaultButton.png",
         "/InitialMenuScene/LoadHoverButton.png",
-        "/InitialMenuScene/LoadHoverButton.png");
+        "/InitialMenuScene/LoadHoverButton.png"
+    );
 
-    // 设置按钮位置并为按钮添加事件监听器
+    // 设置按钮位置
+    exitButton->setPosition(Vec2(
+        origin.x + visibleSize.width * 3 / 4 - exitButton->getContentSize().width / 2,
+        origin.y + visibleSize.height / 6 + exitButton->getContentSize().height / 2
+    ));
 
-    exitButton->setPosition(Vec2(origin.x + visibleSize.width / 4 * 3 - exitButton->getContentSize().width / 2,
-        origin.y + visibleSize.height / 6 + exitButton->getContentSize().height / 2));
-    createButton->setPosition(Vec2(origin.x + visibleSize.width / 4 + createButton->getContentSize().width / 2,
-        origin.y + visibleSize.height / 6 + createButton->getContentSize().height / 2));
-    loadButton->setPosition(Vec2(origin.x + visibleSize.width / 2,
-        origin.y + visibleSize.height / 6 + loadButton->getContentSize().height / 2));
+    createButton->setPosition(Vec2(
+        origin.x + visibleSize.width / 4 + createButton->getContentSize().width / 2,
+        origin.y + visibleSize.height / 6 + createButton->getContentSize().height / 2
+    ));
 
-    // 监听到按下按钮事件时退出
-    exitButton->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type) {
-        if (type == ui::Widget::TouchEventType::BEGAN)
+    loadButton->setPosition(Vec2(
+        origin.x + visibleSize.width / 2,
+        origin.y + visibleSize.height / 6 + loadButton->getContentSize().height / 2
+    ));
 
-            MusicManager::getInstance()->playButtonClick();
-
-        Director::getInstance()->end();
+    // ===== 退出按钮 =====
+    exitButton->addTouchEventListener([&](Ref*, ui::Widget::TouchEventType type) {
+        if (type == ui::Widget::TouchEventType::BEGAN) {
+            if(auto music=MusicManager::getInstance())
+                music->playButtonClick();
+            Director::getInstance()->end();
+        }
         });
     this->addChild(exitButton, 1);
 
-    // 监听到按下按钮事件时转到创建角色界面
-    createButton->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type) {
-        if (type == ui::Widget::TouchEventType::BEGAN);
-
-        MusicManager::getInstance()->playButtonClick();
-
-        auto create = CreateScene::createScene();
-        Director::getInstance()->replaceScene(create);
+    // ===== 创建角色按钮 =====
+    createButton->addTouchEventListener([&](Ref*, ui::Widget::TouchEventType type) {
+        if (type == ui::Widget::TouchEventType::BEGAN) {
+            if (auto music = MusicManager::getInstance())
+                music->playButtonClick();
+            Director::getInstance()->replaceScene(CreateScene::createScene());
+        }
         });
     this->addChild(createButton, 1);
 
-    loadButton->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type) {
-        if (type == ui::Widget::TouchEventType::BEGAN);
-
-        MusicManager::getInstance()->playButtonClick();
-        if (auto game = GameScene::create()) {
-            if (auto save = SaveManage::getInstance()) {
-                save->loadAllData();
+    // ===== 读档按钮 =====
+    loadButton->addTouchEventListener([&](Ref*, ui::Widget::TouchEventType type) {
+        if (type == ui::Widget::TouchEventType::BEGAN) {
+            if (auto music = MusicManager::getInstance())
+                music->playButtonClick();
+            if (auto game = GameScene::createScene()) {
+                if (auto save = SaveManage::getInstance()) {
+                    save->loadAllData();
+                }
                 Director::getInstance()->replaceScene(game);
             }
         }

@@ -12,30 +12,48 @@
 
 USING_NS_CC;
 
+// 畜棚管理器，负责动物、干草和产物
 class BarnManager : public Ref {
 public:
-    // 单例获取（首次调用需传入 barn 地图指针）
+    // 获取单例
     static BarnManager* getInstance(GameMap* barn = nullptr);
 
-    // 释放单例
+    // 销毁单例
     static void destroyInstance();
 
-    // 在指定瓦片坐标添加一捆饲料（hay）
+    // 在指定位置添加干草
     bool addHayAt(const Vec2& tileCoord);
-    // 添加一个指定类型的动物到空闲巢位
+
+    // 添加动物
     bool addAnimal(AnimalType type);
-    // 每天开始时的刷新逻辑：消耗饲料、生成产物
+
+    // 新的一天逻辑（消耗干草、生产物品）
     void onNewDay();
-    // 启动所有动物动画
+
+    // 启动动画
     void startAnimations();
-    // 停止所有动物动画
+
+    // 停止动画
     void stopAnimations();
-    // 收集指定产物点位上的产物
+
+    // 收集指定位置的产物
     ItemType collectProductionAt(const Vec2& tileCoord);
 
-private:
-    static BarnManager* _instance;
+    // 获取所有干草位置
+    std::vector<Vec2> getHayPositions() const;
 
+    // 获取所有动物类型
+    std::vector<int> getAnimalTypes() const;
+
+    // 获取所有产物信息
+    std::vector<std::pair<int, int>> getProductions() const;
+
+    // 恢复数据
+    void restoreData(const std::vector<Vec2>& hayPos,
+        const std::vector<int>& animalTypes,
+        const std::vector<std::pair<int, int>>& productions);
+
+private:
     BarnManager() = default;
     ~BarnManager() override = default;
 
@@ -44,29 +62,38 @@ private:
 
     bool init(GameMap* barn);
 
+    // 清理资源
+    void clear();
+
+    // 坐标键值转换
+    static long long keyFor(const Vec2& tileCoord);
+
+    // 创建动物对象
+    BarnAnimal* createAnimal(AnimalType type);
+
 private:
-    // 地图与图层
+    static BarnManager* _instance;
+
+    // 地图引用
     GameMap* _gameMap = nullptr;
     TMXTiledMap* _tiledMap = nullptr;
     TMXLayer* _feedLayer = nullptr;
 
-    // 巢位中心与产物中心位置
+    // 位置中心点
     std::vector<Vec2> _nestCenters;
     std::vector<Vec2> _productionCenters;
-    // 圈舍内动物
+
+    // 动物列表
     std::vector<BarnAnimal*> _animals;
-    // 饲料精灵（使用 tileKey 作为键）
+
+    // 干草精灵映射
     std::unordered_map<long long, Sprite*> _haySprites;
-    // 各巢位的待收集产物队列：精灵与物品类型
+
+    // 产物列表
     std::vector<std::vector<std::pair<Sprite*, ItemType>>> _productions;
-    // 产物点位对应的瓦片键
+
+    // 产物位置键值
     std::vector<long long> _productionTileKeys;
-
-    static long long keyFor(const Vec2& tileCoord);
-    BarnAnimal* createAnimal(AnimalType type);
-
-    // 统一清理资源（供 destroyInstance 内部调用）
-    void clear();
 };
 
 #endif // __BARN_MANAGER_H__

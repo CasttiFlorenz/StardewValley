@@ -1,6 +1,6 @@
 #include "CultivatedSoil.h"
 
-// 工厂方法：创建指定坐标的耕地实例
+// 创建实例
 CultivatedSoil* CultivatedSoil::create(const cocos2d::Vec2& tileCoord) {
     auto p = new (std::nothrow) CultivatedSoil();
     if (p && p->init(tileCoord)) {
@@ -11,23 +11,21 @@ CultivatedSoil* CultivatedSoil::create(const cocos2d::Vec2& tileCoord) {
     return nullptr;
 }
 
+// 初始化
 bool CultivatedSoil::init(const cocos2d::Vec2& tileCoord) {
-    // 初始化为“耕地”类型的环境物体
     if (!EnvironmentItem::init(EnvironmentItemType::CULTIVATED_SOIL, tileCoord)) {
         return false;
     }
 
-    // 初始状态：干燥、无作物
     _status = SoilStatus::DRY;
     _crop = nullptr;
 
-    // 设置初始贴图
-    this->setTexture("EnvironmentObjects/Dry.png");
+    this->setTexture(SOIL_DRY_TEXTURE_PATH);
 
     return true;
 }
 
-// 防御性地确保作物节点被移除，避免悬空引用
+// 析构函数
 CultivatedSoil::~CultivatedSoil() {
     if (_crop) {
         _crop->removeFromParent();
@@ -35,29 +33,28 @@ CultivatedSoil::~CultivatedSoil() {
     }
 }
 
-// 浇水：仅在干燥状态下生效
+// 浇水
 void CultivatedSoil::water() {
     if (_status != SoilStatus::DRY) {
         return;
     }
 
     _status = SoilStatus::WET;
-    this->setTexture("EnvironmentObjects/Wet.png");
+    this->setTexture(SOIL_WET_TEXTURE_PATH);
 }
 
-// 土壤干燥：仅在湿润状态下切换
+// 变干
 void CultivatedSoil::dry() {
     if (_status != SoilStatus::WET) {
         return;
     }
 
     _status = SoilStatus::DRY;
-    this->setTexture("EnvironmentObjects/Dry.png");
+    this->setTexture(SOIL_DRY_TEXTURE_PATH);
 }
 
-// 在土壤上种植作物
+// 种植作物
 bool CultivatedSoil::plant(ItemType type) {
-    // 已有作物，无法再次种植
     if (_crop) {
         return false;
     }
@@ -67,18 +64,17 @@ bool CultivatedSoil::plant(ItemType type) {
         return false;
     }
 
-    // 将作物显示在土壤中央偏上的位置
     const cocos2d::Size soilSize = this->getContentSize();
     _crop->setPosition(cocos2d::Vec2(
-        soilSize.width * 0.5f,
-        soilSize.height * (2.0f / 3.0f)
+        soilSize.width * CROP_POSITION_X_SCALE,
+        soilSize.height * (static_cast<float>(CROP_POSITION_Y_NUMERATOR) / CROP_POSITION_Y_DENOMINATOR)
     ));
 
     this->addChild(_crop);
     return true;
 }
 
-// 收获成熟作物
+// 收获作物
 ItemType CultivatedSoil::harvest() {
     if (!_crop) {
         return ItemType::NONE;
@@ -95,13 +91,22 @@ ItemType CultivatedSoil::harvest() {
     return type;
 }
 
-// 每日更新逻辑：
-// 1. 根据昨天是否浇水推进作物生长
-// 2. 新的一天开始时，土壤恢复为干燥状态
+// 每日更新
 void CultivatedSoil::updateDay() {
     if (_crop) {
         _crop->updateGrowth(_status == SoilStatus::WET);
     }
 
     dry();
+}
+
+// 设置状态
+void CultivatedSoil::setStatus(SoilStatus status) {
+    _status = status;
+    if (_status == SoilStatus::WET) {
+        setTexture(SOIL_WET_TEXTURE_PATH);
+    }
+    else {
+        setTexture(SOIL_DRY_TEXTURE_PATH);
+    }
 }

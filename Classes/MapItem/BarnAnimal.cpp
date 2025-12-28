@@ -1,25 +1,28 @@
 #include "BarnAnimal.h"
+#include <algorithm>
 
 USING_NS_CC;
 
-// æ‰¹é‡ä»æ–‡ä»¶ä¸­åˆ›å»ºåŠ¨ç”»å¸§ï¼šåŸºç¡€è·¯å¾„ + ç´¢å¼• + ".png"
+// ÅúÁ¿¼ÓÔØ¶¯»­Ö¡
 std::vector<SpriteFrame*> BarnAnimal::framesFromFiles(const std::string& baseNoExt, int maxFrames)
 {
     std::vector<SpriteFrame*> frames;
+    // Ô¤·ÖÅäÄÚ´æ±ÜÃâÆµ·±À©Èİ
     frames.reserve(static_cast<size_t>(std::max(0, maxFrames)));
 
     for (int i = 0; i < maxFrames; ++i) {
-        std::string path = baseNoExt + std::to_string(i) + ".png";
-        auto spr = Sprite::create(path);
+        const std::string path = baseNoExt + std::to_string(i) + ".png";
+
+        // ³¢ÊÔ´´½¨¾«ÁéÒÔ»ñÈ¡ SpriteFrame
+        const auto spr = Sprite::create(path);
         if (!spr) {
-            // è‹¥é‡åˆ°ä¸å­˜åœ¨çš„èµ„æºï¼Œç»§ç»­å°è¯•åç»­ï¼ˆä¿è¯åœ¨èµ„æºç¼ºå¤±æ—¶ä¸å´©æºƒï¼‰
             continue;
         }
-        auto f = spr->getSpriteFrame();
-        if (f) {
-            frames.push_back(f);
+
+        auto frame = spr->getSpriteFrame();
+        if (frame) {
+            frames.push_back(frame);
         }
     }
     return frames;
 }
-

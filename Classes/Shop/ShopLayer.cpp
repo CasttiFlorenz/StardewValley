@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     ShopLayer.cpp
- * File Function: ShopLayerç±»çš„å®žçŽ°
- * Author:        èµµç¿å¦
+ * File Function: ShopLayerÀàµÄÊµÏÖ
+ * Author:        ÕÔî£åû
  * Update Date:   2025/12/17
  * License:       MIT License
  ****************************************************************/
@@ -12,13 +12,13 @@ USING_NS_CC;
 using namespace ui;
 
 /**
- * å·¥åŽ‚æ–¹æ³•ï¼šåˆ›å»º ShopLayer å®žä¾‹
- * æ£€æŸ¥ä¼ å…¥çš„ Item æŒ‡é’ˆæ˜¯å¦æœ‰æ•ˆï¼Œåˆ›å»ºå®žä¾‹å¹¶è°ƒç”¨ init() è¿›è¡Œåˆå§‹åŒ–ï¼ŒæˆåŠŸåŽåŠ å…¥ autorelease æ± 
- * @param item å•†åº—è¦å‡ºå”®çš„ç‰©å“æ•°æ®å¯¹è±¡
- * @return åˆ›å»ºæˆåŠŸçš„ ShopLayer æŒ‡é’ˆï¼Œè‹¥å¤±è´¥åˆ™è¿”å›ž nullptr
+ * ¹¤³§·½·¨£º´´½¨ ShopLayer ÊµÀý
+ * ¼ì²é´«ÈëµÄ Item Ö¸ÕëÊÇ·ñÓÐÐ§£¬´´½¨ÊµÀý²¢µ÷ÓÃ init() ½øÐÐ³õÊ¼»¯£¬³É¹¦ºó¼ÓÈë autorelease ³Ø
+ * @param item ÉÌµêÒª³öÊÛµÄÎïÆ·Êý¾Ý¶ÔÏó
+ * @return ´´½¨³É¹¦µÄ ShopLayer Ö¸Õë£¬ÈôÊ§°ÜÔò·µ»Ø nullptr
  */
 ShopLayer* ShopLayer::create(Item* item) {
-    // å‚æ•°åˆ¤ç©º
+    // ²ÎÊýÅÐ¿Õ
     if (item == nullptr) {
         return nullptr;
     }
@@ -33,22 +33,22 @@ ShopLayer* ShopLayer::create(Item* item) {
 }
 
 /**
- * åˆå§‹åŒ–å•†åº—å¼¹çª—å±‚
- * è®¾ç½®å…¨é€æ˜ŽèƒŒæ™¯å’Œè§¦æ‘¸åžå™¬ï¼Œæž„å»ºèƒŒæ™¯ã€å•†å“å›¾æ ‡ã€ä»·æ ¼æ ‡ç­¾ã€æ•°é‡é€‰æ‹©å™¨åŠè´­ä¹°/å…³é—­æŒ‰é’®
- * åŒæ—¶è®¡ç®—æœ€å¤§å¯è´­ä¹°æ•°é‡ï¼ˆå—é‡‘é’±å’Œå¸¸é‡é™åˆ¶ï¼‰
- * @param item å•†åº—è¦å‡ºå”®çš„ç‰©å“æ•°æ®å¯¹è±¡
- * @return åˆå§‹åŒ–æˆåŠŸè¿”å›ž true
+ * ³õÊ¼»¯ÉÌµêµ¯´°²ã
+ * ÉèÖÃÈ«Í¸Ã÷±³¾°ºÍ´¥ÃþÍÌÊÉ£¬¹¹½¨±³¾°¡¢ÉÌÆ·Í¼±ê¡¢¼Û¸ñ±êÇ©¡¢ÊýÁ¿Ñ¡ÔñÆ÷¼°¹ºÂò/¹Ø±Õ°´Å¥
+ * Í¬Ê±¼ÆËã×î´ó¿É¹ºÂòÊýÁ¿£¨ÊÜ½ðÇ®ºÍ³£Á¿ÏÞÖÆ£©
+ * @param item ÉÌµêÒª³öÊÛµÄÎïÆ·Êý¾Ý¶ÔÏó
+ * @return ³õÊ¼»¯³É¹¦·µ»Ø true
  */
 bool ShopLayer::init(Item* item) {
-    // åˆå§‹åŒ–çˆ¶ç±» LayerColorï¼Œå…¨é€æ˜ŽèƒŒæ™¯
+    // ³õÊ¼»¯¸¸Àà LayerColor£¬È«Í¸Ã÷±³¾°
     if (!LayerColor::initWithColor(Color4B(0, 0, 0, 0))) return false;
 
     _targetItem = item;
 
-    // èŽ·å–å±å¹•å°ºå¯¸
+    // »ñÈ¡ÆÁÄ»³ß´ç
     auto winSize = Director::getInstance()->getVisibleSize();
 
-    // 1. è®¾ç½®è§¦æ‘¸åžå™¬ (é˜²æ­¢ç‚¹å‡»ç©¿é€åˆ°ä¸‹å±‚)
+    // 1. ÉèÖÃ´¥ÃþÍÌÊÉ (·ÀÖ¹µã»÷´©Í¸µ½ÏÂ²ã)
     auto listener = EventListenerTouchOneByOne::create();
     if (listener != nullptr) {
         listener->setSwallowTouches(true);
@@ -56,7 +56,7 @@ bool ShopLayer::init(Item* item) {
         _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     }
 
-    // 2. èƒŒæ™¯æ¿
+    // 2. ±³¾°°å
     auto bg = Sprite::create(PATH_SHOP_BG);
     if (bg != nullptr) {
         bg->setScale(SHOP_BG_SCALE);
@@ -65,17 +65,17 @@ bool ShopLayer::init(Item* item) {
         this->addChild(bg, ZORDER_SHOP_BG);
     }
 
-    // 3. å•†å“å›¾æ ‡
+    // 3. ÉÌÆ·Í¼±ê
     if (_targetItem != nullptr) {
         auto icon = Sprite::create(_targetItem->getPath());
         if (icon != nullptr) {
             icon->setPosition(winSize.width / 2 - 150, winSize.height / 2 + 45);
-            // è¿™é‡Œè¦†ç›–äº†åŽŸæœ‰çš„ getScaleï¼Œç»Ÿä¸€ä½¿ç”¨å¸¸é‡ç¼©æ”¾
+            // ÕâÀï¸²¸ÇÁËÔ­ÓÐµÄ getScale£¬Í³Ò»Ê¹ÓÃ³£Á¿Ëõ·Å
             icon->setScale(SHOP_ICON_SCALE);
             this->addChild(icon, ZORDER_SHOP_CONTENT);
         }
 
-        // 4. å•†å“åå­—ä¸Žå•ä»·
+        // 4. ÉÌÆ·Ãû×ÖÓëµ¥¼Û
         auto nameLabel = Label::createWithTTF(_targetItem->getName(), PATH_FONT_PIXEL, 28);
         if (nameLabel != nullptr) {
             nameLabel->setPosition(winSize.width / 2 + 50, winSize.height / 2 + 80);
@@ -90,7 +90,7 @@ bool ShopLayer::init(Item* item) {
             this->addChild(priceLabel, ZORDER_SHOP_CONTENT);
         }
 
-        // 5. è®¡ç®—æœ€å¤§è´­ä¹°æ•°é‡
+        // 5. ¼ÆËã×î´ó¹ºÂòÊýÁ¿
         int playerMoney = 0;
         if (Money::getInstance() != nullptr) {
             playerMoney = Money::getInstance()->getMoney();
@@ -104,14 +104,14 @@ bool ShopLayer::init(Item* item) {
             _maxQuantity = SHOP_MAX_QUANTITY_LIMIT;
         }
 
-        // é™åˆ¶è´­ä¹°ä¸Šé™ï¼Œé˜²æ­¢æ•°æ®æº¢å‡º
+        // ÏÞÖÆ¹ºÂòÉÏÏÞ£¬·ÀÖ¹Êý¾ÝÒç³ö
         if (_maxQuantity > SHOP_MAX_QUANTITY_LIMIT) _maxQuantity = SHOP_MAX_QUANTITY_LIMIT;
         if (_maxQuantity < SHOP_MIN_QUANTITY) _maxQuantity = SHOP_MIN_QUANTITY;
     }
 
     _currentQuantity = 1;
 
-    // 6. æ•°é‡æ˜¾ç¤º (x1)
+    // 6. ÊýÁ¿ÏÔÊ¾ (x1)
     _lblQuantity = Label::createWithTTF("x1", PATH_FONT_PIXEL, 30);
     if (_lblQuantity != nullptr) {
         _lblQuantity->setPosition(Vec2(winSize.width / 2, winSize.height / 2 - 40));
@@ -119,8 +119,8 @@ bool ShopLayer::init(Item* item) {
         this->addChild(_lblQuantity, ZORDER_SHOP_CONTENT);
     }
 
-    // 7. åŠ å‡æŒ‰é’®é€»è¾‘
-    // [ - ] æŒ‰é’®
+    // 7. ¼Ó¼õ°´Å¥Âß¼­
+    // [ - ] °´Å¥
     auto btnMinus = Button::create(PATH_SHOP_MINUS);
     if (btnMinus != nullptr) {
         btnMinus->setPosition(Vec2(winSize.width / 2 - 100, winSize.height / 2 - 40));
@@ -133,7 +133,7 @@ bool ShopLayer::init(Item* item) {
         this->addChild(btnMinus, ZORDER_SHOP_BUTTONS);
     }
 
-    // [ + ] æŒ‰é’®
+    // [ + ] °´Å¥
     auto btnPlus = Button::create(PATH_SHOP_PLUS);
     if (btnPlus != nullptr) {
         btnPlus->setPosition(Vec2(winSize.width / 2 + 100, winSize.height / 2 - 40));
@@ -146,7 +146,7 @@ bool ShopLayer::init(Item* item) {
         this->addChild(btnPlus, ZORDER_SHOP_BUTTONS);
     }
 
-    // 8. æ€»ä»·æ˜¾ç¤º
+    // 8. ×Ü¼ÛÏÔÊ¾
     _lblTotalCost = Label::createWithTTF("Total: 0", PATH_FONT_PIXEL, 26);
     if (_lblTotalCost != nullptr) {
         _lblTotalCost->setPosition(Vec2(winSize.width / 2, winSize.height / 2 - 300));
@@ -154,52 +154,52 @@ bool ShopLayer::init(Item* item) {
         this->addChild(_lblTotalCost, ZORDER_SHOP_CONTENT);
     }
 
-    // 9. è´­ä¹°ç¡®è®¤æŒ‰é’® (OK Button)
+    // 9. ¹ºÂòÈ·ÈÏ°´Å¥ (OK Button)
     _btnBuy = Button::create(PATH_SHOP_BUY);
     if (_btnBuy != nullptr) {
         _btnBuy->setScale(SHOP_BTN_SCALE);
-        // ç¡®ä¿æŒ‰é’®ä½ç½®åœ¨çª—å£ä¸‹æ–¹
+        // È·±£°´Å¥Î»ÖÃÔÚ´°¿ÚÏÂ·½
         _btnBuy->setPosition(Vec2(winSize.width / 2, winSize.height / 2 - 160));
         _btnBuy->addClickEventListener(CC_CALLBACK_1(ShopLayer::onBuyClicked, this));
         this->addChild(_btnBuy, ZORDER_SHOP_BUTTONS);
     }
 
-    // 10. å…³é—­æŒ‰é’® (X)
+    // 10. ¹Ø±Õ°´Å¥ (X)
     auto btnClose = Button::create(PATH_SHOP_CLOSE);
     if (btnClose != nullptr) {
         btnClose->setScale(SHOP_BTN_SCALE);
-        // æ”¾åœ¨å³ä¸Šè§’
+        // ·ÅÔÚÓÒÉÏ½Ç
         btnClose->setPosition(Vec2(winSize.width / 2 + 230, winSize.height / 2 + 230));
         btnClose->addClickEventListener(CC_CALLBACK_1(ShopLayer::onCloseClicked, this));
         this->addChild(btnClose, ZORDER_SHOP_BUTTONS);
     }
 
-    updateUI(); // åˆå§‹åŒ–ç•Œé¢çŠ¶æ€
+    updateUI(); // ³õÊ¼»¯½çÃæ×´Ì¬
     return true;
 }
 
 
 
 /**
- * åˆ·æ–° UI çŠ¶æ€
- * æ ¹æ®å½“å‰é€‰æ‹©çš„è´­ä¹°æ•°é‡æ›´æ–°æ•°é‡æ–‡æœ¬å’Œæ€»ä»·æ–‡æœ¬
- * æ£€æŸ¥çŽ©å®¶é‡‘é’±æ˜¯å¦è¶³å¤Ÿï¼Œå¹¶æ®æ­¤è®¾ç½®è´­ä¹°æŒ‰é’®çš„å¯ç”¨çŠ¶æ€å’Œæ€»ä»·æ–‡æœ¬é¢œè‰²ï¼ˆçº¢è‰²ä¸ºé’±ä¸å¤Ÿï¼‰
+ * Ë¢ÐÂ UI ×´Ì¬
+ * ¸ù¾Ýµ±Ç°Ñ¡ÔñµÄ¹ºÂòÊýÁ¿¸üÐÂÊýÁ¿ÎÄ±¾ºÍ×Ü¼ÛÎÄ±¾
+ * ¼ì²éÍæ¼Ò½ðÇ®ÊÇ·ñ×ã¹»£¬²¢¾Ý´ËÉèÖÃ¹ºÂò°´Å¥µÄÆôÓÃ×´Ì¬ºÍ×Ü¼ÛÎÄ±¾ÑÕÉ«£¨ºìÉ«ÎªÇ®²»¹»£©
  */
 void ShopLayer::updateUI() {
     if (_targetItem == nullptr) return;
 
-    // 1. æ›´æ–°æ•°é‡æ–‡æœ¬
+    // 1. ¸üÐÂÊýÁ¿ÎÄ±¾
     if (_lblQuantity != nullptr) {
         _lblQuantity->setString(StringUtils::format("x%d", _currentQuantity));
     }
 
-    // 2. è®¡ç®—æ€»ä»·
+    // 2. ¼ÆËã×Ü¼Û
     int totalCost = _currentQuantity * _targetItem->getPrice();
     if (_lblTotalCost != nullptr) {
         _lblTotalCost->setString(StringUtils::format("Total: %d G", totalCost));
     }
 
-    // 3. æ£€æŸ¥é’±å¤Ÿä¸å¤Ÿï¼ŒæŽ§åˆ¶æŒ‰é’®çŠ¶æ€
+    // 3. ¼ì²éÇ®¹»²»¹»£¬¿ØÖÆ°´Å¥×´Ì¬
     bool canAfford = false;
     if (Money::getInstance() != nullptr) {
         canAfford = Money::getInstance()->canAfford(totalCost);
@@ -207,10 +207,10 @@ void ShopLayer::updateUI() {
 
     if (_btnBuy != nullptr) {
         _btnBuy->setEnabled(canAfford);
-        // ä½¿ç”¨ static_cast è¿›è¡Œç±»åž‹è½¬æ¢
-        _btnBuy->setOpacity(canAfford ? 255 : 128); // ä¹°ä¸èµ·å˜åŠé€æ˜Ž
+        // Ê¹ÓÃ static_cast ½øÐÐÀàÐÍ×ª»»
+        _btnBuy->setOpacity(canAfford ? 255 : 128); // Âò²»Æð±ä°ëÍ¸Ã÷
 
-        // å¦‚æžœé’±ä¸å¤Ÿï¼Œæ€»ä»·æ˜¾ç¤ºçº¢è‰²
+        // Èç¹ûÇ®²»¹»£¬×Ü¼ÛÏÔÊ¾ºìÉ«
         if (_lblTotalCost != nullptr) {
             if (!canAfford) _lblTotalCost->setColor(Color3B::RED);
             else _lblTotalCost->setColor(Color3B::BLACK);
@@ -221,14 +221,14 @@ void ShopLayer::updateUI() {
 
 
 /**
- * å¤„ç†è´­ä¹°æŒ‰é’®ç‚¹å‡»äº‹ä»¶
- * å†æ¬¡æ£€æŸ¥ä½™é¢ï¼Œè‹¥è¶³å¤Ÿåˆ™æ‰£é™¤é‡‘é’±ã€å°†ç‰©å“æ·»åŠ åˆ°èƒŒåŒ…ï¼Œè§¦å‘è´­ä¹°æˆåŠŸå›žè°ƒå¹¶å…³é—­å¼¹çª—
- * @param sender è§¦å‘äº‹ä»¶çš„æŒ‰é’®å¯¹è±¡
+ * ´¦Àí¹ºÂò°´Å¥µã»÷ÊÂ¼þ
+ * ÔÙ´Î¼ì²éÓà¶î£¬Èô×ã¹»Ôò¿Û³ý½ðÇ®¡¢½«ÎïÆ·Ìí¼Óµ½±³°ü£¬´¥·¢¹ºÂò³É¹¦»Øµ÷²¢¹Ø±Õµ¯´°
+ * @param sender ´¥·¢ÊÂ¼þµÄ°´Å¥¶ÔÏó
  */
 void ShopLayer::onBuyClicked(Ref* sender) {
     if (_targetItem == nullptr) return;
 
-    // èŽ·å–å•ä¾‹å®žä¾‹å¹¶è¿›è¡Œåˆ¤ç©º
+    // »ñÈ¡µ¥ÀýÊµÀý²¢½øÐÐÅÐ¿Õ
     auto playerState = Money::getInstance();
     auto inventory = InventoryScene::getInstance();
 
@@ -239,30 +239,30 @@ void ShopLayer::onBuyClicked(Ref* sender) {
     int totalCost = _currentQuantity * _targetItem->getPrice();
 
     if (playerState->canAfford(totalCost)) {
-        // 1. æ‰£é’± 
+        // 1. ¿ÛÇ® 
         playerState->spendMoney(totalCost);
 
-        // 2. åŠ èƒŒåŒ… 
+        // 2. ¼Ó±³°ü 
         inventory->addItemCount(_targetItem->getTag(), _currentQuantity, false);
 
-        // 3. é€šçŸ¥ä¸Šå±‚ç•Œé¢åˆ·æ–° (ä¸»è¦æ˜¯åˆ·æ–°é‡‘é’±æ˜¾ç¤º)
+        // 3. Í¨ÖªÉÏ²ã½çÃæË¢ÐÂ (Ö÷ÒªÊÇË¢ÐÂ½ðÇ®ÏÔÊ¾)
         if (_onPurchaseSuccess) {
             _onPurchaseSuccess();
         }
 
-        // 4. å…³é—­å¼¹çª—
+        // 4. ¹Ø±Õµ¯´°
         this->removeFromParent();
     }
     else {
-        CCLOG("é‡‘é’±ä¸è¶³");
+        CCLOG("½ðÇ®²»×ã");
     }
 }
 
 
 /**
- * å¤„ç†å…³é—­æŒ‰é’®ç‚¹å‡»äº‹ä»¶
- * å°†å½“å‰å•†åº—å¼¹çª—å±‚ä»Žçˆ¶èŠ‚ç‚¹ç§»é™¤
- * @param sender è§¦å‘äº‹ä»¶çš„æŒ‰é’®å¯¹è±¡
+ * ´¦Àí¹Ø±Õ°´Å¥µã»÷ÊÂ¼þ
+ * ½«µ±Ç°ÉÌµêµ¯´°²ã´Ó¸¸½ÚµãÒÆ³ý
+ * @param sender ´¥·¢ÊÂ¼þµÄ°´Å¥¶ÔÏó
  */
 void ShopLayer::onCloseClicked(Ref* sender) {
     this->removeFromParent();

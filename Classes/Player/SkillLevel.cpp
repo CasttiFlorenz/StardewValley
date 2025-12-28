@@ -18,7 +18,7 @@ SkillLevel* SkillLevel::_instance = nullptr;
 // 获取单例
 SkillLevel* SkillLevel::getInstance() {
     if (!_instance) {
-        _instance = new SkillLevel();
+        _instance = new SkillLevel();  
     }
     return _instance;
 }
@@ -66,7 +66,7 @@ Node* SkillLevel::createLevelStars(int level)
     float currentX = startX;
 
     for (int i = 0; i < MAX_LEVEL / 10; i++) {
-        bool isFilled = (i < level);
+        bool isFilled = (i < level / 10);
 
         // 选择类型
         const std::string filledPath = ((i + 1) % 5 == 0) ? LEVEL_FILLED2 : LEVEL_FILLED1;
@@ -93,14 +93,16 @@ Node* SkillLevel::createSkillItem(SkillType skillType, const Vec2& position)
     }
 
     SkillData& skill = s_skillData[static_cast<int>(skillType)];
-    int currentLevel = static_cast<int>(skill.level / 10);
+    int currentLevel = skill.level;
+    if (currentLevel < 0) currentLevel = 0;
+    if (currentLevel > MAX_LEVEL) currentLevel = MAX_LEVEL;
 
     // 创建技能项容器
     Node* skillItem = Node::create();
     skillItem->setPosition(position);
 
     // ========== 打印技能名字（最左侧） ==========
-    auto nameLabel = Label::createWithTTF(skill.name, PATH_FONT_LOUIS, 24);
+    auto nameLabel = Label::createWithTTF(skill.name, "fonts/Louis George Cafe Bold.ttf", 24);
     if (nameLabel) {
         nameLabel->setTextColor(Color4B::BLACK);
         nameLabel->setAnchorPoint(Vec2(0, 0.5f));  // 左对齐
@@ -124,9 +126,10 @@ Node* SkillLevel::createSkillItem(SkillType skillType, const Vec2& position)
     }
 
     // ========== 显示最终等级文字（最右侧） ==========
-    auto levelText = Label::createWithTTF(std::to_string(currentLevel), PATH_FONT_HANDRON, 45);
+    auto levelText = Label::createWithTTF(std::to_string(currentLevel),
+        "fonts/Handron-Filled.otf", 45);
     if (levelText) {
-        levelText->setTextColor(COLOR_SKILL_LEVEL_NUM);
+        levelText->setTextColor(Color4B(210, 105, 30, 255));
         levelText->setAnchorPoint(Vec2(0, 0.5f));  // 左对齐
         levelText->setPosition(Vec2(400, 0));      // 最右边
         skillItem->addChild(levelText);

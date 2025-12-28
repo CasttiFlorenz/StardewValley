@@ -1,22 +1,21 @@
-ï»¿#include "SaveManage.h"
+#include "SaveManage.h"
 
 USING_NS_CC;
 
-// è·å–å•ä¾‹
-SaveManage* SaveManage::getInstance() 
+// »ñÈ¡µ¥Àı
+SaveManage* SaveManage::getInstance()
 {
     static SaveManage instance;
     return &instance;
 }
 
-// ========== å·¥å…·å‡½æ•° ==========
-
+// »ñÈ¡ÎÄ¼şÂ·¾¶
 std::string SaveManage::getFilePath(const std::string& filename)
 {
-    // æŒ‡å®šå­˜æ”¾ä½ç½®
+    // ´æµµÄ¿Â¼
     std::string customPath = FileUtils::getInstance()->getDefaultResourceRootPath() + "../../Resources/SaveGame/";
 
-    // åˆ›å»ºç›®å½•ï¼ˆå¦‚æœä¸å­˜åœ¨ï¼‰
+    // È·±£Ä¿Â¼´æÔÚ
     if (!FileUtils::getInstance()->isDirectoryExist(customPath)) {
         FileUtils::getInstance()->createDirectory(customPath);
     }
@@ -24,21 +23,17 @@ std::string SaveManage::getFilePath(const std::string& filename)
     return customPath + filename;
 }
 
-// ========== èƒŒåŒ… ==========
-
-// åºåˆ—åŒ–Itemåˆ°JSONå¯¹è±¡
+// ĞòÁĞ»¯ Item
 rapidjson::Value SaveManage::serializeItem(const Item& item, rapidjson::Document::AllocatorType& alloc)
 {
     rapidjson::Value itemObj(rapidjson::kObjectType);
 
-    // ç›´æ¥æ·»åŠ æ‰€æœ‰æˆå‘˜
     itemObj.AddMember("price", item.getPrice(), alloc);
     itemObj.AddMember("tag", static_cast<int>(item.getTag()), alloc);
     itemObj.AddMember("count", item.getCount(), alloc);
     itemObj.AddMember("scale", item.getScale(), alloc);
     itemObj.AddMember("printPos", item.getPrintPos(), alloc);
 
-    // è·å–å­—ç¬¦ä¸²
     std::string name = item.getName();
     std::string path = item.getPath();
 
@@ -48,21 +43,18 @@ rapidjson::Value SaveManage::serializeItem(const Item& item, rapidjson::Document
     return itemObj;
 }
 
-// ä¿å­˜èƒŒåŒ…åˆ°æ–‡ä»¶
-bool SaveManage::saveInventory() 
+// ±£´æÎïÆ·À¸
+bool SaveManage::saveInventory()
 {
     auto placeItems = PlaceItems::getInstance();
     if (!placeItems) return false;
 
-    // è·å–å½“å‰èƒŒåŒ…æ•°æ®
     const auto& inventory = placeItems->getCurrentInventory();
 
-    // åˆ›å»ºJSONæ–‡æ¡£
     rapidjson::Document doc;
     doc.SetObject();
     auto& alloc = doc.GetAllocator();
 
-    // åˆ›å»ºç‰©å“æ•°ç»„
     rapidjson::Value itemsArray(rapidjson::kArrayType);
     for (const auto& item : inventory) {
         itemsArray.PushBack(serializeItem(item, alloc), alloc);
@@ -70,35 +62,34 @@ bool SaveManage::saveInventory()
 
     doc.AddMember("inventory", itemsArray, alloc);
 
-    // åºåˆ—åŒ–å­—ç¬¦ä¸²
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
     doc.Accept(writer);
 
-    // ä¿å­˜åˆ°æ–‡ä»¶
     return FileUtils::getInstance()->writeStringToFile(buffer.GetString(), getFilePath("inventory.json"));
 }
 
-// ä»æ–‡ä»¶åŠ è½½èƒŒåŒ…
-bool SaveManage::loadInventory() 
+// ¼ÓÔØÎïÆ·À¸
+bool SaveManage::loadInventory()
 {
     auto placeItems = PlaceItems::getInstance();
     if (!placeItems) return false;
 
-    // è·å–èƒŒåŒ…å¼•ç”¨
     auto& inventory = const_cast<std::vector<Item>&>(placeItems->getCurrentInventory());
 
     std::string jsonStr = FileUtils::getInstance()->getStringFromFile(getFilePath("inventory.json"));
     rapidjson::Document doc;
 
-    // è§£æJSONå¹¶æ£€å¯Ÿæ ¼å¼
     if (doc.Parse(jsonStr.c_str()).HasParseError() || !doc.HasMember("inventory")) {
         return false;
     }
 
     inventory.clear();
 
-    // è§£æç‰©å“åˆ°ä¸´æ—¶åˆ—è¡¨
+    // Í¨Öª¸üĞÂ
+    EventCustom event("INVENTORY_COUNT_CHANGED");
+    Director::getInstance()->getEventDispatcher()->dispatchEvent(&event);
+
     std::vector<Item> savedItems;
     const rapidjson::Value& itemsArray = doc["inventory"];
     for (rapidjson::SizeType i = 0; i < itemsArray.Size(); i++) {
@@ -108,16 +99,14 @@ bool SaveManage::loadInventory()
         }
     }
 
-    // ä½¿ç”¨ InventoryScene åŠ è½½æ•°æ®
     auto inventoryScene = InventoryScene::getInstance();
     if (inventoryScene) {
-       return inventoryScene->loadItemsFromSaveData(savedItems);
+        return inventoryScene->loadItemsFromSaveData(savedItems);
     }
     return false;
 }
 
-// ========== å¥½æ„Ÿåº¦ ==========
-
+// ±£´æºÃ¸Ğ¶È
 bool SaveManage::saveFriendships()
 {
     auto npcManager = NPCManager::getInstance();
@@ -127,9 +116,8 @@ bool SaveManage::saveFriendships()
     doc.SetObject();
     auto& alloc = doc.GetAllocator();
 
-    // åˆ›å»ºå¥½æ„Ÿåº¦å¯¹è±¡
     rapidjson::Value friendshipsObj(rapidjson::kObjectType);
-    for (NPCBase* npc : npcManager->getAllNPCs()) {
+    for (const NPCBase* npc : npcManager->getAllNPCs()) {
         if (npc) {
             std::string name = npc->getNPCName();
             friendshipsObj.AddMember(rapidjson::Value(name.c_str(), alloc).Move(), npc->getFriendship(), alloc);
@@ -138,7 +126,6 @@ bool SaveManage::saveFriendships()
 
     doc.AddMember("friendships", friendshipsObj, alloc);
 
-    // åºåˆ—åŒ–å¹¶ä¿å­˜
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
     doc.Accept(writer);
@@ -146,13 +133,12 @@ bool SaveManage::saveFriendships()
     return FileUtils::getInstance()->writeStringToFile(buffer.GetString(), getFilePath("friendships.json"));
 }
 
-// åŠ è½½å¥½æ„Ÿåº¦æ•°æ®
+// ¼ÓÔØºÃ¸Ğ¶È
 bool SaveManage::loadFriendships()
 {
     auto npcManager = NPCManager::getInstance();
     if (!npcManager) return false;
 
-    // è¯»å–æ–‡ä»¶
     std::string jsonStr = FileUtils::getInstance()->getStringFromFile(getFilePath("friendships.json"));
     if (jsonStr.empty()) return false;
 
@@ -160,11 +146,10 @@ bool SaveManage::loadFriendships()
     if (doc.Parse(jsonStr.c_str()).HasParseError() || !doc.HasMember("friendships")) {
         return false;
     }
-    // è·å–NPCåˆ—è¡¨
+
     const auto& npcList = npcManager->getAllNPCs();
     const rapidjson::Value& friendshipsObj = doc["friendships"];
 
-    // éå†JSONå¯¹è±¡ï¼Œè®¾ç½®æ¯ä¸ªNPCçš„å¥½æ„Ÿåº¦
     for (auto it = friendshipsObj.MemberBegin(); it != friendshipsObj.MemberEnd(); ++it) {
         std::string npcName = it->name.GetString();
         for (NPCBase* npc : npcList) {
@@ -177,10 +162,11 @@ bool SaveManage::loadFriendships()
 
     return true;
 }
-// ========== æ—¶é—´ å¤©æ°” é‡‘é’± ==========
+
+// ========== Ê±¼ä ÌìÆø ½ğÇ® ==========
 
 
-// åºåˆ—åŒ–æ¸¸æˆæ—¶é—´
+// ĞòÁĞ»¯ÓÎÏ·Ê±¼ä
 rapidjson::Value SaveManage::serializeGameTime(const GameTime& time, rapidjson::Document::AllocatorType& alloc)
 {
     rapidjson::Value timeObj(rapidjson::kObjectType);
@@ -192,18 +178,18 @@ rapidjson::Value SaveManage::serializeGameTime(const GameTime& time, rapidjson::
     return timeObj;
 }
 
-// æ¸¸æˆæ—¶é—´ååºåˆ—åŒ–
+// ÓÎÏ·Ê±¼ä·´ĞòÁĞ»¯
 bool SaveManage::deserializeGameTime(const rapidjson::Value& timeObj, GameTime& time)
 {
     if (!timeObj.IsObject()) return false;
 
-    // æ£€æŸ¥å­—æ®µæ˜¯å¦å­˜åœ¨
+    // ¼ì²é×Ö¶ÎÊÇ·ñ´æÔÚ
     const char* requiredFields[] = { "year", "season", "day", "hour", "minute" };
     for (const char* field : requiredFields) {
         if (!timeObj.HasMember(field)) return false;
     }
 
-    // ä½¿ç”¨setterå‡½æ•°
+    // Ê¹ÓÃsetterº¯Êı
     time.setYear(timeObj["year"].GetInt());
     time.setSeason(static_cast<Season>(timeObj["season"].GetInt()));
     time.setDayOfMonth(timeObj["day"].GetInt());
@@ -213,24 +199,24 @@ bool SaveManage::deserializeGameTime(const rapidjson::Value& timeObj, GameTime& 
     return true;
 }
 
-// ä¿å­˜æ¸¸æˆç¯å¢ƒ
+// ±£´æÓÎÏ·»·¾³
 bool SaveManage::saveGameConditions()
 {
     auto timeManager = TimeManager::getInstance();
     if (!timeManager) return false;
 
-    // è·å–å½“å‰æ—¶é—´
+    // »ñÈ¡µ±Ç°Ê±¼ä
     GameTime gameTime = timeManager->getCurrentTime();
 
-    // è·å–é‡‘é’±
+    // »ñÈ¡½ğÇ®
     int money = 0;
-    auto moneyManager = Money::getInstance(); 
+    auto moneyManager = Money::getInstance();
     if (moneyManager) {
         money = moneyManager->getMoney();
     }
 
-    // è·å–å¤©æ°”
-    int weather = 0;  // å­˜å‚¨ä¸ºint
+    // »ñÈ¡ÌìÆø
+    int weather = 0;  // ´æ´¢Îªint
     auto weatherManager = WeatherManager::getInstance();
     if (weatherManager) {
         weather = static_cast<int>(weatherManager->getCurrentWeather());
@@ -240,11 +226,11 @@ bool SaveManage::saveGameConditions()
     doc.SetObject();
     auto& alloc = doc.GetAllocator();
 
-    // æ·»åŠ æ—¶é—´æ•°æ®
+    // Ìí¼ÓÊ±¼äÊı¾İ
     doc.AddMember("gameTime", serializeGameTime(gameTime, alloc), alloc);
-    // æ·»åŠ é‡‘é’±æ•°æ®
+    // Ìí¼Ó½ğÇ®Êı¾İ
     doc.AddMember("money", money, alloc);
-    // æ·»åŠ å¤©æ°”æ•°æ®
+    // Ìí¼ÓÌìÆøÊı¾İ
     doc.AddMember("weather", weather, alloc);
 
     rapidjson::StringBuffer buffer;
@@ -254,13 +240,13 @@ bool SaveManage::saveGameConditions()
     return FileUtils::getInstance()->writeStringToFile(buffer.GetString(), getFilePath("conditions.json"));
 }
 
-// åŠ è½½æ¸¸æˆç¯å¢ƒ
+// ¼ÓÔØÓÎÏ·»·¾³
 bool SaveManage::loadGameConditions()
 {
     auto timeManager = TimeManager::getInstance();
     if (!timeManager) return false;
 
-    // è¯»å–æ—¶é—´æ–‡ä»¶
+    // ¶ÁÈ¡Ê±¼äÎÄ¼ş
     std::string jsonStr = FileUtils::getInstance()->getStringFromFile(getFilePath("conditions.json"));
     rapidjson::Document doc;
 
@@ -272,7 +258,7 @@ bool SaveManage::loadGameConditions()
     bool moneyLoaded = false;
     bool weatherLoaded = false;
 
-    // è§£ææ—¶é—´æ•°æ®
+    // ½âÎöÊ±¼äÊı¾İ
     if (doc.HasMember("gameTime")) {
         GameTime gameTime;
         if (deserializeGameTime(doc["gameTime"], gameTime)) {
@@ -280,16 +266,16 @@ bool SaveManage::loadGameConditions()
             timeLoaded = true;
         }
     }
-    // è§£æé‡‘é’±æ•°æ®
+    // ½âÎö½ğÇ®Êı¾İ
     if (doc.HasMember("money") && doc["money"].IsInt()) {
         int money = doc["money"].GetInt();
-        auto moneyManager = Money::getInstance();  // å‡è®¾å­˜åœ¨
+        auto moneyManager = Money::getInstance();  // ¼ÙÉè´æÔÚ
         if (moneyManager) {
             moneyManager->setMoney(money);
             moneyLoaded = true;
         }
     }
-    // è§£æå¤©æ°”æ•°æ®
+    // ½âÎöÌìÆøÊı¾İ
     if (doc.HasMember("weather") && doc["weather"].IsInt()) {
         int weatherValue = doc["weather"].GetInt();
         auto weatherManager = WeatherManager::getInstance();
@@ -302,9 +288,9 @@ bool SaveManage::loadGameConditions()
     return timeLoaded && moneyLoaded && weatherLoaded;
 }
 
-// ========== ä¿å­˜æŠ€èƒ½ ==========
+// ±£´æ¼¼ÄÜ
 
-// åºåˆ—åŒ–æŠ€èƒ½æ•°æ®
+// ĞòÁĞ»¯¼¼ÄÜÊı¾İ
 rapidjson::Value SaveManage::serializeSkill(const SkillData& skill, rapidjson::Document::AllocatorType& alloc)
 {
     rapidjson::Value skillObj(rapidjson::kObjectType);
@@ -315,13 +301,13 @@ rapidjson::Value SaveManage::serializeSkill(const SkillData& skill, rapidjson::D
     return skillObj;
 }
 
-// ä¿å­˜æŠ€èƒ½æ•°æ®
+// ±£´æ¼¼ÄÜÊı¾İ
 bool SaveManage::saveSkills()
 {
     auto skillLevel = SkillLevel::getInstance();
     if (!skillLevel) return false;
 
-    // è·å–æŠ€èƒ½æ•°ç»„
+    // »ñÈ¡¼¼ÄÜÊı×é
     const SkillData* skills = skillLevel->getSkillData();
     const int count = static_cast<int>(SkillType::SKILL_COUNT);
     if (!skills || count <= 0) return false;
@@ -345,7 +331,7 @@ bool SaveManage::saveSkills()
     return FileUtils::getInstance()->writeStringToFile(buffer.GetString(), getFilePath("skills.json"));
 }
 
-// åŠ è½½æŠ€èƒ½æ•°æ®
+// ¼ÓÔØ¼¼ÄÜÊı¾İ
 bool SaveManage::loadSkills()
 {
     auto skillLevel = SkillLevel::getInstance();
@@ -362,7 +348,7 @@ bool SaveManage::loadSkills()
         return false;
     }
 
-    // ä»JSONæ•°ç»„åŠ è½½æŠ€èƒ½æ•°æ®
+    // ´ÓJSONÊı×é¼ÓÔØ¼¼ÄÜÊı¾İ
     const rapidjson::Value& skillsArray = doc["skills"];
     int loadCount = std::min(count, static_cast<int>(skillsArray.Size()));
 
@@ -377,26 +363,279 @@ bool SaveManage::loadSkills()
     return true;
 }
 
-// ========== ä¿å­˜æ‰€æœ‰æ•°æ® ==========
 
-// ä¿å­˜æ‰€æœ‰æ•°æ®
-bool SaveManage::saveAllData()
+// ±£´æĞóÅïÊı¾İ
+bool SaveManage::saveBarnData()
 {
-    bool result1 = saveInventory();
-    bool result2 = saveFriendships();
-    bool result3 = saveSkills();
-    bool result4 = saveGameConditions();
+    auto barn = BarnManager::getInstance();
+    if (!barn) return false;
 
-    return result1 && result2 && result3 && result4;  // åªæœ‰å…¨éƒ¨æˆåŠŸæ‰è¿”å›true
+    rapidjson::Document doc;
+    doc.SetObject();
+    auto& alloc = doc.GetAllocator();
+
+    // 1. ¸É²İ
+    rapidjson::Value hayArray(rapidjson::kArrayType);
+    for (const auto& pos : barn->getHayPositions()) {
+        rapidjson::Value p(rapidjson::kObjectType);
+        p.AddMember("x", pos.x, alloc);
+        p.AddMember("y", pos.y, alloc);
+        hayArray.PushBack(p, alloc);
+    }
+    doc.AddMember("hays", hayArray, alloc);
+
+    // 2. ¶¯Îï
+    rapidjson::Value animalArray(rapidjson::kArrayType);
+    for (const int type : barn->getAnimalTypes()) {
+        animalArray.PushBack(type, alloc);
+    }
+    doc.AddMember("animals", animalArray, alloc);
+
+    // 3. ²úÎï
+    rapidjson::Value prodArray(rapidjson::kArrayType);
+    for (const auto& pair : barn->getProductions()) {
+        rapidjson::Value p(rapidjson::kObjectType);
+        p.AddMember("nestIndex", pair.first, alloc);
+        p.AddMember("itemType", pair.second, alloc);
+        prodArray.PushBack(p, alloc);
+    }
+    doc.AddMember("productions", prodArray, alloc);
+
+    rapidjson::StringBuffer buffer;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    doc.Accept(writer);
+
+    return FileUtils::getInstance()->writeStringToFile(buffer.GetString(), getFilePath("barn_data.json"));
 }
 
-// åŠ è½½æ‰€æœ‰æ•°æ®  
+// ¼ÓÔØĞóÅïÊı¾İ
+bool SaveManage::loadBarnData()
+{
+    std::string path = getFilePath("barn_data.json");
+    if (!FileUtils::getInstance()->isFileExist(path)) return false;
+
+    std::string jsonStr = FileUtils::getInstance()->getStringFromFile(path);
+    rapidjson::Document doc;
+    doc.Parse(jsonStr.c_str());
+
+    if (doc.HasParseError()) return false;
+
+    std::vector<Vec2> hays;
+    if (doc.HasMember("hays")) {
+        for (const auto& v : doc["hays"].GetArray()) {
+            hays.emplace_back(v["x"].GetFloat(), v["y"].GetFloat());
+        }
+    }
+
+    std::vector<int> animals;
+    if (doc.HasMember("animals")) {
+        for (const auto& v : doc["animals"].GetArray()) {
+            animals.push_back(v.GetInt());
+        }
+    }
+
+    std::vector<std::pair<int, int>> prods;
+    if (doc.HasMember("productions")) {
+        for (const auto& v : doc["productions"].GetArray()) {
+            prods.push_back({ v["nestIndex"].GetInt(), v["itemType"].GetInt() });
+        }
+    }
+
+    auto barn = BarnManager::getInstance();
+    if (barn) {
+        barn->restoreData(hays, animals, prods);
+    }
+    return true;
+}
+
+// ±£´æÅ©³¡Êı¾İ
+bool SaveManage::saveFarmData()
+{
+    auto farmItemMgr = FarmItemManager::getInstance();
+    auto cultivationMgr = CultivationManager::getInstance();
+
+    if (!farmItemMgr || !cultivationMgr) return false;
+
+    rapidjson::Document doc;
+    doc.SetObject();
+    auto& alloc = doc.GetAllocator();
+
+    // 1. »·¾³ÎïÆ·
+    rapidjson::Value itemsArr(rapidjson::kArrayType);
+    auto items = farmItemMgr->getItems();
+    for (const auto& item : items) {
+        rapidjson::Value obj(rapidjson::kObjectType);
+        obj.AddMember("type", static_cast<int>(item.type), alloc);
+        obj.AddMember("x", item.x, alloc);
+        obj.AddMember("y", item.y, alloc);
+        itemsArr.PushBack(obj, alloc);
+    }
+    doc.AddMember("environmentItems", itemsArr, alloc);
+
+    // 2. ¸ûµØÓë×÷Îï
+    rapidjson::Value soilsArr(rapidjson::kArrayType);
+    auto soils = cultivationMgr->getSoilsData();
+    for (const auto& s : soils) {
+        rapidjson::Value obj(rapidjson::kObjectType);
+        obj.AddMember("x", s.x, alloc);
+        obj.AddMember("y", s.y, alloc);
+        obj.AddMember("status", s.status, alloc);
+        obj.AddMember("cropType", s.cropType, alloc);
+        obj.AddMember("cropStage", s.cropStage, alloc);
+        obj.AddMember("cropStatus", s.cropStatus, alloc);
+        soilsArr.PushBack(obj, alloc);
+    }
+    doc.AddMember("soils", soilsArr, alloc);
+
+    rapidjson::StringBuffer buffer;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    doc.Accept(writer);
+
+    return FileUtils::getInstance()->writeStringToFile(buffer.GetString(), getFilePath("farm_data.json"));
+}
+
+// ¼ÓÔØÅ©³¡Êı¾İ
+bool SaveManage::loadFarmData()
+{
+    std::string path = getFilePath("farm_data.json");
+    if (!FileUtils::getInstance()->isFileExist(path)) return false;
+
+    std::string jsonStr = FileUtils::getInstance()->getStringFromFile(path);
+    rapidjson::Document doc;
+    doc.Parse(jsonStr.c_str());
+    if (doc.HasParseError()) return false;
+
+    // 1. »·¾³ÎïÆ·
+    if (doc.HasMember("environmentItems")) {
+        std::vector<FarmItemManager::ItemData> items;
+        const auto& arr = doc["environmentItems"];
+        for (const auto& v : arr.GetArray()) {
+            FarmItemManager::ItemData d;
+            d.type = static_cast<EnvironmentItemType>(v["type"].GetInt());
+            d.x = v["x"].GetFloat();
+            d.y = v["y"].GetFloat();
+            items.push_back(d);
+        }
+
+        auto farmItemMgr = FarmItemManager::getInstance();
+        if (farmItemMgr) {
+            farmItemMgr->restoreData(items);
+        }
+    }
+
+    // 2. ¸ûµØÓë×÷Îï
+    if (doc.HasMember("soils")) {
+        std::vector<CultivationManager::SoilSaveData> soils;
+        const auto& arr = doc["soils"];
+        for (const auto& v : arr.GetArray()) {
+            CultivationManager::SoilSaveData s;
+            s.x = v["x"].GetFloat();
+            s.y = v["y"].GetFloat();
+            s.status = v["status"].GetInt();
+            s.cropType = v["cropType"].GetInt();
+            s.cropStage = v["cropStage"].GetInt();
+
+            if (v.HasMember("cropStatus")) {
+                s.cropStatus = v["cropStatus"].GetInt();
+            }
+            else {
+                s.cropStatus = static_cast<int>(CropStatus::GROWING);
+            }
+
+            soils.push_back(s);
+        }
+
+        auto cultivationMgr = CultivationManager::getInstance();
+        if (cultivationMgr) {
+            cultivationMgr->restoreData(soils);
+        }
+    }
+
+    return true;
+}
+
+// ±£´æ¿ó¶´Êı¾İ
+bool SaveManage::saveMinesData()
+{
+    auto minesMgr = MinesItemManager::getInstance();
+    if (!minesMgr) return false;
+
+    rapidjson::Document doc;
+    doc.SetObject();
+    auto& alloc = doc.GetAllocator();
+
+    rapidjson::Value itemsArr(rapidjson::kArrayType);
+    auto items = minesMgr->getItems();
+    for (const auto& item : items) {
+        rapidjson::Value obj(rapidjson::kObjectType);
+        obj.AddMember("type", static_cast<int>(item.type), alloc);
+        obj.AddMember("x", item.x, alloc);
+        obj.AddMember("y", item.y, alloc);
+        itemsArr.PushBack(obj, alloc);
+    }
+    doc.AddMember("minesItems", itemsArr, alloc);
+
+    rapidjson::StringBuffer buffer;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    doc.Accept(writer);
+
+    return FileUtils::getInstance()->writeStringToFile(buffer.GetString(), getFilePath("mines_data.json"));
+}
+
+// ¼ÓÔØ¿ó¶´Êı¾İ
+bool SaveManage::loadMinesData()
+{
+    std::string path = getFilePath("mines_data.json");
+    if (!FileUtils::getInstance()->isFileExist(path)) return false;
+
+    std::string jsonStr = FileUtils::getInstance()->getStringFromFile(path);
+    rapidjson::Document doc;
+    doc.Parse(jsonStr.c_str());
+    if (doc.HasParseError()) return false;
+
+    if (doc.HasMember("minesItems")) {
+        std::vector<MinesItemManager::MineItemData> items;
+        const auto& arr = doc["minesItems"];
+        for (const auto& v : arr.GetArray()) {
+            MinesItemManager::MineItemData d;
+            d.type = static_cast<EnvironmentItemType>(v["type"].GetInt());
+            d.x = v["x"].GetFloat();
+            d.y = v["y"].GetFloat();
+            items.push_back(d);
+        }
+
+        auto minesMgr = MinesItemManager::getInstance();
+        if (minesMgr) {
+            minesMgr->restoreData(items);
+        }
+    }
+    return true;
+}
+
+// ±£´æËùÓĞÊı¾İ
+bool SaveManage::saveAllData()
+{
+    const bool result1 = saveInventory();
+    const bool result2 = saveFriendships();
+    const bool result3 = saveSkills();
+    const bool result4 = saveBarnData();
+    const bool result5 = saveFarmData();
+    const bool result6 = saveMinesData();
+    const bool result7 = saveGameConditions();
+
+    return result1 && result2 && result3 && result4 && result5 && result6 && result7;
+}
+
+// ¼ÓÔØËùÓĞÊı¾İ
 bool SaveManage::loadAllData()
 {
-    bool result1 = loadInventory();
-    bool result2 = loadFriendships();
-    bool result3 = loadSkills();
-    bool result4 = loadGameConditions();
+    const bool result1 = loadInventory();
+    const bool result2 = loadFriendships();
+    const bool result3 = loadSkills();
+    const bool result4 = loadBarnData();
+    const bool result5 = loadFarmData();
+    const bool result6 = loadMinesData();
+    const bool result7 = loadGameConditions();
 
-    return result1 && result2 && result3 && result4; // åªæœ‰å…¨éƒ¨æˆåŠŸæ‰è¿”å›true
+    return result1 && result2 && result3 && result4 && result5 && result6 && result7;
 }

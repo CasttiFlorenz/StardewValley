@@ -1,8 +1,9 @@
 #include "Cow.h"
 
+// 创建实例
 Cow* Cow::create() {
     auto p = new (std::nothrow) Cow();
-    if (p && p->initWithFile("Animal/cow_0.png")) {
+    if (p && p->initWithFile(COW_DEFAULT_TEXTURE_PATH)) {
         p->autorelease();
         return p;
     }
@@ -10,40 +11,50 @@ Cow* Cow::create() {
     return nullptr;
 }
 
+// 获取产物图片路径
 std::string Cow::getProducePath() const {
-    return "EnvironmentObjects/milk.png";
+    return COW_PRODUCE_TEXTURE_PATH;
 }
 
+// 获取产物类型（牛奶）
 ItemType Cow::getProduceObject() const {
     return ItemType::MILK;
 }
 
+// 开始动画
 void Cow::startAnimation() {
     std::vector<std::string> paths = {
-        "Animal/cow_0.png",
-        "Animal/cow_1.png",
-        "Animal/cow_2.png",
-        "Animal/cow_3.png",
-        "Animal/cow_4.png",
-        "Animal/cow_5.png"
+        COW_ANIM_FRAME_0,
+        COW_ANIM_FRAME_1,
+        COW_ANIM_FRAME_2,
+        COW_ANIM_FRAME_3,
+        COW_ANIM_FRAME_4,
+        COW_ANIM_FRAME_5
     };
+
     Vector<AnimationFrame*> afs;
     for (size_t i = 0; i < paths.size(); ++i) {
         auto spr = Sprite::create(paths[i]);
         if (!spr) continue;
+
         auto f = spr->getSpriteFrame();
         if (!f) continue;
-        float units = 1.0f;
-        if (i == 0) units = 3.0f / 0.3f;
-        else if (i == 4) units = 2.0f / 0.3f;
+
+        float units = ANIM_FRAME_OTHER_UNITS;
+        if (i == 0) units = ANIM_FRAME_0_UNITS;
+        else if (i == 4) units = ANIM_FRAME_4_UNITS;
+
         afs.pushBack(AnimationFrame::create(f, units, ValueMap()));
     }
+
     if (afs.empty()) return;
+
     auto anim = Animation::create();
-    anim->initWithAnimationFrames(afs, 0.3f, 1);
+    anim->initWithAnimationFrames(afs, ANIMATION_INTERVAL, ANIMATION_LOOP_COUNT);
     runAction(RepeatForever::create(Animate::create(anim)));
 }
 
+// 停止动画
 void Cow::stopAnimation() {
     pause();
 }

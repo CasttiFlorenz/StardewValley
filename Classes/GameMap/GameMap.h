@@ -6,76 +6,76 @@
 
 USING_NS_CC;
 
-// 所有地图场景的基类
-// 负责：地图加载、坐标转换、碰撞检测、地图切换、基础交互接口
+// 游戏地图基类
+// 职责：地图加载、坐标转换、碰撞检测、地图切换
 class GameMap : public Scene
 {
 public:
-     // 初始化地图（子类必须实现）
-    virtual bool init() = 0;
+    // 初始化地图
+    virtual bool init() override;
 
-    // 每帧更新（子类可选实现）
-    virtual void update(float dt) {}
+    // 帧更新
+    virtual void update(float dt) noexcept override {}
 
-    // 进入地图时的初始化处理（位置、缩放等）
+    // 进入地图时的初始化
     virtual void IntoMap(MapType lastMap) = 0;
 
-     // 获取当前地图类型
-    MapType getMapName() const { return _mapName; }
+    // 获取当前地图名称
+    MapType getMapName() const noexcept { return _mapName; }
 
     // 获取 Tiled 地图对象
-    TMXTiledMap* getTiledMap() const { return _map; }
+    TMXTiledMap* getTiledMap()  const noexcept { return _map; }
 
-    // 是否启用摄像机跟随
-    virtual bool isCameraFollow() const { return false; }
+    // 是否相机跟随
+    virtual bool isCameraFollow() const noexcept { return false; }
 
-    // 是否为室外地图（影响天气、时间系统等）
-    virtual bool isOutdoor() { return false; }
+    // 是否为户外地图
+    virtual bool isOutdoor() noexcept { return false; }
 
-     // 获取玩家在本地图的起始位置
+    // 获取玩家初始位置
     virtual Vec2 getPlayerStartPosition(MapType lastMap) = 0;
 
-    // 根据玩家位置和朝向判断是否需要切换地图
+    // 判断是否需要切换地图
     virtual MapType leaveMap(const Vec2& curPos,
         bool isStart,
         const Direction& direction) = 0;
 
-     // 判断世界坐标是否可通行
+    // 判断坐标是否可通行
     virtual bool isCollidable(Vec2 worldPos);
 
-    // 世界坐标 → 瓦片坐标
+    // 世界坐标 -> 瓦片坐标
     Vec2 calMapPos(Vec2 worldPos);
 
-    // 瓦片坐标 → 世界坐标
+    // 瓦片坐标 -> 世界坐标
     Vec2 calWorldPos(const Vec2& tileCoord);
 
-    // 从 TMX 对象层中获取指定对象的矩形区域
+    // 获取对象层矩形区域
     Rect getObjectRect(const std::string& objectName);
 
-     // 鼠标左键交互（默认使用工具）
+    // 左键点击处理
     virtual MouseEvent onLeftClick(const Vec2& playerPos,
         const Direction direction,
-        ItemType objects)
+        ItemType objects) 
     {
         return MouseEvent::USE_TOOL;
     }
 
-    // 鼠标右键交互（默认无行为）
+    // 右键点击处理
     virtual MouseEvent onRightClick(const Vec2& playerPos,
-        const Direction direction)
+        const Direction direction) 
     {
         return MouseEvent::NONE;
     }
 
-     // 根据玩家朝向，对瓦片坐标进行偏移（前方一格）
+    // 应用方向偏移
     virtual void ApplyDirectionOffset(Vec2& basePos, Direction direction);
 
-    // 判断 TMX 属性值是否为 true（兼容多种类型）
+    // 判断属性值是否为真
     virtual bool IsTrueProperty(const Value& v);
 
 protected:
-    TMXTiledMap* _map = nullptr;   // 当前地图的 Tiled 对象
-    MapType _mapName;              // 当前地图类型
+    TMXTiledMap* _map = nullptr;   // Tiled 地图对象
+    MapType _mapName;              // 地图名称
 };
 
 #endif // __GAME_MAP_H__

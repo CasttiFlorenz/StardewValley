@@ -1,12 +1,10 @@
 #include "BarnManager.h"
 
-
 BarnManager* BarnManager::_instance = nullptr;
 
-
+// 获取单例
 BarnManager* BarnManager::getInstance(GameMap* barn)
 {
-    // 获取或创建单例，首次需提供圈舍地图；后续忽略 barn 参数。
     if (!_instance) {
         if (!barn) {
             CCLOG("BarnManager::getInstance failed: barn map is null");
@@ -21,47 +19,42 @@ BarnManager* BarnManager::getInstance(GameMap* barn)
             CC_SAFE_DELETE(_instance);
         }
     }
-
     return _instance;
 }
 
-
+// 销毁单例
 void BarnManager::destroyInstance()
 {
-    // 安全销毁单例并清理资源
     if (_instance) {
         _instance->clear();
         CC_SAFE_RELEASE_NULL(_instance);
     }
 }
 
-
+// 初始化
 bool BarnManager::init(GameMap* barn)
 {
-    // 绑定地图与常用图层
     _gameMap = barn;
     _tiledMap = _gameMap ? _gameMap->getTiledMap() : nullptr;
-    _feedLayer = _tiledMap ? _tiledMap->getLayer("feeding") : nullptr;
+    _feedLayer = _tiledMap ? _tiledMap->getLayer(FEED_LAYER_NAME) : nullptr;
 
-    // 位置缓存与产物队列初始化
     _nestCenters.clear();
     _productionCenters.clear();
 
     _productions.clear();
-    _productions.resize(5);
+    _productions.resize(MAX_ANIMAL_COUNT);
 
     _productionTileKeys.clear();
-    _productionTileKeys.resize(5, 0);
+    _productionTileKeys.resize(MAX_ANIMAL_COUNT, 0);
 
-    // 读取 1~5 号巢位与产物点位（依赖关卡对象）
-    for (int i = 1; i <= 5; ++i) {
-        std::string nestName = "nest" + std::to_string(i);
-        std::string prodName = "production" + std::to_string(i);
+    // 获取位置点
+    for (int i = 1; i <= MAX_ANIMAL_COUNT; ++i) {
+        std::string nestName = NEST_OBJECT_PREFIX + std::to_string(i);
+        std::string prodName = PRODUCTION_OBJECT_PREFIX + std::to_string(i);
 
         const Rect nr = _gameMap->getObjectRect(nestName);
         const Rect pr = _gameMap->getObjectRect(prodName);
 
-        // 使用对象中心点作为落位
         _nestCenters.emplace_back(nr.getMidX(), nr.getMidY());
         _productionCenters.emplace_back(pr.getMidX(), pr.getMidY());
 
@@ -75,19 +68,17 @@ bool BarnManager::init(GameMap* barn)
     return _tiledMap != nullptr;
 }
 
-
+// 坐标转换键值
 long long BarnManager::keyFor(const Vec2& tileCoord)
 {
-    // 将瓦片坐标打包为 64 位键以用于哈希表
     long long x = static_cast<long long>(tileCoord.x);
     long long y = static_cast<long long>(tileCoord.y);
-    return (x << 32) | (y & 0xffffffffLL);
+    return (x << 32) | (y & TILE_COORD_MASK);
 }
 
-
+// 添加干草
 bool BarnManager::addHayAt(const Vec2& tileCoord)
 {
-    // 在可喂食图层有效瓦片上添加饲料
     if (!_feedLayer || !_tiledMap || !_gameMap) return false;
 
     Size s = _feedLayer->getLayerSize();
@@ -96,17 +87,17 @@ bool BarnManager::addHayAt(const Vec2& tileCoord)
         tileCoord.y < 0 || tileCoord.y >= s.height) return false;
 
     unsigned int gid = _feedLayer->getTileGIDAt(tileCoord);
-    if (gid == 0) return false;
+    if (gid == INVALID_TILE_GID) return false;
 
     long long k = keyFor(tileCoord);
     if (_haySprites.find(k) != _haySprites.end()) return false;
 
-    auto sp = Sprite::create("EnvironmentObjects/Hay.png");
+    auto sp = Sprite::create(HAY_SPRITE_TEXTURE_PATH);
     if (!sp) return false;
 
     Vec2 pos = _gameMap->calWorldPos(tileCoord);
     sp->setPosition(pos);
-    _tiledMap->addChild(sp, 50);
+    _tiledMap->addChild(sp, HAY_SPRITE_Z_ORDER);
     _gameMap->setCameraMask((unsigned short)CameraFlag::USER1, true);
 
     sp->retain();
@@ -115,10 +106,9 @@ bool BarnManager::addHayAt(const Vec2& tileCoord)
     return true;
 }
 
-
+// 创建动物
 BarnAnimal* BarnManager::createAnimal(AnimalType type)
 {
-    // 创建指定类型的动物实例
     switch (type) {
     case AnimalType::CHICKEN:
         return Chicken::create();
@@ -128,15 +118,14 @@ BarnAnimal* BarnManager::createAnimal(AnimalType type)
     }
 }
 
-
+// 添加动物
 bool BarnManager::addAnimal(AnimalType type)
 {
-    // 将动物放入第一个空闲巢位，并开始动画
     if (!_gameMap || !_tiledMap) return false;
 
     int idx = -1;
-    for (int i = 0; i < 5; ++i) {
-        if (i >= (int)_animals.size() || _animals[i] == nullptr) {
+    for (int i = 0; i < MAX_ANIMAL_COUNT; ++i) {
+        if (i >= static_cast<int>(_animals.size()) || _animals[i] == nullptr) {
             idx = i;
             break;
         }
@@ -146,20 +135,15 @@ bool BarnManager::addAnimal(AnimalType type)
     auto sp = createAnimal(type);
     if (!sp) return false;
 
-    auto nestRect = _gameMap->getObjectRect("nest1");
-    float offsetY = nestRect.size.height > 0 ? nestRect.size.height / 6 : 0.0f;
-    Vec2 pos = _nestCenters[idx] + Vec2(0, offsetY);
-
-    sp->setPosition(pos);
-    _tiledMap->addChild(sp, 60);
+    sp->setPosition(_nestCenters[idx]);
+    _tiledMap->addChild(sp, ANIMAL_SPRITE_Z_ORDER);
     _gameMap->setCameraMask((unsigned short)CameraFlag::USER1, true);
 
     sp->startAnimation();
     sp->retain();
 
-    if (idx < (int)_animals.size()) {
+    if (idx < static_cast<int>(_animals.size()))
         _animals[idx] = sp;
-    }
     else {
         _animals.resize(idx + 1);
         _animals[idx] = sp;
@@ -168,20 +152,19 @@ bool BarnManager::addAnimal(AnimalType type)
     return true;
 }
 
-
+// 新的一天逻辑
 void BarnManager::onNewDay()
 {
-    // 新的一天：统计动物数与饲料数
-    int m = 0;
+    int animalCount = 0;
     for (auto* a : _animals) {
-        if (a) m++;
+        if (a) animalCount++;
     }
 
-    int n = (int)_haySprites.size();
-    int consume = std::min(n, m);
+    int hayCount = static_cast<int>(_haySprites.size());
+    int consumeCount = std::min(hayCount, animalCount);
 
-    // 先消耗饲料
-    if (consume > 0) {
+    // 消耗干草
+    if (consumeCount > 0) {
         int consumed = 0;
         std::vector<long long> keys;
         keys.reserve(_haySprites.size());
@@ -189,29 +172,27 @@ void BarnManager::onNewDay()
         for (auto& kv : _haySprites) {
             keys.push_back(kv.first);
         }
-
         std::sort(keys.begin(), keys.end());
 
         for (auto k : keys) {
-            if (consumed >= consume) break;
+            if (consumed >= consumeCount) break;
 
             auto sp = _haySprites[k];
             if (sp) {
                 sp->removeFromParent();
                 CC_SAFE_RELEASE(sp);
             }
-
             _haySprites.erase(k);
             consumed++;
         }
     }
 
-    // 再生成产物（受动物数与饲料数共同限制）
-    int produceCount = std::min(m, n);
+    // 生成产物
+    int produceCount = std::min(animalCount, hayCount);
     int produced = 0;
 
-    for (int i = 0; i < 5 && produced < produceCount; ++i) {
-        if (i >= (int)_animals.size() || !_animals[i]) continue;
+    for (int i = 0; i < MAX_ANIMAL_COUNT && produced < produceCount; ++i) {
+        if (i >= static_cast<int>(_animals.size()) || !_animals[i]) continue;
 
         auto animal = _animals[i];
         auto path = animal->getProducePath();
@@ -219,7 +200,7 @@ void BarnManager::onNewDay()
         if (!prod) continue;
 
         prod->setPosition(_productionCenters[i]);
-        _tiledMap->addChild(prod, 70);
+        _tiledMap->addChild(prod, PRODUCTION_SPRITE_Z_ORDER);
         _gameMap->setCameraMask((unsigned short)CameraFlag::USER1, true);
 
         prod->retain();
@@ -228,33 +209,30 @@ void BarnManager::onNewDay()
     }
 }
 
-
+// 启动动画
 void BarnManager::startAnimations()
 {
-    // 启动所有动物动画
     for (auto* a : _animals) {
         if (a) a->startAnimation();
     }
 }
 
-
+// 停止动画
 void BarnManager::stopAnimations()
 {
-    // 暂停所有动物动画
     for (auto* a : _animals) {
         if (a) a->stopAnimation();
     }
 }
 
-
+// 收集产物
 ItemType BarnManager::collectProductionAt(const Vec2& tileCoord)
 {
-    // 在指定产物点位收集一件产物
     if (!_gameMap || !_tiledMap) return ItemType::NONE;
 
     long long k = keyFor(tileCoord);
 
-    for (int i = 0; i < 5; ++i) {
+    for (int i = 0; i < MAX_ANIMAL_COUNT; ++i) {
         if (_productionTileKeys[i] == k) {
             if (_productions[i].empty()) return ItemType::NONE;
 
@@ -265,18 +243,16 @@ ItemType BarnManager::collectProductionAt(const Vec2& tileCoord)
                 pair.first->removeFromParent();
                 CC_SAFE_RELEASE(pair.first);
             }
-
             return pair.second;
         }
     }
-
     return ItemType::NONE;
 }
 
-
+// 清理资源
 void BarnManager::clear()
 {
-    // 清理饲料精灵
+    // 清理干草
     for (auto& kv : _haySprites) {
         if (kv.second) {
             kv.second->removeFromParent();
@@ -304,9 +280,99 @@ void BarnManager::clear()
         }
         list.clear();
     }
-
     _productions.clear();
+
     _nestCenters.clear();
     _productionCenters.clear();
     _productionTileKeys.clear();
+}
+
+// 获取干草位置
+std::vector<Vec2> BarnManager::getHayPositions() const
+{
+    std::vector<Vec2> positions;
+    for (const auto& kv : _haySprites) {
+        long long k = kv.first;
+        int x = (k >> 32) & 0xFFFFFFFF;
+        int y = k & TILE_COORD_MASK;
+        positions.push_back(Vec2(static_cast<float>(x), static_cast<float>(y)));
+    }
+    return positions;
+}
+
+// 获取动物类型
+std::vector<int> BarnManager::getAnimalTypes() const
+{
+    std::vector<int> types;
+    for (auto* animal : _animals) {
+        if (animal) {
+            types.push_back(static_cast<int>(animal->getType()));
+        }
+    }
+    return types;
+}
+
+// 获取产物信息
+std::vector<std::pair<int, int>> BarnManager::getProductions() const
+{
+    std::vector<std::pair<int, int>> prods;
+    for (int i = 0; i < static_cast<int>(_productions.size()); ++i) {
+        for (const auto& pair : _productions[i]) {
+            prods.push_back({ i, static_cast<int>(pair.second) });
+        }
+    }
+    return prods;
+}
+
+// 恢复数据
+void BarnManager::restoreData(const std::vector<Vec2>& hayPos,
+    const std::vector<int>& animalTypes,
+    const std::vector<std::pair<int, int>>& productions)
+{
+    // 初始化时直接 clear 了一次，所以这里直接重建
+
+    // 重新初始化键值
+    if (_productions.size() != MAX_ANIMAL_COUNT) {
+        _productions.resize(MAX_ANIMAL_COUNT);
+        _productionTileKeys.resize(MAX_ANIMAL_COUNT, 0);
+        for (int i = 0; i < MAX_ANIMAL_COUNT; ++i) {
+            if (i < static_cast<int>(_productionCenters.size())) {
+                const Vec2 prodTile = _gameMap->calMapPos(_productionCenters[i]);
+                _productionTileKeys[i] = keyFor(prodTile);
+            }
+        }
+    }
+
+    // 1. 恢复干草
+    for (const auto& pos : hayPos) {
+        this->addHayAt(pos);
+    }
+
+    // 2. 恢复动物
+    for (const int typeVal : animalTypes) {
+        this->addAnimal(static_cast<AnimalType>(typeVal));
+    }
+
+    // 3. 恢复产物
+    for (const auto& entry : productions) {
+        const int nestIdx = entry.first;
+        ItemType itemType = static_cast<ItemType>(entry.second);
+
+        if (nestIdx < 0 || nestIdx >= static_cast<int>(_productions.size())) continue;
+
+        std::string path;
+        if (itemType == ItemType::EGG) path = CHICKEN_PRODUCE_TEXTURE_PATH;
+        else if (itemType == ItemType::MILK) path = COW_PRODUCE_TEXTURE_PATH;
+        else continue;
+
+        auto prod = Sprite::create(path);
+        if (prod) {
+            prod->setPosition(_productionCenters[nestIdx]);
+            _tiledMap->addChild(prod, PRODUCTION_SPRITE_Z_ORDER);
+            _gameMap->setCameraMask((unsigned short)CameraFlag::USER1, true);
+
+            prod->retain();
+            _productions[nestIdx].push_back({ prod, itemType });
+        }
+    }
 }

@@ -107,7 +107,7 @@ MouseEvent Barn::onLeftClick(const Vec2& playerPos, const Direction direction, I
     // ¼ì²éÉÏÏÂÆ«ÒÆ·¶Î§
     const int yOffsets[] = { Y_OFFSET_1, Y_OFFSET_0, Y_OFFSET_NEG_1 };
 
-    for (int offset : yOffsets) {
+    for (const int offset : yOffsets) {
         Vec2 checkPos = basePos;
         checkPos.y += static_cast<float>(offset);
 
@@ -136,7 +136,7 @@ MouseEvent Barn::onRightClick(const Vec2& playerPos, const Direction direction)
 
     const int yOffsets[] = { Y_OFFSET_1, Y_OFFSET_0, Y_OFFSET_NEG_1 };
 
-    for (int offset : yOffsets) {
+    for (const int offset : yOffsets) {
         Vec2 checkPos = basePos;
         checkPos.y += static_cast<float>(offset);
 

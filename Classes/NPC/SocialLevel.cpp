@@ -45,7 +45,7 @@ Node* SocialLevel::createFriendshipHearts(int level)
     for (int i = 0; i < TOTAL_HEARTS; i++) {
         // 假设每 150 分一颗心
         bool isFilled = (i < level / 150);
-        const char* heartPath = isFilled ? HEART_FILLED : HEART_EMPTY;
+        const std::string heartPath = isFilled ? HEART_FILLED : HEART_EMPTY;
 
         // 打印爱心
         auto heartSprite = Sprite::create(heartPath);

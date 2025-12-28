@@ -8,48 +8,56 @@
 
 USING_NS_CC;
 
+// 作物基类
 class Crop : public Sprite {
 public:
-    // 创建指定类型的作物（使用物品枚举中的作物类型）
+    // 静态创建函数
     static Crop* create(ItemType type);
-    // 初始化作物的基本状态（种子阶段、成长阶段等）
+
+    // 初始化
     virtual bool init(ItemType type);
 
-    // 根据是否浇水更新作物成长状态（每天调用一次）
+    // 更新生长状态（每日调用）
     void updateGrowth(bool isWatered);
 
-    // 获取作物的物品类型（如 Parsnip/Potato 等）
-    ItemType getCropType() const { return _type; }
-    CropStatus getStatus() const { return _status; }
-    int getGrowthStage() const { return _growthStage; }
+    // 获取作物信息
+    ItemType getCropType() const noexcept { return _type; }
+    CropStatus getStatus() const noexcept { return _status; }
+    int getGrowthStage() const noexcept { return _growthStage; }
+
+    // 设置生长阶段
+    void setGrowthStage(int stage);
+
+    // 设置生长阶段和状态
+    void setGrowthStage(int stage, CropStatus status);
 
 protected:
-    // 当前作物的物品类型
-    ItemType _type;
-    // 当前作物生长状态
-    CropStatus _status;
-    // 当前生长阶段
-    int _growthStage;
-    // 最大生长阶段（到达即成熟）
-    int _maxGrowthStage;
-    // 纹理前缀（用于拼接不同阶段的贴图）
-    std::string _texturePrefix;
-
+    // 更新纹理显示
     void updateTexture();
+
+protected:
+    ItemType _type;             // 作物类型
+    CropStatus _status;         // 生长状态
+    int _growthStage;           // 当前阶段
+    int _maxGrowthStage;        // 最大阶段（成熟）
+    std::string _texturePrefix; // 纹理前缀
 };
 
+// 防风草
 class Parsnip : public Crop {
 public:
     static Parsnip* create();
     virtual bool init() override;
 };
 
+// 土豆
 class Potato : public Crop {
 public:
     static Potato* create();
     virtual bool init() override;
 };
 
+// 花椰菜
 class Cauliflower : public Crop {
 public:
     static Cauliflower* create();

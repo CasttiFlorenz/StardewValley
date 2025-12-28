@@ -1,17 +1,9 @@
-/****************************************************************
- * Project Name:  StardewValley
- * File Name:     HoverButton.cpp
- * File Function: HoverButton类的实现
- * Author:        郭芷烟
- * Update Date:   2025/12/07
- * License:       MIT License
- ****************************************************************/
-
 #include "HoverButton.h"
 
 USING_NS_CC;
 using namespace cocos2d::ui;
 
+// 创建按钮实例
 HoverButton* HoverButton::create(const std::string& normalImage,
     const std::string& selectedImage,
     const std::string& disabledImage)
@@ -26,6 +18,7 @@ HoverButton* HoverButton::create(const std::string& normalImage,
     return nullptr;
 }
 
+// 初始化按钮
 bool HoverButton::init(const std::string& normalImage,
     const std::string& selectedImage,
     const std::string& disabledImage)
@@ -39,7 +32,7 @@ bool HoverButton::init(const std::string& normalImage,
     _selectedImage = selectedImage;
     _disabledImage = disabledImage;
 
-    // 注册鼠标监听事件
+    // 注册鼠标事件监听器
     auto mouseListener = EventListenerMouse::create();
     mouseListener->onMouseMove = CC_CALLBACK_1(HoverButton::onMouseMove, this);
     mouseListener->onMouseUp = CC_CALLBACK_1(HoverButton::onMouseUp, this);
@@ -53,8 +46,12 @@ bool HoverButton::init(const std::string& normalImage,
 void HoverButton::onMouseMove(cocos2d::Event* event)
 {
     auto* mouseEvent = static_cast<EventMouse*>(event);
-    auto boundingBox = this->getBoundingBox();
-    auto locationInNode = this->getParent()->convertToNodeSpace(mouseEvent->getLocationInView());
+
+    // 获取父节点并转换坐标
+    if (!this->getParent()) return;
+
+    const auto locationInNode = this->getParent()->convertToNodeSpace(mouseEvent->getLocationInView());
+    const auto boundingBox = this->getBoundingBox();
 
     // 判断鼠标是否在按钮范围内
     if (boundingBox.containsPoint(locationInNode))
@@ -65,12 +62,14 @@ void HoverButton::onMouseMove(cocos2d::Event* event)
             this->stopAllActions();
             this->runAction(ScaleTo::create(0, _hoverScale));
         }
-        this->loadTextureNormal(_selectedImage);
 
+        if (!_selectedImage.empty()) {
+            this->loadTextureNormal(_selectedImage);
+        }
     }
     else
     {
-        // 离开恢复原样
+        // 离开范围，恢复原状
         if (this->getScaleX() != _baseScaleX || this->getScaleY() != _baseScaleY)
         {
             this->stopAllActions();
@@ -84,10 +83,13 @@ void HoverButton::onMouseMove(cocos2d::Event* event)
 void HoverButton::onMouseUp(cocos2d::Event* event)
 {
     auto* mouseEvent = static_cast<EventMouse*>(event);
-    auto boundingBox = this->getBoundingBox();
-    auto locationInNode = this->getParent()->convertToNodeSpace(mouseEvent->getLocationInView());
 
-    // 抬起时同时显示选中图片
+    if (!this->getParent()) return;
+
+    const auto locationInNode = this->getParent()->convertToNodeSpace(mouseEvent->getLocationInView());
+    const auto boundingBox = this->getBoundingBox();
+
+    // 抬起时保持选中状态显示（如果是点击操作的一部分）
     if (boundingBox.containsPoint(locationInNode))
     {
         if (this->getScaleX() == _baseScaleX && this->getScaleY() == _baseScaleY)
@@ -95,7 +97,9 @@ void HoverButton::onMouseUp(cocos2d::Event* event)
             this->stopAllActions();
             this->runAction(ScaleTo::create(0, _hoverScale));
         }
-        this->loadTextureNormal(_selectedImage);
 
+        if (!_selectedImage.empty()) {
+            this->loadTextureNormal(_selectedImage);
+        }
     }
 }

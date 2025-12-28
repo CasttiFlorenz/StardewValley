@@ -3,31 +3,29 @@
 
 #include "cocos2d.h"
 #include "Constant.h"
-#include <vector>
-#include<new>
 #include "../Inventory/Item.h"    
 
 class Money {
 public:
-    // è·å–å•ä¾‹
+    // »ñÈ¡µ¥Àı
     static Money* getInstance();
-    // é”€æ¯å•ä¾‹
+    // Ïú»Ùµ¥Àı
     static void destroyInstance();
 
-    // è·å–å½“å‰é‡‘é’± (åªè¯»)
+    // »ñÈ¡µ±Ç°½ğÇ® (Ö»¶Á)
     int getMoney() const;
 
-    // æ£€æŸ¥æ˜¯å¦ä¹°å¾—èµ· (åªè¯»)
+    // ¼ì²éÊÇ·ñÂòµÃÆğ (Ö»¶Á)
     bool canAfford(int cost) const;
 
-    // èŠ±è´¹é‡‘é’±
+    // »¨·Ñ½ğÇ®
     void spendMoney(int cost);
 
-    // å¢åŠ é‡‘é’±
+    // Ôö¼Ó½ğÇ®
     void addMoney(int amount);
 
-   // è®¾ç½®é‡‘é’±
-   void setMoney(int money) { _money = money; }
+    // ÉèÖÃ½ğÇ®
+    void setMoney(int money) { _money = money; }
 
 private:
     Money();
@@ -38,7 +36,7 @@ private:
 
     int _money;
 
-    // ç‰©å“åº“å­˜å®¹å™¨
+    // ÎïÆ·¿â´æÈİÆ÷
     std::vector<Item*> _inventory;
 };
 

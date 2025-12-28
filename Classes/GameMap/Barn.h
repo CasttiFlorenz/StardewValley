@@ -30,7 +30,7 @@ public:
     virtual Vec2 getPlayerStartPosition(MapType lastMap) override;
 
     // 摄像机是否跟随
-    virtual bool isCameraFollow() const { return true; }
+    virtual bool isCameraFollow() const noexcept { return true; }
 
     // 交互事件处理
     virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction, ItemType object) override;

@@ -6,27 +6,27 @@ Scene* GameScene::createScene()
     return GameScene::create();
 }
 
-// 析构：清空缓存的地图
+// 析构函数
 GameScene::~GameScene()
 {
     _mapCache.clear();
 }
 
-// 场景初始化
+// 初始化
 bool GameScene::init()
 {
     if (!Scene::init()) return false;
 
     _isStart = true;
 
-    // 获取玩家单例
+    // 获取玩家实例
     _player = Player::getInstance();
     if (!_player) return false;
 
     // 初始化所有地图
     initGameMap();
 
-    // 获取系统单例
+    // 获取系统管理器
     _inventory = InventoryScene::getInstance();
     _weatherManager = WeatherManager::getInstance();
     _timeManager = TimeManager::getInstance();
@@ -34,26 +34,27 @@ bool GameScene::init()
 
     if (_inventory) _inventory->setPlayer(_player);
 
-    // 加入场景
-    this->addChild(_player, 4);
-    if (_weatherManager) this->addChild(_weatherManager, 5);
-    if (_timeManager) this->addChild(_timeManager, 6);
-    if (_inventory) this->addChild(_inventory, 7);
+    // 添加子节点
+    this->addChild(_player, PLAYER_Z_ORDER);
+    if (_weatherManager) this->addChild(_weatherManager, WEATHER_MANAGER_Z_ORDER);
+    if (_timeManager) this->addChild(_timeManager, TIME_MANAGER_Z_ORDER);
+    if (_inventory) this->addChild(_inventory, INVENTORY_Z_ORDER);
 
     this->scheduleUpdate();
 
-    // 初始化输入状态
+    // 初始化输入监听
     setupMouseListener();
     setupKeyboardListener();
 
     return true;
 }
 
-// 初始化并缓存所有地图
+// 初始化游戏地图
 void GameScene::initGameMap()
 {
     auto addMap = [this](GameMap* map) {
         if (map) _mapCache[map->getMapName()] = map;
+        else return;
         };
 
     addMap(FarmHouse::getInstance());
@@ -63,10 +64,10 @@ void GameScene::initGameMap()
     addMap(Barn::getInstance());
 
     _map = _mapCache[MapType::FARM_HOUSE];
-    if (_map) this->addChild(_map, 0);
+    if (_map) this->addChild(_map, MAP_Z_ORDER);
 }
 
-// 每帧更新
+// 帧更新
 void GameScene::update(float dt)
 {
     switchMap();
@@ -74,7 +75,11 @@ void GameScene::update(float dt)
     if (_map && _map->isCameraFollow())
         updateCamera();
 
-    // 确保只绑定一次回调
+    // 检查界面状态以暂停/恢复游戏
+    if (existInterface()) this->gamePause();
+    else this->gameRestore();
+
+    // 确保每天只触发一次新的一天回调
     if (_timeManager)
     {
         _timeManager->onDayStartCallback = [this]() {
@@ -82,6 +87,7 @@ void GameScene::update(float dt)
             };
     }
 
+    // 雨天自动浇水
     if (auto c = CultivationManager::getInstance())
     {
         if (_weatherManager &&
@@ -91,12 +97,16 @@ void GameScene::update(float dt)
         }
     }
 
-    if (existInterface())this->gamePause();
-    else this->gameRestore();
-
+    // 户外显示天气效果
+    if (_map && _weatherManager) {
+        if (_map->isOutdoor())
+            _weatherManager->setVisible(true);
+        else
+            _weatherManager->setVisible(false);
+    }
 }
 
-// 地图切换检测
+// 切换地图逻辑
 void GameScene::switchMap()
 {
     if (!_player || !_map) return;
@@ -117,13 +127,13 @@ void GameScene::switchMap()
     _map->removeFromParent();
 
     _map = _mapCache[newMap];
-    this->addChild(_map, 0);
+    this->addChild(_map, MAP_Z_ORDER);
 
     _map->IntoMap(lastMap);
     _player->setPosition(_map->getPlayerStartPosition(lastMap));
     _player->setGameMap(_map);
 
-    // 相机处理
+    // 相机跟随设置
     if (_map->isCameraFollow())
     {
         if (!_followCamera)
@@ -131,29 +141,29 @@ void GameScene::switchMap()
             _followCamera = Camera::createOrthographic(
                 Director::getInstance()->getVisibleSize().width,
                 Director::getInstance()->getVisibleSize().height,
-                1, 1000
+                CAMERA_NEAR_PLANE, CAMERA_FAR_PLANE
             );
             _followCamera->setCameraFlag(CameraFlag::USER1);
-            this->addChild(_followCamera, 6);
+            this->addChild(_followCamera, FOLLOW_CAMERA_Z_ORDER);
         }
 
-        _player->setCameraMask((unsigned short)CameraFlag::USER1, true);
-        _map->setCameraMask((unsigned short)CameraFlag::USER1, true);
+        _player->setCameraMask(static_cast<unsigned short>(CameraFlag::USER1), true);
+        _map->setCameraMask(static_cast<unsigned short>(CameraFlag::USER1), true);
 
         if (_inventory)
-            _inventory->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
+            _inventory->setCameraMask(static_cast<unsigned short>(CameraFlag::DEFAULT), true);
 
         updateCamera();
     }
     else
     {
         resetCamera();
-        _map->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
-        _player->setCameraMask((unsigned short)CameraFlag::DEFAULT, true);
+        _map->setCameraMask(static_cast<unsigned short>(CameraFlag::DEFAULT), true);
+        _player->setCameraMask(static_cast<unsigned short>(CameraFlag::DEFAULT), true);
     }
 }
 
-// 重置为默认相机
+// 重置相机
 void GameScene::resetCamera()
 {
     if (_followCamera)
@@ -168,7 +178,7 @@ void GameScene::resetCamera()
     );
 }
 
-// 更新跟随相机位置
+// 更新相机位置
 void GameScene::updateCamera()
 {
     if (!_followCamera || !_player || !_map || !_map->getTiledMap()) return;
@@ -188,7 +198,7 @@ void GameScene::updateCamera()
     _followCamera->setPosition3D(Vec3(x, y, CAMERA_POSZ));
 }
 
-// 玩家回到出生点
+// 设置玩家回初始点
 void GameScene::setPlayerToStart()
 {
     if (!_map || !_player) return;
@@ -198,7 +208,7 @@ void GameScene::setPlayerToStart()
         _map->unscheduleUpdate();
         _map->removeFromParent();
         _map = _mapCache[MapType::FARM_HOUSE];
-        this->addChild(_map, 0);
+        this->addChild(_map, MAP_Z_ORDER);
     }
 
     resetCamera();
@@ -280,21 +290,23 @@ void GameScene::setupKeyboardListener()
     _eventDispatcher->addEventListenerWithSceneGraphPriority(_keyboardListener, this);
 }
 
-// 启用或禁用鼠标
+// 启用/禁用鼠标
 void GameScene::enableMouse(bool enable)
 {
     if (_mouseListener)
         _mouseListener->setEnabled(enable);
+
+    if (enable) _mouseLeftPressed = _mouseRightPressed = false;
 }
 
-// 启用或禁用键盘
+// 启用/禁用键盘
 void GameScene::enableKeyboard(bool enable)
 {
     if (_keyboardListener)
         _keyboardListener->setEnabled(enable);
 }
 
-// 处理地图返回的鼠标事件
+// 处理鼠标事件
 void GameScene::carryMouseEvent(const MouseEvent event)
 {
     switch (event)
@@ -316,7 +328,7 @@ void GameScene::carryMouseEvent(const MouseEvent event)
     }
 
     if (_map->isCameraFollow())
-        _map->setCameraMask((unsigned short)CameraFlag::USER1, true);
+        _map->setCameraMask(static_cast<unsigned short>(CameraFlag::USER1), true);
 }
 
 
@@ -334,22 +346,20 @@ void GameScene::carryKeyBoardEvent(const KeyBoardEvent event)
     }
 }
 
-// 打开钓鱼小游戏（防止重复）
+// 打开钓鱼游戏
 void GameScene::openFishingGame()
 {
-    const int FISHING_GAME_TAG = 8998;
-
     if (this->getChildByTag(FISHING_GAME_TAG)) return;
 
     auto fishing = FishGameLayer::create();
     if (!fishing) return;
 
     fishing->setTag(FISHING_GAME_TAG);
-    fishing->setCameraMask((unsigned short)CameraFlag::DEFAULT);
-    this->addChild(fishing, 10);
+    fishing->setCameraMask(static_cast<unsigned short>(CameraFlag::DEFAULT));
+    this->addChild(fishing, FISHING_GAME_Z_ORDER);
 }
 
-// 新的一天开始
+// 新的一天
 void GameScene::onNewDay()
 {
     setPlayerToStart();
@@ -364,89 +374,92 @@ void GameScene::onNewDay()
         }
     }
 
-
     if (auto b = BarnManager::getInstance()) b->onNewDay();
     if (auto f = FarmItemManager::getInstance()) f->onNewDay();
     if (auto m = MinesItemManager::getInstance()) m->onNewDay();
+
+    if (auto save = SaveManage::getInstance()) {
+        save->saveAllData();
+    }
 }
 
-// 睡觉确认弹窗
+// 睡觉确认对话框
 void GameScene::sleep()
 {
-
-    // 防止重复创建
-    if (this->getChildByName("goToBed")) return;
+    if (this->getChildByName(SLEEP_DIALOG_NAME)) return;
 
     const auto dialog = Layer::create();
-    dialog->setName("goToBed");
+    if (dialog == nullptr)return;
+    dialog->setName(SLEEP_DIALOG_NAME);
 
     const Size winSize = Director::getInstance()->getWinSize();
-    auto bg = Sprite::create("Shop/SelectDialogue.png");
+    auto bg = Sprite::create(SELECT_DIALOGUE_TEXTURE_PATH);
     if (!bg) return;
 
-    bg->setPosition(winSize.width / 2, 150);
-    bg->setScale(3.0f);
+    bg->setPosition(winSize.width / 2, DIALOGUE_POS_Y);
+    bg->setScale(DIALOGUE_SCALE);
     dialog->addChild(bg);
 
     const Size bgSize = bg->getContentSize();
 
     const auto label = Label::createWithTTF(
-        "Do you want to sleep now?",
-        "fonts/pixel.ttf",
-        10
+        SLEEP_DIALOG_TEXT,
+        PIXEL_FONT_PATH,
+        FONT_SIZE
     );
     label->setTextColor(Color4B::BLACK);
-    label->setPosition(bgSize.width / 2, bgSize.height * 0.6f);
+    label->setPosition(bgSize.width / 2, bgSize.height * LABEL_POS_Y_RATIO);
     bg->addChild(label);
 
-    // OK
-    auto btnOk = ui::Button::create("Shop/ok.png");
-    btnOk->setScale(0.45f);
-    btnOk->setPosition(Vec2(bgSize.width * 0.3f, bgSize.height * 0.3f));
+    // 确认按钮
+    auto btnOk = ui::Button::create(OK_BUTTON_TEXTURE_PATH);
+    btnOk->setScale(BUTTON_SCALE);
+    btnOk->setPosition(Vec2(bgSize.width * OK_BUTTON_POS_X_RATIO, bgSize.height * BUTTON_POS_Y_RATIO));
     btnOk->addClickEventListener([this](Ref*) {
-        this->removeChildByName("goToBed");
+        this->removeChildByName(SLEEP_DIALOG_NAME);
         TimeManager::getInstance()->startSleepSequence();
         });
     bg->addChild(btnOk);
 
-    // NO
-    auto btnNo = ui::Button::create("Shop/no.png");
-    btnNo->setScale(0.45f);
-    btnNo->setPosition(Vec2(bgSize.width * 0.7f, bgSize.height * 0.3f));
+    // 取消按钮
+    auto btnNo = ui::Button::create(NO_BUTTON_TEXTURE_PATH);
+    btnNo->setScale(BUTTON_SCALE);
+    btnNo->setPosition(Vec2(bgSize.width * NO_BUTTON_POS_X_RATIO, bgSize.height * BUTTON_POS_Y_RATIO));
     btnNo->addClickEventListener([this](Ref*) {
-        this->removeChildByName("goToBed");
+        this->removeChildByName(SLEEP_DIALOG_NAME);
         });
     bg->addChild(btnNo);
 
-    this->addChild(dialog, 9999);
+    this->addChild(dialog, SLEEP_DIALOG_Z_ORDER);
 }
 
+// 检查界面状态
 bool GameScene::existInterface()
 {
     if (_inventory) {
-        if (_inventory->getInventoryVisible())return true;
+        if (_inventory->getInventoryVisible()) return true;
     }
-    if (this->getChildByName("goToBed"))return true;
-    if (this->getChildByTag(FISHING_GAME_TAG))return true;
-    if (this->getChildByTag(SHOP_MENU_TAG))return true;
-    if (this->getChildByName("DialogueLayer"))return true;
+    if (this->getChildByName(SLEEP_DIALOG_NAME)) return true;
+    if (this->getChildByTag(FISHING_GAME_TAG)) return true;
+    if (this->getChildByTag(SHOP_MENU_TAG)) return true;
+    if (this->getChildByTag(TAG_DIALOGUE_LAYER)) return true;
+    if (this->getChildByTag(SLEEPING_TAG)) return true;
 
-    /*if (auto save = SaveManage::getInstance()) {
-        save->saveAllData();
-    }*/
     return false;
 }
 
+// 暂停游戏
 void GameScene::gamePause()
 {
-    if (_player)_player->unscheduleUpdate();
-    if (_timeManager)_timeManager->unscheduleUpdate();
+    if (_player) _player->unscheduleUpdate();
+    if (_timeManager) _timeManager->unscheduleUpdate();
     enableMouse(false);
 }
 
+// 恢复游戏
 void GameScene::gameRestore()
 {
-    if (_player)_player->scheduleUpdate();
-    if (_timeManager)_timeManager->scheduleUpdate();
+    if (_player) _player->scheduleUpdate();
+    if (_timeManager) _timeManager->scheduleUpdate();
     enableMouse(true);
 }

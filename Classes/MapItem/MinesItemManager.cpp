@@ -39,7 +39,7 @@ bool MinesItemManager::init(GameMap* gameMap)
     // 保存地图相关指针
     _gameMap = gameMap;
     _tiledMap = _gameMap ? _gameMap->getTiledMap() : nullptr;
-    _eventLayer = _tiledMap ? _tiledMap->getLayer("event") : nullptr;
+    _eventLayer = _tiledMap ? _tiledMap->getLayer(EVENT_LAYER_NAME) : nullptr;
 
     // 重置内部状态
     _items.clear();
@@ -57,15 +57,15 @@ bool MinesItemManager::init(GameMap* gameMap)
 long long MinesItemManager::keyFor(const Vec2& tileCoord)
 {
     // 将瓦片坐标打包成一个 64 位 key
-    long long x = static_cast<long long>(tileCoord.x);
-    long long y = static_cast<long long>(tileCoord.y);
-    return (x << 32) | (y & 0xffffffffLL);
+    const long long x = static_cast<long long>(tileCoord.x);
+    const long long y = static_cast<long long>(tileCoord.y);
+    return (x << 32) | (y & TILE_COORD_MASK);
 }
 
 unsigned int MinesItemManager::stripFlags(unsigned int gid)
 {
     // 去除 TMX 瓦片翻转相关的高位标志
-    return gid & ~(0x80000000 | 0x40000000 | 0x20000000);
+    return gid & ~TMX_FLIP_FLAGS_MASK;
 }
 
 bool MinesItemManager::isStone(const Vec2& tileCoord) const
@@ -74,18 +74,18 @@ bool MinesItemManager::isStone(const Vec2& tileCoord) const
     if (!_eventLayer || !_tiledMap) return false;
 
     // 获取事件层该位置的 GID
-    unsigned int gid = _eventLayer->getTileGIDAt(tileCoord);
-    if (gid == 0) return false;
+    const unsigned int gid = _eventLayer->getTileGIDAt(tileCoord);
+    if (gid == INVALID_TILE_GID) return false;
 
     // 去掉翻转标记，得到真实 GID
-    unsigned int rawGid = stripFlags(gid);
+    const unsigned int rawGid = stripFlags(gid);
 
     // 读取该 GID 的属性
-    auto propsValue = _tiledMap->getPropertiesForGID(rawGid);
+    const auto propsValue = _tiledMap->getPropertiesForGID(rawGid);
     if (propsValue.getType() != Value::Type::MAP) return false;
 
-    auto props = propsValue.asValueMap();
-    auto it = props.find("Stone");
+    const auto props = propsValue.asValueMap();
+    const auto it = props.find(STONE_PROPERTY_NAME);
     if (it == props.end()) return false;
 
     // 兼容布尔 / 数字 / 字符串三种写法
@@ -93,10 +93,10 @@ bool MinesItemManager::isStone(const Vec2& tileCoord) const
         return it->second.asBool();
     }
     if (it->second.getType() == Value::Type::INTEGER) {
-        return it->second.asInt() == 1;
+        return it->second.asInt() == TRUE_INTEGER_VALUE;
     }
     if (it->second.getType() == Value::Type::STRING) {
-        return it->second.asString() == "1" || it->second.asString() == "true";
+        return it->second.asString() == TRUE_STRING_VALUE_1 || it->second.asString() == TRUE_STRING_VALUE_2;
     }
 
     return false;
@@ -140,10 +140,10 @@ bool MinesItemManager::addItem(EnvironmentItemType type, const Vec2& tileCoord)
     if (!item) return false;
 
     // 添加到地图中显示
-    if (_tiledMap && _gameMap) {
-        Vec2 pos = _gameMap->calWorldPos(tileCoord);
+    if (_tiledMap && _gameMap && item) {
+        const Vec2 pos = _gameMap->calWorldPos(tileCoord);
         item->setPosition(pos);
-        _tiledMap->addChild(item, 5);
+        _tiledMap->addChild(item, ITEM_SPRITE_Z_ORDER);
     }
 
     // 保存引用，交由管理器统一释放
@@ -163,12 +163,17 @@ bool MinesItemManager::addItem(EnvironmentItemType type, const Vec2& tileCoord)
 
 bool MinesItemManager::removeItem(const Vec2& tileCoord)
 {
-    long long k = keyFor(tileCoord);
+    const long long k = keyFor(tileCoord);
     auto it = _items.find(k);
     if (it == _items.end()) return false;
 
     EnvironmentItem* item = it->second;
-    EnvironmentItemType type = item->getType();
+    if (!item) {
+        _items.erase(it);
+        return false;
+    }
+
+    const EnvironmentItemType type = item->getType();
 
     // 更新数量统计
     if (type == EnvironmentItemType::STONE) {
@@ -190,8 +195,10 @@ void MinesItemManager::clear()
 {
     // 移除并释放所有生成的物体
     for (auto& kv : _items) {
-        kv.second->removeFromParent();
-        CC_SAFE_RELEASE(kv.second);
+        if (kv.second) {
+            kv.second->removeFromParent();
+            CC_SAFE_RELEASE(kv.second);
+        }
     }
 
     _items.clear();
@@ -204,25 +211,25 @@ void MinesItemManager::spawnInitialItems()
     // 地图未就绪时不生成
     if (!_tiledMap || !_eventLayer) return;
 
-    Size mapSize = _eventLayer->getLayerSize();
+    const Size mapSize = _eventLayer->getLayerSize();
     int attempts = 0;
 
     // 随机生成，限制最大尝试次数防止死循环
     while ((_stoneCount < MAX_STONE_COUNT || _copperCount < MAX_COPPER_COUNT)
-        && attempts < 1000)
+        && attempts < MAX_SPAWN_ATTEMPTS)
     {
         attempts++;
 
-        int x = RandomHelper::random_int(0, (int)mapSize.width - 1);
-        int y = RandomHelper::random_int(0, (int)mapSize.height - 1);
-        Vec2 coord((float)x, (float)y);
+        const int x = RandomHelper::random_int(0, static_cast<int>(mapSize.width) - 1);
+        const int y = RandomHelper::random_int(0, static_cast<int>(mapSize.height) - 1);
+        const Vec2 coord(static_cast<float>(x), static_cast<float>(y));
 
         if (hasItem(coord)) continue;
         if (!isStone(coord)) continue;
 
         EnvironmentItemType type;
         if (_stoneCount < MAX_STONE_COUNT && _copperCount < MAX_COPPER_COUNT) {
-            type = RandomHelper::random_int(0, 1) == 0
+            type = RandomHelper::random_int(0, 1) == RANDOM_TYPE_THRESHOLD
                 ? EnvironmentItemType::STONE
                 : EnvironmentItemType::COPPER;
         }
@@ -241,4 +248,28 @@ void MinesItemManager::onNewDay()
 {
     // 新的一天尝试补充矿物
     spawnInitialItems();
+}
+
+std::vector<MinesItemManager::MineItemData> MinesItemManager::getItems() const
+{
+    std::vector<MineItemData> data;
+    for (const auto& kv : _items) {
+        if (kv.second) {
+            const Vec2 pos = kv.second->getTileCoord();
+            data.push_back({ kv.second->getType(), pos.x, pos.y });
+        }
+    }
+    return data;
+}
+
+void MinesItemManager::restoreData(const std::vector<MineItemData>& items)
+{
+    // 1. 清空现有物品
+    this->clear();
+
+    // 2. 恢复物品
+    for (const auto& d : items) {
+        // 直接复用 addItem 逻辑
+        this->addItem(d.type, Vec2(d.x, d.y));
+    }
 }

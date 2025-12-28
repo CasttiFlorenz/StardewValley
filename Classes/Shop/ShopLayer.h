@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     ShopLayer.h
- * File Function: ShopLayerç±»çš„å£°æ˜
- * Author:        èµµç¿å¦
+ * File Function: ShopLayerÀàµÄÉùÃ÷
+ * Author:        ÕÔî£åû
  * Update Date:   2025/12/17
  * License:       MIT License
  ****************************************************************/
@@ -17,42 +17,42 @@
 #include "../Inventory/InventoryScene.h"
 #include "../Inventory/Item.h"
 #include "../Money/Money.h"
-#include <new>              // ç”¨äº std::nothrow
+#include <new>              // ÓÃÓÚ std::nothrow
 
 class ShopLayer : public cocos2d::LayerColor {
 public:
-    // åˆ›å»ºå‡½æ•°
+    // ´´½¨º¯Êı
     static ShopLayer* create(Item* item);
 
-    // åˆå§‹åŒ–å‡½æ•°
+    // ³õÊ¼»¯º¯Êı
     virtual bool init(Item* item);
 
-    // è®¾ç½®è´­ä¹°æˆåŠŸå›è°ƒ
+    // ÉèÖÃ¹ºÂò³É¹¦»Øµ÷
     void setOnPurchaseSuccess(std::function<void()> callback) { _onPurchaseSuccess = callback; }
 
     std::function<void()> onPurchaseSuccess;
 private:
-    // æ›´æ–°UIæ˜¾ç¤º
+    // ¸üĞÂUIÏÔÊ¾
     void updateUI();
 
-    // è´­ä¹°æŒ‰é’®ç‚¹å‡»å›è°ƒ
+    // ¹ºÂò°´Å¥µã»÷»Øµ÷
     void onBuyClicked(cocos2d::Ref* sender);
 
-    // å…³é—­æŒ‰é’®ç‚¹å‡»å›è°ƒ
+    // ¹Ø±Õ°´Å¥µã»÷»Øµ÷
     void onCloseClicked(cocos2d::Ref* sender);
 
 private:
-    // ç›®æ ‡å•†å“ (å¼±å¼•ç”¨ï¼Œå¤–éƒ¨ç®¡ç†ç”Ÿå‘½å‘¨æœŸ)
+    // Ä¿±êÉÌÆ· (ÈõÒıÓÃ£¬Íâ²¿¹ÜÀíÉúÃüÖÜÆÚ)
     Item* _targetItem;
 
-    // è´­ä¹°æ•°é‡æ§åˆ¶
+    // ¹ºÂòÊıÁ¿¿ØÖÆ
     int _currentQuantity;
     int _maxQuantity;
 
-    // è´­ä¹°æˆåŠŸå›è°ƒ
+    // ¹ºÂò³É¹¦»Øµ÷
     std::function<void()> _onPurchaseSuccess;
 
-    // UI æ§ä»¶å¼•ç”¨
+    // UI ¿Ø¼şÒıÓÃ
     cocos2d::Label* _lblQuantity;
     cocos2d::Label* _lblTotalCost;
     cocos2d::ui::Button* _btnBuy;

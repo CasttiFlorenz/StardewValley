@@ -7,42 +7,42 @@
 #include <vector>
 #include <queue>
 #include <functional>
-#include "Constant.h"
+
 class DialogueLayer : public cocos2d::Layer
 {
 public:
-    // åˆ›å»º DialogueLayer å®ä¾‹ï¼ˆå¤šå®ä¾‹å¯¹è±¡ï¼‰
+    // ´´½¨ DialogueLayer ÊµÀı£¨¶àÊµÀı¶ÔÏó£©
     static DialogueLayer* create();
 
-    // åˆå§‹åŒ–å±‚
+    // ³õÊ¼»¯²ã
     virtual bool init() override;
 
-    // æ˜¾ç¤ºæ™®é€šå¯¹è¯ï¼ˆä¼ å…¥åå­—å’Œå¯¹è¯åˆ—è¡¨ï¼‰
+    // ÏÔÊ¾ÆÕÍ¨¶Ô»°£¨´«ÈëÃû×ÖºÍ¶Ô»°ÁĞ±í£©
     void showText(const std::string& name, const std::vector<std::string>& contentList);
 
-    // å®šä¹‰é€‰æ‹©å›è°ƒç±»å‹ (true=Yes, false=No)
+    // ¶¨ÒåÑ¡Ôñ»Øµ÷ÀàĞÍ (true=Yes, false=No)
     using ChoiceCallback = std::function<void(bool)>;
 
-    // æ˜¾ç¤ºå¸¦é€‰é¡¹çš„å¯¹è¯ï¼ˆé‡è½½1ï¼šä»…å†…å®¹ï¼‰
+    // ÏÔÊ¾´øÑ¡ÏîµÄ¶Ô»°£¨ÖØÔØ1£º½öÄÚÈİ£©
     void showChoice(const std::string& content, ChoiceCallback callback);
 
-    // æ˜¾ç¤ºå¸¦é€‰é¡¹çš„å¯¹è¯ï¼ˆé‡è½½2ï¼šå¸¦åå­—å’Œå†…å®¹ï¼‰
+    // ÏÔÊ¾´øÑ¡ÏîµÄ¶Ô»°£¨ÖØÔØ2£º´øÃû×ÖºÍÄÚÈİ£©
     void showChoice(const std::string& name, const std::string& content, ChoiceCallback callback);
 
 private:
-    // åˆ›å»º YES/NO é€‰æ‹©æŒ‰é’®
+    // ´´½¨ YES/NO Ñ¡Ôñ°´Å¥
     void createChoiceButtons();
 
-    // å¤„ç†æŒ‰é’®ç‚¹å‡»äº‹ä»¶
+    // ´¦Àí°´Å¥µã»÷ÊÂ¼ş
     void handleChoiceClick(cocos2d::Ref* sender, bool isYes);
 
-    // æ‰§è¡Œé€‰æ‹©åçš„é€»è¾‘åˆ†å‘
+    // Ö´ĞĞÑ¡ÔñºóµÄÂß¼­·Ö·¢
     void onChoiceMade(bool choice);
 
-    // æ ¹æ® NPC åå­—æ›´æ–°èƒŒæ™¯çº¹ç†
+    // ¸ù¾İ NPC Ãû×Ö¸üĞÂ±³¾°ÎÆÀí
     void updateBackground(const std::string& name);
 
-    // ä»é˜Ÿåˆ—ä¸­å–å‡ºå¹¶æ˜¾ç¤ºä¸‹ä¸€å¥æ–‡æœ¬
+    // ´Ó¶ÓÁĞÖĞÈ¡³ö²¢ÏÔÊ¾ÏÂÒ»¾äÎÄ±¾
     void showNextSentence();
 
 private:
@@ -53,6 +53,5 @@ private:
     std::queue<std::string> _dialogueQueue;
     ChoiceCallback _choiceCallback = nullptr;
 };
-
 
 #endif // __DIALOGUE_LAYER_H__

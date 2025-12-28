@@ -6,17 +6,24 @@
 #include "CultivatedSoil.h"
 #include "FarmItemManager.h"
 #include "../Time/TimeManager.h"
-#include <unordered_map>
 
 USING_NS_CC;
 
-// 耕地管理器：
-// 负责管理所有已开垦土壤的创建、查询、每日更新与销毁
-// 逻辑上与 FarmItemManager / GameMap 协作
+// 耕种管理器（负责所有耕地和作物的生命周期）
 class CultivationManager : public Ref
 {
 public:
-    // 获取单例（首次可传入依赖对象）
+    // 存档数据结构
+    struct SoilSaveData {
+        float x;
+        float y;
+        int status;     // 土壤状态
+        int cropType;   // 作物类型
+        int cropStage;  // 生长阶段
+        int cropStatus; // 作物状态
+    };
+
+    // 获取单例
     static CultivationManager* getInstance(
         FarmItemManager* farmItemManager = nullptr,
         GameMap* gameMap = nullptr
@@ -25,49 +32,55 @@ public:
     // 销毁单例
     static void destroyInstance();
 
-    // 初始化 / 重新初始化（地图切换时可调用）
+    // 初始化
     bool init(FarmItemManager* farmItemManager, GameMap* gameMap);
 
-    // 尝试在指定瓦片上开垦土地
+    // 尝试开垦土地
     bool attemptCultivate(const Vec2& tileCoord);
 
-    // 给指定瓦片上的耕地浇水
+    // 浇水
     bool waterSoil(const Vec2& tileCoord);
 
-    // 在指定耕地上种植作物
+    // 种植作物
     bool plantCrop(const Vec2& tileCoord, ItemType type);
 
-    // 新的一天到来时调用
+    // 新的一天更新
     void onNewDay();
 
-    // 移除指定瓦片上的耕地
+    // 移除耕地
     bool removeSoil(const Vec2& tileCoord);
 
-    // 收获指定瓦片上的作物
+    // 收获作物
     ItemType harvestCrop(const Vec2& tileCoord);
 
-    // 一次性给所有耕地浇水
+    // 全图浇水（调试/测试用）
     void waterAllSoils();
 
-private:
-    static CultivationManager* _instance;
+    // 获取存档数据
+    std::vector<SoilSaveData> getSoilsData() const;
 
+    // 恢复存档数据
+    void restoreData(const std::vector<SoilSaveData>& data);
+
+private:
     CultivationManager();
     ~CultivationManager();
 
     CultivationManager(const CultivationManager&) = delete;
     CultivationManager& operator=(const CultivationManager&) = delete;
 
-private:
-    FarmItemManager* _farmItemManager; // 农场物品管理器（不拥有）
-    GameMap* _gameMap;                 // 地图对象（不拥有）
-    TMXTiledMap* _tiledMap;            // TMX 地图缓存指针
-
-    // key = tileCoord 生成的唯一 key
-    std::unordered_map<long long, CultivatedSoil*> _soils;
-
-    // 根据瓦片坐标生成唯一 key
+    // 获取瓦片唯一键
     static long long keyFor(const Vec2& tileCoord);
+
+private:
+    static CultivationManager* _instance;
+
+    FarmItemManager* _farmItemManager; // 农场物品管理器引用
+    GameMap* _gameMap;                 // 游戏地图引用
+    TMXTiledMap* _tiledMap;            // Tiled地图引用
+
+    // 耕地映射表 (key: tileCoord -> value: CultivatedSoil*)
+    std::unordered_map<long long, CultivatedSoil*> _soils;
 };
 
 #endif // __CULTIVATION_MANAGER_H__
