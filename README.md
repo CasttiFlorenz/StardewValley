@@ -31,26 +31,3 @@
 | 2025-12-27 | enxi-yu       | ✅初步实现存档背包、好感度、时间和技能水平<br>|| 
 | 2025-12-28 | CasttiFlorenz | ✅完成了大部分bug的修复、整个项目的整理<br>|| 
 
-
-
-| 成员               | 主要负责模块   | 具体工作内容                                                 |
-| ------------------ | -------------- | ------------------------------------------------------------ |
-| **郭芷烟**（组长） | 场景与底层架构 | ✅完成了InitialMenuScene、CreateScene、GameScene类<br />✅实现Farm、Town、Mines、Barn、FarmHouse 五大地图类 |
-|                    | 美术资源       | ✅搭建了Farm、Town、Mines、Barn、FarmHouse 五大地图类的瓦片地图 |
-|                    | 地图资源生成   | ✅实现了 FarmItemManager、CultivationManager、MinesItemManager、BarnManager 等管理类，并构建了其对应的物品继承体系，包括 EnvironmentItem（如 WoodItem、GrassItem、StoneItem 等）、Crop 及其派生作物类，以及 BarnAnimal及其派生动物类<br />✅负责了以上地图数据的存档与读取 |
-|                    | 项目统筹       | ✅负责整体架构设计、任务分配、代码整合、Bug 修复与最终测试     |
-| **于恩熙**         | UI状态机       | ✅设计了 InventoryManager 类，实现背包 / 技能 / 社交 / 退出界面的切换 |
-|                    | 背包系统       | ✅完成了 Items 和 PlaceItems 类，实现背包内物品增减和放置<br />✅完成了 InventoryGridScene 和 InventoryScene 类，实现背包界面物品选择、高亮和主界面所选物品的预览 |
-|                    | 数值可视化     | ✅实现了 SkillLevel 类，显示技能等级<br />✅实现了 SocialLevel 类，显示NPC好感度 |
-|                    | 玩家动画       | ✅实现了 Player 类，控制人物移动与工具使用动画，完善了玩家碰撞检测 |
-|                    | 系统界面       | ✅完成了 ExitConfirm 类，弹窗退出确认选项                        |
-|                    | 存档           | ✅实现了 SaveManage 类，负责背包、时间、天气、金钱、技能等级、NPC 好感度的存档与读取    |
-| **赵睿妍**         | 商店系统       | ✅设计并实现 Pierre、Marnie、Sale 三类商店     |
-|                    | 经济系统       | ✅实现 Money 类，处理金钱变化与交易校验                      |
-|                    | 时间系统       | ✅实现 TimeManager，控制时间流逝、昼夜变化与日期推进           |
-|                    | 天气系统       | ✅实现 WeatherManager，完成天气切换与环境光照变化              |
-|                    | NPC 核心逻辑   | ✅实现 DialogueLayer类，完成与NPC的对话管理                        |
-|                    | NPC 管理       | ✅实现 NPCManager类，负责 NPC 管理           |
-| **蔡锦慧**         | NPC 表现       | ✅实现 NPC 的动画创建与播放                                    |
-|                    | 音频系统       | ✅实现 MusicManager类，支持 BGM 场景切换与音效播放               |
-|                    | 小游戏         | ✅实现了FishGameLayer类，独立开发钓鱼小游戏                                           |
