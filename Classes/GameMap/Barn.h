@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     Barn.h
+ * File Function: Barnç±»çš„å®ç°
+ * Author:        éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/23
+ * License:       MIT License
+ ****************************************************************/
 #pragma once
 
 #ifndef __BARN_H__
@@ -10,39 +18,39 @@
 
 USING_NS_CC;
 
-// ĞóÅï³¡¾°Àà
+// ç•œæ£šåœºæ™¯ç±»
 class Barn : public GameMap
 {
 public:
-    // ¾²Ì¬´´½¨ÓëÏú»Ù
+    // é™æ€åˆ›å»ºä¸é”€æ¯
     static Barn* create();
     static GameMap* getInstance();
     static void destroyInstance();
 
-    // ³õÊ¼»¯
+    // åˆå§‹åŒ–
     virtual bool init() override;
 
-    // ³¡¾°ÇĞ»»Âß¼­
+    // åœºæ™¯åˆ‡æ¢é€»è¾‘
     virtual MapType leaveMap(const Vec2& curPos, bool isStart, const Direction& direction) override;
     virtual void IntoMap(MapType lastMap) override;
 
-    // »ñÈ¡Íæ¼Ò³õÊ¼Î»ÖÃ
+    // è·å–ç©å®¶åˆå§‹ä½ç½®
     virtual Vec2 getPlayerStartPosition(MapType lastMap) override;
 
-    // ÉãÏñ»úÊÇ·ñ¸úËæ
+    // æ‘„åƒæœºæ˜¯å¦è·Ÿéš
     virtual bool isCameraFollow() const noexcept { return true; }
 
-    // ½»»¥ÊÂ¼ş´¦Àí
+    // äº¤äº’äº‹ä»¶å¤„ç†
     virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction, ItemType object) override;
     virtual MouseEvent onRightClick(const Vec2& playerPos, const Direction direction) override;
 
 private:
     static GameMap* _instance;
 
-    // ĞóÅï¹ÜÀíÆ÷
+    // ç•œæ£šç®¡ç†å™¨
     BarnManager* _barnManager = nullptr;
 
-    // ½ûÓÃ¿½±´¸³Öµ
+    // ç¦ç”¨æ‹·è´èµ‹å€¼
     Barn& operator=(const Barn&) = delete;
 };
 
