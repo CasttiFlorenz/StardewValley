@@ -1,6 +1,14 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     Cow.cpp
+ * File Function: Cowç±»çš„å®ç°
+ * Author:        éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/16
+ * License:       MIT License
+ ****************************************************************/
 #include "Cow.h"
 
-// ´´½¨ÊµÀı
+// åˆ›å»ºå®ä¾‹
 Cow* Cow::create() {
     auto p = new (std::nothrow) Cow();
     if (p && p->initWithFile(COW_DEFAULT_TEXTURE_PATH)) {
@@ -11,17 +19,17 @@ Cow* Cow::create() {
     return nullptr;
 }
 
-// »ñÈ¡²úÎïÍ¼Æ¬Â·¾¶
+// è·å–äº§ç‰©å›¾ç‰‡è·¯å¾„
 std::string Cow::getProducePath() const {
     return COW_PRODUCE_TEXTURE_PATH;
 }
 
-// »ñÈ¡²úÎïÀàĞÍ£¨Å£ÄÌ£©
+// è·å–äº§ç‰©ç±»å‹ï¼ˆç‰›å¥¶ï¼‰
 ItemType Cow::getProduceObject() const {
     return ItemType::MILK;
 }
 
-// ¿ªÊ¼¶¯»­
+// å¼€å§‹åŠ¨ç”»
 void Cow::startAnimation() {
     std::vector<std::string> paths = {
         COW_ANIM_FRAME_0,
@@ -54,7 +62,7 @@ void Cow::startAnimation() {
     runAction(RepeatForever::create(Animate::create(anim)));
 }
 
-// Í£Ö¹¶¯»­
+// åœæ­¢åŠ¨ç”»
 void Cow::stopAnimation() {
     pause();
 }
