@@ -31,7 +31,7 @@ private:
     // 位置常量（相对于背景图片的局部坐标）
     cocos2d::Rect _progressBarRect;
     cocos2d::Vec2 _fishBasePosition;
-    float _progressBarHeight;
 };
 
 #endif // __FISH_GAME_LAYER_H__
+
