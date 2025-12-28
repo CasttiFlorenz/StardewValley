@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     BarnManager.h
+ * File Function: BarnManagerç±»çš„å®ç°
+ * Author:        éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/16
+ * License:       MIT License
+ ****************************************************************/
 #pragma once
 #ifndef __BARN_MANAGER_H__
 #define __BARN_MANAGER_H__
@@ -12,43 +20,43 @@
 
 USING_NS_CC;
 
-// ĞóÅï¹ÜÀíÆ÷£¬¸ºÔğ¶¯Îï¡¢¸É²İºÍ²úÎï
+// ç•œæ£šç®¡ç†å™¨ï¼Œè´Ÿè´£åŠ¨ç‰©ã€å¹²è‰å’Œäº§ç‰©
 class BarnManager : public Ref {
 public:
-    // »ñÈ¡µ¥Àı
+    // è·å–å•ä¾‹
     static BarnManager* getInstance(GameMap* barn = nullptr);
 
-    // Ïú»Ùµ¥Àı
+    // é”€æ¯å•ä¾‹
     static void destroyInstance();
 
-    // ÔÚÖ¸¶¨Î»ÖÃÌí¼Ó¸É²İ
+    // åœ¨æŒ‡å®šä½ç½®æ·»åŠ å¹²è‰
     bool addHayAt(const Vec2& tileCoord);
 
-    // Ìí¼Ó¶¯Îï
+    // æ·»åŠ åŠ¨ç‰©
     bool addAnimal(AnimalType type);
 
-    // ĞÂµÄÒ»ÌìÂß¼­£¨ÏûºÄ¸É²İ¡¢Éú²úÎïÆ·£©
+    // æ–°çš„ä¸€å¤©é€»è¾‘ï¼ˆæ¶ˆè€—å¹²è‰ã€ç”Ÿäº§ç‰©å“ï¼‰
     void onNewDay();
 
-    // Æô¶¯¶¯»­
+    // å¯åŠ¨åŠ¨ç”»
     void startAnimations();
 
-    // Í£Ö¹¶¯»­
+    // åœæ­¢åŠ¨ç”»
     void stopAnimations();
 
-    // ÊÕ¼¯Ö¸¶¨Î»ÖÃµÄ²úÎï
+    // æ”¶é›†æŒ‡å®šä½ç½®çš„äº§ç‰©
     ItemType collectProductionAt(const Vec2& tileCoord);
 
-    // »ñÈ¡ËùÓĞ¸É²İÎ»ÖÃ
+    // è·å–æ‰€æœ‰å¹²è‰ä½ç½®
     std::vector<Vec2> getHayPositions() const;
 
-    // »ñÈ¡ËùÓĞ¶¯ÎïÀàĞÍ
+    // è·å–æ‰€æœ‰åŠ¨ç‰©ç±»å‹
     std::vector<int> getAnimalTypes() const;
 
-    // »ñÈ¡ËùÓĞ²úÎïĞÅÏ¢
+    // è·å–æ‰€æœ‰äº§ç‰©ä¿¡æ¯
     std::vector<std::pair<int, int>> getProductions() const;
 
-    // »Ö¸´Êı¾İ
+    // æ¢å¤æ•°æ®
     void restoreData(const std::vector<Vec2>& hayPos,
         const std::vector<int>& animalTypes,
         const std::vector<std::pair<int, int>>& productions);
@@ -62,38 +70,39 @@ private:
 
     bool init(GameMap* barn);
 
-    // ÇåÀí×ÊÔ´
+    // æ¸…ç†èµ„æº
     void clear();
 
-    // ×ø±ê¼üÖµ×ª»»
+    // åæ ‡é”®å€¼è½¬æ¢
     static long long keyFor(const Vec2& tileCoord);
 
-    // ´´½¨¶¯Îï¶ÔÏó
+    // åˆ›å»ºåŠ¨ç‰©å¯¹è±¡
     BarnAnimal* createAnimal(AnimalType type);
 
 private:
     static BarnManager* _instance;
 
-    // µØÍ¼ÒıÓÃ
+    // åœ°å›¾å¼•ç”¨
     GameMap* _gameMap = nullptr;
     TMXTiledMap* _tiledMap = nullptr;
     TMXLayer* _feedLayer = nullptr;
 
-    // Î»ÖÃÖĞĞÄµã
+    // ä½ç½®ä¸­å¿ƒç‚¹
     std::vector<Vec2> _nestCenters;
     std::vector<Vec2> _productionCenters;
 
-    // ¶¯ÎïÁĞ±í
+    // åŠ¨ç‰©åˆ—è¡¨
     std::vector<BarnAnimal*> _animals;
 
-    // ¸É²İ¾«ÁéÓ³Éä
+    // å¹²è‰ç²¾çµæ˜ å°„
     std::unordered_map<long long, Sprite*> _haySprites;
 
-    // ²úÎïÁĞ±í
+    // äº§ç‰©åˆ—è¡¨
     std::vector<std::vector<std::pair<Sprite*, ItemType>>> _productions;
 
-    // ²úÎïÎ»ÖÃ¼üÖµ
+    // äº§ç‰©ä½ç½®é”®å€¼
     std::vector<long long> _productionTileKeys;
 };
+
 
 #endif // __BARN_MANAGER_H__
