@@ -2,7 +2,7 @@
 #include "../Scene/InitialMenuScene.h"
 #include "cocos2d.h"
 
-// ÒıÈëĞèÒªÏú»ÙµÄ¹ÜÀíÆ÷Í·ÎÄ¼ş
+// å¼•å…¥éœ€è¦é”€æ¯çš„ç®¡ç†å™¨å¤´æ–‡ä»¶
 #include "../MapItem/CultivationManager.h"
 #include "../MapItem/BarnManager.h"
 #include "../MapItem/FarmItemManager.h"
@@ -19,10 +19,11 @@
 #include "../Time/TimeManager.h"
 #include "../Weather/WeatherManager.h"
 #include "../Money/Money.h"
+#include "../Music/MusicManager.h"
 
 USING_NS_CC;
 
-// ¾²Ì¬´´½¨
+// é™æ€åˆ›å»º
 ExitConfirm* ExitConfirm::create(Node* parent, Sprite* background)
 {
     if (!parent || !background) {
@@ -38,14 +39,14 @@ ExitConfirm* ExitConfirm::create(Node* parent, Sprite* background)
     return confirm;
 }
 
-// ³õÊ¼»¯
+// åˆå§‹åŒ–
 bool ExitConfirm::init()
 {
     if (!Node::init()) {
         return false;
     }
 
-    // 1. ´´½¨"·µ»Ø±êÌâ"°´Å¥
+    // 1. åˆ›å»º"è¿”å›æ ‡é¢˜"æŒ‰é’®
     auto returnToMenuBtn = Sprite::create("/Items/button/exit to title.png");
     if (returnToMenuBtn) {
         returnToMenuBtn->setPosition(Vec2(0, 60));
@@ -57,7 +58,7 @@ bool ExitConfirm::init()
             Vec2 localPos = returnToMenuBtn->convertTouchToNodeSpace(touch);
             Size btnSize = returnToMenuBtn->getContentSize();
 
-            // À©´óµã»÷ÇøÓò
+            // æ‰©å¤§ç‚¹å‡»åŒºåŸŸ
             Rect btnRect = Rect(-btnSize.width / 2 * 1.3f, -btnSize.height / 2 * 1.3f,
                 btnSize.width * 1.3f, btnSize.height * 1.3f);
 
@@ -75,7 +76,7 @@ bool ExitConfirm::init()
         this->addChild(returnToMenuBtn);
     }
 
-    // 2. ´´½¨"ÍË³öÓÎÏ·"°´Å¥
+    // 2. åˆ›å»º"é€€å‡ºæ¸¸æˆ"æŒ‰é’®
     auto exitGameBtn = Sprite::create("/Items/button/exit to desktop.png");
     if (exitGameBtn) {
         exitGameBtn->setPosition(Vec2(0, -60));
@@ -107,10 +108,10 @@ bool ExitConfirm::init()
     return true;
 }
 
-// ·µ»Ø±êÌâÂß¼­
+// è¿”å›æ ‡é¢˜é€»è¾‘
 void ExitConfirm::onReturnToTitle()
 {
-    // Ïú»ÙËùÓĞµ¥Àı
+    // é”€æ¯æ‰€æœ‰å•ä¾‹
     CultivationManager::destroyInstance();
     BarnManager::destroyInstance();
     FarmItemManager::destroyInstance();
@@ -130,8 +131,9 @@ void ExitConfirm::onReturnToTitle()
     TimeManager::destroyInstance();
     WeatherManager::destroyInstance();
     Money::destroyInstance();
+    MusicManager::destroyInstance();
 
-    // ÇĞ»»³¡¾°
+    // åˆ‡æ¢åœºæ™¯
     auto initScene = InitialMenuScene::createScene();
     auto runningScene = Director::getInstance()->getRunningScene();
 
@@ -141,10 +143,10 @@ void ExitConfirm::onReturnToTitle()
     Director::getInstance()->replaceScene(initScene);
 }
 
-// ÍË³öÓÎÏ·Âß¼­
+// é€€å‡ºæ¸¸æˆé€»è¾‘
 void ExitConfirm::onExitGame()
 {
-    // Ïú»ÙËùÓĞµ¥Àı
+    // é”€æ¯æ‰€æœ‰å•ä¾‹
     CultivationManager::destroyInstance();
     BarnManager::destroyInstance();
     FarmItemManager::destroyInstance();
@@ -164,7 +166,9 @@ void ExitConfirm::onExitGame()
     TimeManager::destroyInstance();
     WeatherManager::destroyInstance();
     Money::destroyInstance();
+    MusicManager::destroyInstance();
 
-    // ½áÊø³ÌĞò
+    // ç»“æŸç¨‹åº
     Director::getInstance()->end();
+
 }
