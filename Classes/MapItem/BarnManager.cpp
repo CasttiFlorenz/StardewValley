@@ -1,8 +1,16 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     BarnManager.cpp
+ * File Function: BarnManagerç±»çš„å®ç°
+ * Author:        éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/16
+ * License:       MIT License
+ ****************************************************************/
 #include "BarnManager.h"
 
 BarnManager* BarnManager::_instance = nullptr;
 
-// »ñÈ¡µ¥Àı
+// è·å–å•ä¾‹
 BarnManager* BarnManager::getInstance(GameMap* barn)
 {
     if (!_instance) {
@@ -22,7 +30,7 @@ BarnManager* BarnManager::getInstance(GameMap* barn)
     return _instance;
 }
 
-// Ïú»Ùµ¥Àı
+// é”€æ¯å•ä¾‹
 void BarnManager::destroyInstance()
 {
     if (_instance) {
@@ -31,7 +39,7 @@ void BarnManager::destroyInstance()
     }
 }
 
-// ³õÊ¼»¯
+// åˆå§‹åŒ–
 bool BarnManager::init(GameMap* barn)
 {
     _gameMap = barn;
@@ -47,7 +55,7 @@ bool BarnManager::init(GameMap* barn)
     _productionTileKeys.clear();
     _productionTileKeys.resize(MAX_ANIMAL_COUNT, 0);
 
-    // »ñÈ¡Î»ÖÃµã
+    // è·å–ä½ç½®ç‚¹
     for (int i = 1; i <= MAX_ANIMAL_COUNT; ++i) {
         std::string nestName = NEST_OBJECT_PREFIX + std::to_string(i);
         std::string prodName = PRODUCTION_OBJECT_PREFIX + std::to_string(i);
@@ -68,7 +76,7 @@ bool BarnManager::init(GameMap* barn)
     return _tiledMap != nullptr;
 }
 
-// ×ø±ê×ª»»¼üÖµ
+// åæ ‡è½¬æ¢é”®å€¼
 long long BarnManager::keyFor(const Vec2& tileCoord)
 {
     long long x = static_cast<long long>(tileCoord.x);
@@ -76,7 +84,7 @@ long long BarnManager::keyFor(const Vec2& tileCoord)
     return (x << 32) | (y & TILE_COORD_MASK);
 }
 
-// Ìí¼Ó¸É²İ
+// æ·»åŠ å¹²è‰
 bool BarnManager::addHayAt(const Vec2& tileCoord)
 {
     if (!_feedLayer || !_tiledMap || !_gameMap) return false;
@@ -106,7 +114,7 @@ bool BarnManager::addHayAt(const Vec2& tileCoord)
     return true;
 }
 
-// ´´½¨¶¯Îï
+// åˆ›å»ºåŠ¨ç‰©
 BarnAnimal* BarnManager::createAnimal(AnimalType type)
 {
     switch (type) {
@@ -118,7 +126,7 @@ BarnAnimal* BarnManager::createAnimal(AnimalType type)
     }
 }
 
-// Ìí¼Ó¶¯Îï
+// æ·»åŠ åŠ¨ç‰©
 bool BarnManager::addAnimal(AnimalType type)
 {
     if (!_gameMap || !_tiledMap) return false;
@@ -152,7 +160,7 @@ bool BarnManager::addAnimal(AnimalType type)
     return true;
 }
 
-// ĞÂµÄÒ»ÌìÂß¼­
+// æ–°çš„ä¸€å¤©é€»è¾‘
 void BarnManager::onNewDay()
 {
     int animalCount = 0;
@@ -163,7 +171,7 @@ void BarnManager::onNewDay()
     int hayCount = static_cast<int>(_haySprites.size());
     int consumeCount = std::min(hayCount, animalCount);
 
-    // ÏûºÄ¸É²İ
+    // æ¶ˆè€—å¹²è‰
     if (consumeCount > 0) {
         int consumed = 0;
         std::vector<long long> keys;
@@ -187,7 +195,7 @@ void BarnManager::onNewDay()
         }
     }
 
-    // Éú³É²úÎï
+    // ç”Ÿæˆäº§ç‰©
     int produceCount = std::min(animalCount, hayCount);
     int produced = 0;
 
@@ -209,7 +217,7 @@ void BarnManager::onNewDay()
     }
 }
 
-// Æô¶¯¶¯»­
+// å¯åŠ¨åŠ¨ç”»
 void BarnManager::startAnimations()
 {
     for (auto* a : _animals) {
@@ -217,7 +225,7 @@ void BarnManager::startAnimations()
     }
 }
 
-// Í£Ö¹¶¯»­
+// åœæ­¢åŠ¨ç”»
 void BarnManager::stopAnimations()
 {
     for (auto* a : _animals) {
@@ -225,7 +233,7 @@ void BarnManager::stopAnimations()
     }
 }
 
-// ÊÕ¼¯²úÎï
+// æ”¶é›†äº§ç‰©
 ItemType BarnManager::collectProductionAt(const Vec2& tileCoord)
 {
     if (!_gameMap || !_tiledMap) return ItemType::NONE;
@@ -249,10 +257,10 @@ ItemType BarnManager::collectProductionAt(const Vec2& tileCoord)
     return ItemType::NONE;
 }
 
-// ÇåÀí×ÊÔ´
+// æ¸…ç†èµ„æº
 void BarnManager::clear()
 {
-    // ÇåÀí¸É²İ
+    // æ¸…ç†å¹²è‰
     for (auto& kv : _haySprites) {
         if (kv.second) {
             kv.second->removeFromParent();
@@ -261,7 +269,7 @@ void BarnManager::clear()
     }
     _haySprites.clear();
 
-    // ÇåÀí¶¯Îï
+    // æ¸…ç†åŠ¨ç‰©
     for (auto* a : _animals) {
         if (a) {
             a->removeFromParent();
@@ -270,7 +278,7 @@ void BarnManager::clear()
     }
     _animals.clear();
 
-    // ÇåÀí²úÎï
+    // æ¸…ç†äº§ç‰©
     for (auto& list : _productions) {
         for (auto& pair : list) {
             if (pair.first) {
@@ -287,7 +295,7 @@ void BarnManager::clear()
     _productionTileKeys.clear();
 }
 
-// »ñÈ¡¸É²İÎ»ÖÃ
+// è·å–å¹²è‰ä½ç½®
 std::vector<Vec2> BarnManager::getHayPositions() const
 {
     std::vector<Vec2> positions;
@@ -300,7 +308,7 @@ std::vector<Vec2> BarnManager::getHayPositions() const
     return positions;
 }
 
-// »ñÈ¡¶¯ÎïÀàĞÍ
+// è·å–åŠ¨ç‰©ç±»å‹
 std::vector<int> BarnManager::getAnimalTypes() const
 {
     std::vector<int> types;
@@ -312,7 +320,7 @@ std::vector<int> BarnManager::getAnimalTypes() const
     return types;
 }
 
-// »ñÈ¡²úÎïĞÅÏ¢
+// è·å–äº§ç‰©ä¿¡æ¯
 std::vector<std::pair<int, int>> BarnManager::getProductions() const
 {
     std::vector<std::pair<int, int>> prods;
@@ -324,14 +332,14 @@ std::vector<std::pair<int, int>> BarnManager::getProductions() const
     return prods;
 }
 
-// »Ö¸´Êı¾İ
+// æ¢å¤æ•°æ®
 void BarnManager::restoreData(const std::vector<Vec2>& hayPos,
     const std::vector<int>& animalTypes,
     const std::vector<std::pair<int, int>>& productions)
 {
-    // ³õÊ¼»¯Ê±Ö±½Ó clear ÁËÒ»´Î£¬ËùÒÔÕâÀïÖ±½ÓÖØ½¨
+    // åˆå§‹åŒ–æ—¶ç›´æ¥ clear äº†ä¸€æ¬¡ï¼Œæ‰€ä»¥è¿™é‡Œç›´æ¥é‡å»º
 
-    // ÖØĞÂ³õÊ¼»¯¼üÖµ
+    // é‡æ–°åˆå§‹åŒ–é”®å€¼
     if (_productions.size() != MAX_ANIMAL_COUNT) {
         _productions.resize(MAX_ANIMAL_COUNT);
         _productionTileKeys.resize(MAX_ANIMAL_COUNT, 0);
@@ -343,17 +351,17 @@ void BarnManager::restoreData(const std::vector<Vec2>& hayPos,
         }
     }
 
-    // 1. »Ö¸´¸É²İ
+    // 1. æ¢å¤å¹²è‰
     for (const auto& pos : hayPos) {
         this->addHayAt(pos);
     }
 
-    // 2. »Ö¸´¶¯Îï
+    // 2. æ¢å¤åŠ¨ç‰©
     for (const int typeVal : animalTypes) {
         this->addAnimal(static_cast<AnimalType>(typeVal));
     }
 
-    // 3. »Ö¸´²úÎï
+    // 3. æ¢å¤äº§ç‰©
     for (const auto& entry : productions) {
         const int nestIdx = entry.first;
         ItemType itemType = static_cast<ItemType>(entry.second);
@@ -375,4 +383,5 @@ void BarnManager::restoreData(const std::vector<Vec2>& hayPos,
             _productions[nestIdx].push_back({ prod, itemType });
         }
     }
+
 }
