@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name : StardewValley
  * File Name : TimeManager.cpp
- * File Function : TimeManagerç±»çš„å®ç°
- * Author : èµµç¿å¦
+ * File Function : TimeManagerÀàµÄÊµÏÖ
+ * Author : ÕÔî£åû
  * Update Date : 2025 / 12 / 13
  * License : MIT License
  ****************************************************************/
@@ -13,21 +13,21 @@
 
 USING_NS_CC;
 
-// é™æ€æˆå‘˜åˆå§‹åŒ–
+// ¾²Ì¬³ÉÔ±³õÊ¼»¯
 TimeManager* TimeManager::_instance = nullptr;
 
 /**
- * è·å– TimeManager å•ä¾‹å¯¹è±¡ï¼Œå¦‚æœä¸å­˜åœ¨åˆ™åˆ›å»ºå¹¶è¿›è¡Œåˆå§‹åŒ–
- * @return TimeManager çš„å”¯ä¸€å®ä¾‹æŒ‡é’ˆ
+ * »ñÈ¡ TimeManager µ¥Àı¶ÔÏó£¬Èç¹û²»´æÔÚÔò´´½¨²¢½øĞĞ³õÊ¼»¯
+ * @return TimeManager µÄÎ¨Ò»ÊµÀıÖ¸Õë
  */
 TimeManager* TimeManager::getInstance() {
-    // æ£€æŸ¥å®ä¾‹æ˜¯å¦å­˜åœ¨
+    // ¼ì²éÊµÀıÊÇ·ñ´æÔÚ
     if (!_instance) {
-        // ä½¿ç”¨ std::nothrow é¿å…å†…å­˜åˆ†é…å¤±è´¥æŠ›å‡ºå¼‚å¸¸
+        // Ê¹ÓÃ std::nothrow ±ÜÃâÄÚ´æ·ÖÅäÊ§°ÜÅ×³öÒì³£
         _instance = new (std::nothrow) TimeManager();
         if (_instance && _instance->init()) {
             _instance->autorelease();
-            _instance->retain(); // ä¿æŒå¼•ç”¨ï¼Œé˜²æ­¢è¢«è‡ªåŠ¨é‡Šæ”¾
+            _instance->retain(); // ±£³ÖÒıÓÃ£¬·ÀÖ¹±»×Ô¶¯ÊÍ·Å
         }
         else {
             CC_SAFE_DELETE(_instance);
@@ -37,10 +37,10 @@ TimeManager* TimeManager::getInstance() {
 }
 
 /**
- * é”€æ¯å•ä¾‹å¯¹è±¡å¹¶é‡Šæ”¾ç›¸å…³å†…å­˜
+ * Ïú»Ùµ¥Àı¶ÔÏó²¢ÊÍ·ÅÏà¹ØÄÚ´æ
  */
 void TimeManager::destroyInstance() {
-    // é”€æ¯å•ä¾‹ï¼Œé‡Šæ”¾å†…å­˜
+    // Ïú»Ùµ¥Àı£¬ÊÍ·ÅÄÚ´æ
     if (_instance != nullptr) {
         _instance->release();
         _instance = nullptr;
@@ -48,7 +48,7 @@ void TimeManager::destroyInstance() {
 }
 
 /**
- * æ„é€ å‡½æ•°ï¼Œåˆå§‹åŒ–æˆå‘˜å˜é‡å’Œé»˜è®¤æ¸¸æˆæ—¶é—´
+ * ¹¹Ôìº¯Êı£¬³õÊ¼»¯³ÉÔ±±äÁ¿ºÍÄ¬ÈÏÓÎÏ·Ê±¼ä
  */
 TimeManager::TimeManager()
     : _accumulatedTime(0.0f)
@@ -63,31 +63,31 @@ TimeManager::TimeManager()
     , _moneyLabel(nullptr)
     , _weatherIcon(nullptr)
 {
-    // æ„é€ å‡½æ•°åˆå§‹åŒ–
+    // ¹¹Ôìº¯Êı³õÊ¼»¯
     _currentTime = GameTime(1, Season::Spring, 1, 6, 0);
 }
 
 /**
- * ææ„å‡½æ•°ï¼ŒCocos2d-x ä¼šè‡ªåŠ¨æ¸…ç† Node èµ„æº
+ * Îö¹¹º¯Êı£¬Cocos2d-x »á×Ô¶¯ÇåÀí Node ×ÊÔ´
  */
 TimeManager::~TimeManager() {
-    // ææ„é€»è¾‘
+    // Îö¹¹Âß¼­
 }
 
 /**
- * åˆå§‹åŒ–ç®¡ç†å™¨ï¼Œè®¾ç½®éšæœºç§å­ã€å¤©æ°”å¹¶åˆ›å»º UI
- * @return åˆå§‹åŒ–æˆåŠŸè¿”å› true
+ * ³õÊ¼»¯¹ÜÀíÆ÷£¬ÉèÖÃËæ»úÖÖ×Ó¡¢ÌìÆø²¢´´½¨ UI
+ * @return ³õÊ¼»¯³É¹¦·µ»Ø true
  */
 bool TimeManager::init() {
     if (!Node::init()) return false;
 
-    // è®¾ç½®éšæœºæ•°ç§å­
+    // ÉèÖÃËæ»úÊıÖÖ×Ó
     std::srand(static_cast<unsigned int>(time(nullptr)));
 
     _isUpdating = false;
     _currentTime = GameTime(1, Season::Spring, 1, 6, 0);
 
-    // åˆå§‹åŒ–å¤©æ°”
+    // ³õÊ¼»¯ÌìÆø
     if (WeatherManager::getInstance() != nullptr) {
         WeatherManager::getInstance()->updateWeather(_currentTime.getSeason());
     }
@@ -97,10 +97,10 @@ bool TimeManager::init() {
 }
 
 /**
- * åˆ‡æ¢æ¯å¸§æ›´æ–°çŠ¶æ€ï¼ˆæš‚åœ/æ¢å¤æ—¶é—´æµåŠ¨ï¼‰
+ * ÇĞ»»Ã¿Ö¡¸üĞÂ×´Ì¬£¨ÔİÍ£/»Ö¸´Ê±¼äÁ÷¶¯£©
  */
 void TimeManager::changeUpdateStatus() {
-    // åˆ‡æ¢æ›´æ–°çŠ¶æ€
+    // ÇĞ»»¸üĞÂ×´Ì¬
     if (_isUpdating) {
         this->unscheduleUpdate();
     }
@@ -111,16 +111,16 @@ void TimeManager::changeUpdateStatus() {
 }
 
 /**
- * åˆ›å»ºæ—¶é—´æ˜¾ç¤º UIï¼ŒåŒ…æ‹¬æ—¶é’Ÿã€æ—¥æœŸã€é‡‘é’±å’Œå¤©æ°”å›¾æ ‡
+ * ´´½¨Ê±¼äÏÔÊ¾ UI£¬°üÀ¨Ê±ÖÓ¡¢ÈÕÆÚ¡¢½ğÇ®ºÍÌìÆøÍ¼±ê
  */
 void TimeManager::createUI() {
-    // ç›´æ¥è°ƒç”¨ API è·å–å±å¹•å°ºå¯¸ï¼Œä¸ä½¿ç”¨å®
+    // Ö±½Óµ÷ÓÃ API »ñÈ¡ÆÁÄ»³ß´ç£¬²»Ê¹ÓÃºê
     auto visibleSize = Director::getInstance()->getVisibleSize();
 
     _uiContainer = Node::create();
     if (_uiContainer == nullptr) return;
 
-    // åˆ›å»ºæ—¶é’ŸèƒŒæ™¯
+    // ´´½¨Ê±ÖÓ±³¾°
     _clockBg = Sprite::create(PATH_UI_CLOCK_BG);
     Size originalSize = Size(300, 100);
 
@@ -133,13 +133,13 @@ void TimeManager::createUI() {
 
     _uiContainer->setContentSize(originalSize);
     _uiContainer->setAnchorPoint(Vec2(1, 1));
-    // ä½¿ç”¨ visibleSize æ›¿ä»£ WINSIZE
+    // Ê¹ÓÃ visibleSize Ìæ´ú WINSIZE
     _uiContainer->setPosition(Vec2(visibleSize.width, visibleSize.height + 5));
     _uiContainer->setScale(0.24f);
 
     this->addChild(_uiContainer, ZORDER_UI_CONTAINER);
 
-    // åŠ è½½æŒ‡é’ˆ
+    // ¼ÓÔØÖ¸Õë
     _clockHand = Sprite::create(PATH_UI_CLOCK_HAND);
     if (_clockHand != nullptr) {
         _clockHand->setAnchorPoint(Vec2(0.5f, 0.0f));
@@ -148,19 +148,19 @@ void TimeManager::createUI() {
         _uiContainer->addChild(_clockHand, ZORDER_UI_HAND);
     }
 
-    // åŠ è½½å­—ä½“
+    // ¼ÓÔØ×ÖÌå
     std::string font = PATH_FONT_ARIAL;
     if (!FileUtils::getInstance()->isFileExist(font)) {
         font = FONT_DEFAULT_SYSTEM;
     }
 
-    // å­—å·å‚æ•°
+    // ×ÖºÅ²ÎÊı
     float fontSizeTime = originalSize.height * 0.10f;
     float fontSizeDate = originalSize.height * 0.10f;
     float fontSizeLabel = originalSize.height * 0.15f;
     Color4B textColor(60, 30, 10, 255);
 
-    // 1. æ—¶é—´ Label
+    // 1. Ê±¼ä Label
     _timeLabel = Label::createWithTTF("12:00 am", font, fontSizeTime);
     if (!_timeLabel) {
         _timeLabel = Label::createWithSystemFont("12:00 am", FONT_DEFAULT_SYSTEM, fontSizeTime);
@@ -172,7 +172,7 @@ void TimeManager::createUI() {
         _uiContainer->addChild(_timeLabel, ZORDER_UI_LABEL);
     }
 
-    // 2. æ—¥æœŸ Label
+    // 2. ÈÕÆÚ Label
     _dateLabel = Label::createWithTTF("Mon. 1", font, fontSizeDate);
     if (!_dateLabel) {
         _dateLabel = Label::createWithSystemFont("Mon. 1", FONT_DEFAULT_SYSTEM, fontSizeDate);
@@ -184,7 +184,7 @@ void TimeManager::createUI() {
         _uiContainer->addChild(_dateLabel, ZORDER_UI_LABEL);
     }
 
-    // 3. é‡‘å¸ Label
+    // 3. ½ğ±Ò Label
     _moneyLabel = Label::createWithTTF("500", font, fontSizeLabel);
     if (!_moneyLabel) {
         _moneyLabel = Label::createWithSystemFont("500", FONT_DEFAULT_SYSTEM, fontSizeLabel);
@@ -196,7 +196,7 @@ void TimeManager::createUI() {
         _uiContainer->addChild(_moneyLabel, ZORDER_UI_LABEL);
     }
 
-    // 4. å¤©æ°”å›¾æ ‡
+    // 4. ÌìÆøÍ¼±ê
     _weatherIcon = Sprite::create(PATH_UI_WEATHER_SUNNY);
     if (_weatherIcon) {
         _weatherIcon->setPosition(Vec2(originalSize.width * 0.48f, originalSize.height * 0.64f));
@@ -208,47 +208,47 @@ void TimeManager::createUI() {
 }
 
 /**
- * è®¾å®šæ—¶é—´
+ * Éè¶¨Ê±¼ä
  */
 void TimeManager::setTime(const GameTime& time)
 {
-    _currentTime = time; 
-}ï¼›
+    _currentTime = time;
+};
 
 /**
- * æ¯å¸§æ›´æ–°æ—¶é—´é€»è¾‘ï¼Œå¤„ç†åˆ†é’Ÿå¢åŠ å’Œå¼ºåˆ¶æ˜è¿·æ£€æµ‹
- * @param dt å¸§é—´éš”æ—¶é—´
+ * Ã¿Ö¡¸üĞÂÊ±¼äÂß¼­£¬´¦Àí·ÖÖÓÔö¼ÓºÍÇ¿ÖÆ»èÃÔ¼ì²â
+ * @param dt Ö¡¼ä¸ôÊ±¼ä
  */
 void TimeManager::update(float dt) {
-    if (_isTransitioning) return; // å¦‚æœæ­£åœ¨è½¬åœºï¼Œæš‚åœæ—¶é—´
+    if (_isTransitioning) return; // Èç¹ûÕıÔÚ×ª³¡£¬ÔİÍ£Ê±¼ä
 
     _accumulatedTime += dt;
 
-    // ä½¿ç”¨å¸¸é‡ TIME_UPDATE_INTERVAL (0.7f)
+    // Ê¹ÓÃ³£Á¿ TIME_UPDATE_INTERVAL (0.7f)
     if (_accumulatedTime >= TIME_UPDATE_INTERVAL) {
         _accumulatedTime = 0;
 
         _currentTime.addMinutes(1);
 
-        // æ£€æŸ¥æ˜¯ä¸æ˜¯åˆ°äº†å¼ºåˆ¶æ˜è¿·æ—¶é—´
+        // ¼ì²éÊÇ²»ÊÇµ½ÁËÇ¿ÖÆ»èÃÔÊ±¼ä
         if (_currentTime.getHour() >= TIME_PASS_OUT_HOUR) {
             triggerPassOut();
         }
         refreshUI();
 
-        // é‡ç½®ç´¯ç§¯æ—¶é—´
+        // ÖØÖÃÀÛ»ıÊ±¼ä
         _accumulatedTime = 0;
     }
 }
 
 /**
- * è§¦å‘å‡Œæ™¨2ç‚¹å¼ºåˆ¶æ˜è¿·é€»è¾‘ï¼Œç¦ç”¨è¾“å…¥å¹¶å¼€å§‹ä¸‹ä¸€å¤©è½¬åœº
+ * ´¥·¢Áè³¿2µãÇ¿ÖÆ»èÃÔÂß¼­£¬½ûÓÃÊäÈë²¢¿ªÊ¼ÏÂÒ»Ìì×ª³¡
  */
 void TimeManager::triggerPassOut() {
-    // é˜²æ­¢é‡å¤è§¦å‘
+    // ·ÀÖ¹ÖØ¸´´¥·¢
     if (_isTransitioning) return;
 
-    // æ ‡è®°å¼€å§‹è½¬åœºï¼Œç¦æ­¢è¾“å…¥
+    // ±ê¼Ç¿ªÊ¼×ª³¡£¬½ûÖ¹ÊäÈë
     _isTransitioning = true;
     _isInputAllowed = false;
 
@@ -263,20 +263,20 @@ void TimeManager::triggerPassOut() {
 }
 
 /**
- * å¼€å§‹æ–°çš„ä¸€å¤©ï¼Œé‡ç½®æ—¶é—´ã€æ›´æ–°å¤©æ°”å¹¶æ¢å¤è¾“å…¥
+ * ¿ªÊ¼ĞÂµÄÒ»Ìì£¬ÖØÖÃÊ±¼ä¡¢¸üĞÂÌìÆø²¢»Ö¸´ÊäÈë
  */
 void TimeManager::startNextDay() {
     CCLOG("Teleporting to next day...");
 
     _currentTime.addDays(1);
-    // é‡ç½®æ—¶é—´ä¸ºæ—©ä¸Š 6:00
+    // ÖØÖÃÊ±¼äÎªÔçÉÏ 6:00
     _currentTime = GameTime(_currentTime.getYear(), _currentTime.getSeason(), _currentTime.getDayOfMonth(), 6, 0);
 
     if (WeatherManager::getInstance() != nullptr) {
         WeatherManager::getInstance()->updateWeather(_currentTime.getSeason());
     }
 
-    // æ‰§è¡Œå›è°ƒ
+    // Ö´ĞĞ»Øµ÷
     if (onDayStartCallback) {
         onDayStartCallback();
     }
@@ -289,35 +289,35 @@ void TimeManager::startNextDay() {
 }
 
 /**
- * åˆ·æ–° UI æ˜¾ç¤ºï¼ŒåŒ…æ‹¬æ—¶é—´æ–‡æœ¬ã€æ—¥æœŸã€é‡‘é’±ã€æŒ‡é’ˆæ—‹è½¬è§’åº¦å’Œå¤©æ°”å›¾æ ‡
+ * Ë¢ĞÂ UI ÏÔÊ¾£¬°üÀ¨Ê±¼äÎÄ±¾¡¢ÈÕÆÚ¡¢½ğÇ®¡¢Ö¸ÕëĞı×ª½Ç¶ÈºÍÌìÆøÍ¼±ê
  */
 void TimeManager::refreshUI() {
-    // ==================== 1. æ—¶é—´å¤„ç† ====================
+    // ==================== 1. Ê±¼ä´¦Àí ====================
     int h = _currentTime.getHour();
     int m = _currentTime.getMinute();
 
-    // æ ¼å¼åŒ–æ—¶é—´æ˜¾ç¤º
+    // ¸ñÊ½»¯Ê±¼äÏÔÊ¾
     if (_timeLabel != nullptr) {
-        // GameTime ç±»å·²å°è£…å¥½æ ¼å¼åŒ–é€»è¾‘ï¼Œè¿™é‡Œå¯ä»¥ç®€åŒ–ï¼Œä½†ä¸ºäº†ä¿æŒæ‚¨åŸå§‹é€»è¾‘çš„æ˜¾ç¤ºæ•ˆæœï¼Œ
-        // è¿™é‡Œæ²¿ç”¨ GameTime çš„å­—ç¬¦ä¸²è·å–
+        // GameTime ÀàÒÑ·â×°ºÃ¸ñÊ½»¯Âß¼­£¬ÕâÀï¿ÉÒÔ¼ò»¯£¬µ«ÎªÁË±£³ÖÄúÔ­Ê¼Âß¼­µÄÏÔÊ¾Ğ§¹û£¬
+        // ÕâÀïÑØÓÃ GameTime µÄ×Ö·û´®»ñÈ¡
         _timeLabel->setString(_currentTime.getTimeString());
     }
 
-    // ==================== 2. åˆ·æ–°æ—¥æœŸ ====================
+    // ==================== 2. Ë¢ĞÂÈÕÆÚ ====================
     if (_dateLabel != nullptr) {
         _dateLabel->setString(_currentTime.getDateString());
     }
 
-    // ==================== 3. åˆ·æ–°é‡‘å¸ ====================
+    // ==================== 3. Ë¢ĞÂ½ğ±Ò ====================
     if (_moneyLabel != nullptr) {
-        // ä½¿ç”¨ Money å•ä¾‹è·å–æ•°æ®
+        // Ê¹ÓÃ Money µ¥Àı»ñÈ¡Êı¾İ
         if (Money::getInstance() != nullptr) {
             int currentMoney = Money::getInstance()->getMoney();
             _moneyLabel->setString(StringUtils::format("%d", currentMoney));
         }
     }
 
-    // ==================== 4. æŒ‡é’ˆæ—‹è½¬ ====================
+    // ==================== 4. Ö¸ÕëĞı×ª ====================
     if (_clockHand != nullptr) {
         float minutesSince6AM;
 
@@ -328,14 +328,14 @@ void TimeManager::refreshUI() {
             minutesSince6AM = static_cast<float>((h + 24 - 6) * 60 + m);
         }
 
-        // è®¡ç®—æ˜¾ç¤ºè§’åº¦
+        // ¼ÆËãÏÔÊ¾½Ç¶È
         int displayMinutes = (static_cast<int>(minutesSince6AM) / 10) * 10;
         float rotation = ROTATION_BASE_ANGLE + (static_cast<float>(displayMinutes) * ROTATION_PER_MINUTE);
 
         _clockHand->setRotation(rotation);
     }
 
-    // ==================== 5. åˆ·æ–°å¤©æ°”å›¾æ ‡ ====================
+    // ==================== 5. Ë¢ĞÂÌìÆøÍ¼±ê ====================
     if (_weatherIcon != nullptr && WeatherManager::getInstance() != nullptr) {
         std::string iconPath = PATH_UI_WEATHER_SUNNY;
 
@@ -365,7 +365,7 @@ void TimeManager::refreshUI() {
             break;
         }
 
-        // æ£€æŸ¥æ–‡ä»¶æ˜¯å¦å­˜åœ¨å¹¶è®¾ç½®çº¹ç†
+        // ¼ì²éÎÄ¼şÊÇ·ñ´æÔÚ²¢ÉèÖÃÎÆÀí
         if (FileUtils::getInstance()->isFileExist(iconPath)) {
             _weatherIcon->setTexture(iconPath);
             _weatherIcon->setVisible(true);
@@ -375,14 +375,14 @@ void TimeManager::refreshUI() {
         }
     }
 
-    // ==================== 6. æ›´æ–°å¤©è‰² ====================
+    // ==================== 6. ¸üĞÂÌìÉ« ====================
     if (WeatherManager::getInstance() != nullptr) {
         WeatherManager::getInstance()->updateSkyColor(h, m);
     }
 }
 
 /**
- * å¯åŠ¨ç¡è§‰æµç¨‹ï¼Œæ˜¾ç¤ºé®ç½©åŠ¨ç”»å¹¶åœ¨ç»“æŸåå¼€å§‹æ–°çš„ä¸€å¤©
+ * Æô¶¯Ë¯¾õÁ÷³Ì£¬ÏÔÊ¾ÕÚÕÖ¶¯»­²¢ÔÚ½áÊøºó¿ªÊ¼ĞÂµÄÒ»Ìì
  */
 void TimeManager::startSleepSequence() {
     if (_isTransitioning) return;
@@ -393,7 +393,7 @@ void TimeManager::startSleepSequence() {
     auto runningScene = Director::getInstance()->getRunningScene();
     if (runningScene == nullptr) return;
 
-    // ç›´æ¥è·å–å°ºå¯¸
+    // Ö±½Ó»ñÈ¡³ß´ç
     auto visibleSize = Director::getInstance()->getVisibleSize();
     auto sleepBg = Sprite::create(PATH_UI_SLEEP_BG);
 
@@ -410,10 +410,11 @@ void TimeManager::startSleepSequence() {
         label->setTextColor(Color4B::BLACK);
         Size bgSize = sleepBg->getContentSize();
         label->setPosition(Vec2(bgSize.width / 2, bgSize.height / 2));
+        sleepBg->setTag(SLEEPING_TAG);
         sleepBg->addChild(label);
     }
 
-    // åŠ¨ç”»åºåˆ—ï¼šæ·¡å…¥ -> ç­‰å¾… -> ä¸‹ä¸€å¤© -> æ·¡å‡º -> æ¸…ç†
+    // ¶¯»­ĞòÁĞ£ºµ­Èë -> µÈ´ı -> ÏÂÒ»Ìì -> µ­³ö -> ÇåÀí
     auto seq = Sequence::create(
         FadeIn::create(0.5f),
         DelayTime::create(3.0f),
@@ -432,4 +433,3 @@ void TimeManager::startSleepSequence() {
     sleepBg->runAction(seq);
 
 }
-

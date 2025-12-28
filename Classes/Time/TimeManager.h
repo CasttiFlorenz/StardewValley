@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     TimeManager.h
- * File Function: TimeManagerç±»çš„å£°æ˜
- * Author:        èµµç¿å¦
+ * File Function: TimeManagerÀàµÄÉùÃ÷
+ * Author:        ÕÔî£åû
  * Update Date:   2025/12/13
  * License:       MIT License
  ****************************************************************/
@@ -19,65 +19,65 @@
 
 class TimeManager : public cocos2d::Node {
 public:
-    // å•ä¾‹è·å–
+    // µ¥Àı»ñÈ¡
     static TimeManager* getInstance();
-    // å•ä¾‹é”€æ¯
+    // µ¥ÀıÏú»Ù
     static void destroyInstance();
 
-    // åˆå§‹åŒ–
+    // ³õÊ¼»¯
     virtual bool init();
 
-    // æ—¶é—´æ›´æ–°é€»è¾‘
+    // Ê±¼ä¸üĞÂÂß¼­
     void update(float dt) override;
 
-    // è·å–å½“å‰æ—¶é—´æ•°æ®
+    // »ñÈ¡µ±Ç°Ê±¼äÊı¾İ
     GameTime getCurrentTime() const { return _currentTime; }
 
-    // åˆ‡æ¢æ›´æ–°çŠ¶æ€ (æš‚åœ/æ¢å¤æ—¶é—´)
+    // ÇĞ»»¸üĞÂ×´Ì¬ (ÔİÍ£/»Ö¸´Ê±¼ä)
     void changeUpdateStatus();
 
-    // å¼€å¯æ–°çš„ä¸€å¤©
+    // ¿ªÆôĞÂµÄÒ»Ìì
     void startNextDay();
 
-    // è§¦å‘å¼ºåˆ¶æ˜è¿·
+    // ´¥·¢Ç¿ÖÆ»èÃÔ
     void triggerPassOut();
 
-    // å¼€å¯ç¡è§‰æµç¨‹åŠ¨ç”»
+    // ¿ªÆôË¯¾õÁ÷³Ì¶¯»­
     void startSleepSequence();
 
-    // å¤©æ•°å¼€å§‹å›è°ƒ
+    // ÌìÊı¿ªÊ¼»Øµ÷
     std::function<void()> onDayStartCallback; 
 
-    // è®¾å®šæ—¶é—´
+    // Éè¶¨Ê±¼ä
     void setTime(const GameTime& time);
 private:
     TimeManager();
     ~TimeManager();
 
-    // å†…éƒ¨UIæ–¹æ³•
+    // ÄÚ²¿UI·½·¨
     void createUI();
     void refreshUI();
 
 private:
     static TimeManager* _instance;
 
-    // çŠ¶æ€æ ‡å¿—
-    bool _isTransitioning; // æ˜¯å¦æ­£åœ¨è½¬åœº
-    bool _isInputAllowed;  // æ˜¯å¦å…è®¸è¾“å…¥
-    bool _isUpdating;      // æ˜¯å¦æ­£åœ¨æ›´æ–°æ—¶é—´
+    // ×´Ì¬±êÖ¾
+    bool _isTransitioning; // ÊÇ·ñÕıÔÚ×ª³¡
+    bool _isInputAllowed;  // ÊÇ·ñÔÊĞíÊäÈë
+    bool _isUpdating;      // ÊÇ·ñÕıÔÚ¸üĞÂÊ±¼ä
 
-    // æ ¸å¿ƒæ•°æ®
+    // ºËĞÄÊı¾İ
     GameTime _currentTime;
-    float _accumulatedTime; // ç´¯ç§¯æ—¶é—´
+    float _accumulatedTime; // ÀÛ»ıÊ±¼ä
 
-    // UI æ§ä»¶
-    cocos2d::Node* _uiContainer;    // å®¹å™¨
-    cocos2d::Sprite* _clockBg;      // èƒŒæ™¯
-    cocos2d::Sprite* _clockHand;    // æŒ‡é’ˆ
-    cocos2d::Label* _timeLabel;     // æ—¶é—´æ–‡æœ¬
-    cocos2d::Label* _dateLabel;     // æ—¥æœŸæ–‡æœ¬
-    cocos2d::Label* _moneyLabel;    // é‡‘å¸æ–‡æœ¬
-    cocos2d::Sprite* _weatherIcon;  // å¤©æ°”å›¾æ ‡
+    // UI ¿Ø¼ş
+    cocos2d::Node* _uiContainer;    // ÈİÆ÷
+    cocos2d::Sprite* _clockBg;      // ±³¾°
+    cocos2d::Sprite* _clockHand;    // Ö¸Õë
+    cocos2d::Label* _timeLabel;     // Ê±¼äÎÄ±¾
+    cocos2d::Label* _dateLabel;     // ÈÕÆÚÎÄ±¾
+    cocos2d::Label* _moneyLabel;    // ½ğ±ÒÎÄ±¾
+    cocos2d::Sprite* _weatherIcon;  // ÌìÆøÍ¼±ê
 };
 
 
