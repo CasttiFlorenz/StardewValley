@@ -1,6 +1,14 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     StoneItem.cpp
+ * File Function: StoneItem类的实现
+ * Author:        郭芷烟
+ * Update Date:   2025/12/16
+ * License:       MIT License
+ ****************************************************************/
 #include "StoneItem.h"
 
-// ����ʵ��
+// ´´½¨ÊµÀý
 StoneItem* StoneItem::create(const cocos2d::Vec2& tileCoord) {
     auto p = new (std::nothrow) StoneItem();
     if (p && p->init(tileCoord)) {
@@ -11,7 +19,7 @@ StoneItem* StoneItem::create(const cocos2d::Vec2& tileCoord) {
     return nullptr;
 }
 
-// ��ʼ��
+// ³õÊ¼»¯
 bool StoneItem::init(const cocos2d::Vec2& tileCoord) {
     if (!EnvironmentItem::init(EnvironmentItemType::STONE, tileCoord)) {
         return false;
