@@ -10,17 +10,16 @@ public:
     static FishGameLayer* create();
     virtual bool init();
 
+    bool setupUI();
+    bool setupEvents();
+
     void update(float delta) override;
-    void setupUI();
-    void setupEvents();
     void onMouseClick();
     void endGame(bool isSuccess);
-
     void updateProgressBar();
     void updateFishPosition();
 
 private:
-    // UI元素
     cocos2d::Sprite* _background;
     cocos2d::DrawNode* _progressBar;
     cocos2d::Sprite* _fishSprite;
@@ -29,7 +28,7 @@ private:
     float _currentValue;
     bool _isGameActive;
 
-    // 位置常量（相对于背景图片的局部坐标）
+    // 浣嶇疆甯搁噺锛堢浉瀵逛簬鑳屾櫙鍥剧墖鐨勫眬閮ㄥ潗鏍囷級
     cocos2d::Rect _progressBarRect;
     cocos2d::Vec2 _fishBasePosition;
     float _progressBarHeight;
