@@ -1,27 +1,37 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     ExitComfirm.h
+ * File Function: ExitComfirmç±»çš„å®ç°
+ * Author:        äºæ©ç†™
+ * Update Date:   2025/12/28
+ * License:       MIT License
+ ****************************************************************/
+
 #ifndef __EXIT_CONFIRM_H__
 #define __EXIT_CONFIRM_H__
 
 #include "cocos2d.h"
 #include "../Music/MusicManager.h"
 
-// ÍË³öÈ·ÈÏ½çÃæ
+// é€€å‡ºç¡®è®¤ç•Œé¢
 class ExitConfirm : public cocos2d::Node
 {
 public:
     CREATE_FUNC(ExitConfirm);
 
-    // ¾²Ì¬´´½¨º¯Êı
+    // é™æ€åˆ›å»ºå‡½æ•°
     static ExitConfirm* create(cocos2d::Node* parent, cocos2d::Sprite* background);
 
-    // ³õÊ¼»¯
+    // åˆå§‹åŒ–
     virtual bool init() override;
 
 private:
-    // ·µ»Ø±êÌâ½çÃæ
+    // è¿”å›æ ‡é¢˜ç•Œé¢
     void onReturnToTitle();
 
-    // ÍË³öÓÎÏ·
+    // é€€å‡ºæ¸¸æˆ
     void onExitGame();
 };
+
 
 #endif // __EXIT_CONFIRM_H__
