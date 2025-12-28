@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     Chicken.cpp
+ * File Function: Chicken类的实现
+ * Author:        郭芷烟
+ * Update Date:   2025/12/16
+ * License:       MIT License
+ ****************************************************************/
 #include "Chicken.h"
 
 Chicken* Chicken::create() {
