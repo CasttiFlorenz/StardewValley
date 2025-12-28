@@ -1,6 +1,14 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     Crop.cpp
+ * File Function: Cropç±»çš„å®žçŽ°
+ * Author:        éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/16
+ * License:       MIT License
+ ****************************************************************/
 #include "Crop.h"
 
-// ¹¤³§´´½¨·½·¨
+// å·¥åŽ‚åˆ›å»ºæ–¹æ³•
 Crop* Crop::create(ItemType type) {
     Crop* p = nullptr;
     switch (type) {
@@ -19,7 +27,7 @@ Crop* Crop::create(ItemType type) {
     return p;
 }
 
-// ³õÊ¼»¯»ùÀà
+// åˆå§‹åŒ–åŸºç±»
 bool Crop::init(ItemType type) {
     if (!Sprite::init()) {
         return false;
@@ -30,7 +38,7 @@ bool Crop::init(ItemType type) {
     return true;
 }
 
-// ¸üÐÂÉú³¤
+// æ›´æ–°ç”Ÿé•¿
 void Crop::updateGrowth(bool isWatered) {
     if (_status == CropStatus::DEAD || _status == CropStatus::MATURE) {
         return;
@@ -55,7 +63,7 @@ void Crop::updateGrowth(bool isWatered) {
     updateTexture();
 }
 
-// ¸üÐÂÎÆÀí
+// æ›´æ–°çº¹ç†
 void Crop::updateTexture() {
     if (_status == CropStatus::DEAD) {
         this->setTexture(CROP_DEAD_TEXTURE_PATH);
@@ -68,7 +76,7 @@ void Crop::updateTexture() {
     this->setTexture(filename);
 }
 
-// ÉèÖÃÉú³¤½×¶Î
+// è®¾ç½®ç”Ÿé•¿é˜¶æ®µ
 void Crop::setGrowthStage(int stage) {
     _growthStage = std::max(0, std::min(stage, _maxGrowthStage));
     updateTexture();
@@ -80,7 +88,7 @@ void Crop::setGrowthStage(int stage) {
     }
 }
 
-// ÉèÖÃ½×¶ÎÓë×´Ì¬
+// è®¾ç½®é˜¶æ®µä¸ŽçŠ¶æ€
 void Crop::setGrowthStage(int stage, CropStatus status) {
     _growthStage = std::max(0, std::min(stage, _maxGrowthStage));
     _status = status;
@@ -97,9 +105,9 @@ void Crop::setGrowthStage(int stage, CropStatus status) {
     updateTexture();
 }
 
-// --- ×ÓÀàÊµÏÖ ---
+// --- å­ç±»å®žçŽ° ---
 
-// ·À·ç²Ý
+// é˜²é£Žè‰
 Parsnip* Parsnip::create() {
     auto p = new (std::nothrow) Parsnip();
     if (p && p->init()) {
@@ -118,7 +126,7 @@ bool Parsnip::init() {
     return true;
 }
 
-// ÍÁ¶¹
+// åœŸè±†
 Potato* Potato::create() {
     auto p = new (std::nothrow) Potato();
     if (p && p->init()) {
@@ -137,7 +145,7 @@ bool Potato::init() {
     return true;
 }
 
-// »¨Ò¬²Ë
+// èŠ±æ¤°èœ
 Cauliflower* Cauliflower::create() {
     auto p = new (std::nothrow) Cauliflower();
     if (p && p->init()) {
@@ -154,4 +162,5 @@ bool Cauliflower::init() {
     _maxGrowthStage = CAULIFLOWER_MAX_GROWTH_STAGE;
     updateTexture();
     return true;
+
 }
