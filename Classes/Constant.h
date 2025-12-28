@@ -183,16 +183,6 @@ const std::string BUTTON_IMAGES[4] = {     // 按钮图片
     "/Items/button/social button.png",
     "/Items/button/exit button.png"
 };
-// 技能水平显示
-const std::string LEVEL_FILLED1 = "/Player/red block.png";
-const std::string LEVEL_EMPTY1 = "/Player/empty block.png";
-const std::string LEVEL_FILLED2 = "/Player/orange block.png";
-const std::string LEVEL_EMPTY2 = "/Player/long block.png";
-
-// 好感度显示
-const std::string HEART_FILLED = "/NPC/red heart.png";
-const std::string HEART_EMPTY = "/NPC/empty heart.png";
-
 
 // UI - 睡觉
 const std::string PATH_UI_YES = "Shop/ok.png";
@@ -212,12 +202,27 @@ const std::string SHOP_NAME_MARNIE = "Marnie";
 const std::string PATH_NPC_SAM = "NPC/Sam.png";
 const std::string PATH_NPC_EVELYN = "NPC/Evelyn.png";
 const std::string PATH_NPC_HALEY = "NPC/Haley.png";
+const std::string PATH_SOCIAL_SAM = "NPC/SamPhoto.png";
+const std::string PATH_SOCIAL_EVELYN = "NPC/EvelynPhoto.png";
+const std::string PATH_SOCIAL_HALEY = "NPC/HaleyPhoto.png";
+const std::string HEART_FILLED = "NPC/red heart.png";
+const std::string HEART_EMPTY = "NPC/empty heart.png";
 
 //音乐
 const std::string MUSIC_FARM_HOUSE = "music/FarmHouse.mp3";
 const std::string MUSIC_FARM = "music/Farm.mp3";
 const std::string MUSIC_TOWN = "music/Town.mp3";
 const std::string EFFECT_CLICK = "music/click.mp3";
+
+// 技能
+const std::string LEVEL_FILLED1 = "Player/red block.png";
+const std::string LEVEL_EMPTY1 = "Player/empty block.png";
+const std::string LEVEL_FILLED2 = "Player/orange block.png";
+const std::string LEVEL_EMPTY2 = "Player/long block.png";
+const std::string PATH_FARMING_LEVEL = "Items/corn.png";
+const std::string PATH_MINING_LEVEL = "Items/pickaxe.png";
+const std::string PATH_FORAGING_LEVEL = "Items/cabbage.png";
+const std::string PATH_FISHING_LEVEL = "Items/anchovy.png";
 
 //钓鱼
 const std::string PATH_IMG_FISHING_BACKGROUND = "Fishing/Fishingicons.png";
@@ -629,5 +634,6 @@ constexpr float NO_BUTTON_POS_X_RATIO = 0.7f;
 constexpr float BUTTON_POS_Y_RATIO = 0.3f;
 
 #endif // __CONSTANT_H__
+
 
 
