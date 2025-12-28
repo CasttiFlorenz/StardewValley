@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     MinesItemManager.h
+ * File Function: MinesItemManagerç±»çš„å®ç°
+ * Author:        éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/16
+ * License:       MIT License
+ ****************************************************************/
 #pragma once
 #ifndef __MINES_ITEM_MANAGER_H__
 #define __MINES_ITEM_MANAGER_H__
@@ -10,47 +18,47 @@
 
 USING_NS_CC;
 
-// ¿ó¶´»·¾³ÎïÆ·¹ÜÀíÆ÷£¨¸ºÔğÉú³ÉºÍ¹ÜÀíÊ¯Í·¡¢Í­¿ó£©
+// çŸ¿æ´ç¯å¢ƒç‰©å“ç®¡ç†å™¨ï¼ˆè´Ÿè´£ç”Ÿæˆå’Œç®¡ç†çŸ³å¤´ã€é“œçŸ¿ï¼‰
 class MinesItemManager : public Ref {
 public:
-    // ´æµµÊı¾İ½á¹¹
+    // å­˜æ¡£æ•°æ®ç»“æ„
     struct MineItemData {
         EnvironmentItemType type;
         float x;
         float y;
     };
 
-    // »ñÈ¡µ¥Àı¶ÔÏó£¨Ê×´Îµ÷ÓÃĞèÒª´«Èë gameMap£©
+    // è·å–å•ä¾‹å¯¹è±¡ï¼ˆé¦–æ¬¡è°ƒç”¨éœ€è¦ä¼ å…¥ gameMapï¼‰
     static MinesItemManager* getInstance(GameMap* gameMap = nullptr);
 
-    // Ïú»Ùµ¥Àı¶ÔÏó
+    // é”€æ¯å•ä¾‹å¯¹è±¡
     static void destroyInstance();
 
-    // ÔÚÖ¸¶¨ÍßÆ¬×ø±êÌí¼ÓÎïÆ·
+    // åœ¨æŒ‡å®šç“¦ç‰‡åæ ‡æ·»åŠ ç‰©å“
     bool addItem(EnvironmentItemType type, const Vec2& tileCoord);
 
-    // ÒÆ³ıÖ¸¶¨ÍßÆ¬×ø±êµÄÎïÆ·
+    // ç§»é™¤æŒ‡å®šç“¦ç‰‡åæ ‡çš„ç‰©å“
     bool removeItem(const Vec2& tileCoord);
 
-    // ¼ì²éÖ¸¶¨Î»ÖÃÊÇ·ñÓĞÎïÆ·
+    // æ£€æŸ¥æŒ‡å®šä½ç½®æ˜¯å¦æœ‰ç‰©å“
     bool hasItem(const Vec2& tileCoord) const;
 
-    // »ñÈ¡Ö¸¶¨Î»ÖÃµÄÎïÆ·¶ÔÏó
+    // è·å–æŒ‡å®šä½ç½®çš„ç‰©å“å¯¹è±¡
     EnvironmentItem* getItem(const Vec2& tileCoord) const;
 
-    // Çå¿ÕËùÓĞÎïÆ·
+    // æ¸…ç©ºæ‰€æœ‰ç‰©å“
     void clear();
 
-    // Éú³É³õÊ¼ÎïÆ·£¨ÔÚ³õÊ¼»¯»òĞÂµÄÒ»Ììµ÷ÓÃ£©
+    // ç”Ÿæˆåˆå§‹ç‰©å“ï¼ˆåœ¨åˆå§‹åŒ–æˆ–æ–°çš„ä¸€å¤©è°ƒç”¨ï¼‰
     void spawnInitialItems();
 
-    // ĞÂµÄÒ»Ìì¸üĞÂÂß¼­
+    // æ–°çš„ä¸€å¤©æ›´æ–°é€»è¾‘
     void onNewDay();
 
-    // »ñÈ¡ËùÓĞÎïÆ·Êı¾İ£¨ÓÃÓÚ´æµµ£©
+    // è·å–æ‰€æœ‰ç‰©å“æ•°æ®ï¼ˆç”¨äºå­˜æ¡£ï¼‰
     std::vector<MineItemData> getItems() const;
 
-    // »Ö¸´´æµµÊı¾İ
+    // æ¢å¤å­˜æ¡£æ•°æ®
     void restoreData(const std::vector<MineItemData>& items);
 
 private:
@@ -61,16 +69,16 @@ private:
     MinesItemManager(const MinesItemManager&) = delete;
     MinesItemManager& operator=(const MinesItemManager&) = delete;
 
-    // ³õÊ¼»¯¹ÜÀíÆ÷
+    // åˆå§‹åŒ–ç®¡ç†å™¨
     bool init(GameMap* gameMap);
 
-    // »ñÈ¡ÍßÆ¬×ø±ê¶ÔÓ¦µÄÎ¨Ò»¼üÖµ
+    // è·å–ç“¦ç‰‡åæ ‡å¯¹åº”çš„å”¯ä¸€é”®å€¼
     static long long keyFor(const Vec2& tileCoord);
 
-    // ÒÆ³ı TMX ·­×ª±êÖ¾£¬»ñÈ¡Ô­Ê¼ GID
+    // ç§»é™¤ TMX ç¿»è½¬æ ‡å¿—ï¼Œè·å–åŸå§‹ GID
     static unsigned int stripFlags(unsigned int gid);
 
-    // ¼ì²é¸ÃÎ»ÖÃÊÇ·ñÔÊĞíÉú³É¿óÊ¯£¨»ùÓÚ TMX ÊôĞÔ£©
+    // æ£€æŸ¥è¯¥ä½ç½®æ˜¯å¦å…è®¸ç”ŸæˆçŸ¿çŸ³ï¼ˆåŸºäº TMX å±æ€§ï¼‰
     bool isStone(const Vec2& tileCoord) const;
 
 private:
@@ -78,12 +86,13 @@ private:
     TMXTiledMap* _tiledMap = nullptr;
     TMXLayer* _eventLayer = nullptr;
 
-    // ÎïÆ·Ó³Éä±í (key: tileCoord -> value: EnvironmentItem*)
+    // ç‰©å“æ˜ å°„è¡¨ (key: tileCoord -> value: EnvironmentItem*)
     std::unordered_map<long long, EnvironmentItem*> _items;
 
-    // ÎïÆ·¼ÆÊı
+    // ç‰©å“è®¡æ•°
     int _stoneCount = 0;
     int _copperCount = 0;
 };
+
 
 #endif // __MINES_ITEM_MANAGER_H__
