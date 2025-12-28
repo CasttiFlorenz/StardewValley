@@ -104,7 +104,6 @@ void ExitConfirm::onReturnToTitle()
     Mines::destroyInstance();
 
     InventoryScene::destroyInstance();
-    PlaceItems::destroyInstance();
     NPCManager::destroyInstance();
     TimeManager::destroyInstance();
     WeatherManager::destroyInstance();
@@ -133,3 +132,4 @@ void ExitConfirm::onExitGame()
     Director::getInstance()->end();
 
 }
+
