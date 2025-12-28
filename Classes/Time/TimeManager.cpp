@@ -212,7 +212,7 @@ void TimeManager::createUI() {
  */
 void TimeManager::setTime(const GameTime& time)
 {
-    currentTime = time; 
+    _currentTime = time; 
 }；
 
 /**
@@ -432,3 +432,4 @@ void TimeManager::startSleepSequence() {
     sleepBg->runAction(seq);
 
 }
+
