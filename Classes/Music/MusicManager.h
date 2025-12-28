@@ -1,4 +1,11 @@
-// MusicManager.h
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     MusicManager.h
+ * File Function: MusicManager类的实现
+ * Author:        蔡锦慧
+ * Update Date:   2025/12/21
+ * License:       MIT License
+ ****************************************************************/
 #ifndef __MUSIC_MANAGER_H__
 #define __MUSIC_MANAGER_H__
 
@@ -40,3 +47,4 @@ public:
 
 
 #endif // __MUSIC_MANAGER_H__
+
