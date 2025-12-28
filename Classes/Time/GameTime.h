@@ -63,7 +63,7 @@ public:
     void setSeason(Season season) { _season = season; }
     void setHour(int hour) { _hour = hour; }
     void setYear(int year) { _year=year; }
-    void setHour(int dayOfMonth) { _dayOfMonth = dayOfMonth; }
+    void setDayOfMonth(int dayOfMonth) { _dayOfMonth = dayOfMonth; }
     void setMinute(int minute) { _minute = minute; }
 private:
     // 处理日期变更和季节轮替的内部逻辑
@@ -79,3 +79,4 @@ private:
 
 
 #endif // GAME_TIME_H
+
