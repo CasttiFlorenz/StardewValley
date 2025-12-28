@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     FishGameLayer.h
+ * File Function: FishGameLayerç±»çš„å®ç°
+ * Author:        è”¡é”¦æ…§
+ * Update Date:   2025/12/21
+ * License:       MIT License
+ ****************************************************************/
 #ifndef __FISH_GAME_LAYER_H__
 #define __FISH_GAME_LAYER_H__
 
@@ -28,10 +36,11 @@ private:
     float _currentValue;
     bool _isGameActive;
 
-    // Î»ÖÃ³£Á¿£¨Ïà¶ÔÓÚ±³¾°Í¼Æ¬µÄ¾Ö²¿×ø±ê£©
+    // ä½ç½®å¸¸é‡ï¼ˆç›¸å¯¹äºèƒŒæ™¯å›¾ç‰‡çš„å±€éƒ¨åæ ‡ï¼‰
     cocos2d::Rect _progressBarRect;
     cocos2d::Vec2 _fishBasePosition;
 
 };
+
 
 #endif // __FISH_GAME_LAYER_H__
