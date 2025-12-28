@@ -2,7 +2,7 @@
 #include "../Scene/InitialMenuScene.h"
 #include "cocos2d.h"
 
-ExitConfirm* ExitConfirm::create(Node* parent, Sprite* background)
+ExitConfirm* ExitConfirm::createExitInterface(Node* parent, Sprite* background)
 {
     if (!parent || !background) {
         return nullptr;
@@ -134,5 +134,6 @@ void ExitConfirm::onExitGame()
     Director::getInstance()->end();
 
 }
+
 
 
