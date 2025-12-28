@@ -27,6 +27,13 @@ MusicManager* MusicManager::getInstance() {
     return instance;
 }
 
+void MusicManager::destroyInstance() {
+    if (instance) {
+        delete instance;
+        instance = nullptr;
+    }
+}
+
 void MusicManager::preloadMusic() {
     if (_isPreloaded) {
         CCLOG("音乐已经预加载过了");
@@ -123,4 +130,5 @@ bool MusicManager::isMusicPlaying() {
     return SimpleAudioEngine::getInstance()->isBackgroundMusicPlaying();
 
 }
+
 
