@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     ExitConfirm.h
- * File Function:  ExitConfirmÀàµÄÊµÏÖ
- * Author:        ÓÚ¶÷Îõ
+ * File Function:  ExitConfirmç±»çš„å®ç°
+ * Author:        äºæ©ç†™
  * Update Date:   2025/12/21
  * License:       MIT License
  ****************************************************************/
@@ -18,8 +18,8 @@ class ExitConfirm : public cocos2d::Node
 public:
     CREATE_FUNC(ExitConfirm);
 
-    // ´´½¨ÍË³öÈ·ÈÏ½çÃæ
-    static ExitConfirm* create(cocos2d::Node* parent, cocos2d::Sprite* background);
+    // åˆ›å»ºé€€å‡ºç¡®è®¤ç•Œé¢
+    static ExitConfirm* createExitInterface(cocos2d::Node* parent, cocos2d::Sprite* background);
 
     virtual bool init() override;
 
@@ -27,5 +27,6 @@ private:
     void onReturnToTitle();
     void onExitGame();
 };
+
 
 #endif // __EXIT_CONFIRM_H__
