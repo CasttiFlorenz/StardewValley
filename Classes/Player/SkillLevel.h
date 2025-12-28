@@ -47,7 +47,7 @@ public:
 
 
 private:
- 
+
     static SkillLevel* _instance;
 
     // 初始化技能数据
