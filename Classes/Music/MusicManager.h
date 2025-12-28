@@ -26,6 +26,7 @@ private:
 
 public:
     static MusicManager* getInstance();
+    static void destroyInstance();
 
     void preloadMusic();
 
@@ -47,4 +48,5 @@ public:
 
 
 #endif // __MUSIC_MANAGER_H__
+
 
