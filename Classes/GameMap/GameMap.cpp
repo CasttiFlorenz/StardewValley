@@ -1,6 +1,14 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     GameMap.cpp
+ * File Function: GameMapç±»çš„å®ç°
+ * Author:        éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/23
+ * License:       MIT License
+ ****************************************************************/
 #include "GameMap.h"
 
-// ³õÊ¼»¯
+// åˆå§‹åŒ–
 bool GameMap::init()
 {
     if (!Scene::init())
@@ -14,29 +22,29 @@ bool GameMap::init()
     return true;
 }
 
-// ÊÀ½ç×ø±ê -> ÍßÆ¬×ø±ê
+// ä¸–ç•Œåæ ‡ -> ç“¦ç‰‡åæ ‡
 Vec2 GameMap::calMapPos(Vec2 worldPos)
 {
     if (!_map) return Vec2::ZERO;
 
-    // ×ª»»Îª½Úµã×ø±ê
+    // è½¬æ¢ä¸ºèŠ‚ç‚¹åæ ‡
     const Vec2 nodePos = _map->convertToNodeSpace(worldPos);
 
-    // ¼ÆËãÍßÆ¬´óĞ¡
+    // è®¡ç®—ç“¦ç‰‡å¤§å°
     const Size mapSize = _map->getMapSize();
     if (mapSize.width <= 0 || mapSize.height <= 0) return Vec2::ZERO;
 
     const float tileSize = _map->getContentSize().width / mapSize.width;
     if (tileSize <= 0) return Vec2::ZERO;
 
-    // ×ª»»×ø±ê (Tiled yÖáÏòÏÂ)
+    // è½¬æ¢åæ ‡ (Tiled yè½´å‘ä¸‹)
     const int x = static_cast<int>(nodePos.x / tileSize);
     const int y = static_cast<int>(mapSize.height - nodePos.y / tileSize);
 
     return Vec2(static_cast<float>(x), static_cast<float>(y));
 }
 
-// ÍßÆ¬×ø±ê -> ÊÀ½ç×ø±ê
+// ç“¦ç‰‡åæ ‡ -> ä¸–ç•Œåæ ‡
 Vec2 GameMap::calWorldPos(const Vec2& tileCoord)
 {
     if (!_map) return Vec2::ZERO;
@@ -46,14 +54,14 @@ Vec2 GameMap::calWorldPos(const Vec2& tileCoord)
 
     const float tileSize = _map->getContentSize().width / mapSize.width;
 
-    // ¼ÆËãÖĞĞÄµã×ø±ê
+    // è®¡ç®—ä¸­å¿ƒç‚¹åæ ‡
     const float x = tileCoord.x * tileSize + tileSize / TILE_SIZE_HALF_DIVISOR;
     const float y = (mapSize.height - tileCoord.y - 1) * tileSize + tileSize / TILE_SIZE_HALF_DIVISOR;
 
     return Vec2(x, y);
 }
 
-// »ñÈ¡¶ÔÏó¾ØĞÎ
+// è·å–å¯¹è±¡çŸ©å½¢
 Rect GameMap::getObjectRect(const std::string& objectName)
 {
     if (!_map) return Rect::ZERO;
@@ -71,10 +79,10 @@ Rect GameMap::getObjectRect(const std::string& objectName)
 
             Rect nodeRect(x, y, width, height);
 
-            // ×ª»»ÎªÊÀ½ç×ø±ê
+            // è½¬æ¢ä¸ºä¸–ç•Œåæ ‡
             Vec2 worldOrigin = _map->convertToWorldSpace(nodeRect.origin);
 
-            // ¿¼ÂÇËõ·Å
+            // è€ƒè™‘ç¼©æ”¾
             const float scaleX = _map->getScaleX();
             const float scaleY = _map->getScaleY();
             Size worldSize(nodeRect.size.width * scaleX,
@@ -87,7 +95,7 @@ Rect GameMap::getObjectRect(const std::string& objectName)
     return Rect::ZERO;
 }
 
-// Åö×²¼ì²â
+// ç¢°æ’æ£€æµ‹
 bool GameMap::isCollidable(Vec2 worldPos)
 {
     if (!_map) return false;
@@ -98,12 +106,12 @@ bool GameMap::isCollidable(Vec2 worldPos)
 
     const Size mapSize = _map->getMapSize();
 
-    // ±ß½ç¼ì²â
+    // è¾¹ç•Œæ£€æµ‹
     if (x < 0 || x >= mapSize.width || y < 0 || y >= mapSize.height) {
         return true;
     }
 
-    // ÊÂ¼ş²ã¼ì²â
+    // äº‹ä»¶å±‚æ£€æµ‹
     auto layer = _map->getLayer(EVENT_LAYER_NAME);
     if (!layer) return false;
 
@@ -120,7 +128,7 @@ bool GameMap::isCollidable(Vec2 worldPos)
     return false;
 }
 
-// Ó¦ÓÃ·½ÏòÆ«ÒÆ
+// åº”ç”¨æ–¹å‘åç§»
 void GameMap::ApplyDirectionOffset(Vec2& basePos, Direction direction)
 {
     switch (direction) {
@@ -132,7 +140,7 @@ void GameMap::ApplyDirectionOffset(Vec2& basePos, Direction direction)
     }
 }
 
-// ÊôĞÔÖµÕæ¼ÙÅĞ¶Ï
+// å±æ€§å€¼çœŸå‡åˆ¤æ–­
 bool GameMap::IsTrueProperty(const Value& v)
 {
     switch (v.getType()) {
@@ -147,4 +155,5 @@ bool GameMap::IsTrueProperty(const Value& v)
     default:
         return false;
     }
+
 }
