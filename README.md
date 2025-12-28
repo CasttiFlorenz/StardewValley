@@ -35,9 +35,9 @@
 
 | 成员               | 主要负责模块   | 具体工作内容                                                 |
 | ------------------ | -------------- | ------------------------------------------------------------ |
-| **郭芷烟**（组长） | 场景与底层架构 | 完成了InitialMenuScene、CreateScene、GameScene类<br />实现Farm、Town、Mines、Barn、FarmHouse 五大地图类 |
-|                    | 美术资源       | 搭建了Farm、Town、Mines、Barn、FarmHouse 五大地图类的瓦片地图 |
-|                    | 地图资源生成   | 实现了 FarmItemManager、CultivationManager、MinesItemManager、BarnManager 等管理类，并构建了其对应的物品继承体系，包括 EnvironmentItem（如 WoodItem、GrassItem、StoneItem 等）、Crop 及其派生作物类，以及 BarnAnimal及其派生动物类<br />负责了以上地图数据的存档与读取 |
+| **郭芷烟**（组长） | 场景与底层架构 | ✅完成了InitialMenuScene、CreateScene、GameScene类<br />✅实现Farm、Town、Mines、Barn、FarmHouse 五大地图类 |
+|                    | 美术资源       | ✅搭建了Farm、Town、Mines、Barn、FarmHouse 五大地图类的瓦片地图 |
+|                    | 地图资源生成   | ✅实现了 FarmItemManager、CultivationManager、MinesItemManager、BarnManager 等管理类，并构建了其对应的物品继承体系，包括 EnvironmentItem（如 WoodItem、GrassItem、StoneItem 等）、Crop 及其派生作物类，以及 BarnAnimal及其派生动物类<br />✅负责了以上地图数据的存档与读取 |
 |                    | 项目统筹       | 负责整体架构设计、任务分配、代码整合、Bug 修复与最终测试     |
 | **于恩熙**         | UI 状态机      | 设计 InventoryManager UI 状态机，实现背包 / 技能 / 社交 / 退出界面的切换 |
 |                    | 背包系统       | 实现 InventoryGridScene，完成格子点击、物品选择、高亮与堆叠逻辑 |
