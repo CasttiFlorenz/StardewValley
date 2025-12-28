@@ -39,12 +39,12 @@
 |                    | 美术资源       | ✅搭建了Farm、Town、Mines、Barn、FarmHouse 五大地图类的瓦片地图 |
 |                    | 地图资源生成   | ✅实现了 FarmItemManager、CultivationManager、MinesItemManager、BarnManager 等管理类，并构建了其对应的物品继承体系，包括 EnvironmentItem（如 WoodItem、GrassItem、StoneItem 等）、Crop 及其派生作物类，以及 BarnAnimal及其派生动物类<br />✅负责了以上地图数据的存档与读取 |
 |                    | 项目统筹       | ✅负责整体架构设计、任务分配、代码整合、Bug 修复与最终测试     |
-| **于恩熙**         | UI 状态机      | 设计 InventoryManager UI 状态机，实现背包 / 技能 / 社交 / 退出界面的切换 |
-|                    | 背包系统       | 实现 InventoryGridScene，完成格子点击、物品选择、高亮与堆叠逻辑 |
-|                    | 数值可视化     | 实现 SkillLevel 技能等级显示；实现 SocialLevel 好感度界面与爱心渲染 |
-|                    | 玩家动画       | 构建 Player 动画状态机，控制移动与工具使用动画；实现玩家碰撞检测 |
-|                    | 系统界面       | 实现退出确认弹窗（ExitConfirm）                              |
-|                    | 存档           | 实现背包、时间、天气、金钱、技能等级、NPC 好感度的存档与读取    |
+| **于恩熙**         | UI状态机       | ✅设计了 InventoryManager 类，实现背包 / 技能 / 社交 / 退出界面的切换 |
+|                    | 背包系统       | ✅完成了 InventoryGridScene 和 InventoryScene 类，实现背包界面物品选择、高亮与增减物品和主界面所选物品的预览 |
+|                    | 数值可视化     | ✅实现了 SkillLevel 类，显示技能等级<br />✅实现了 SocialLevel 类，显示NPC好感度 |
+|                    | 玩家动画       | ✅实现了 Player 类，控制人物移动与工具使用动画，完善了玩家碰撞检测 |
+|                    | 系统界面       | ✅完成了 ExitConfirm 类，弹窗退出确认选项                        |
+|                    | 存档           | ✅实现了 SaveManage 类，负责背包、时间、天气、金钱、技能等级、NPC 好感度的存档与读取    |
 | **赵睿妍**         | 商店系统       | 设计并实现 Pierre、Marnie、Sale 三类商店的差异化买卖逻辑     |
 |                    | 经济系统       | 实现 Money 单例，处理金钱变化与交易校验                      |
 |                    | 时间系统       | 实现 TimeManager，控制时间流逝、昼夜变化与日期推进           |
