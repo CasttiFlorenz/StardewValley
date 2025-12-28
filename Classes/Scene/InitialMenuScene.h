@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     InitialMenuScene.h
+ * File Function: InitialMenuSceneç±»çš„å®ç°
+ * Author:        éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/16
+ * License:       MIT License
+ ****************************************************************/
 #ifndef __INITIALMENU_SCENE_H__
 #define __INITIALMENU_SCENE_H__
 
@@ -6,17 +14,18 @@
 #include "../Music/MusicManager.h"
 #include "../Save/SaveManage.h"
 
- // ÓÎÏ·Æô¶¯ºóµÄµÚÒ»¸ö½çÃæ
+ // æ¸¸æˆå¯åŠ¨åçš„ç¬¬ä¸€ä¸ªç•Œé¢
 class InitialMenuScene : public cocos2d::Scene
 {
 public:
-    // ´´½¨³õÊ¼²Ëµ¥³¡¾°
+    // åˆ›å»ºåˆå§‹èœå•åœºæ™¯
     static cocos2d::Scene* createScene();
 
-    // ³¡¾°³õÊ¼»¯
+    // åœºæ™¯åˆå§‹åŒ–
     virtual bool init() override;
 
     CREATE_FUNC(InitialMenuScene);
 };
 
 #endif // __INITIALMENU_SCENE_H__
+
