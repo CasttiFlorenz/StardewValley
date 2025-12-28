@@ -32,9 +32,6 @@ bool FishGameLayer::init()
 
     _fishBasePosition = Vec2(73, 22);
 
-    // 进度条可填充高度
-    _progressBarHeight = 400.0f;
-
     if (!setupUI()) {
         return false;
     }
@@ -285,3 +282,4 @@ void FishGameLayer::endGame(bool isSuccess)
         }, 2.0f, "return_to_farm");
 
 }
+
