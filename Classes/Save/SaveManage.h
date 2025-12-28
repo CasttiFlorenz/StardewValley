@@ -37,9 +37,9 @@ private:
     bool saveFriendships();
     bool loadFriendships();
 
-    // 游戏时间存档/读档
-    bool saveGameTime();
-    bool loadGameTime();
+    // 游戏环境存档/读档
+    bool saveGameConditions();
+    bool loadGameConditions();
 
     // 技能存档/读档
     bool saveSkills();

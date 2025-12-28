@@ -177,7 +177,7 @@ bool SaveManage::loadFriendships()
 
     return true;
 }
-// ========== 时间和金钱 ==========
+// ========== 时间 天气 金钱 ==========
 
 
 // 序列化游戏时间
@@ -213,8 +213,8 @@ bool SaveManage::deserializeGameTime(const rapidjson::Value& timeObj, GameTime& 
     return true;
 }
 
-// 保存游戏时间和金钱
-bool SaveManage::saveGameTime()
+// 保存游戏环境
+bool SaveManage::saveGameConditions()
 {
     auto timeManager = TimeManager::getInstance();
     if (!timeManager) return false;
@@ -222,10 +222,18 @@ bool SaveManage::saveGameTime()
     // 获取当前时间
     GameTime gameTime = timeManager->getCurrentTime();
 
+    // 获取金钱
     int money = 0;
-    auto moneyManager = Money::getInstance();  // 假设存在
+    auto moneyManager = Money::getInstance(); 
     if (moneyManager) {
         money = moneyManager->getMoney();
+    }
+
+    // 获取天气
+    int weather = 0;  // 存储为int
+    auto weatherManager = WeatherManager::getInstance();
+    if (weatherManager) {
+        weather = static_cast<int>(weatherManager->getCurrentWeather());
     }
 
     rapidjson::Document doc;
@@ -236,36 +244,41 @@ bool SaveManage::saveGameTime()
     doc.AddMember("gameTime", serializeGameTime(gameTime, alloc), alloc);
     // 添加金钱数据
     doc.AddMember("money", money, alloc);
+    // 添加天气数据
+    doc.AddMember("weather", weather, alloc);
 
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
     doc.Accept(writer);
 
-    return FileUtils::getInstance()->writeStringToFile(buffer.GetString(), getFilePath("gametime.json"));
+    return FileUtils::getInstance()->writeStringToFile(buffer.GetString(), getFilePath("conditions.json"));
 }
 
-// 加载游戏时间
-bool SaveManage::loadGameTime() 
+// 加载游戏环境
+bool SaveManage::loadGameConditions()
 {
     auto timeManager = TimeManager::getInstance();
     if (!timeManager) return false;
 
     // 读取时间文件
-    std::string jsonStr = FileUtils::getInstance()->getStringFromFile(getFilePath("gametime.json"));
+    std::string jsonStr = FileUtils::getInstance()->getStringFromFile(getFilePath("conditions.json"));
     rapidjson::Document doc;
 
-    if (doc.Parse(jsonStr.c_str()).HasParseError() || !doc.HasMember("gameTime")) {
+    if (doc.Parse(jsonStr.c_str()).HasParseError()) {
         return false;
     }
 
     bool timeLoaded = false;
     bool moneyLoaded = false;
+    bool weatherLoaded = false;
 
     // 解析时间数据
-    GameTime gameTime;
-    if (deserializeGameTime(doc["gameTime"], gameTime)) {
-        timeManager->setTime(gameTime);
-        timeLoaded = true;
+    if (doc.HasMember("gameTime")) {
+        GameTime gameTime;
+        if (deserializeGameTime(doc["gameTime"], gameTime)) {
+            timeManager->setTime(gameTime);
+            timeLoaded = true;
+        }
     }
     // 解析金钱数据
     if (doc.HasMember("money") && doc["money"].IsInt()) {
@@ -276,8 +289,17 @@ bool SaveManage::loadGameTime()
             moneyLoaded = true;
         }
     }
+    // 解析天气数据
+    if (doc.HasMember("weather") && doc["weather"].IsInt()) {
+        int weatherValue = doc["weather"].GetInt();
+        auto weatherManager = WeatherManager::getInstance();
+        if (weatherManager) {
+            weatherManager->setWeather(static_cast<WeatherType>(weatherValue));
+            weatherLoaded = true;
+        }
+    }
 
-    return timeLoaded && moneyLoaded;
+    return timeLoaded && moneyLoaded && weatherLoaded;
 }
 
 // ========== 保存技能 ==========
@@ -363,7 +385,7 @@ bool SaveManage::saveAllData()
     bool result1 = saveInventory();
     bool result2 = saveFriendships();
     bool result3 = saveSkills();
-    bool result4 = saveGameTime();
+    bool result4 = saveGameConditions();
 
     return result1 && result2 && result3 && result4;  // 只有全部成功才返回true
 }
@@ -374,7 +396,7 @@ bool SaveManage::loadAllData()
     bool result1 = loadInventory();
     bool result2 = loadFriendships();
     bool result3 = loadSkills();
-    bool result4 = loadGameTime();
+    bool result4 = loadGameConditions();
 
     return result1 && result2 && result3 && result4; // 只有全部成功才返回true
 }

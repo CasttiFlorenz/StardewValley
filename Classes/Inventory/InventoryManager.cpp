@@ -11,6 +11,10 @@
 
 USING_NS_CC;
 
+#include "InventoryManager.h"
+
+USING_NS_CC;
+
 // 静态变量初始化
 Node* InventoryManager::s_parent = nullptr;
 Sprite* InventoryManager::s_background = nullptr;
@@ -91,6 +95,9 @@ void InventoryManager::createInterface(
 
     // 创建按钮
     createButtons(parent, background, buttons, backpackWidth);
+
+    auto container = SkillLevel::createSkillsInterface(s_parent, s_background);
+    container->setVisible(false);
 }
 
 // 创建背景
@@ -224,7 +231,7 @@ void InventoryManager::createButtons(
 void InventoryManager::setButtonCallback(ButtonCallback callback)
 {
     s_buttonCallback = callback;
-} 
+}
 
 // 按钮触摸回调
 bool InventoryManager::onButtonTouch(Touch* touch, Event* event)
@@ -341,14 +348,14 @@ void InventoryManager::switchToExit()
 
     // 退出逻辑
     if (s_parent && s_background) {
-        s_container = ExitConfirm::create(s_parent, s_background);
+        s_container = ExitConfirm::createExitInterface(s_parent, s_background);
     }
 }
 
 // 清除旧界面
 void InventoryManager::removeContainer()
 {
-    if (!s_container) return;  
+    if (!s_container) return;
 
     if (s_container->getParent()) {
         s_container->removeFromParent();
