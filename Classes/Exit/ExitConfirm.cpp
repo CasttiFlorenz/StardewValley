@@ -97,6 +97,7 @@ void ExitConfirm::onReturnToTitle()
     MinesItemManager::destroyInstance();
 
     Player::destroyInstance();
+    SkillLevel::destroyInstance();
     Farm::destroyInstance();
     Town::destroyInstance();
     FarmHouse::destroyInstance();
@@ -123,6 +124,7 @@ void ExitConfirm::onExitGame()
     MusicManager::destroyInstance();
 
     Player::destroyInstance();
+    SkillLevel::destroyInstance();
     Farm::destroyInstance();
     Town::destroyInstance();
     FarmHouse::destroyInstance();
@@ -132,4 +134,5 @@ void ExitConfirm::onExitGame()
     Director::getInstance()->end();
 
 }
+
 
