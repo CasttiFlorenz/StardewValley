@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     SocialLevel.cpp
- * File Function: SocialLevelç±»çš„å®ç°
- * Author:        äºæ©ç†™
+ * File Function: SocialLevelÀàµÄÊµÏÖ
+ * Author:        ÓÚ¶÷Îõ
  * Update Date:   2025/12/21
  * License:       MIT License
  ****************************************************************/
@@ -10,44 +10,43 @@
 
 USING_NS_CC;
 
-// è·å–NPCå¤´åƒæ•°æ®
+// »ñÈ¡NPCÍ·ÏñÊı¾İ
 void SocialLevel::getNPCStyle(const std::string& name, std::string& outIconPath, float& outScale)
 {
-    if (name == "Evelyn") {
-        outIconPath = "/NPC/EvelynPhoto.png";
+    if (name == NPC_NAME_EVELYN) {
+        outIconPath = PATH_SOCIAL_EVELYN;
         outScale = 6.0f;
     }
-    else if (name == "Haley") {
-        outIconPath = "/NPC/HaleyPhoto.png";
+    else if (name == NPC_NAME_HALEY) {
+        outIconPath = PATH_SOCIAL_HALEY;
         outScale = 5.2f;
     }
-    else if (name == "Sam") {
-        outIconPath = "/NPC/SamPhoto.png";
+    else if (name == NPC_NAME_SAM) {
+        outIconPath = PATH_SOCIAL_SAM;
         outScale = 5.2f;
     }
     else {
-        // é»˜è®¤å¤´åƒ
-        outIconPath = "/NPC/DefaultPhoto.png"; 
+        // Ä¬ÈÏÍ·Ïñ
+        outIconPath = PATH_SOCIAL_EVELYN;
         outScale = 5.0f;
     }
 }
 
-// åˆ›å»ºå¥½æ„Ÿåº¦çˆ±å¿ƒæ˜¾ç¤º
+// ´´½¨ºÃ¸Ğ¶È°®ĞÄÏÔÊ¾
 Node* SocialLevel::createFriendshipHearts(int level)
 {
     Node* heartContainer = Node::create();
     const float SPACING = 35.0f;
-    const int TOTAL_HEARTS = 10;
 
     float totalWidth = (TOTAL_HEARTS - 1) * SPACING;
     float startX = -totalWidth / 2;
 
     for (int i = 0; i < TOTAL_HEARTS; i++) {
-        // å‡è®¾æ¯ 150 åˆ†ä¸€é¢—å¿ƒ
+        // ¼ÙÉèÃ¿ 150 ·ÖÒ»¿ÅĞÄ
         bool isFilled = (i < level / 150);
         const std::string heartPath = isFilled ? HEART_FILLED : HEART_EMPTY;
 
-        // æ‰“å°çˆ±å¿ƒ
+        // ´òÓ¡°®ĞÄ
         auto heartSprite = Sprite::create(heartPath);
         if (heartSprite) {
             float currentX = startX + i * SPACING;
@@ -59,25 +58,25 @@ Node* SocialLevel::createFriendshipHearts(int level)
     return heartContainer;
 }
 
-// åˆ›å»ºå•ä¸ªç¤¾äº¤äººç‰©é¡¹
+// ´´½¨µ¥¸öÉç½»ÈËÎïÏî
 Node* SocialLevel::createCharacterItem(NPCBase* npc, const Vec2& position)
 {
     if (!npc) return nullptr;
 
-    // è·å–å®æ—¶æ•°æ®
+    // »ñÈ¡ÊµÊ±Êı¾İ
     std::string name = npc->getNPCName(); 
     int currentFriendship = npc->getFriendship(); 
 
-    // è·å– UI æ ·å¼
+    // »ñÈ¡ UI ÑùÊ½
     std::string iconPath;
     float iconScale;
     getNPCStyle(name, iconPath, iconScale);
 
-    // åˆ›å»ºå®¹å™¨
+    // ´´½¨ÈİÆ÷
     Node* characterItem = Node::create();
     characterItem->setPosition(position);
 
-    // ========== äººç‰©å¤´åƒ ==========
+    // ========== ÈËÎïÍ·Ïñ ==========
     auto characterIcon = Sprite::create(iconPath);
     if (characterIcon) {
         characterIcon->setScale(iconScale);
@@ -86,8 +85,8 @@ Node* SocialLevel::createCharacterItem(NPCBase* npc, const Vec2& position)
         characterItem->addChild(characterIcon);
     }
 
-    // ========== äººç‰©åå­— ==========
-    auto nameLabel = Label::createWithTTF(name, "fonts/Louis George Cafe Bold.ttf", 28);
+    // ========== ÈËÎïÃû×Ö ==========
+    auto nameLabel = Label::createWithTTF(name, PATH_FONT_LOUIS, 28);
     if (nameLabel) {
         nameLabel->setTextColor(Color4B::BLACK);
         nameLabel->setAnchorPoint(Vec2(0, 0.5f));
@@ -95,14 +94,14 @@ Node* SocialLevel::createCharacterItem(NPCBase* npc, const Vec2& position)
         characterItem->addChild(nameLabel);
     }
 
-    // ========== ç«–çº¿ ==========
+    // ========== ÊúÏß ==========
     DrawNode* verticalLine = DrawNode::create();
     if (verticalLine) {
         verticalLine->drawSegment(Vec2(-150, -75), Vec2(-150, 75), 2.0f, Color4F(0.55f, 0.27f, 0.07f, 1.0f));
         characterItem->addChild(verticalLine);
     }
 
-    // ========== å¥½æ„Ÿåº¦çˆ±å¿ƒ ==========
+    // ========== ºÃ¸Ğ¶È°®ĞÄ ==========
     Node* heartContainer = createFriendshipHearts(currentFriendship);
     if (heartContainer) {
         heartContainer->setPosition(Vec2(100, 0));
@@ -113,30 +112,30 @@ Node* SocialLevel::createCharacterItem(NPCBase* npc, const Vec2& position)
     return characterItem;
 }
 
-// åˆ›å»ºç¤¾äº¤ç•Œé¢
+// ´´½¨Éç½»½çÃæ
 Node* SocialLevel::createSocialInterface(Node* parent, Sprite* background)
 {
     if (!parent || !background) return nullptr;
 
-    // åˆ›å»ºä¸»å®¹å™¨
+    // ´´½¨Ö÷ÈİÆ÷
     Node* container = Node::create();
 
-    // è·å–èƒŒæ™¯ä½ç½®
+    // »ñÈ¡±³¾°Î»ÖÃ
     Vec2 bgPos = background->getPosition();
     float startY = bgPos.y + 120;
     float spacing = 120;
 
     const auto& npcList = NPCManager::getInstance()->getAllNPCs();
 
-    // éå†æ‰€æœ‰æ´»ç€çš„ NPC
+    // ±éÀúËùÓĞ»î×ÅµÄ NPC
     for (size_t i = 0; i < npcList.size(); ++i) {
         NPCBase* npc = npcList[i];
         if (!npc) continue;
 
-        // è®¡ç®—ä½ç½®
+        // ¼ÆËãÎ»ÖÃ
         Vec2 position = Vec2(bgPos.x, startY - i * spacing);
 
-        // åˆ›å»ºæ¡ç›®
+        // ´´½¨ÌõÄ¿
         Node* characterItem = createCharacterItem(npc, position);
         if (characterItem) {
             container->addChild(characterItem);
@@ -146,7 +145,7 @@ Node* SocialLevel::createSocialInterface(Node* parent, Sprite* background)
                 if (horizontalLine) {
                     float lineY = startY - (i + 0.5f) * spacing;
                     horizontalLine->drawSegment(
-                        Vec2(bgPos.x - 460, lineY), // 920çš„ä¸€åŠ
+                        Vec2(bgPos.x - 460, lineY), // 920µÄÒ»°ë
                         Vec2(bgPos.x + 460, lineY),
                         2.0f,
                         Color4F(0.55f, 0.27f, 0.07f, 1.0f)
@@ -157,7 +156,7 @@ Node* SocialLevel::createSocialInterface(Node* parent, Sprite* background)
         }
     }
 
+
     parent->addChild(container, 100);
     return container;
-
 }
