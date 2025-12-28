@@ -18,7 +18,7 @@ SkillLevel* SkillLevel::_instance = nullptr;
 // 获取单例
 SkillLevel* SkillLevel::getInstance() {
     if (!_instance) {
-        _instance = new SkillLevel();  
+        _instance = new SkillLevel();
     }
     return _instance;
 }
@@ -36,10 +36,10 @@ void SkillLevel::destroyInstance()
 void SkillLevel::initSkillData()
 {
     // 初始化技能数据
-    s_skillData[static_cast<int>(SkillType::FARMING)] = { "Farming", 0, 4.0f,"/Items/corn.png" };
-    s_skillData[static_cast<int>(SkillType::MINING)] = { "Mining", 0,1.2f, "/Items/pickaxe.png" };
-    s_skillData[static_cast<int>(SkillType::FORAGING)] = { "Foraging", 0,4.0f, "/Items/cabbage.png" };
-    s_skillData[static_cast<int>(SkillType::FISHING)] = { "Fishing", 0, 1.2f,"/Items/anchovy.png" };
+    s_skillData[static_cast<int>(SkillType::FARMING)] = { "Farming", 0, 4.0f,PATH_FARMING_LEVEL };
+    s_skillData[static_cast<int>(SkillType::MINING)] = { "Mining", 0,1.2f, PATH_MINING_LEVEL };
+    s_skillData[static_cast<int>(SkillType::FORAGING)] = { "Foraging", 0,4.0f, PATH_FORAGING_LEVEL };
+    s_skillData[static_cast<int>(SkillType::FISHING)] = { "Fishing", 0, 1.2f,PATH_FISHING_LEVEL };
 
 }
 
@@ -66,7 +66,7 @@ Node* SkillLevel::createLevelStars(int level)
     float currentX = startX;
 
     for (int i = 0; i < MAX_LEVEL / 10; i++) {
-        bool isFilled = (i < level / 10);
+        bool isFilled = (i < level);
 
         // 选择类型
         const std::string filledPath = ((i + 1) % 5 == 0) ? LEVEL_FILLED2 : LEVEL_FILLED1;
@@ -93,16 +93,14 @@ Node* SkillLevel::createSkillItem(SkillType skillType, const Vec2& position)
     }
 
     SkillData& skill = s_skillData[static_cast<int>(skillType)];
-    int currentLevel = skill.level;
-    if (currentLevel < 0) currentLevel = 0;
-    if (currentLevel > MAX_LEVEL) currentLevel = MAX_LEVEL;
+    int currentLevel = static_cast<int>(skill.level / 10);
 
     // 创建技能项容器
     Node* skillItem = Node::create();
     skillItem->setPosition(position);
 
     // ========== 打印技能名字（最左侧） ==========
-    auto nameLabel = Label::createWithTTF(skill.name, "fonts/Louis George Cafe Bold.ttf", 24);
+    auto nameLabel = Label::createWithTTF(skill.name, PATH_FONT_LOUIS, 24);
     if (nameLabel) {
         nameLabel->setTextColor(Color4B::BLACK);
         nameLabel->setAnchorPoint(Vec2(0, 0.5f));  // 左对齐
@@ -126,10 +124,9 @@ Node* SkillLevel::createSkillItem(SkillType skillType, const Vec2& position)
     }
 
     // ========== 显示最终等级文字（最右侧） ==========
-    auto levelText = Label::createWithTTF(std::to_string(currentLevel),
-        "fonts/Handron-Filled.otf", 45);
+    auto levelText = Label::createWithTTF(std::to_string(currentLevel), PATH_FONT_HANDRON, 45);
     if (levelText) {
-        levelText->setTextColor(Color4B(210, 105, 30, 255));
+        levelText->setTextColor(COLOR_SKILL_LEVEL_NUM);
         levelText->setAnchorPoint(Vec2(0, 0.5f));  // 左对齐
         levelText->setPosition(Vec2(400, 0));      // 最右边
         skillItem->addChild(levelText);
