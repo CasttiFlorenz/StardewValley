@@ -1,9 +1,17 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     HoverButton.cpp
+ * File Function: HoverButtonç±»çš„å®žçŽ°
+ * Author:        éƒ­èŠ·çƒŸ
+ * Update Date:   2025/12/07
+ * License:       MIT License
+ ****************************************************************/
 #include "HoverButton.h"
 
 USING_NS_CC;
 using namespace cocos2d::ui;
 
-// ´´½¨°´Å¥ÊµÀý
+// åˆ›å»ºæŒ‰é’®å®žä¾‹
 HoverButton* HoverButton::create(const std::string& normalImage,
     const std::string& selectedImage,
     const std::string& disabledImage)
@@ -18,7 +26,7 @@ HoverButton* HoverButton::create(const std::string& normalImage,
     return nullptr;
 }
 
-// ³õÊ¼»¯°´Å¥
+// åˆå§‹åŒ–æŒ‰é’®
 bool HoverButton::init(const std::string& normalImage,
     const std::string& selectedImage,
     const std::string& disabledImage)
@@ -32,7 +40,7 @@ bool HoverButton::init(const std::string& normalImage,
     _selectedImage = selectedImage;
     _disabledImage = disabledImage;
 
-    // ×¢²áÊó±êÊÂ¼þ¼àÌýÆ÷
+    // æ³¨å†Œé¼ æ ‡äº‹ä»¶ç›‘å¬å™¨
     auto mouseListener = EventListenerMouse::create();
     mouseListener->onMouseMove = CC_CALLBACK_1(HoverButton::onMouseMove, this);
     mouseListener->onMouseUp = CC_CALLBACK_1(HoverButton::onMouseUp, this);
@@ -42,21 +50,21 @@ bool HoverButton::init(const std::string& normalImage,
     return true;
 }
 
-// Êó±êÒÆ¶¯ÊÂ¼þ
+// é¼ æ ‡ç§»åŠ¨äº‹ä»¶
 void HoverButton::onMouseMove(cocos2d::Event* event)
 {
     auto* mouseEvent = static_cast<EventMouse*>(event);
 
-    // »ñÈ¡¸¸½Úµã²¢×ª»»×ø±ê
+    // èŽ·å–çˆ¶èŠ‚ç‚¹å¹¶è½¬æ¢åæ ‡
     if (!this->getParent()) return;
 
     const auto locationInNode = this->getParent()->convertToNodeSpace(mouseEvent->getLocationInView());
     const auto boundingBox = this->getBoundingBox();
 
-    // ÅÐ¶ÏÊó±êÊÇ·ñÔÚ°´Å¥·¶Î§ÄÚ
+    // åˆ¤æ–­é¼ æ ‡æ˜¯å¦åœ¨æŒ‰é’®èŒƒå›´å†…
     if (boundingBox.containsPoint(locationInNode))
     {
-        // ·Å´ó²¢ÇÐ»»Í¼Æ¬
+        // æ”¾å¤§å¹¶åˆ‡æ¢å›¾ç‰‡
         if (this->getScaleX() == _baseScaleX && this->getScaleY() == _baseScaleY)
         {
             this->stopAllActions();
@@ -69,7 +77,7 @@ void HoverButton::onMouseMove(cocos2d::Event* event)
     }
     else
     {
-        // Àë¿ª·¶Î§£¬»Ö¸´Ô­×´
+        // ç¦»å¼€èŒƒå›´ï¼Œæ¢å¤åŽŸçŠ¶
         if (this->getScaleX() != _baseScaleX || this->getScaleY() != _baseScaleY)
         {
             this->stopAllActions();
@@ -79,7 +87,7 @@ void HoverButton::onMouseMove(cocos2d::Event* event)
     }
 }
 
-// Êó±êÌ§ÆðÊÂ¼þ
+// é¼ æ ‡æŠ¬èµ·äº‹ä»¶
 void HoverButton::onMouseUp(cocos2d::Event* event)
 {
     auto* mouseEvent = static_cast<EventMouse*>(event);
@@ -89,7 +97,7 @@ void HoverButton::onMouseUp(cocos2d::Event* event)
     const auto locationInNode = this->getParent()->convertToNodeSpace(mouseEvent->getLocationInView());
     const auto boundingBox = this->getBoundingBox();
 
-    // Ì§ÆðÊ±±£³ÖÑ¡ÖÐ×´Ì¬ÏÔÊ¾£¨Èç¹ûÊÇµã»÷²Ù×÷µÄÒ»²¿·Ö£©
+    // æŠ¬èµ·æ—¶ä¿æŒé€‰ä¸­çŠ¶æ€æ˜¾ç¤ºï¼ˆå¦‚æžœæ˜¯ç‚¹å‡»æ“ä½œçš„ä¸€éƒ¨åˆ†ï¼‰
     if (boundingBox.containsPoint(locationInNode))
     {
         if (this->getScaleX() == _baseScaleX && this->getScaleY() == _baseScaleY)
@@ -102,4 +110,5 @@ void HoverButton::onMouseUp(cocos2d::Event* event)
             this->loadTextureNormal(_selectedImage);
         }
     }
+
 }
