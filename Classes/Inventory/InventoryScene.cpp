@@ -3,7 +3,7 @@
  * File Name:     InventoryScene.cpp
  * File Function: InventoryScene类的实现
  * Author:        于恩熙
- * Update Date:   2025/12/21
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 
@@ -84,8 +84,10 @@ void InventoryScene::ToolUseAnimation()
         return;
 
     const Item& item = _inventoryLayer->getItemAt(_selectedGrid);
-    if ((item.getTag() >= ItemType::HOE && item.getTag() <= ItemType::FISHINGROD)
+    if (((item.getTag() >= ItemType::HOE && item.getTag() <= ItemType::FISHINGROD)
         || (item.getTag() >= ItemType::PARSNIP_SEED && item.getTag() <= ItemType::POTATO_SEED))
+        && item.getTag() != ItemType::PARSNIP && item.getTag() != ItemType::POTATO && item.getTag() != ItemType::CAULIFLOWER
+        && item.getTag() != ItemType::MILK && item.getTag() != ItemType::EGG)
         // 显示工具使用特效
         if (item.getCount() > 0)
             showToolUseEffect(_selectedGrid);

@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     CultivationManager.h
- * File Function: CultivationManagerç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: CultivationManagerÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #pragma once
@@ -17,57 +17,57 @@
 
 USING_NS_CC;
 
-// è€•ç§ç®¡ç†å™¨ï¼ˆè´Ÿè´£æ‰€æœ‰è€•åœ°å’Œä½œç‰©çš„ç”Ÿå‘½å‘¨æœŸï¼‰
+// ¸ûÖÖ¹ÜÀíÆ÷£¨¸ºÔğËùÓĞ¸ûµØºÍ×÷ÎïµÄÉúÃüÖÜÆÚ£©
 class CultivationManager : public Ref
 {
 public:
-    // å­˜æ¡£æ•°æ®ç»“æ„
+    // ´æµµÊı¾İ½á¹¹
     struct SoilSaveData {
         float x;
         float y;
-        int status;     // åœŸå£¤çŠ¶æ€
-        int cropType;   // ä½œç‰©ç±»å‹
-        int cropStage;  // ç”Ÿé•¿é˜¶æ®µ
-        int cropStatus; // ä½œç‰©çŠ¶æ€
+        int status;     // ÍÁÈÀ×´Ì¬
+        int cropType;   // ×÷ÎïÀàĞÍ
+        int cropStage;  // Éú³¤½×¶Î
+        int cropStatus; // ×÷Îï×´Ì¬
     };
 
-    // è·å–å•ä¾‹
+    // »ñÈ¡µ¥Àı
     static CultivationManager* getInstance(
         FarmItemManager* farmItemManager = nullptr,
         GameMap* gameMap = nullptr
     );
 
-    // é”€æ¯å•ä¾‹
+    // Ïú»Ùµ¥Àı
     static void destroyInstance();
 
-    // åˆå§‹åŒ–
+    // ³õÊ¼»¯
     bool init(FarmItemManager* farmItemManager, GameMap* gameMap);
 
-    // å°è¯•å¼€å¦åœŸåœ°
+    // ³¢ÊÔ¿ª¿ÑÍÁµØ
     bool attemptCultivate(const Vec2& tileCoord);
 
-    // æµ‡æ°´
+    // ½½Ë®
     bool waterSoil(const Vec2& tileCoord);
 
-    // ç§æ¤ä½œç‰©
+    // ÖÖÖ²×÷Îï
     bool plantCrop(const Vec2& tileCoord, ItemType type);
 
-    // æ–°çš„ä¸€å¤©æ›´æ–°
+    // ĞÂµÄÒ»Ìì¸üĞÂ
     void onNewDay();
 
-    // ç§»é™¤è€•åœ°
+    // ÒÆ³ı¸ûµØ
     bool removeSoil(const Vec2& tileCoord);
 
-    // æ”¶è·ä½œç‰©
+    // ÊÕ»ñ×÷Îï
     ItemType harvestCrop(const Vec2& tileCoord);
 
-    // å…¨å›¾æµ‡æ°´ï¼ˆè°ƒè¯•/æµ‹è¯•ç”¨ï¼‰
+    // È«Í¼½½Ë®£¨µ÷ÊÔ/²âÊÔÓÃ£©
     void waterAllSoils();
 
-    // è·å–å­˜æ¡£æ•°æ®
+    // »ñÈ¡´æµµÊı¾İ
     std::vector<SoilSaveData> getSoilsData() const;
 
-    // æ¢å¤å­˜æ¡£æ•°æ®
+    // »Ö¸´´æµµÊı¾İ
     void restoreData(const std::vector<SoilSaveData>& data);
 
 private:
@@ -77,17 +77,17 @@ private:
     CultivationManager(const CultivationManager&) = delete;
     CultivationManager& operator=(const CultivationManager&) = delete;
 
-    // è·å–ç“¦ç‰‡å”¯ä¸€é”®
+    // »ñÈ¡ÍßÆ¬Î¨Ò»¼ü
     static long long keyFor(const Vec2& tileCoord);
 
 private:
     static CultivationManager* _instance;
 
-    FarmItemManager* _farmItemManager; // å†œåœºç‰©å“ç®¡ç†å™¨å¼•ç”¨
-    GameMap* _gameMap;                 // æ¸¸æˆåœ°å›¾å¼•ç”¨
-    TMXTiledMap* _tiledMap;            // Tiledåœ°å›¾å¼•ç”¨
+    FarmItemManager* _farmItemManager; // Å©³¡ÎïÆ·¹ÜÀíÆ÷ÒıÓÃ
+    GameMap* _gameMap;                 // ÓÎÏ·µØÍ¼ÒıÓÃ
+    TMXTiledMap* _tiledMap;            // TiledµØÍ¼ÒıÓÃ
 
-    // è€•åœ°æ˜ å°„è¡¨ (key: tileCoord -> value: CultivatedSoil*)
+    // ¸ûµØÓ³Éä±í (key: tileCoord -> value: CultivatedSoil*)
     std::unordered_map<long long, CultivatedSoil*> _soils;
 };
 

@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     FishGameLayer.h
- * File Function: FishGameLayerç±»çš„å®ç°
- * Author:        è”¡é”¦æ…§
- * Update Date:   2025/12/21
+ * File Function: FishGameLayerÀàµÄÊµÏÖ
+ * Author:        ²Ì½õ»Û
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #ifndef __FISH_GAME_LAYER_H__
@@ -12,35 +12,53 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 
+// µöÓãĞ¡ÓÎÏ·Í¼²ã
 class FishGameLayer : public cocos2d::Layer
 {
 public:
+    // ¾²Ì¬´´½¨º¯Êı
     static FishGameLayer* create();
-    virtual bool init();
 
-    bool setupUI();
-    bool setupEvents();
+    // ³õÊ¼»¯º¯Êı
+    virtual bool init() override;
 
+    // Ã¿Ò»Ö¡¸üĞÂÓÎÏ·Âß¼­
     void update(float delta) override;
+
+    // Êó±êµã»÷ÊÂ¼ş´¦Àí
     void onMouseClick();
+
+    // ½áÊøÓÎÏ·
     void endGame(bool isSuccess);
+
+private:
+    // ÉèÖÃÓÎÏ· UI ÔªËØ
+    void setupUI();
+
+    // ÉèÖÃÊÂ¼ş¼àÌıÆ÷
+    void setupEvents();
+
+    // ¸üĞÂ½ø¶ÈÌõÏÔÊ¾
     void updateProgressBar();
+
+    // ¸üĞÂÓãµÄÎ»ÖÃ
     void updateFishPosition();
 
 private:
-    cocos2d::Sprite* _background;
-    cocos2d::DrawNode* _progressBar;
-    cocos2d::Sprite* _fishSprite;
-    cocos2d::Label* _resultLabel;
+    // UI ÔªËØ
+    cocos2d::Sprite* _background = nullptr;     // ÓÎÏ·±³¾°Í¼
+    cocos2d::DrawNode* _progressBar = nullptr;  // ½ø¶ÈÌõ»æÖÆ½Úµã
+    cocos2d::Sprite* _fishSprite = nullptr;     // ÓãµÄ¾«Áé
+    cocos2d::Label* _resultLabel = nullptr;     // ½á¹ûÏÔÊ¾±êÇ©
 
-    float _currentValue;
-    bool _isGameActive;
+    // ÓÎÏ·×´Ì¬
+    float _currentValue = 0.0f;     // µ±Ç°½ø¶ÈÖµ
+    bool _isGameActive = false;     // ÓÎÏ·ÊÇ·ñ´¦ÓÚ»î¶¯×´Ì¬
 
-    // ä½ç½®å¸¸é‡ï¼ˆç›¸å¯¹äºèƒŒæ™¯å›¾ç‰‡çš„å±€éƒ¨åæ ‡ï¼‰
-    cocos2d::Rect _progressBarRect;
-    cocos2d::Vec2 _fishBasePosition;
-
+    // ²¼¾Ö²ÎÊı
+    cocos2d::Rect _progressBarRect;     // ½ø¶ÈÌõÔÚ±³¾°Í¼Æ¬ÉÏµÄ¾Ö²¿ÇøÓò
+    cocos2d::Vec2 _fishBasePosition;    // ÓãÔÚ±³¾°Í¼Æ¬ÉÏµÄ»ù×¼Î»ÖÃ
+    float _progressBarHeight = 0.0f;    // ½ø¶ÈÌõ×Ü¸ß¶È
 };
-
 
 #endif // __FISH_GAME_LAYER_H__

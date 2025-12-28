@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     ExitComfirm.cpp
- * File Function: ExitComfirmç±»çš„å®ç°
- * Author:        äºæ©ç†™
+ * File Function: ExitComfirmÀàµÄÊµÏÖ
+ * Author:        ÓÚ¶÷Îõ
  * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
@@ -11,7 +11,7 @@
 #include "../Scene/InitialMenuScene.h"
 #include "cocos2d.h"
 
-// å¼•å…¥éœ€è¦é”€æ¯çš„ç®¡ç†å™¨å¤´æ–‡ä»¶
+// ÒıÈëĞèÒªÏú»ÙµÄ¹ÜÀíÆ÷Í·ÎÄ¼ş
 #include "../MapItem/CultivationManager.h"
 #include "../MapItem/BarnManager.h"
 #include "../MapItem/FarmItemManager.h"
@@ -32,7 +32,7 @@
 
 USING_NS_CC;
 
-// é™æ€åˆ›å»º
+// ¾²Ì¬´´½¨
 ExitConfirm* ExitConfirm::create(Node* parent, Sprite* background)
 {
     if (!parent || !background) {
@@ -48,14 +48,14 @@ ExitConfirm* ExitConfirm::create(Node* parent, Sprite* background)
     return confirm;
 }
 
-// åˆå§‹åŒ–
+// ³õÊ¼»¯
 bool ExitConfirm::init()
 {
     if (!Node::init()) {
         return false;
     }
 
-    // 1. åˆ›å»º"è¿”å›æ ‡é¢˜"æŒ‰é’®
+    // 1. ´´½¨"·µ»Ø±êÌâ"°´Å¥
     auto returnToMenuBtn = Sprite::create("/Items/button/exit to title.png");
     if (returnToMenuBtn) {
         returnToMenuBtn->setPosition(Vec2(0, 60));
@@ -67,7 +67,7 @@ bool ExitConfirm::init()
             Vec2 localPos = returnToMenuBtn->convertTouchToNodeSpace(touch);
             Size btnSize = returnToMenuBtn->getContentSize();
 
-            // æ‰©å¤§ç‚¹å‡»åŒºåŸŸ
+            // À©´óµã»÷ÇøÓò
             Rect btnRect = Rect(-btnSize.width / 2 * 1.3f, -btnSize.height / 2 * 1.3f,
                 btnSize.width * 1.3f, btnSize.height * 1.3f);
 
@@ -85,7 +85,7 @@ bool ExitConfirm::init()
         this->addChild(returnToMenuBtn);
     }
 
-    // 2. åˆ›å»º"é€€å‡ºæ¸¸æˆ"æŒ‰é’®
+    // 2. ´´½¨"ÍË³öÓÎÏ·"°´Å¥
     auto exitGameBtn = Sprite::create("/Items/button/exit to desktop.png");
     if (exitGameBtn) {
         exitGameBtn->setPosition(Vec2(0, -60));
@@ -117,10 +117,10 @@ bool ExitConfirm::init()
     return true;
 }
 
-// è¿”å›æ ‡é¢˜é€»è¾‘
+// ·µ»Ø±êÌâÂß¼­
 void ExitConfirm::onReturnToTitle()
 {
-    // é”€æ¯æ‰€æœ‰å•ä¾‹
+    // Ïú»ÙËùÓĞµ¥Àı
     CultivationManager::destroyInstance();
     BarnManager::destroyInstance();
     FarmItemManager::destroyInstance();
@@ -142,7 +142,7 @@ void ExitConfirm::onReturnToTitle()
     Money::destroyInstance();
     MusicManager::destroyInstance();
 
-    // åˆ‡æ¢åœºæ™¯
+    // ÇĞ»»³¡¾°
     auto initScene = InitialMenuScene::createScene();
     auto runningScene = Director::getInstance()->getRunningScene();
 
@@ -152,10 +152,10 @@ void ExitConfirm::onReturnToTitle()
     Director::getInstance()->replaceScene(initScene);
 }
 
-// é€€å‡ºæ¸¸æˆé€»è¾‘
+// ÍË³öÓÎÏ·Âß¼­
 void ExitConfirm::onExitGame()
 {
-    // é”€æ¯æ‰€æœ‰å•ä¾‹
+    // Ïú»ÙËùÓĞµ¥Àı
     CultivationManager::destroyInstance();
     BarnManager::destroyInstance();
     FarmItemManager::destroyInstance();
@@ -177,7 +177,7 @@ void ExitConfirm::onExitGame()
     Money::destroyInstance();
     MusicManager::destroyInstance();
 
-    // ç»“æŸç¨‹åº
+    // ½áÊø³ÌĞò
     Director::getInstance()->end();
 
 }

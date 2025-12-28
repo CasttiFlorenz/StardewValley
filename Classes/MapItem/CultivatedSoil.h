@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     CultivatedSoil.h
- * File Function: CultivatedSoilç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: CultivatedSoilÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #pragma once
@@ -13,44 +13,44 @@
 #include "EnvironmentItem.h"
 #include "Crop.h"
 
-// è€•åœ°ç±»ï¼ˆç»´æŠ¤å¹²ç‡¥/æ¹¿æ¶¦çŠ¶æ€ï¼Œç®¡ç†ä½œç‰©ï¼‰
+// ¸ûµØÀà£¨Î¬»¤¸ÉÔï/ÊªÈó×´Ì¬£¬¹ÜÀí×÷Îï£©
 class CultivatedSoil : public EnvironmentItem {
 public:
-    // é™æ€åˆ›å»ºå‡½æ•°
+    // ¾²Ì¬´´½¨º¯Êı
     static CultivatedSoil* create(const cocos2d::Vec2& tileCoord);
 
-    // åˆå§‹åŒ–
+    // ³õÊ¼»¯
     bool init(const cocos2d::Vec2& tileCoord);
 
-    // ææ„å‡½æ•°
+    // Îö¹¹º¯Êı
     virtual ~CultivatedSoil();
 
-    // æµ‡æ°´ï¼ˆå˜æ¹¿ï¼‰
+    // ½½Ë®£¨±äÊª£©
     void water();
 
-    // å˜å¹²
+    // ±ä¸É
     void dry();
 
-    // ç§æ¤ä½œç‰©
+    // ÖÖÖ²×÷Îï
     bool plant(ItemType type);
 
-    // æ”¶è·ä½œç‰©
+    // ÊÕ»ñ×÷Îï
     ItemType harvest();
 
-    // æ¯æ—¥æ›´æ–°
+    // Ã¿ÈÕ¸üĞÂ
     void updateDay();
 
-    // è·å–çŠ¶æ€ä¸ä½œç‰©
+    // »ñÈ¡×´Ì¬Óë×÷Îï
     SoilStatus getStatus() const noexcept { return _status; }
     Crop* getCrop() const noexcept { return _crop; }
     bool hasCrop() const noexcept { return _crop != nullptr; }
 
-    // è®¾ç½®åœŸå£¤çŠ¶æ€
+    // ÉèÖÃÍÁÈÀ×´Ì¬
     void setStatus(SoilStatus status);
 
 private:
-    SoilStatus _status; // åœŸå£¤çŠ¶æ€
-    Crop* _crop;        // å½“å‰ä½œç‰©
+    SoilStatus _status; // ÍÁÈÀ×´Ì¬
+    Crop* _crop;        // µ±Ç°×÷Îï
 };
 
 #endif // __CULTIVATED_SOIL_H__

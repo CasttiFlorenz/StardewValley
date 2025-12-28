@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     Town.h
- * File Function: Townç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/23
+ * File Function: TownÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #pragma once
@@ -23,53 +23,53 @@
 
 USING_NS_CC;
 
-// åŸé•‡åœ°å›¾ç±»ï¼ˆåŒ…å« NPC å’Œå•†åº—ï¼‰
+// ³ÇÕòµØÍ¼Àà£¨°üº¬ NPC ºÍÉÌµê£©
 class Town : public GameMap
 {
 public:
-    // é™æ€åˆ›å»ºä¸é”€æ¯
+    // ¾²Ì¬´´½¨ÓëÏú»Ù
     static Town* create();
     static GameMap* getInstance();
     static void destroyInstance();
 
-    // åˆå§‹åŒ–
+    // ³õÊ¼»¯
     virtual bool init() override;
 
-    // åœºæ™¯åˆ‡æ¢é€»è¾‘
+    // ³¡¾°ÇĞ»»Âß¼­
     virtual MapType leaveMap(const Vec2& curPos,
         bool isStart,
         const Direction& direction) override;
 
-    // è¿›å…¥åœ°å›¾åˆå§‹åŒ–
+    // ½øÈëµØÍ¼³õÊ¼»¯
     virtual void IntoMap(MapType lastMap) override;
 
-    // è·å–ç©å®¶åˆå§‹ä½ç½®
+    // »ñÈ¡Íæ¼Ò³õÊ¼Î»ÖÃ
     virtual Vec2 getPlayerStartPosition(MapType lastMap) override;
 
-    // æ‘„åƒæœºè·Ÿéšä¸æˆ·å¤–åˆ¤æ–­
+    // ÉãÏñ»ú¸úËæÓë»§ÍâÅĞ¶Ï
     virtual bool isCameraFollow() const noexcept override { return true; }
     virtual bool isOutdoor() noexcept override { return true; }
 
-    // å³é”®ç‚¹å‡»å¤„ç†ï¼ˆä¸ NPC äº¤äº’æˆ–æ‰“å¼€å•†åº—ï¼‰
+    // ÓÒ¼üµã»÷´¦Àí£¨Óë NPC ½»»¥»ò´ò¿ªÉÌµê£©
     virtual MouseEvent onRightClick(const Vec2& playerPos,
         const Direction direction) override;
 
-    // ä¸æŒ‡å®š NPC è¿›è¡Œäº¤äº’
+    // ÓëÖ¸¶¨ NPC ½øĞĞ½»»¥
     void interactWithNPC(const std::string& npcName, ItemType heldItem);
 
-    // è·å– NPC å¯¹è±¡
+    // »ñÈ¡ NPC ¶ÔÏó
     NPCBase* getNPCByName(const std::string& name);
 
-    // æ‰“å¼€æŒ‡å®š NPC çš„å•†åº—
+    // ´ò¿ªÖ¸¶¨ NPC µÄÉÌµê
     void openShopForNPC(const std::string& npcName);
 
-    // åˆå§‹åŒ–æ‰€æœ‰ NPC
+    // ³õÊ¼»¯ËùÓĞ NPC
     void initNPCs();
 
 private:
     static GameMap* _instance;
 
-    // NPC åç§°ä¸å¯¹è±¡æ˜ å°„
+    // NPC Ãû³ÆÓë¶ÔÏóÓ³Éä
     std::map<std::string, NPCBase*> _npcMap;
 };
 

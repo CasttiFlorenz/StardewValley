@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     StoneItem.h
- * File Function: StoneItemç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: StoneItemÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #pragma once
@@ -12,7 +12,6 @@
 
 #include "EnvironmentItem.h"
 
-// ÃŠÂ¯ÃÂ·ÃÃ¯Ã†Â·
 class StoneItem : public EnvironmentItem {
 public:
     static StoneItem* create(const cocos2d::Vec2& tileCoord);

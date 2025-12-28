@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     BarnAnimal.h
- * File Function: BarnAnimalç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: BarnAnimalÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #pragma once
@@ -17,27 +17,27 @@
 
 USING_NS_CC;
 
-// å†œåœºåŠ¨ç‰©åŸºç±»
+// Å©³¡¶¯Îï»ùÀà
 class BarnAnimal : public Sprite {
 public:
     virtual ~BarnAnimal() = default;
 
-    // è·å–äº§ç‰©èµ„æºè·¯å¾„
+    // »ñÈ¡²úÎï×ÊÔ´Â·¾¶
     virtual std::string getProducePath() const = 0;
 
-    // è·å–äº§ç‰©ç±»å‹
+    // »ñÈ¡²úÎïÀàĞÍ
     virtual ItemType getProduceObject() const = 0;
 
-    // è·å–åŠ¨ç‰©ç±»å‹
+    // »ñÈ¡¶¯ÎïÀàĞÍ
     virtual AnimalType getType() const noexcept = 0;
 
-    // å¼€å§‹åŠ¨ç”»
+    // ¿ªÊ¼¶¯»­
     virtual void startAnimation() = 0;
 
-    // åœæ­¢åŠ¨ç”»
+    // Í£Ö¹¶¯»­
     virtual void stopAnimation() = 0;
 
-    // è¾…åŠ©å‡½æ•°ï¼šæ‰¹é‡åŠ è½½åŠ¨ç”»å¸§
+    // ¸¨Öúº¯Êı£ºÅúÁ¿¼ÓÔØ¶¯»­Ö¡
     static std::vector<SpriteFrame*> framesFromFiles(const std::string& baseNoExt, int maxFrames = 10);
 };
 

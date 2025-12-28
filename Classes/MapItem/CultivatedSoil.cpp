@@ -1,14 +1,14 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     CultivatedSoil.cpp
- * File Function: CultivatedSoilç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: CultivatedSoilÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #include "CultivatedSoil.h"
 
-// åˆ›å»ºå®ä¾‹
+// ´´½¨ÊµÀı
 CultivatedSoil* CultivatedSoil::create(const cocos2d::Vec2& tileCoord) {
     auto p = new (std::nothrow) CultivatedSoil();
     if (p && p->init(tileCoord)) {
@@ -19,7 +19,7 @@ CultivatedSoil* CultivatedSoil::create(const cocos2d::Vec2& tileCoord) {
     return nullptr;
 }
 
-// åˆå§‹åŒ–
+// ³õÊ¼»¯
 bool CultivatedSoil::init(const cocos2d::Vec2& tileCoord) {
     if (!EnvironmentItem::init(EnvironmentItemType::CULTIVATED_SOIL, tileCoord)) {
         return false;
@@ -33,7 +33,7 @@ bool CultivatedSoil::init(const cocos2d::Vec2& tileCoord) {
     return true;
 }
 
-// ææ„å‡½æ•°
+// Îö¹¹º¯Êı
 CultivatedSoil::~CultivatedSoil() {
     if (_crop) {
         _crop->removeFromParent();
@@ -41,7 +41,7 @@ CultivatedSoil::~CultivatedSoil() {
     }
 }
 
-// æµ‡æ°´
+// ½½Ë®
 void CultivatedSoil::water() {
     if (_status != SoilStatus::DRY) {
         return;
@@ -51,7 +51,7 @@ void CultivatedSoil::water() {
     this->setTexture(SOIL_WET_TEXTURE_PATH);
 }
 
-// å˜å¹²
+// ±ä¸É
 void CultivatedSoil::dry() {
     if (_status != SoilStatus::WET) {
         return;
@@ -61,7 +61,7 @@ void CultivatedSoil::dry() {
     this->setTexture(SOIL_DRY_TEXTURE_PATH);
 }
 
-// ç§æ¤ä½œç‰©
+// ÖÖÖ²×÷Îï
 bool CultivatedSoil::plant(ItemType type) {
     if (_crop) {
         return false;
@@ -82,7 +82,7 @@ bool CultivatedSoil::plant(ItemType type) {
     return true;
 }
 
-// æ”¶è·ä½œç‰©
+// ÊÕ»ñ×÷Îï
 ItemType CultivatedSoil::harvest() {
     if (!_crop) {
         return ItemType::NONE;
@@ -99,7 +99,7 @@ ItemType CultivatedSoil::harvest() {
     return type;
 }
 
-// æ¯æ—¥æ›´æ–°
+// Ã¿ÈÕ¸üĞÂ
 void CultivatedSoil::updateDay() {
     if (_crop) {
         _crop->updateGrowth(_status == SoilStatus::WET);
@@ -108,7 +108,7 @@ void CultivatedSoil::updateDay() {
     dry();
 }
 
-// è®¾ç½®çŠ¶æ€
+// ÉèÖÃ×´Ì¬
 void CultivatedSoil::setStatus(SoilStatus status) {
     _status = status;
     if (_status == SoilStatus::WET) {

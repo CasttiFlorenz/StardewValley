@@ -1,16 +1,16 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     FarmItemManager.cpp
- * File Function: FarmItemManagerç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: FarmItemManagerÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #include "FarmItemManager.h"
 
 FarmItemManager* FarmItemManager::_instance = nullptr;
 
-// è·å–å•ä¾‹
+// »ñÈ¡µ¥Àı
 FarmItemManager* FarmItemManager::getInstance(GameMap* gameMap)
 {
     if (!_instance) {
@@ -30,7 +30,7 @@ FarmItemManager* FarmItemManager::getInstance(GameMap* gameMap)
     return _instance;
 }
 
-// é”€æ¯å•ä¾‹
+// Ïú»Ùµ¥Àı
 void FarmItemManager::destroyInstance()
 {
     if (_instance) {
@@ -39,7 +39,7 @@ void FarmItemManager::destroyInstance()
     }
 }
 
-// åˆå§‹åŒ–
+// ³õÊ¼»¯
 bool FarmItemManager::init(GameMap* gameMap)
 {
     _gameMap = gameMap;
@@ -61,7 +61,7 @@ bool FarmItemManager::init(GameMap* gameMap)
     return _gameMap != nullptr;
 }
 
-// åæ ‡é”®å€¼è½¬æ¢
+// ×ø±ê¼üÖµ×ª»»
 long long FarmItemManager::keyFor(const Vec2& tileCoord)
 {
     const long long x = static_cast<long long>(tileCoord.x);
@@ -69,13 +69,13 @@ long long FarmItemManager::keyFor(const Vec2& tileCoord)
     return (x << 32) | (y & TILE_COORD_MASK);
 }
 
-// ç§»é™¤ TMX æ ‡å¿—
+// ÒÆ³ı TMX ±êÖ¾
 unsigned int FarmItemManager::stripFlags(unsigned int gid)
 {
     return gid & ~TMX_FLIP_FLAGS_MASK;
 }
 
-// æ£€æŸ¥æ˜¯å¦ä¸ºè€•åœ°
+// ¼ì²éÊÇ·ñÎª¸ûµØ
 bool FarmItemManager::isCultivated(const Vec2& tileCoord) const
 {
     if (!_eventLayer || !_tiledMap) return false;
@@ -102,21 +102,21 @@ bool FarmItemManager::isCultivated(const Vec2& tileCoord) const
     return false;
 }
 
-// æ£€æŸ¥æ˜¯å¦æœ‰ç‰©å“
+// ¼ì²éÊÇ·ñÓĞÎïÆ·
 bool FarmItemManager::hasItem(const Vec2& tileCoord) const
 {
     long long key = keyFor(tileCoord);
     return _items.count(key) || _cultivatedSoils.count(key);
 }
 
-// è·å–ç‰©å“
+// »ñÈ¡ÎïÆ·
 EnvironmentItem* FarmItemManager::getItem(const Vec2& tileCoord) const
 {
     const auto it = _items.find(keyFor(tileCoord));
     return it != _items.end() ? it->second : nullptr;
 }
 
-// æ·»åŠ ç‰©å“
+// Ìí¼ÓÎïÆ·
 bool FarmItemManager::addItem(EnvironmentItemType type, const Vec2& tileCoord)
 {
     if (!isCultivated(tileCoord)) return false;
@@ -151,7 +151,7 @@ bool FarmItemManager::addItem(EnvironmentItemType type, const Vec2& tileCoord)
         _tiledMap->addChild(item, ITEM_SPRITE_Z_ORDER);
     }
     else {
-        // é˜²æ­¢æ— çˆ¶èŠ‚ç‚¹ä½†è¢« retain
+        // ·ÀÖ¹ÎŞ¸¸½Úµãµ«±» retain
         return false;
     }
 
@@ -166,7 +166,7 @@ bool FarmItemManager::addItem(EnvironmentItemType type, const Vec2& tileCoord)
     return true;
 }
 
-// ç§»é™¤ç‰©å“
+// ÒÆ³ıÎïÆ·
 bool FarmItemManager::removeItem(const Vec2& tileCoord)
 {
     const long long k = keyFor(tileCoord);
@@ -198,13 +198,13 @@ bool FarmItemManager::removeItem(const Vec2& tileCoord)
     return true;
 }
 
-// ç§»é™¤è€•åœ°æ ‡è®°
+// ÒÆ³ı¸ûµØ±ê¼Ç
 bool FarmItemManager::removeCultivation(const Vec2& tileCoord)
 {
     return _cultivatedSoils.erase(keyFor(tileCoord)) > 0;
 }
 
-// ç”Ÿæˆåˆå§‹ç‰©å“
+// Éú³É³õÊ¼ÎïÆ·
 void FarmItemManager::spawnInitialItems()
 {
     if (!_tiledMap || !_eventLayer) return;
@@ -240,19 +240,19 @@ void FarmItemManager::spawnInitialItems()
     }
 }
 
-// æ£€æŸ¥ç¢°æ’
+// ¼ì²éÅö×²
 bool FarmItemManager::isCollidable(const Vec2& tileCoord) const
 {
     return _items.count(keyFor(tileCoord)) > 0;
 }
 
-// æ–°çš„ä¸€å¤©
+// ĞÂµÄÒ»Ìì
 void FarmItemManager::onNewDay()
 {
     spawnInitialItems();
 }
 
-// æ¸…ç†èµ„æº
+// ÇåÀí×ÊÔ´
 void FarmItemManager::clear()
 {
     for (auto& kv : _items) {
@@ -271,7 +271,7 @@ void FarmItemManager::clear()
     _leekCount = 0;
 }
 
-// è·å–æ‰€æœ‰ç‰©å“
+// »ñÈ¡ËùÓĞÎïÆ·
 std::vector<FarmItemManager::ItemData> FarmItemManager::getItems() const
 {
     std::vector<ItemData> data;
@@ -284,7 +284,7 @@ std::vector<FarmItemManager::ItemData> FarmItemManager::getItems() const
     return data;
 }
 
-// æ¢å¤æ•°æ®
+// »Ö¸´Êı¾İ
 void FarmItemManager::restoreData(const std::vector<ItemData>& items)
 {
     this->clear();

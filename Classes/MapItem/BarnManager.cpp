@@ -1,16 +1,16 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     BarnManager.cpp
- * File Function: BarnManagerç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: BarnManagerÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #include "BarnManager.h"
 
 BarnManager* BarnManager::_instance = nullptr;
 
-// è·å–å•ä¾‹
+// »ñÈ¡µ¥Àı
 BarnManager* BarnManager::getInstance(GameMap* barn)
 {
     if (!_instance) {
@@ -30,7 +30,7 @@ BarnManager* BarnManager::getInstance(GameMap* barn)
     return _instance;
 }
 
-// é”€æ¯å•ä¾‹
+// Ïú»Ùµ¥Àı
 void BarnManager::destroyInstance()
 {
     if (_instance) {
@@ -39,7 +39,7 @@ void BarnManager::destroyInstance()
     }
 }
 
-// åˆå§‹åŒ–
+// ³õÊ¼»¯
 bool BarnManager::init(GameMap* barn)
 {
     _gameMap = barn;
@@ -55,7 +55,7 @@ bool BarnManager::init(GameMap* barn)
     _productionTileKeys.clear();
     _productionTileKeys.resize(MAX_ANIMAL_COUNT, 0);
 
-    // è·å–ä½ç½®ç‚¹
+    // »ñÈ¡Î»ÖÃµã
     for (int i = 1; i <= MAX_ANIMAL_COUNT; ++i) {
         std::string nestName = NEST_OBJECT_PREFIX + std::to_string(i);
         std::string prodName = PRODUCTION_OBJECT_PREFIX + std::to_string(i);
@@ -76,7 +76,7 @@ bool BarnManager::init(GameMap* barn)
     return _tiledMap != nullptr;
 }
 
-// åæ ‡è½¬æ¢é”®å€¼
+// ×ø±ê×ª»»¼üÖµ
 long long BarnManager::keyFor(const Vec2& tileCoord)
 {
     long long x = static_cast<long long>(tileCoord.x);
@@ -84,7 +84,7 @@ long long BarnManager::keyFor(const Vec2& tileCoord)
     return (x << 32) | (y & TILE_COORD_MASK);
 }
 
-// æ·»åŠ å¹²è‰
+// Ìí¼Ó¸É²İ
 bool BarnManager::addHayAt(const Vec2& tileCoord)
 {
     if (!_feedLayer || !_tiledMap || !_gameMap) return false;
@@ -114,7 +114,7 @@ bool BarnManager::addHayAt(const Vec2& tileCoord)
     return true;
 }
 
-// åˆ›å»ºåŠ¨ç‰©
+// ´´½¨¶¯Îï
 BarnAnimal* BarnManager::createAnimal(AnimalType type)
 {
     switch (type) {
@@ -126,7 +126,7 @@ BarnAnimal* BarnManager::createAnimal(AnimalType type)
     }
 }
 
-// æ·»åŠ åŠ¨ç‰©
+// Ìí¼Ó¶¯Îï
 bool BarnManager::addAnimal(AnimalType type)
 {
     if (!_gameMap || !_tiledMap) return false;
@@ -160,7 +160,7 @@ bool BarnManager::addAnimal(AnimalType type)
     return true;
 }
 
-// æ–°çš„ä¸€å¤©é€»è¾‘
+// ĞÂµÄÒ»ÌìÂß¼­
 void BarnManager::onNewDay()
 {
     int animalCount = 0;
@@ -171,7 +171,7 @@ void BarnManager::onNewDay()
     int hayCount = static_cast<int>(_haySprites.size());
     int consumeCount = std::min(hayCount, animalCount);
 
-    // æ¶ˆè€—å¹²è‰
+    // ÏûºÄ¸É²İ
     if (consumeCount > 0) {
         int consumed = 0;
         std::vector<long long> keys;
@@ -195,7 +195,7 @@ void BarnManager::onNewDay()
         }
     }
 
-    // ç”Ÿæˆäº§ç‰©
+    // Éú³É²úÎï
     int produceCount = std::min(animalCount, hayCount);
     int produced = 0;
 
@@ -217,7 +217,7 @@ void BarnManager::onNewDay()
     }
 }
 
-// å¯åŠ¨åŠ¨ç”»
+// Æô¶¯¶¯»­
 void BarnManager::startAnimations()
 {
     for (auto* a : _animals) {
@@ -225,7 +225,7 @@ void BarnManager::startAnimations()
     }
 }
 
-// åœæ­¢åŠ¨ç”»
+// Í£Ö¹¶¯»­
 void BarnManager::stopAnimations()
 {
     for (auto* a : _animals) {
@@ -233,7 +233,7 @@ void BarnManager::stopAnimations()
     }
 }
 
-// æ”¶é›†äº§ç‰©
+// ÊÕ¼¯²úÎï
 ItemType BarnManager::collectProductionAt(const Vec2& tileCoord)
 {
     if (!_gameMap || !_tiledMap) return ItemType::NONE;
@@ -257,10 +257,10 @@ ItemType BarnManager::collectProductionAt(const Vec2& tileCoord)
     return ItemType::NONE;
 }
 
-// æ¸…ç†èµ„æº
+// ÇåÀí×ÊÔ´
 void BarnManager::clear()
 {
-    // æ¸…ç†å¹²è‰
+    // ÇåÀí¸É²İ
     for (auto& kv : _haySprites) {
         if (kv.second) {
             kv.second->removeFromParent();
@@ -269,7 +269,7 @@ void BarnManager::clear()
     }
     _haySprites.clear();
 
-    // æ¸…ç†åŠ¨ç‰©
+    // ÇåÀí¶¯Îï
     for (auto* a : _animals) {
         if (a) {
             a->removeFromParent();
@@ -278,7 +278,7 @@ void BarnManager::clear()
     }
     _animals.clear();
 
-    // æ¸…ç†äº§ç‰©
+    // ÇåÀí²úÎï
     for (auto& list : _productions) {
         for (auto& pair : list) {
             if (pair.first) {
@@ -295,7 +295,7 @@ void BarnManager::clear()
     _productionTileKeys.clear();
 }
 
-// è·å–å¹²è‰ä½ç½®
+// »ñÈ¡¸É²İÎ»ÖÃ
 std::vector<Vec2> BarnManager::getHayPositions() const
 {
     std::vector<Vec2> positions;
@@ -308,7 +308,7 @@ std::vector<Vec2> BarnManager::getHayPositions() const
     return positions;
 }
 
-// è·å–åŠ¨ç‰©ç±»å‹
+// »ñÈ¡¶¯ÎïÀàĞÍ
 std::vector<int> BarnManager::getAnimalTypes() const
 {
     std::vector<int> types;
@@ -320,7 +320,7 @@ std::vector<int> BarnManager::getAnimalTypes() const
     return types;
 }
 
-// è·å–äº§ç‰©ä¿¡æ¯
+// »ñÈ¡²úÎïĞÅÏ¢
 std::vector<std::pair<int, int>> BarnManager::getProductions() const
 {
     std::vector<std::pair<int, int>> prods;
@@ -332,14 +332,14 @@ std::vector<std::pair<int, int>> BarnManager::getProductions() const
     return prods;
 }
 
-// æ¢å¤æ•°æ®
+// »Ö¸´Êı¾İ
 void BarnManager::restoreData(const std::vector<Vec2>& hayPos,
     const std::vector<int>& animalTypes,
     const std::vector<std::pair<int, int>>& productions)
 {
-    // åˆå§‹åŒ–æ—¶ç›´æ¥ clear äº†ä¸€æ¬¡ï¼Œæ‰€ä»¥è¿™é‡Œç›´æ¥é‡å»º
+    // ³õÊ¼»¯Ê±Ö±½Ó clear ÁËÒ»´Î£¬ËùÒÔÕâÀïÖ±½ÓÖØ½¨
 
-    // é‡æ–°åˆå§‹åŒ–é”®å€¼
+    // ÖØĞÂ³õÊ¼»¯¼üÖµ
     if (_productions.size() != MAX_ANIMAL_COUNT) {
         _productions.resize(MAX_ANIMAL_COUNT);
         _productionTileKeys.resize(MAX_ANIMAL_COUNT, 0);
@@ -351,17 +351,17 @@ void BarnManager::restoreData(const std::vector<Vec2>& hayPos,
         }
     }
 
-    // 1. æ¢å¤å¹²è‰
+    // 1. »Ö¸´¸É²İ
     for (const auto& pos : hayPos) {
         this->addHayAt(pos);
     }
 
-    // 2. æ¢å¤åŠ¨ç‰©
+    // 2. »Ö¸´¶¯Îï
     for (const int typeVal : animalTypes) {
         this->addAnimal(static_cast<AnimalType>(typeVal));
     }
 
-    // 3. æ¢å¤äº§ç‰©
+    // 3. »Ö¸´²úÎï
     for (const auto& entry : productions) {
         const int nestIdx = entry.first;
         ItemType itemType = static_cast<ItemType>(entry.second);

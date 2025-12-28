@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     FarmItemManager.h
- * File Function: FarmItemManagerç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: FarmItemManagerÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #pragma once
@@ -21,50 +21,50 @@
 
 USING_NS_CC;
 
-// å†œåœºç‰©å“ç®¡ç†å™¨ï¼ˆæœ¨å¤´ã€æ‚è‰ã€é‡‡é›†ç‰©ç­‰ï¼‰
+// Å©³¡ÎïÆ·¹ÜÀíÆ÷£¨Ä¾Í·¡¢ÔÓ²İ¡¢²É¼¯ÎïµÈ£©
 class FarmItemManager : public Ref {
 public:
-    // å­˜æ¡£æ•°æ®ç»“æ„
+    // ´æµµÊı¾İ½á¹¹
     struct ItemData {
         EnvironmentItemType type;
         float x;
         float y;
     };
 
-    // è·å–å•ä¾‹
+    // »ñÈ¡µ¥Àı
     static FarmItemManager* getInstance(GameMap* gameMap = nullptr);
 
-    // é”€æ¯å•ä¾‹
+    // Ïú»Ùµ¥Àı
     static void destroyInstance();
 
-    // æ·»åŠ ç‰©å“
+    // Ìí¼ÓÎïÆ·
     bool addItem(EnvironmentItemType type, const Vec2& tileCoord);
 
-    // ç§»é™¤ç‰©å“
+    // ÒÆ³ıÎïÆ·
     bool removeItem(const Vec2& tileCoord);
 
-    // ç§»é™¤è€•åœ°æ ‡è®°
+    // ÒÆ³ı¸ûµØ±ê¼Ç
     bool removeCultivation(const Vec2& tileCoord);
 
-    // æ£€æŸ¥æ˜¯å¦æœ‰ç‰©å“
+    // ¼ì²éÊÇ·ñÓĞÎïÆ·
     bool hasItem(const Vec2& tileCoord) const;
 
-    // æ£€æŸ¥ç¢°æ’
+    // ¼ì²éÅö×²
     bool isCollidable(const Vec2& tileCoord) const;
 
-    // è·å–ç‰©å“å¯¹è±¡
+    // »ñÈ¡ÎïÆ·¶ÔÏó
     EnvironmentItem* getItem(const Vec2& tileCoord) const;
 
-    // æ£€æŸ¥æ˜¯å¦ä¸ºè€•åœ°
+    // ¼ì²éÊÇ·ñÎª¸ûµØ
     bool isCultivated(const Vec2& tileCoord) const;
 
-    // æ–°çš„ä¸€å¤©æ›´æ–°
+    // ĞÂµÄÒ»Ìì¸üĞÂ
     void onNewDay();
 
-    // è·å–æ‰€æœ‰ç‰©å“æ•°æ®
+    // »ñÈ¡ËùÓĞÎïÆ·Êı¾İ
     std::vector<ItemData> getItems() const;
 
-    // æ¢å¤å­˜æ¡£æ•°æ®
+    // »Ö¸´´æµµÊı¾İ
     void restoreData(const std::vector<ItemData>& items);
 
 private:
@@ -75,19 +75,19 @@ private:
     FarmItemManager(const FarmItemManager&) = delete;
     FarmItemManager& operator=(const FarmItemManager&) = delete;
 
-    // åˆå§‹åŒ–
+    // ³õÊ¼»¯
     bool init(GameMap* gameMap);
 
-    // æ¸…ç†èµ„æº
+    // ÇåÀí×ÊÔ´
     void clear();
 
-    // ç”Ÿæˆåˆå§‹ç‰©å“
+    // Éú³É³õÊ¼ÎïÆ·
     void spawnInitialItems();
 
-    // åæ ‡é”®å€¼è½¬æ¢
+    // ×ø±ê¼üÖµ×ª»»
     static long long keyFor(const Vec2& tileCoord);
 
-    // ç§»é™¤ TMX ç¿»è½¬æ ‡å¿—
+    // ÒÆ³ı TMX ·­×ª±êÖ¾
     static unsigned int stripFlags(unsigned int gid);
 
 private:
@@ -95,13 +95,13 @@ private:
     TMXTiledMap* _tiledMap = nullptr;
     TMXLayer* _eventLayer = nullptr;
 
-    // ç‰©å“æ˜ å°„è¡¨
+    // ÎïÆ·Ó³Éä±í
     std::unordered_map<long long, EnvironmentItem*> _items;
 
-    // è€•åœ°æ ‡è®°
+    // ¸ûµØ±ê¼Ç
     std::unordered_map<long long, bool> _cultivatedSoils;
 
-    // ç‰©å“è®¡æ•°
+    // ÎïÆ·¼ÆÊı
     int _woodCount = 0;
     int _grassCount = 0;
     int _daffodilsCount = 0;

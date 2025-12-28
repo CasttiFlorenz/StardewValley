@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     FarmHouse.h
- * File Function: FarmHouseç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/23
+ * File Function: FarmHouseÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #ifndef __FARM_HOUSE_H__
@@ -16,32 +16,32 @@
 
 USING_NS_CC;
 
-// å†œèˆåœºæ™¯ç±»
+// Å©Éá³¡¾°Àà
 class FarmHouse : public GameMap
 {
 public:
-    // é™æ€åˆ›å»ºä¸é”€æ¯
+    // ¾²Ì¬´´½¨ÓëÏú»Ù
     static FarmHouse* create();
     static GameMap* getInstance();
     static void destroyInstance();
 
-    // åˆå§‹åŒ–
+    // ³õÊ¼»¯
     virtual bool init() override;
 
-    // åœºæ™¯åˆ‡æ¢é€»è¾‘
+    // ³¡¾°ÇĞ»»Âß¼­
     virtual MapType leaveMap(const Vec2& curPos, bool isStart, const Direction& direction) override;
     virtual void IntoMap(MapType lastMap) override;
 
-    // è·å–ç©å®¶åˆå§‹ä½ç½®
+    // »ñÈ¡Íæ¼Ò³õÊ¼Î»ÖÃ
     virtual Vec2 getPlayerStartPosition(MapType lastMap) override;
 
-    // äº¤äº’äº‹ä»¶å¤„ç†
+    // ½»»¥ÊÂ¼ş´¦Àí
     virtual MouseEvent onRightClick(const Vec2& playerPos, const Direction direction) override;
 
 private:
     static GameMap* _instance;
 
-    // ç¦ç”¨æ‹·è´èµ‹å€¼
+    // ½ûÓÃ¿½±´¸³Öµ
     FarmHouse& operator=(const FarmHouse&) = delete;
 };
 

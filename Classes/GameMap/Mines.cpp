@@ -1,18 +1,18 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     Mines.cpp
- * File Function: Minesç±»çš„å®žçŽ°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/23
+ * File Function: MinesÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #include "Mines.h"
 #include "../Inventory/InventoryScene.h"
 
-// å•ä¾‹å®žä¾‹
+// µ¥ÀýÊµÀý
 GameMap* Mines::_instance = nullptr;
 
-// åˆ›å»ºå®žä¾‹
+// ´´½¨ÊµÀý
 Mines* Mines::create() {
     auto p = new (std::nothrow) Mines();
     if (p && p->init()) {
@@ -23,7 +23,7 @@ Mines* Mines::create() {
     return nullptr;
 }
 
-// èŽ·å–å•ä¾‹
+// »ñÈ¡µ¥Àý
 GameMap* Mines::getInstance() {
     if (!_instance) {
         _instance = Mines::create();
@@ -32,28 +32,28 @@ GameMap* Mines::getInstance() {
     return _instance;
 }
 
-// é”€æ¯å•ä¾‹
+// Ïú»Ùµ¥Àý
 void Mines::destroyInstance() {
     CC_SAFE_RELEASE_NULL(_instance);
 }
 
-// åˆå§‹åŒ–
+// ³õÊ¼»¯
 bool Mines::init()
 {
     if (!Scene::init()) return false;
 
     _mapName = MapType::MINES;
 
-    // åŠ è½½åœ°å›¾
+    // ¼ÓÔØµØÍ¼
     _map = TMXTiledMap::create(TILED_MAP_MINES_PATH);
     if (!_map) return false;
 
-    // éšè—äº‹ä»¶å±‚
+    // Òþ²ØÊÂ¼þ²ã
     if (auto eventLayer = _map->getLayer(EVENT_LAYER_NAME)) {
         eventLayer->setVisible(false);
     }
 
-    // åˆå§‹åŒ–ç®¡ç†å™¨
+    // ³õÊ¼»¯¹ÜÀíÆ÷
     _minesItemManager = MinesItemManager::getInstance(this);
 
     this->addChild(_map);
@@ -61,10 +61,10 @@ bool Mines::init()
     return true;
 }
 
-// ç¦»å¼€åœ°å›¾é€»è¾‘
+// Àë¿ªµØÍ¼Âß¼­
 MapType Mines::leaveMap(const Vec2& curPos, bool isStart, const Direction& direction)
 {
-    // å‘ä¸‹ç§»åŠ¨è¿”å›žå†œåœº
+    // ÏòÏÂÒÆ¶¯·µ»ØÅ©³¡
     if (direction == Direction::DOWN) {
         const Rect goToFarmRect = getObjectRect(GO_TO_FARM);
         if (goToFarmRect.containsPoint(curPos)) {
@@ -75,7 +75,7 @@ MapType Mines::leaveMap(const Vec2& curPos, bool isStart, const Direction& direc
     return MapType::NONE;
 }
 
-// è¿›å…¥åœ°å›¾é€»è¾‘
+// ½øÈëµØÍ¼Âß¼­
 void Mines::IntoMap(MapType lastMap)
 {
     const Vec2 visibleSize = Director::getInstance()->getVisibleSize();
@@ -84,7 +84,7 @@ void Mines::IntoMap(MapType lastMap)
     _map->setPosition((visibleSize - _map->getContentSize() * _map->getScale()) / 2);
 }
 
-// èŽ·å–çŽ©å®¶åˆå§‹ä½ç½®
+// »ñÈ¡Íæ¼Ò³õÊ¼Î»ÖÃ
 Vec2 Mines::getPlayerStartPosition(MapType lastMap)
 {
     const Rect goToFarmRect = getObjectRect(GO_TO_FARM);
@@ -94,12 +94,12 @@ Vec2 Mines::getPlayerStartPosition(MapType lastMap)
     return Vec2(PLAYER_DEFAULT_POS_X, PLAYER_DEFAULT_POS_Y);
 }
 
-// å·¦é”®ç‚¹å‡»å¤„ç†ï¼ˆæŒ–æŽ˜ï¼‰
+// ×ó¼üµã»÷´¦Àí£¨ÍÚ¾ò£©
 MouseEvent Mines::onLeftClick(const Vec2& playerPos,
     const Direction direction,
     ItemType objects)
 {
-    // å¿…é¡»ä½¿ç”¨é•å­
+    // ±ØÐëÊ¹ÓÃ¸ä×Ó
     if (objects == ItemType::PICKAXE) {
 
         Vec2 basePos = calMapPos(playerPos);
@@ -117,7 +117,7 @@ MouseEvent Mines::onLeftClick(const Vec2& playerPos,
             if (item) {
                 const auto type = item->getType();
 
-                // æŒ–çŸ³å¤´
+                // ÍÚÊ¯Í·
                 if (type == EnvironmentItemType::STONE) {
                     _minesItemManager->removeItem(checkPos);
                     if (auto inv = InventoryScene::getInstance()) {
@@ -130,7 +130,7 @@ MouseEvent Mines::onLeftClick(const Vec2& playerPos,
                     }
                     return MouseEvent::USE_TOOL;
                 }
-                // æŒ–é“œçŸ¿
+                // ÍÚÍ­¿ó
                 else if (type == EnvironmentItemType::COPPER) {
                     _minesItemManager->removeItem(checkPos);
                     if (auto inv = InventoryScene::getInstance()) {
@@ -150,7 +150,7 @@ MouseEvent Mines::onLeftClick(const Vec2& playerPos,
     return MouseEvent::USE_TOOL;
 }
 
-// ç¢°æ’žæ£€æµ‹
+// Åö×²¼ì²â
 bool Mines::isCollidable(Vec2 worldPos)
 {
     if (!_map) return false;
@@ -161,16 +161,16 @@ bool Mines::isCollidable(Vec2 worldPos)
 
     const Size mapSize = _map->getMapSize();
 
-    // è¾¹ç•Œæ£€æµ‹
+    // ±ß½ç¼ì²â
     if (x < 0 || x >= mapSize.width || y < 0 || y >= mapSize.height) {
         return true;
     }
 
-    // ç‰©å“ç¢°æ’ž
+    // ÎïÆ·Åö×²
     if (_minesItemManager && _minesItemManager->hasItem(tilePos))
         return true;
 
-    // åœ°å›¾å±žæ€§ç¢°æ’ž
+    // µØÍ¼ÊôÐÔÅö×²
     auto layer = _map->getLayer(EVENT_LAYER_NAME);
     if (!layer) return false;
 

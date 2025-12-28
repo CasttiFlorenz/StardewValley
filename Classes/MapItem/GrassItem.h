@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     GrassItem.h
- * File Function: GrassItemç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: GrassItemÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #pragma once
@@ -12,7 +12,6 @@
 
 #include "EnvironmentItem.h"
 
-// Â²ÃÂ´Ã”ÃÃ¯Ã†Â·
 class GrassItem : public EnvironmentItem {
 public:
     static GrassItem* create(const cocos2d::Vec2& tileCoord);

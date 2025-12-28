@@ -1,14 +1,6 @@
-/****************************************************************
- * Project Name:  StardewValley
- * File Name:     DaffodilsItem.cpp
- * File Function: DaffodilsItem类的实现
- * Author:        郭芷烟
- * Update Date:   2025/12/16
- * License:       MIT License
- ****************************************************************/
 #include "DaffodilsItem.h"
 
-// ´´½¨ÊµÀý
+// ����ʵ��
 DaffodilsItem* DaffodilsItem::create(const cocos2d::Vec2& tileCoord) {
     auto p = new (std::nothrow) DaffodilsItem();
     if (p && p->init(tileCoord)) {
@@ -19,7 +11,7 @@ DaffodilsItem* DaffodilsItem::create(const cocos2d::Vec2& tileCoord) {
     return nullptr;
 }
 
-// ³õÊ¼»¯
+// ��ʼ��
 bool DaffodilsItem::init(const cocos2d::Vec2& tileCoord) {
     if (!EnvironmentItem::init(EnvironmentItemType::DAFFODILS, tileCoord)) {
         return false;
@@ -27,5 +19,4 @@ bool DaffodilsItem::init(const cocos2d::Vec2& tileCoord) {
 
     this->setTexture(DAFFODILS_ITEM_TEXTURE_PATH);
     return true;
-
 }

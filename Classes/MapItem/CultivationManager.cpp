@@ -1,16 +1,16 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     CultivationManager.cpp
- * File Function: CultivationManagerç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: CultivationManagerÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #include "CultivationManager.h"
 
 CultivationManager* CultivationManager::_instance = nullptr;
 
-// è·å–å•ä¾‹
+// »ñÈ¡µ¥Àı
 CultivationManager* CultivationManager::getInstance(
     FarmItemManager* farmItemManager,
     GameMap* gameMap
@@ -25,7 +25,7 @@ CultivationManager* CultivationManager::getInstance(
             CC_SAFE_DELETE(_instance);
         }
     }
-    // é‡æ–°åˆå§‹åŒ–ï¼ˆåˆ‡æ¢åœ°å›¾æ—¶å¯èƒ½éœ€è¦ï¼‰
+    // ÖØĞÂ³õÊ¼»¯£¨ÇĞ»»µØÍ¼Ê±¿ÉÄÜĞèÒª£©
     else if ((farmItemManager || gameMap) && !_instance->_gameMap) {
         _instance->init(farmItemManager, gameMap);
     }
@@ -33,13 +33,13 @@ CultivationManager* CultivationManager::getInstance(
     return _instance;
 }
 
-// é”€æ¯å•ä¾‹
+// Ïú»Ùµ¥Àı
 void CultivationManager::destroyInstance()
 {
     CC_SAFE_RELEASE_NULL(_instance);
 }
 
-// æ„é€ å‡½æ•°
+// ¹¹Ôìº¯Êı
 CultivationManager::CultivationManager()
     : _farmItemManager(nullptr)
     , _gameMap(nullptr)
@@ -47,7 +47,7 @@ CultivationManager::CultivationManager()
 {
 }
 
-// ææ„å‡½æ•°
+// Îö¹¹º¯Êı
 CultivationManager::~CultivationManager()
 {
     for (auto& kv : _soils) {
@@ -61,10 +61,10 @@ CultivationManager::~CultivationManager()
     CC_SAFE_RELEASE_NULL(_farmItemManager);
 }
 
-// åˆå§‹åŒ–
+// ³õÊ¼»¯
 bool CultivationManager::init(FarmItemManager* farmItemManager, GameMap* gameMap)
 {
-    // æ¸…ç†ç°æœ‰æ•°æ®
+    // ÇåÀíÏÖÓĞÊı¾İ
     for (auto& kv : _soils) {
         if (kv.second) {
             kv.second->removeFromParent();
@@ -73,7 +73,7 @@ bool CultivationManager::init(FarmItemManager* farmItemManager, GameMap* gameMap
     }
     _soils.clear();
 
-    // æ›´æ–°å¼•ç”¨
+    // ¸üĞÂÒıÓÃ
     if (_farmItemManager != farmItemManager) {
         CC_SAFE_RELEASE_NULL(_farmItemManager);
         _farmItemManager = farmItemManager;
@@ -85,25 +85,25 @@ bool CultivationManager::init(FarmItemManager* farmItemManager, GameMap* gameMap
     return _farmItemManager && _gameMap;
 }
 
-// è·å–é”®å€¼
+// »ñÈ¡¼üÖµ
 long long CultivationManager::keyFor(const Vec2& tileCoord) {
     long long x = static_cast<long long>(tileCoord.x);
     long long y = static_cast<long long>(tileCoord.y);
     return (x << 32) | (y & TILE_COORD_MASK);
 }
 
-// å°è¯•å¼€å¦
+// ³¢ÊÔ¿ª¿Ñ
 bool CultivationManager::attemptCultivate(const Vec2& tileCoord) {
     if (!_farmItemManager || !_gameMap) {
         return false;
     }
 
-    // æ£€æŸ¥æ˜¯å¦å¯å¼€å¦
+    // ¼ì²éÊÇ·ñ¿É¿ª¿Ñ
     if (!_farmItemManager->isCultivated(tileCoord)) {
         return false;
     }
 
-    // æ£€æŸ¥æ˜¯å¦æœ‰éšœç¢ç‰©
+    // ¼ì²éÊÇ·ñÓĞÕÏ°­Îï
     if (_farmItemManager->hasItem(tileCoord)) {
         return false;
     }
@@ -118,10 +118,10 @@ bool CultivationManager::attemptCultivate(const Vec2& tileCoord) {
         return false;
     }
 
-    // æ³¨å†Œåˆ° FarmItemManager
+    // ×¢²áµ½ FarmItemManager
     _farmItemManager->addItem(EnvironmentItemType::CULTIVATED_SOIL, tileCoord);
 
-    // æ·»åŠ åˆ°åœ°å›¾
+    // Ìí¼Óµ½µØÍ¼
     if (_tiledMap) {
         soil->setPosition(_gameMap->calWorldPos(tileCoord));
         _tiledMap->addChild(soil, SOIL_SPRITE_Z_ORDER);
@@ -133,7 +133,7 @@ bool CultivationManager::attemptCultivate(const Vec2& tileCoord) {
     return true;
 }
 
-// æµ‡æ°´
+// ½½Ë®
 bool CultivationManager::waterSoil(const Vec2& tileCoord) {
     auto it = _soils.find(keyFor(tileCoord));
     if (it == _soils.end() || !it->second) {
@@ -144,7 +144,7 @@ bool CultivationManager::waterSoil(const Vec2& tileCoord) {
     return true;
 }
 
-// ç§æ¤
+// ÖÖÖ²
 bool CultivationManager::plantCrop(const Vec2& tileCoord, ItemType type) {
     auto it = _soils.find(keyFor(tileCoord));
     if (it == _soils.end() || !it->second) {
@@ -154,7 +154,7 @@ bool CultivationManager::plantCrop(const Vec2& tileCoord, ItemType type) {
     return it->second->plant(type);
 }
 
-// æ–°çš„ä¸€å¤©
+// ĞÂµÄÒ»Ìì
 void CultivationManager::onNewDay() {
     for (auto& pair : _soils) {
         if (pair.second) {
@@ -163,7 +163,7 @@ void CultivationManager::onNewDay() {
     }
 }
 
-// ç§»é™¤è€•åœ°
+// ÒÆ³ı¸ûµØ
 bool CultivationManager::removeSoil(const Vec2& tileCoord) {
     auto it = _soils.find(keyFor(tileCoord));
     if (it == _soils.end()) {
@@ -184,7 +184,7 @@ bool CultivationManager::removeSoil(const Vec2& tileCoord) {
     return true;
 }
 
-// æ”¶è·ä½œç‰©
+// ÊÕ»ñ×÷Îï
 ItemType CultivationManager::harvestCrop(const Vec2& tileCoord) {
     auto it = _soils.find(keyFor(tileCoord));
     if (it == _soils.end() || !it->second) {
@@ -194,7 +194,7 @@ ItemType CultivationManager::harvestCrop(const Vec2& tileCoord) {
     return it->second->harvest();
 }
 
-// å…¨éƒ¨æµ‡æ°´
+// È«²¿½½Ë®
 void CultivationManager::waterAllSoils()
 {
     for (auto& pair : _soils) {
@@ -204,7 +204,7 @@ void CultivationManager::waterAllSoils()
     }
 }
 
-// è·å–å­˜æ¡£æ•°æ®
+// »ñÈ¡´æµµÊı¾İ
 std::vector<CultivationManager::SoilSaveData> CultivationManager::getSoilsData() const
 {
     std::vector<SoilSaveData> data;
@@ -234,10 +234,10 @@ std::vector<CultivationManager::SoilSaveData> CultivationManager::getSoilsData()
     return data;
 }
 
-// æ¢å¤å­˜æ¡£æ•°æ®
+// »Ö¸´´æµµÊı¾İ
 void CultivationManager::restoreData(const std::vector<SoilSaveData>& data)
 {
-    // æ¸…ç†ç°æœ‰æ•°æ®
+    // ÇåÀíÏÖÓĞÊı¾İ
     for (auto& kv : _soils) {
         if (kv.second) {
             kv.second->removeFromParent();
@@ -251,7 +251,7 @@ void CultivationManager::restoreData(const std::vector<SoilSaveData>& data)
     for (const auto& d : data) {
         Vec2 coord(d.x, d.y);
 
-        // ç¡®ä¿ FarmItemManager çŠ¶æ€åŒæ­¥
+        // È·±£ FarmItemManager ×´Ì¬Í¬²½
         if (!_farmItemManager->isCultivated(coord)) {
             _farmItemManager->addItem(EnvironmentItemType::CULTIVATED_SOIL, coord);
         }
@@ -259,16 +259,16 @@ void CultivationManager::restoreData(const std::vector<SoilSaveData>& data)
         auto soil = CultivatedSoil::create(coord);
         if (!soil) continue;
 
-        // æ·»åŠ åˆ°åœ°å›¾
+        // Ìí¼Óµ½µØÍ¼
         if (_tiledMap) {
             soil->setPosition(_gameMap->calWorldPos(coord));
             _tiledMap->addChild(soil, SOIL_SPRITE_Z_ORDER);
         }
 
-        // æ¢å¤çŠ¶æ€
-        soil->setStatus(SoilStatus::DRY); // é»˜è®¤å¹²åœŸï¼Œå¦‚éœ€æ¢å¤æ¹¿æ¶¦å¯ä¿®æ”¹æ­¤å¤„
+        // »Ö¸´×´Ì¬
+        soil->setStatus(SoilStatus::DRY); // Ä¬ÈÏ¸ÉÍÁ£¬ÈçĞè»Ö¸´ÊªÈó¿ÉĞŞ¸Ä´Ë´¦
 
-        // æ¢å¤ä½œç‰©
+        // »Ö¸´×÷Îï
         if (static_cast<ItemType>(d.cropType) != ItemType::NONE) {
             soil->plant(static_cast<ItemType>(d.cropType));
             if (soil->hasCrop()) {

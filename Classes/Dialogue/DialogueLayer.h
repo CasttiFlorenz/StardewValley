@@ -1,3 +1,11 @@
+/****************************************************************
+ * Project Name:  StardewValley
+ * File Name:     DialogueLayer.h
+ * File Function: DialogueLayer类的实现
+ * Author:        赵睿妍
+ * Update Date:   2025/12/28
+ * License:       MIT License
+ ****************************************************************/
 #ifndef __DIALOGUE_LAYER_H__
 #define __DIALOGUE_LAYER_H__
 
@@ -5,8 +13,6 @@
 #include "ui/CocosGUI.h"
 #include <string>
 #include <vector>
-#include <queue>
-#include <functional>
 
 class DialogueLayer : public cocos2d::Layer
 {

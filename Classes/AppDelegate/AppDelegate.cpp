@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     AppDelegate.cpp
- * File Function: AppDelegateç±»çš„å®žçŽ°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/07
+ * File Function: AppDelegateÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 /****************************************************************************
@@ -126,10 +126,10 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     register_all_packages();
 
-    // åˆ›å»ºåˆå§‹èœå•åœºæ™¯
+    // ´´½¨³õÊ¼²Ëµ¥³¡¾°
     auto scene = InitialMenuScene::createScene();
     
-    // è¿›å…¥åˆå§‹èœå•ï¼Œå¼€å§‹è¿è¡Œ
+    // ½øÈë³õÊ¼²Ëµ¥£¬¿ªÊ¼ÔËÐÐ
     director->runWithScene(scene);
 
     return true;

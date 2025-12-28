@@ -1,18 +1,18 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     Town.cpp
- * File Function: Townç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/23
+ * File Function: TownÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #include "Town.h"
 #include "../Inventory/InventoryScene.h"
 
-// å•ä¾‹å®ä¾‹
+// µ¥ÀıÊµÀı
 GameMap* Town::_instance = nullptr;
 
-// åˆ›å»ºå®ä¾‹
+// ´´½¨ÊµÀı
 Town* Town::create() {
     auto p = new (std::nothrow) Town();
     if (p && p->init()) {
@@ -23,7 +23,7 @@ Town* Town::create() {
     return nullptr;
 }
 
-// è·å–å•ä¾‹
+// »ñÈ¡µ¥Àı
 GameMap* Town::getInstance() {
     if (!_instance) {
         _instance = Town::create();
@@ -32,38 +32,38 @@ GameMap* Town::getInstance() {
     return _instance;
 }
 
-// é”€æ¯å•ä¾‹
+// Ïú»Ùµ¥Àı
 void Town::destroyInstance() {
     CC_SAFE_RELEASE_NULL(_instance);
 }
 
-// åˆå§‹åŒ–
+// ³õÊ¼»¯
 bool Town::init()
 {
     if (!Scene::init()) return false;
 
     _mapName = MapType::TOWN;
 
-    // åŠ è½½åœ°å›¾
+    // ¼ÓÔØµØÍ¼
     _map = TMXTiledMap::create(TILED_MAP_TOWN_PATH);
     if (!_map) return false;
 
-    // éšè—äº‹ä»¶å±‚
+    // Òş²ØÊÂ¼ş²ã
     if (auto eventLayer = _map->getLayer(EVENT_LAYER_NAME)) {
         eventLayer->setVisible(false);
     }
 
-    // åˆå§‹åŒ– NPC
+    // ³õÊ¼»¯ NPC
     addChild(_map);
     initNPCs();
 
     return true;
 }
 
-// ç¦»å¼€åœ°å›¾é€»è¾‘
+// Àë¿ªµØÍ¼Âß¼­
 MapType Town::leaveMap(const Vec2& curPos, bool isStart, const Direction& direction)
 {
-    // å‘å·¦ç§»åŠ¨è¿”å›å†œåœº
+    // Ïò×óÒÆ¶¯·µ»ØÅ©³¡
     if (direction == Direction::LEFT) {
         if (getObjectRect(GO_TO_FARM).containsPoint(curPos)) {
             if (auto npc = NPCManager::getInstance())
@@ -74,7 +74,7 @@ MapType Town::leaveMap(const Vec2& curPos, bool isStart, const Direction& direct
     return MapType::NONE;
 }
 
-// è¿›å…¥åœ°å›¾é€»è¾‘
+// ½øÈëµØÍ¼Âß¼­
 void Town::IntoMap(MapType lastMap)
 {
     if(auto music=MusicManager::getInstance())
@@ -87,7 +87,7 @@ void Town::IntoMap(MapType lastMap)
     _map->setPosition(Vec2::ZERO);
 }
 
-// è·å–ç©å®¶åˆå§‹ä½ç½®
+// »ñÈ¡Íæ¼Ò³õÊ¼Î»ÖÃ
 Vec2 Town::getPlayerStartPosition(MapType lastMap)
 {
     if (lastMap == MapType::FARM) {
@@ -98,21 +98,21 @@ Vec2 Town::getPlayerStartPosition(MapType lastMap)
     return Vec2(PLAYER_DEFAULT_POS_X, PLAYER_DEFAULT_POS_Y);
 }
 
-// å³é”®ç‚¹å‡»å¤„ç†
+// ÓÒ¼üµã»÷´¦Àí
 MouseEvent Town::onRightClick(const Vec2& playerPos,
     const Direction direction)
 {
-    // NPC åç§°åˆ—è¡¨
+    // NPC Ãû³ÆÁĞ±í
     static const std::vector<std::string> npcNames = {
         NPC_NAME_EVELYN, NPC_NAME_HALEY, NPC_NAME_SAM
     };
 
-    // å•†åº—åç§°åˆ—è¡¨
+    // ÉÌµêÃû³ÆÁĞ±í
     static const std::vector<std::string> shopNames = {
         SHOP_NAME_PIERRE, SHOP_NAME_MARNIE
     };
 
-    // æ£€æŸ¥æ˜¯å¦ä¸ NPC äº¤äº’
+    // ¼ì²éÊÇ·ñÓë NPC ½»»¥
     for (const auto& name : npcNames) {
         if (getObjectRect(name).containsPoint(playerPos)) {
             ItemType curItem = ItemType::NONE;
@@ -124,7 +124,7 @@ MouseEvent Town::onRightClick(const Vec2& playerPos,
         }
     }
 
-    // æ£€æŸ¥æ˜¯å¦æ‰“å¼€å•†åº—
+    // ¼ì²éÊÇ·ñ´ò¿ªÉÌµê
     for (const auto& name : shopNames) {
         if (getObjectRect(name).containsPoint(playerPos)) {
             openShopForNPC(name);
@@ -135,7 +135,7 @@ MouseEvent Town::onRightClick(const Vec2& playerPos,
     return MouseEvent::NONE;
 }
 
-// æ‰“å¼€å•†åº—é€»è¾‘
+// ´ò¿ªÉÌµêÂß¼­
 void Town::openShopForNPC(const std::string& npcName)
 {
     auto runningScene = Director::getInstance()->getRunningScene();
@@ -144,18 +144,18 @@ void Town::openShopForNPC(const std::string& npcName)
     std::vector<Item*> itemsToSell;
     std::vector<ItemType> acceptedSellItems;
 
-    // çš®åŸƒå°”å•†åº—
+    // Æ¤°£¶ûÉÌµê
     if (npcName == SHOP_NAME_PIERRE) {
-        // ç§å­
+        // ÖÖ×Ó
         itemsToSell.push_back(new Item(ItemType::PARSNIP_SEED, ITEM_STACK_SIZE_3, ITEM_SCALE_1_0, ITEM_SCALE_0_0, ITEM_TEXTURE_PARSNIP_SEED, ITEM_PRICE_PARSNIP_SEED, ITEM_NAME_PARSNIP_SEEDS));
         itemsToSell.push_back(new Item(ItemType::POTATO_SEED, ITEM_STACK_SIZE_3, ITEM_SCALE_1_0, ITEM_SCALE_0_0, ITEM_TEXTURE_POTATO_SEED, ITEM_PRICE_POTATO_SEED, ITEM_NAME_POTATO_SEEDS));
         itemsToSell.push_back(new Item(ItemType::CAULIFLOWER_SEED, ITEM_STACK_SIZE_3, ITEM_SCALE_1_0, ITEM_SCALE_0_0, ITEM_TEXTURE_CAULIFLOWER_SEED, ITEM_PRICE_CAULIFLOWER_SEED, ITEM_NAME_CAULIFLOWER_SEEDS));
 
-        // è‚¥æ–™ä¸é£Ÿç‰©
+        // ·ÊÁÏÓëÊ³Îï
         itemsToSell.push_back(new Item(ItemType::FERTILIZER, ITEM_STACK_SIZE_1, ITEM_SCALE_1_0, ITEM_SCALE_0_0, ITEM_TEXTURE_FERTILIZER, ITEM_PRICE_FERTILIZER, ITEM_NAME_FERTILIZER));
         itemsToSell.push_back(new Item(ItemType::SALAD, ITEM_STACK_SIZE_1, ITEM_SCALE_1_0, ITEM_SCALE_0_0, ITEM_TEXTURE_SALAD, ITEM_PRICE_SALAD, ITEM_NAME_SALAD));
 
-        // æ”¶è´­åˆ—è¡¨
+        // ÊÕ¹ºÁĞ±í
         acceptedSellItems = {
             ItemType::PARSNIP, ItemType::POTATO, ItemType::CAULIFLOWER,
             ItemType::DAFFODILS, ItemType::LEEK, ItemType::FIBER,
@@ -163,19 +163,19 @@ void Town::openShopForNPC(const std::string& npcName)
             ItemType::FRIED_EGG, ItemType::SALAD, ItemType::CARP
         };
     }
-    // ç›å¦®å•†åº—
+    // ÂêÄİÉÌµê
     else if (npcName == SHOP_NAME_MARNIE) {
         itemsToSell.push_back(new Item(ItemType::HAY, ITEM_STACK_SIZE_1, ITEM_SCALE_0_0, ITEM_SCALE_0_0, ITEM_TEXTURE_HAY, ITEM_PRICE_HAY, ITEM_NAME_HAY));
 
-        // åŠ¨ç‰©è´­ä¹°å‡­è¯
+        // ¶¯Îï¹ºÂòÆ¾Ö¤
         itemsToSell.push_back(new Item(ItemType::ANIMAL_CHICKEN_TAG, ITEM_STACK_SIZE_1, ITEM_SCALE_1_0, ITEM_SCALE_0_0, ITEM_TEXTURE_CHICKEN, ITEM_PRICE_CHICKEN, ITEM_NAME_CHICKEN));
         itemsToSell.push_back(new Item(ItemType::ANIMAL_COW_TAG, ITEM_STACK_SIZE_1, ITEM_SCALE_1_0, ITEM_SCALE_0_0, ITEM_TEXTURE_COW, ITEM_PRICE_COW, ITEM_NAME_COW));
 
-        // æ”¶è´­åˆ—è¡¨
+        // ÊÕ¹ºÁĞ±í
         acceptedSellItems = { ItemType::EGG, ItemType::MILK, ItemType::HAY };
     }
 
-    // åˆ›å»ºå•†åº—ç•Œé¢
+    // ´´½¨ÉÌµê½çÃæ
     if (!itemsToSell.empty()) {
         auto shopLayer = ShopMenuLayer::create(npcName, itemsToSell, acceptedSellItems);
         if (shopLayer) {
@@ -184,13 +184,13 @@ void Town::openShopForNPC(const std::string& npcName)
             runningScene->addChild(shopLayer, ZORDER_SHOP_MENU);
         }
         else {
-            // åˆ›å»ºå¤±è´¥æ¸…ç†å†…å­˜
+            // ´´½¨Ê§°ÜÇåÀíÄÚ´æ
             for (auto item : itemsToSell) delete item;
         }
     }
 }
 
-// NPC äº¤äº’é€»è¾‘
+// NPC ½»»¥Âß¼­
 void Town::interactWithNPC(const std::string& npcName, ItemType heldItem)
 {
     NPCBase* npc = getNPCByName(npcName);
@@ -200,7 +200,7 @@ void Town::interactWithNPC(const std::string& npcName, ItemType heldItem)
     bool isGifting = (heldItem != ItemType::NONE && heldItem > ItemType::FISHINGROD);
 
     if (isGifting) {
-        // é€ç¤¼
+        // ËÍÀñ
         std::string reply = npc->receiveGift(heldItem);
         contentList.push_back(reply);
 
@@ -209,11 +209,11 @@ void Town::interactWithNPC(const std::string& npcName, ItemType heldItem)
         }
     }
     else {
-        // å¯¹è¯
+        // ¶Ô»°
         contentList = npc->getConversation(false);
     }
 
-    // æ˜¾ç¤ºå¯¹è¯æ¡†
+    // ÏÔÊ¾¶Ô»°¿ò
     auto runningScene = Director::getInstance()->getRunningScene();
     if (runningScene) {
         auto dialog = DialogueLayer::create();
@@ -226,7 +226,7 @@ void Town::interactWithNPC(const std::string& npcName, ItemType heldItem)
     }
 }
 
-// åˆå§‹åŒ– NPC
+// ³õÊ¼»¯ NPC
 void Town::initNPCs()
 {
     if (!_npcMap.empty()) return;
@@ -251,7 +251,7 @@ void Town::initNPCs()
     }
 }
 
-// è·å– NPC å¯¹è±¡
+// »ñÈ¡ NPC ¶ÔÏó
 NPCBase* Town::getNPCByName(const std::string& name)
 {
     auto it = _npcMap.find(name);

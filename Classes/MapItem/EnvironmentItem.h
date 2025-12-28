@@ -1,8 +1,8 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     EnvironmentItem.h
- * File Function: EnvironmentItemç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
+ * File Function: EnvironmentItemÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
  * Update Date:   2025/12/16
  * License:       MIT License
  ****************************************************************/
@@ -15,25 +15,25 @@
 
 USING_NS_CC;
 
-// ç¯å¢ƒç‰©å“åŸºç±»ï¼ˆå¦‚çŸ³å¤´ã€æœ¨å¤´ç­‰ï¼‰
+// »·¾³ÎïÆ·»ùÀà£¨ÈçÊ¯Í·¡¢Ä¾Í·µÈ£©
 class EnvironmentItem : public Sprite {
 public:
-    // é™æ€åˆ›å»ºå‡½æ•°
+    // ¾²Ì¬´´½¨º¯Êı
     static EnvironmentItem* create(EnvironmentItemType type, const Vec2& tileCoord);
 
-    // åˆå§‹åŒ–
+    // ³õÊ¼»¯
     bool init(EnvironmentItemType type, const Vec2& tileCoord);
 
-    // è·å–ç‰©å“ç±»å‹
+    // »ñÈ¡ÎïÆ·ÀàĞÍ
     EnvironmentItemType getType() const { return _type; }
 
-    // è·å–/è®¾ç½®ç“¦ç‰‡åæ ‡
+    // »ñÈ¡/ÉèÖÃÍßÆ¬×ø±ê
     const Vec2& getTileCoord() const { return _tileCoord; }
     void setTileCoord(const Vec2& coord) { _tileCoord = coord; }
 
 protected:
-    EnvironmentItemType _type; // ç‰©å“ç±»å‹
-    Vec2 _tileCoord;           // ç“¦ç‰‡åæ ‡
+    EnvironmentItemType _type; // ÎïÆ·ÀàĞÍ
+    Vec2 _tileCoord;           // ÍßÆ¬×ø±ê
 };
 
 

@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     InventoryManager.cpp
- * File Function: InventoryManagerç±»çš„å®ç°
- * Author:        äºæ©ç†™
- * Update Date:   2025/12/21
+ * File Function: InventoryManagerÀàµÄÊµÏÖ
+ * Author:        ÓÚ¶÷Îõ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 
@@ -11,7 +11,7 @@
 
 USING_NS_CC;
 
-// é™æ€å˜é‡åˆå§‹åŒ–
+// ¾²Ì¬±äÁ¿³õÊ¼»¯
 Node* InventoryManager::s_parent = nullptr;
 Sprite* InventoryManager::s_background = nullptr;
 std::array<InventoryManager::BackpackInfo, 3> InventoryManager::s_backpacks;
@@ -24,18 +24,18 @@ float InventoryManager::s_backpackHeight = 0;
 int InventoryManager::s_currentPressedIndex = 0;
 
 
-// é‡ç½®æ‰€æœ‰é™æ€å˜é‡
+// ÖØÖÃËùÓĞ¾²Ì¬±äÁ¿
 void InventoryManager::resetStaticVariables()
 {
-    // é‡ç½®æŒ‡é’ˆç±»å‹å˜é‡
+    // ÖØÖÃÖ¸ÕëÀàĞÍ±äÁ¿
     s_parent = nullptr;
     s_background = nullptr;
-    s_container = nullptr;  // RefPträ¼šè‡ªåŠ¨ç®¡ç†é‡Šæ”¾
+    s_container = nullptr;  // RefPtr»á×Ô¶¯¹ÜÀíÊÍ·Å
 
-    // é‡ç½®æŒ‰é’®å›è°ƒ
+    // ÖØÖÃ°´Å¥»Øµ÷
     s_buttonCallback = nullptr;
 
-    // é‡ç½®æ•°ç»„
+    // ÖØÖÃÊı×é
     for (auto& backpack : s_backpacks) {
         backpack.sprite = nullptr;
         backpack.position = Vec2::ZERO;
@@ -50,13 +50,13 @@ void InventoryManager::resetStaticVariables()
         pos = Vec2::ZERO;
     }
 
-    // é‡ç½®æ ‡é‡å˜é‡
+    // ÖØÖÃ±êÁ¿±äÁ¿
     s_backpackWidth = 0.0f;
     s_backpackHeight = 0.0f;
     s_currentPressedIndex = 0;
 }
 
-// åˆ›å»ºæ•´ä¸ªç•Œé¢
+// ´´½¨Õû¸ö½çÃæ
 void InventoryManager::createInterface(
     Node* parent,
     std::array<BackpackInfo, 3>& backpacks,
@@ -70,30 +70,30 @@ void InventoryManager::createInterface(
     s_parent = parent;
     if (!s_parent) return;
 
-    // åˆ›å»ºèƒŒæ™¯
+    // ´´½¨±³¾°
     background = createBackground(parent);
     s_background = background;
     if (!s_background) return;
 
-    // åˆ›å»ºèƒŒåŒ…
+    // ´´½¨±³°ü
     createBackpacks(parent, backpacks);
     s_backpacks = backpacks;
 
-    // è®¡ç®—å°ºå¯¸
+    // ¼ÆËã³ß´ç
     if (backpacks[0].sprite) {
         Size contentSize = backpacks[0].sprite->getContentSize();
         backpackWidth = contentSize.width * backpacks[0].scale;
         backpackHeight = contentSize.height * backpacks[0].scale;
         s_backpackWidth = backpackWidth;
         s_backpackHeight = backpackHeight;
-        cellWidth = backpackWidth / INVENTORY_COLS;  // 12ä¸ªæ ¼å­
+        cellWidth = backpackWidth / INVENTORY_COLS;  // 12¸ö¸ñ×Ó
     }
 
-    // åˆ›å»ºæŒ‰é’®
+    // ´´½¨°´Å¥
     createButtons(parent, background, buttons, backpackWidth);
 }
 
-// åˆ›å»ºèƒŒæ™¯
+// ´´½¨±³¾°
 Sprite* InventoryManager::createBackground(Node* parent)
 {
     if (!parent) return nullptr;
@@ -111,13 +111,13 @@ Sprite* InventoryManager::createBackground(Node* parent)
     return background;
 }
 
-// åˆ›å»ºèƒŒåŒ…
+// ´´½¨±³°ü
 void InventoryManager::createBackpacks(Node* parent, std::array<BackpackInfo, 3>& backpacks)
 {
     if (!parent) return;
     auto visibleSize = Director::getInstance()->getVisibleSize();
 
-    // èƒŒåŒ…ä½ç½®
+    // ±³°üÎ»ÖÃ
     float yPositions[3] = {
         visibleSize.height * 0.75f,
         visibleSize.height * 0.6f,
@@ -125,7 +125,7 @@ void InventoryManager::createBackpacks(Node* parent, std::array<BackpackInfo, 3>
     };
 
     for (int i = 0; i < INVENTORY_ROWS; i++) {
-        // åˆ›å»ºèƒŒåŒ…ç²¾çµ
+        // ´´½¨±³°ü¾«Áé
         auto backpack = Sprite::create(PATH_INVENTORY_SLOT_BG);
         if (backpack) {
             Vec2 position = Vec2(visibleSize.width / 2, yPositions[i]);
@@ -135,7 +135,7 @@ void InventoryManager::createBackpacks(Node* parent, std::array<BackpackInfo, 3>
             backpack->setScale(scale);
             parent->addChild(backpack);
 
-            // ä¿å­˜ä¿¡æ¯
+            // ±£´æĞÅÏ¢
             backpacks[i].sprite = backpack;
             backpacks[i].position = position;
             backpacks[i].scale = scale;
@@ -143,15 +143,15 @@ void InventoryManager::createBackpacks(Node* parent, std::array<BackpackInfo, 3>
     }
 }
 
-// è®¾ç½®åˆå§‹èƒŒåŒ…ç•Œé¢
+// ÉèÖÃ³õÊ¼±³°ü½çÃæ
 void InventoryManager::setInitPress()
 {
     if (!s_buttons[0]) return;
 
-    // åˆ¤æ–­æ˜¯å¦éœ€è¦åˆ‡æ¢åˆ°èƒŒåŒ…ç•Œé¢
+    // ÅĞ¶ÏÊÇ·ñĞèÒªÇĞ»»µ½±³°ü½çÃæ
     bool needSwitchToInventory = (s_currentPressedIndex != 0);
 
-    // è®¾ç½®æŒ‰é’®çŠ¶æ€
+    // ÉèÖÃ°´Å¥×´Ì¬
     if (s_buttons[0]) {
         s_currentPressedIndex = 0;
         s_buttons[0]->setPosition(Vec2(s_buttonPositions[0].x, s_buttonPositions[0].y - 10));
@@ -163,14 +163,14 @@ void InventoryManager::setInitPress()
         }
     }
 
-    // åªæœ‰åœ¨éœ€è¦æ—¶æ‰åˆ‡æ¢åˆ°èƒŒåŒ…ç•Œé¢
+    // Ö»ÓĞÔÚĞèÒªÊ±²ÅÇĞ»»µ½±³°ü½çÃæ
     if (needSwitchToInventory) {
         switchToInventory();
     }
 
 }
 
-// åˆ›å»ºæŒ‰é’®
+// ´´½¨°´Å¥
 void InventoryManager::createButtons(
     Node* parent,
     Sprite* background,
@@ -179,12 +179,12 @@ void InventoryManager::createButtons(
 {
     if (!parent || !background) return;
 
-    // è®¡ç®—æŒ‰é’®ä½ç½®
+    // ¼ÆËã°´Å¥Î»ÖÃ
     float buttonY = background->getPositionY() * 1.52f;
     float buttonSpacing = backpackWidth / INVENTORT_BUTTON_COUNT;
     float startX = background->getPositionX() - backpackWidth / 2 + buttonSpacing / 2;
 
-    // åˆ›å»ºæŒ‰é’®
+    // ´´½¨°´Å¥
     for (int i = 0; i < INVENTORT_BUTTON_COUNT; i++) {
         float buttonX = startX + i * buttonSpacing;
 
@@ -196,12 +196,12 @@ void InventoryManager::createButtons(
             int tag = BUTTON_TAG_BASE + i;
             button->setTag(tag);
 
-            // ä¿å­˜ä½ç½®å’ŒæŒ‡é’ˆ
+            // ±£´æÎ»ÖÃºÍÖ¸Õë
             s_buttonPositions[i] = button->getPosition();
             s_buttons[i] = button;
             buttons[i] = button;
 
-            // è®¾ç½®è§¦æ‘¸ç›‘å¬
+            // ÉèÖÃ´¥Ãş¼àÌı
             auto listener = EventListenerTouchOneByOne::create();
             listener->setSwallowTouches(true);
 
@@ -220,13 +220,13 @@ void InventoryManager::createButtons(
 }
 
 
-// è®¾ç½®å›è°ƒ
+// ÉèÖÃ»Øµ÷
 void InventoryManager::setButtonCallback(ButtonCallback callback)
 {
     s_buttonCallback = callback;
 } 
 
-// æŒ‰é’®è§¦æ‘¸å›è°ƒ
+// °´Å¥´¥Ãş»Øµ÷
 bool InventoryManager::onButtonTouch(Touch* touch, Event* event)
 {
     if (!touch || !event) return false;
@@ -234,28 +234,28 @@ bool InventoryManager::onButtonTouch(Touch* touch, Event* event)
     auto target = static_cast<Sprite*>(event->getCurrentTarget());
     if (!target) return false;
 
-    // ä½¿ç”¨ä¸–ç•Œåæ ‡ç³»æ£€æµ‹
-    Vec2 touchLocation = touch->getLocation();  // å±å¹•åæ ‡
-    Rect buttonRect = target->getBoundingBox(); // ä¸–ç•Œåæ ‡çŸ©å½¢
+    // Ê¹ÓÃÊÀ½ç×ø±êÏµ¼ì²â
+    Vec2 touchLocation = touch->getLocation();  // ÆÁÄ»×ø±ê
+    Rect buttonRect = target->getBoundingBox(); // ÊÀ½ç×ø±ê¾ØĞÎ
 
-    // ç›´æ¥æ¯”è¾ƒ
+    // Ö±½Ó±È½Ï
     if (buttonRect.containsPoint(touchLocation)) {
         int tag = target->getTag();
         int index = tag - BUTTON_TAG_BASE;
 
         if (index >= 0 && index < INVENTORT_BUTTON_COUNT) {
-            // å¤„ç†æŒ‰é’®åŠ¨ç”»
+            // ´¦Àí°´Å¥¶¯»­
             if (s_currentPressedIndex != -1 && s_currentPressedIndex != index) {
                 if (s_buttons[s_currentPressedIndex]) {
                     s_buttons[s_currentPressedIndex]->setPosition(s_buttonPositions[s_currentPressedIndex]);
                 }
             }
 
-            // æ›´æ–°å½“å‰æŒ‰é’®
+            // ¸üĞÂµ±Ç°°´Å¥
             s_currentPressedIndex = index;
             target->setPosition(Vec2(s_buttonPositions[index].x, s_buttonPositions[index].y - 10));
 
-            // åˆ‡æ¢ç•Œé¢
+            // ÇĞ»»½çÃæ
             switch (index) {
                 case 0: switchToInventory(); break;
                 case 1: switchToSkills(); break;
@@ -263,7 +263,7 @@ bool InventoryManager::onButtonTouch(Touch* touch, Event* event)
                 case 3: switchToExit(); break;
             }
 
-            // è°ƒç”¨å›è°ƒé€šçŸ¥å¤–éƒ¨
+            // µ÷ÓÃ»Øµ÷Í¨ÖªÍâ²¿
             if (s_buttonCallback) {
                 s_buttonCallback(index);
             }
@@ -275,13 +275,13 @@ bool InventoryManager::onButtonTouch(Touch* touch, Event* event)
 }
 
 
-// åˆ‡æ¢åˆ°èƒŒåŒ…ç•Œé¢
+// ÇĞ»»µ½±³°ü½çÃæ
 void InventoryManager::switchToInventory()
 {
-    // ç§»é™¤å…¶ä»–ç•Œé¢
+    // ÒÆ³ıÆäËû½çÃæ
     removeContainer();
 
-    // æ˜¾ç¤ºæ‰€æœ‰èƒŒåŒ…
+    // ÏÔÊ¾ËùÓĞ±³°ü
     for (int i = 0; i < INVENTORY_ROWS; i++) {
         if (s_backpacks[i].sprite) {
             s_backpacks[i].sprite->setVisible(true);
@@ -289,36 +289,36 @@ void InventoryManager::switchToInventory()
     }
 }
 
-// åˆ‡æ¢åˆ°æŠ€èƒ½ç•Œé¢
+// ÇĞ»»µ½¼¼ÄÜ½çÃæ
 void InventoryManager::switchToSkills()
 {
-    // éšè—æ‰€æœ‰èƒŒåŒ…
+    // Òş²ØËùÓĞ±³°ü
     for (int i = 0; i < INVENTORY_ROWS; i++) {
         if (s_backpacks[i].sprite) {
             s_backpacks[i].sprite->setVisible(false);
         }
     }
 
-    // ç§»é™¤ä¹‹å‰çš„ç•Œé¢
+    // ÒÆ³ıÖ®Ç°µÄ½çÃæ
     removeContainer();
 
-    // åˆ›å»ºæŠ€èƒ½ç•Œé¢
+    // ´´½¨¼¼ÄÜ½çÃæ
     if (s_parent && s_background) {
         s_container = SkillLevel::createSkillsInterface(s_parent, s_background);
     }
 }
 
-// åˆ‡æ¢åˆ°ç¤¾äº¤ç•Œé¢
+// ÇĞ»»µ½Éç½»½çÃæ
 void InventoryManager::switchToSocial()
 {
-    // éšè—æ‰€æœ‰èƒŒåŒ…
+    // Òş²ØËùÓĞ±³°ü
     for (int i = 0; i < INVENTORY_ROWS; i++) {
         if (s_backpacks[i].sprite) {
             s_backpacks[i].sprite->setVisible(false);
         }
     }
 
-    // ç§»é™¤ç•Œé¢
+    // ÒÆ³ı½çÃæ
     removeContainer();
 
     if (s_parent && s_background) {
@@ -326,26 +326,26 @@ void InventoryManager::switchToSocial()
     }
 }
 
-// åˆ‡æ¢åˆ°é€€å‡ºç•Œé¢
+// ÇĞ»»µ½ÍË³ö½çÃæ
 void InventoryManager::switchToExit()
 {
-    // éšè—æ‰€æœ‰èƒŒåŒ…
+    // Òş²ØËùÓĞ±³°ü
     for (int i = 0; i < INVENTORY_ROWS; i++) {
         if (s_backpacks[i].sprite) {
             s_backpacks[i].sprite->setVisible(false);
         }
     }
 
-    // ç§»é™¤ç•Œé¢
+    // ÒÆ³ı½çÃæ
     removeContainer();
 
-    // é€€å‡ºé€»è¾‘
+    // ÍË³öÂß¼­
     if (s_parent && s_background) {
         s_container = ExitConfirm::create(s_parent, s_background);
     }
 }
 
-// æ¸…é™¤æ—§ç•Œé¢
+// Çå³ı¾É½çÃæ
 void InventoryManager::removeContainer()
 {
     if (!s_container) return;  
@@ -358,7 +358,7 @@ void InventoryManager::removeContainer()
 }
 
 
-// è·å–å½“å‰æŒ‰é’®ç´¢å¼•
+// »ñÈ¡µ±Ç°°´Å¥Ë÷Òı
 int InventoryManager::getCurrentButtonIndex()
 {
     return s_currentPressedIndex;

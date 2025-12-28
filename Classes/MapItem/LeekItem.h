@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     LeekItem.h
- * File Function: LeekItemç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: LeekItemÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #pragma once
@@ -12,7 +12,6 @@
 
 #include "EnvironmentItem.h"
 
-// Â¾Ã‚Â´ÃÃÃ¯Ã†Â·
 class LeekItem : public EnvironmentItem {
 public:
     static LeekItem* create(const cocos2d::Vec2& tileCoord);

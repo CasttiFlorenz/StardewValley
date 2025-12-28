@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     WoodItem.h
- * File Function: WoodItemç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: WoodItemÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #pragma once
@@ -12,7 +12,6 @@
 
 #include "EnvironmentItem.h"
 
-// Ã„Â¾ÃÂ·ÃÃ¯Ã†Â·
 class WoodItem : public EnvironmentItem {
 public:
     static WoodItem* create(const cocos2d::Vec2& tileCoord);

@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     HoverButton.h
- * File Function: HoverButtonç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/07
+ * File Function: HoverButtonÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #pragma once
@@ -15,33 +15,33 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 
-// æ‚¬åœæŒ‰é’®ç±»ï¼Œç»§æ‰¿è‡ª Cocos2d çš„ Button
+// ĞüÍ£°´Å¥Àà£¬¼Ì³Ğ×Ô Cocos2d µÄ Button
 class HoverButton : public cocos2d::ui::Button {
 public:
-    // é™æ€åˆ›å»ºå‡½æ•°
+    // ¾²Ì¬´´½¨º¯Êı
     static HoverButton* create(const std::string& normalImage,
         const std::string& selectedImage = "",
         const std::string& disabledImage = "");
 
-    // åˆå§‹åŒ–å‡½æ•°
+    // ³õÊ¼»¯º¯Êı
     virtual bool init(const std::string& normalImage,
         const std::string& selectedImage,
         const std::string& disabledImage);
 
 private:
-    // é¼ æ ‡ç§»åŠ¨äº‹ä»¶å¤„ç†
+    // Êó±êÒÆ¶¯ÊÂ¼ş´¦Àí
     void onMouseMove(cocos2d::Event* event);
 
-    // é¼ æ ‡æŠ¬èµ·äº‹ä»¶å¤„ç†
+    // Êó±êÌ§ÆğÊÂ¼ş´¦Àí
     void onMouseUp(cocos2d::Event* event);
 
 private:
-    // å›¾ç‰‡è·¯å¾„
+    // Í¼Æ¬Â·¾¶
     std::string _normalImage;
     std::string _selectedImage;
     std::string _disabledImage;
 
-    // ç¼©æ”¾å‚æ•°
+    // Ëõ·Å²ÎÊı
     const float _hoverScale = 1.03f;
     const float _baseScaleX = 1.0f;
     const float _baseScaleY = 1.0f;

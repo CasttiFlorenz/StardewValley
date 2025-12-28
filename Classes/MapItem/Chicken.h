@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     Chicken.h
- * File Function: Chickenç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: ChickenÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #pragma once
@@ -12,24 +12,24 @@
 
 #include "BarnAnimal.h"
 
-// é¸¡ç±»ï¼Œç»§æ‰¿è‡ªå†œåœºåŠ¨ç‰©
+// ¼¦Àà£¬¼Ì³Ğ×ÔÅ©³¡¶¯Îï
 class Chicken : public BarnAnimal {
 public:
-    // é™æ€åˆ›å»ºå‡½æ•°
+    // ¾²Ì¬´´½¨º¯Êı
     static Chicken* create();
 
-    // è·å–äº§ç‰©è·¯å¾„
+    // »ñÈ¡²úÎïÂ·¾¶
     virtual std::string getProducePath() const override;
 
-    // è·å–äº§ç‰©ç±»å‹
+    // »ñÈ¡²úÎïÀàĞÍ
     virtual ItemType getProduceObject() const override;
 
-    // è·å–åŠ¨ç‰©ç±»å‹
+    // »ñÈ¡¶¯ÎïÀàĞÍ
     virtual AnimalType getType() const noexcept override {
         return AnimalType::CHICKEN;
     }
 
-    // åŠ¨ç”»æ§åˆ¶
+    // ¶¯»­¿ØÖÆ
     virtual void startAnimation() override;
     virtual void stopAnimation() override;
 };

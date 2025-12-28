@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     GameMap.h
- * File Function: GameMapç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/23
+ * File Function: GameMapÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #ifndef __GAME_MAP_H__
@@ -14,53 +14,53 @@
 
 USING_NS_CC;
 
-// æ¸¸æˆåœ°å›¾åŸºç±»
-// èŒè´£ï¼šåœ°å›¾åŠ è½½ã€åæ ‡è½¬æ¢ã€ç¢°æ’æ£€æµ‹ã€åœ°å›¾åˆ‡æ¢
+// ÓÎÏ·µØÍ¼»ùÀà
+// Ö°Ôğ£ºµØÍ¼¼ÓÔØ¡¢×ø±ê×ª»»¡¢Åö×²¼ì²â¡¢µØÍ¼ÇĞ»»
 class GameMap : public Scene
 {
 public:
-    // åˆå§‹åŒ–åœ°å›¾
+    // ³õÊ¼»¯µØÍ¼
     virtual bool init() override;
 
-    // å¸§æ›´æ–°
+    // Ö¡¸üĞÂ
     virtual void update(float dt) noexcept override {}
 
-    // è¿›å…¥åœ°å›¾æ—¶çš„åˆå§‹åŒ–
+    // ½øÈëµØÍ¼Ê±µÄ³õÊ¼»¯
     virtual void IntoMap(MapType lastMap) = 0;
 
-    // è·å–å½“å‰åœ°å›¾åç§°
+    // »ñÈ¡µ±Ç°µØÍ¼Ãû³Æ
     MapType getMapName() const noexcept { return _mapName; }
 
-    // è·å– Tiled åœ°å›¾å¯¹è±¡
+    // »ñÈ¡ Tiled µØÍ¼¶ÔÏó
     TMXTiledMap* getTiledMap()  const noexcept { return _map; }
 
-    // æ˜¯å¦ç›¸æœºè·Ÿéš
+    // ÊÇ·ñÏà»ú¸úËæ
     virtual bool isCameraFollow() const noexcept { return false; }
 
-    // æ˜¯å¦ä¸ºæˆ·å¤–åœ°å›¾
+    // ÊÇ·ñÎª»§ÍâµØÍ¼
     virtual bool isOutdoor() noexcept { return false; }
 
-    // è·å–ç©å®¶åˆå§‹ä½ç½®
+    // »ñÈ¡Íæ¼Ò³õÊ¼Î»ÖÃ
     virtual Vec2 getPlayerStartPosition(MapType lastMap) = 0;
 
-    // åˆ¤æ–­æ˜¯å¦éœ€è¦åˆ‡æ¢åœ°å›¾
+    // ÅĞ¶ÏÊÇ·ñĞèÒªÇĞ»»µØÍ¼
     virtual MapType leaveMap(const Vec2& curPos,
         bool isStart,
         const Direction& direction) = 0;
 
-    // åˆ¤æ–­åæ ‡æ˜¯å¦å¯é€šè¡Œ
+    // ÅĞ¶Ï×ø±êÊÇ·ñ¿ÉÍ¨ĞĞ
     virtual bool isCollidable(Vec2 worldPos);
 
-    // ä¸–ç•Œåæ ‡ -> ç“¦ç‰‡åæ ‡
+    // ÊÀ½ç×ø±ê -> ÍßÆ¬×ø±ê
     Vec2 calMapPos(Vec2 worldPos);
 
-    // ç“¦ç‰‡åæ ‡ -> ä¸–ç•Œåæ ‡
+    // ÍßÆ¬×ø±ê -> ÊÀ½ç×ø±ê
     Vec2 calWorldPos(const Vec2& tileCoord);
 
-    // è·å–å¯¹è±¡å±‚çŸ©å½¢åŒºåŸŸ
+    // »ñÈ¡¶ÔÏó²ã¾ØĞÎÇøÓò
     Rect getObjectRect(const std::string& objectName);
 
-    // å·¦é”®ç‚¹å‡»å¤„ç†
+    // ×ó¼üµã»÷´¦Àí
     virtual MouseEvent onLeftClick(const Vec2& playerPos,
         const Direction direction,
         ItemType objects) 
@@ -68,22 +68,22 @@ public:
         return MouseEvent::USE_TOOL;
     }
 
-    // å³é”®ç‚¹å‡»å¤„ç†
+    // ÓÒ¼üµã»÷´¦Àí
     virtual MouseEvent onRightClick(const Vec2& playerPos,
         const Direction direction) 
     {
         return MouseEvent::NONE;
     }
 
-    // åº”ç”¨æ–¹å‘åç§»
+    // Ó¦ÓÃ·½ÏòÆ«ÒÆ
     virtual void ApplyDirectionOffset(Vec2& basePos, Direction direction);
 
-    // åˆ¤æ–­å±æ€§å€¼æ˜¯å¦ä¸ºçœŸ
+    // ÅĞ¶ÏÊôĞÔÖµÊÇ·ñÎªÕæ
     virtual bool IsTrueProperty(const Value& v);
 
 protected:
-    TMXTiledMap* _map = nullptr;   // Tiled åœ°å›¾å¯¹è±¡
-    MapType _mapName;              // åœ°å›¾åç§°
+    TMXTiledMap* _map = nullptr;   // Tiled µØÍ¼¶ÔÏó
+    MapType _mapName;              // µØÍ¼Ãû³Æ
 };
 
 

@@ -1,12 +1,12 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     AppDelegate.h
- * File Function: AppDelegateç±»çš„å®žçŽ°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/07
+ * File Function: AppDelegateÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
-/****************************************************************************
+ /****************************************************************************
  Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
  
  http://www.cocos2d-x.org
@@ -29,6 +29,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  ****************************************************************************/
+
 
 #ifndef  _APP_DELEGATE_H_
 #define  _APP_DELEGATE_H_

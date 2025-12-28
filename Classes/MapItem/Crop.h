@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     Crop.h
- * File Function: Cropç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: CropÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #pragma once
@@ -16,56 +16,56 @@
 
 USING_NS_CC;
 
-// ä½œç‰©åŸºç±»
+// ×÷Îï»ùÀà
 class Crop : public Sprite {
 public:
-    // é™æ€åˆ›å»ºå‡½æ•°
+    // ¾²Ì¬´´½¨º¯Êı
     static Crop* create(ItemType type);
 
-    // åˆå§‹åŒ–
+    // ³õÊ¼»¯
     virtual bool init(ItemType type);
 
-    // æ›´æ–°ç”Ÿé•¿çŠ¶æ€ï¼ˆæ¯æ—¥è°ƒç”¨ï¼‰
+    // ¸üĞÂÉú³¤×´Ì¬£¨Ã¿ÈÕµ÷ÓÃ£©
     void updateGrowth(bool isWatered);
 
-    // è·å–ä½œç‰©ä¿¡æ¯
+    // »ñÈ¡×÷ÎïĞÅÏ¢
     ItemType getCropType() const noexcept { return _type; }
     CropStatus getStatus() const noexcept { return _status; }
     int getGrowthStage() const noexcept { return _growthStage; }
 
-    // è®¾ç½®ç”Ÿé•¿é˜¶æ®µ
+    // ÉèÖÃÉú³¤½×¶Î
     void setGrowthStage(int stage);
 
-    // è®¾ç½®ç”Ÿé•¿é˜¶æ®µå’ŒçŠ¶æ€
+    // ÉèÖÃÉú³¤½×¶ÎºÍ×´Ì¬
     void setGrowthStage(int stage, CropStatus status);
 
 protected:
-    // æ›´æ–°çº¹ç†æ˜¾ç¤º
+    // ¸üĞÂÎÆÀíÏÔÊ¾
     void updateTexture();
 
 protected:
-    ItemType _type;             // ä½œç‰©ç±»å‹
-    CropStatus _status;         // ç”Ÿé•¿çŠ¶æ€
-    int _growthStage;           // å½“å‰é˜¶æ®µ
-    int _maxGrowthStage;        // æœ€å¤§é˜¶æ®µï¼ˆæˆç†Ÿï¼‰
-    std::string _texturePrefix; // çº¹ç†å‰ç¼€
+    ItemType _type;             // ×÷ÎïÀàĞÍ
+    CropStatus _status;         // Éú³¤×´Ì¬
+    int _growthStage;           // µ±Ç°½×¶Î
+    int _maxGrowthStage;        // ×î´ó½×¶Î£¨³ÉÊì£©
+    std::string _texturePrefix; // ÎÆÀíÇ°×º
 };
 
-// é˜²é£è‰
+// ·À·ç²İ
 class Parsnip : public Crop {
 public:
     static Parsnip* create();
     virtual bool init() override;
 };
 
-// åœŸè±†
+// ÍÁ¶¹
 class Potato : public Crop {
 public:
     static Potato* create();
     virtual bool init() override;
 };
 
-// èŠ±æ¤°èœ
+// »¨Ò¬²Ë
 class Cauliflower : public Crop {
 public:
     static Cauliflower* create();

@@ -1,21 +1,21 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     MinesItemManager.cpp
- * File Function: MinesItemManagerç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: MinesItemManagerÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #include "MinesItemManager.h"
 
-// å•ä¾‹å®ä¾‹æŒ‡é’ˆ
+// µ¥ÀıÊµÀıÖ¸Õë
 MinesItemManager* MinesItemManager::_instance = nullptr;
 
 MinesItemManager* MinesItemManager::getInstance(GameMap* gameMap)
 {
-    // å°šæœªåˆ›å»ºå®ä¾‹
+    // ÉĞÎ´´´½¨ÊµÀı
     if (!_instance) {
-        // ç¬¬ä¸€æ¬¡åˆ›å»ºå¿…é¡»æä¾› GameMap
+        // µÚÒ»´Î´´½¨±ØĞëÌá¹© GameMap
         if (!gameMap) {
             CCLOG("MinesItemManager::getInstance failed: gameMap is null");
             return nullptr;
@@ -23,7 +23,7 @@ MinesItemManager* MinesItemManager::getInstance(GameMap* gameMap)
 
         _instance = new (std::nothrow) MinesItemManager();
         if (_instance && _instance->init(gameMap)) {
-            // äº¤ç”± cocos2d-x å¼•ç”¨è®¡æ•°ç®¡ç†
+            // ½»ÓÉ cocos2d-x ÒıÓÃ¼ÆÊı¹ÜÀí
             CC_SAFE_RETAIN(_instance);
         }
         else {
@@ -36,7 +36,7 @@ MinesItemManager* MinesItemManager::getInstance(GameMap* gameMap)
 void MinesItemManager::destroyInstance()
 {
     if (_instance) {
-        // å…ˆæ¸…ç†æ‰€æœ‰ç”Ÿæˆçš„ç‰©ä½“
+        // ÏÈÇåÀíËùÓĞÉú³ÉµÄÎïÌå
         _instance->clear();
         CC_SAFE_RELEASE_NULL(_instance);
     }
@@ -44,17 +44,17 @@ void MinesItemManager::destroyInstance()
 
 bool MinesItemManager::init(GameMap* gameMap)
 {
-    // ä¿å­˜åœ°å›¾ç›¸å…³æŒ‡é’ˆ
+    // ±£´æµØÍ¼Ïà¹ØÖ¸Õë
     _gameMap = gameMap;
     _tiledMap = _gameMap ? _gameMap->getTiledMap() : nullptr;
     _eventLayer = _tiledMap ? _tiledMap->getLayer(EVENT_LAYER_NAME) : nullptr;
 
-    // é‡ç½®å†…éƒ¨çŠ¶æ€
+    // ÖØÖÃÄÚ²¿×´Ì¬
     _items.clear();
     _stoneCount = 0;
     _copperCount = 0;
 
-    // åˆå§‹åŒ–æ—¶ç”Ÿæˆåˆå§‹çŸ¿ç‰©
+    // ³õÊ¼»¯Ê±Éú³É³õÊ¼¿óÎï
     if (_gameMap) {
         spawnInitialItems();
     }
@@ -64,7 +64,7 @@ bool MinesItemManager::init(GameMap* gameMap)
 
 long long MinesItemManager::keyFor(const Vec2& tileCoord)
 {
-    // å°†ç“¦ç‰‡åæ ‡æ‰“åŒ…æˆä¸€ä¸ª 64 ä½ key
+    // ½«ÍßÆ¬×ø±ê´ò°ü³ÉÒ»¸ö 64 Î» key
     const long long x = static_cast<long long>(tileCoord.x);
     const long long y = static_cast<long long>(tileCoord.y);
     return (x << 32) | (y & TILE_COORD_MASK);
@@ -72,23 +72,23 @@ long long MinesItemManager::keyFor(const Vec2& tileCoord)
 
 unsigned int MinesItemManager::stripFlags(unsigned int gid)
 {
-    // å»é™¤ TMX ç“¦ç‰‡ç¿»è½¬ç›¸å…³çš„é«˜ä½æ ‡å¿—
+    // È¥³ı TMX ÍßÆ¬·­×ªÏà¹ØµÄ¸ßÎ»±êÖ¾
     return gid & ~TMX_FLIP_FLAGS_MASK;
 }
 
 bool MinesItemManager::isStone(const Vec2& tileCoord) const
 {
-    // åœ°å›¾æˆ–äº‹ä»¶å±‚ä¸å­˜åœ¨æ—¶ç›´æ¥å¤±è´¥
+    // µØÍ¼»òÊÂ¼ş²ã²»´æÔÚÊ±Ö±½ÓÊ§°Ü
     if (!_eventLayer || !_tiledMap) return false;
 
-    // è·å–äº‹ä»¶å±‚è¯¥ä½ç½®çš„ GID
+    // »ñÈ¡ÊÂ¼ş²ã¸ÃÎ»ÖÃµÄ GID
     const unsigned int gid = _eventLayer->getTileGIDAt(tileCoord);
     if (gid == INVALID_TILE_GID) return false;
 
-    // å»æ‰ç¿»è½¬æ ‡è®°ï¼Œå¾—åˆ°çœŸå® GID
+    // È¥µô·­×ª±ê¼Ç£¬µÃµ½ÕæÊµ GID
     const unsigned int rawGid = stripFlags(gid);
 
-    // è¯»å–è¯¥ GID çš„å±æ€§
+    // ¶ÁÈ¡¸Ã GID µÄÊôĞÔ
     const auto propsValue = _tiledMap->getPropertiesForGID(rawGid);
     if (propsValue.getType() != Value::Type::MAP) return false;
 
@@ -96,7 +96,7 @@ bool MinesItemManager::isStone(const Vec2& tileCoord) const
     const auto it = props.find(STONE_PROPERTY_NAME);
     if (it == props.end()) return false;
 
-    // å…¼å®¹å¸ƒå°” / æ•°å­— / å­—ç¬¦ä¸²ä¸‰ç§å†™æ³•
+    // ¼æÈİ²¼¶û / Êı×Ö / ×Ö·û´®ÈıÖÖĞ´·¨
     if (it->second.getType() == Value::Type::BOOLEAN) {
         return it->second.asBool();
     }
@@ -112,28 +112,28 @@ bool MinesItemManager::isStone(const Vec2& tileCoord) const
 
 bool MinesItemManager::hasItem(const Vec2& tileCoord) const
 {
-    // åˆ¤æ–­è¯¥ç“¦ç‰‡æ˜¯å¦å·²ç»ç”Ÿæˆè¿‡ç‰©ä½“
+    // ÅĞ¶Ï¸ÃÍßÆ¬ÊÇ·ñÒÑ¾­Éú³É¹ıÎïÌå
     return _items.find(keyFor(tileCoord)) != _items.end();
 }
 
 EnvironmentItem* MinesItemManager::getItem(const Vec2& tileCoord) const
 {
-    // è·å–æŒ‡å®šç“¦ç‰‡ä¸Šçš„ç‰©ä½“ï¼ˆä¸å­˜åœ¨åˆ™è¿”å› nullptrï¼‰
+    // »ñÈ¡Ö¸¶¨ÍßÆ¬ÉÏµÄÎïÌå£¨²»´æÔÚÔò·µ»Ø nullptr£©
     auto it = _items.find(keyFor(tileCoord));
     return it != _items.end() ? it->second : nullptr;
 }
 
 bool MinesItemManager::addItem(EnvironmentItemType type, const Vec2& tileCoord)
 {
-    // åªèƒ½åœ¨ Stone åŒºåŸŸç”Ÿæˆ
+    // Ö»ÄÜÔÚ Stone ÇøÓòÉú³É
     if (!isStone(tileCoord)) return false;
 
-    // å·²æœ‰ç‰©ä½“åˆ™ä¸èƒ½å†ç”Ÿæˆ
+    // ÒÑÓĞÎïÌåÔò²»ÄÜÔÙÉú³É
     if (hasItem(tileCoord)) return false;
 
     EnvironmentItem* item = nullptr;
 
-    // æ ¹æ®ç±»å‹åˆ›å»ºå¯¹åº”ç‰©ä½“
+    // ¸ù¾İÀàĞÍ´´½¨¶ÔÓ¦ÎïÌå
     switch (type) {
     case EnvironmentItemType::STONE:
         item = StoneItem::create(tileCoord);
@@ -147,18 +147,18 @@ bool MinesItemManager::addItem(EnvironmentItemType type, const Vec2& tileCoord)
 
     if (!item) return false;
 
-    // æ·»åŠ åˆ°åœ°å›¾ä¸­æ˜¾ç¤º
+    // Ìí¼Óµ½µØÍ¼ÖĞÏÔÊ¾
     if (_tiledMap && _gameMap && item) {
         const Vec2 pos = _gameMap->calWorldPos(tileCoord);
         item->setPosition(pos);
         _tiledMap->addChild(item, ITEM_SPRITE_Z_ORDER);
     }
 
-    // ä¿å­˜å¼•ç”¨ï¼Œäº¤ç”±ç®¡ç†å™¨ç»Ÿä¸€é‡Šæ”¾
+    // ±£´æÒıÓÃ£¬½»ÓÉ¹ÜÀíÆ÷Í³Ò»ÊÍ·Å
     item->retain();
     _items.emplace(keyFor(tileCoord), item);
 
-    // ç»´æŠ¤æ•°é‡ç»Ÿè®¡
+    // Î¬»¤ÊıÁ¿Í³¼Æ
     if (type == EnvironmentItemType::STONE) {
         _stoneCount++;
     }
@@ -183,7 +183,7 @@ bool MinesItemManager::removeItem(const Vec2& tileCoord)
 
     const EnvironmentItemType type = item->getType();
 
-    // æ›´æ–°æ•°é‡ç»Ÿè®¡
+    // ¸üĞÂÊıÁ¿Í³¼Æ
     if (type == EnvironmentItemType::STONE) {
         _stoneCount--;
     }
@@ -191,7 +191,7 @@ bool MinesItemManager::removeItem(const Vec2& tileCoord)
         _copperCount--;
     }
 
-    // ä»åœºæ™¯ç§»é™¤å¹¶é‡Šæ”¾
+    // ´Ó³¡¾°ÒÆ³ı²¢ÊÍ·Å
     item->removeFromParent();
     CC_SAFE_RELEASE(item);
     _items.erase(it);
@@ -201,7 +201,7 @@ bool MinesItemManager::removeItem(const Vec2& tileCoord)
 
 void MinesItemManager::clear()
 {
-    // ç§»é™¤å¹¶é‡Šæ”¾æ‰€æœ‰ç”Ÿæˆçš„ç‰©ä½“
+    // ÒÆ³ı²¢ÊÍ·ÅËùÓĞÉú³ÉµÄÎïÌå
     for (auto& kv : _items) {
         if (kv.second) {
             kv.second->removeFromParent();
@@ -216,13 +216,13 @@ void MinesItemManager::clear()
 
 void MinesItemManager::spawnInitialItems()
 {
-    // åœ°å›¾æœªå°±ç»ªæ—¶ä¸ç”Ÿæˆ
+    // µØÍ¼Î´¾ÍĞ÷Ê±²»Éú³É
     if (!_tiledMap || !_eventLayer) return;
 
     const Size mapSize = _eventLayer->getLayerSize();
     int attempts = 0;
 
-    // éšæœºç”Ÿæˆï¼Œé™åˆ¶æœ€å¤§å°è¯•æ¬¡æ•°é˜²æ­¢æ­»å¾ªç¯
+    // Ëæ»úÉú³É£¬ÏŞÖÆ×î´ó³¢ÊÔ´ÎÊı·ÀÖ¹ËÀÑ­»·
     while ((_stoneCount < MAX_STONE_COUNT || _copperCount < MAX_COPPER_COUNT)
         && attempts < MAX_SPAWN_ATTEMPTS)
     {
@@ -254,7 +254,7 @@ void MinesItemManager::spawnInitialItems()
 
 void MinesItemManager::onNewDay()
 {
-    // æ–°çš„ä¸€å¤©å°è¯•è¡¥å……çŸ¿ç‰©
+    // ĞÂµÄÒ»Ìì³¢ÊÔ²¹³ä¿óÎï
     spawnInitialItems();
 }
 
@@ -272,12 +272,12 @@ std::vector<MinesItemManager::MineItemData> MinesItemManager::getItems() const
 
 void MinesItemManager::restoreData(const std::vector<MineItemData>& items)
 {
-    // 1. æ¸…ç©ºç°æœ‰ç‰©å“
+    // 1. Çå¿ÕÏÖÓĞÎïÆ·
     this->clear();
 
-    // 2. æ¢å¤ç‰©å“
+    // 2. »Ö¸´ÎïÆ·
     for (const auto& d : items) {
-        // ç›´æ¥å¤ç”¨ addItem é€»è¾‘
+        // Ö±½Ó¸´ÓÃ addItem Âß¼­
         this->addItem(d.type, Vec2(d.x, d.y));
     }
 }

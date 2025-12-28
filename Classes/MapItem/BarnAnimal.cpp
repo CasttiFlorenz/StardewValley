@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     BarnAnimal.cpp
- * File Function: BarnAnimalç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: BarnAnimalÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #include "BarnAnimal.h"
@@ -11,17 +11,17 @@
 
 USING_NS_CC;
 
-// æ‰¹é‡åŠ è½½åŠ¨ç”»å¸§
+// ÅúÁ¿¼ÓÔØ¶¯»­Ö¡
 std::vector<SpriteFrame*> BarnAnimal::framesFromFiles(const std::string& baseNoExt, int maxFrames)
 {
     std::vector<SpriteFrame*> frames;
-    // é¢„åˆ†é…å†…å­˜é¿å…é¢‘ç¹æ‰©å®¹
+    // Ô¤·ÖÅäÄÚ´æ±ÜÃâÆµ·±À©Èİ
     frames.reserve(static_cast<size_t>(std::max(0, maxFrames)));
 
     for (int i = 0; i < maxFrames; ++i) {
         const std::string path = baseNoExt + std::to_string(i) + ".png";
 
-        // å°è¯•åˆ›å»ºç²¾çµä»¥è·å– SpriteFrame
+        // ³¢ÊÔ´´½¨¾«ÁéÒÔ»ñÈ¡ SpriteFrame
         const auto spr = Sprite::create(path);
         if (!spr) {
             continue;

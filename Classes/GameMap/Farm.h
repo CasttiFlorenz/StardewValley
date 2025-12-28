@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     Farm.h
- * File Function: Farmç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/23
+ * File Function: FarmÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #pragma once
@@ -22,43 +22,43 @@
 
 USING_NS_CC;
 
-// å†œåœºåœºæ™¯ç±»
+// Å©³¡³¡¾°Àà
 class Farm : public GameMap
 {
 public:
-    // é™æ€åˆ›å»ºä¸é”€æ¯
+    // ¾²Ì¬´´½¨ÓëÏú»Ù
     static Farm* create();
     static GameMap* getInstance();
     static void destroyInstance();
 
-    // åˆå§‹åŒ–
+    // ³õÊ¼»¯
     virtual bool init() override;
 
-    // åœºæ™¯åˆ‡æ¢é€»è¾‘
+    // ³¡¾°ÇĞ»»Âß¼­
     virtual MapType leaveMap(const Vec2& curPos, bool isStart, const Direction& direction) override;
     virtual void IntoMap(MapType lastMap) override;
 
-    // è·å–ç©å®¶åˆå§‹ä½ç½®
+    // »ñÈ¡Íæ¼Ò³õÊ¼Î»ÖÃ
     virtual Vec2 getPlayerStartPosition(MapType lastMap) override;
 
-    // æ‘„åƒæœºè·Ÿéšä¸ç¢°æ’æ£€æµ‹
+    // ÉãÏñ»ú¸úËæÓëÅö×²¼ì²â
     virtual bool isCameraFollow() const noexcept { return true; }
     virtual bool isCollidable(Vec2 worldPos) override;
 
-    // äº¤äº’äº‹ä»¶å¤„ç†
+    // ½»»¥ÊÂ¼ş´¦Àí
     virtual MouseEvent onLeftClick(const Vec2& playerPos, const Direction direction, ItemType objects) override;
     virtual MouseEvent onRightClick(const Vec2& playerPos, const Direction direction) override;
 
-    // æ˜¯å¦ä¸ºæˆ·å¤–åœºæ™¯
+    // ÊÇ·ñÎª»§Íâ³¡¾°
     virtual bool isOutdoor() noexcept override { return true; }
 
-    // æ‰“å¼€äº¤æ˜“ç•Œé¢
+    // ´ò¿ª½»Ò×½çÃæ
     void openShopForNPC();
 
 private:
     static GameMap* _instance;
 
-    // ç®¡ç†å™¨
+    // ¹ÜÀíÆ÷
     FarmItemManager* _farmItemManager = nullptr;
     CultivationManager* _cultivationManager = nullptr;
 };

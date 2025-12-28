@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     CopperItem.h
- * File Function: CopperItemç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: CopperItemÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #pragma once
@@ -12,7 +12,6 @@
 
 #include "EnvironmentItem.h"
 
-// ÃÂ­Â¿Ã³ÃÃ¯Ã†Â·
 class CopperItem : public EnvironmentItem {
 public:
     static CopperItem* create(const cocos2d::Vec2& tileCoord);

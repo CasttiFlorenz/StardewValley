@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     DaffodilsItem.h
- * File Function: DaffodilsItemç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/16
+ * File Function: DaffodilsItemÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #pragma once
@@ -12,7 +12,6 @@
 
 #include "EnvironmentItem.h"
 
-// Â»Ã†Ã‹Â®ÃÃ‰ÃÃ¯Ã†Â·
 class DaffodilsItem : public EnvironmentItem {
 public:
     static DaffodilsItem* create(const cocos2d::Vec2& tileCoord);

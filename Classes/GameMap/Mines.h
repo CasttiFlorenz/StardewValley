@@ -1,9 +1,9 @@
 /****************************************************************
  * Project Name:  StardewValley
  * File Name:     Mines.h
- * File Function: Minesç±»çš„å®ç°
- * Author:        éƒ­èŠ·çƒŸ
- * Update Date:   2025/12/23
+ * File Function: MinesÀàµÄÊµÏÖ
+ * Author:        ¹ùÜÆÑÌ
+ * Update Date:   2025/12/28
  * License:       MIT License
  ****************************************************************/
 #pragma once
@@ -17,34 +17,34 @@
 
 USING_NS_CC;
 
-// çŸ¿æ´åœºæ™¯ç±»
+// ¿ó¶´³¡¾°Àà
 class Mines : public GameMap
 {
 public:
-    // é™æ€åˆ›å»ºä¸é”€æ¯
+    // ¾²Ì¬´´½¨ÓëÏú»Ù
     static Mines* create();
     static GameMap* getInstance();
     static void destroyInstance();
 
-    // åˆå§‹åŒ–
+    // ³õÊ¼»¯
     virtual bool init() override;
 
-    // åœºæ™¯åˆ‡æ¢é€»è¾‘
+    // ³¡¾°ÇĞ»»Âß¼­
     virtual MapType leaveMap(const Vec2& curPos,
         bool isStart,
         const Direction& direction) override;
 
-    // è¿›å…¥åœ°å›¾åˆå§‹åŒ–
+    // ½øÈëµØÍ¼³õÊ¼»¯
     virtual void IntoMap(MapType lastMap) override;
 
-    // è·å–ç©å®¶åˆå§‹ä½ç½®
+    // »ñÈ¡Íæ¼Ò³õÊ¼Î»ÖÃ
     virtual Vec2 getPlayerStartPosition(MapType lastMap) override;
 
-    // æ‘„åƒæœºè·Ÿéšä¸ç¢°æ’æ£€æµ‹
+    // ÉãÏñ»ú¸úËæÓëÅö×²¼ì²â
     virtual bool isCameraFollow() const noexcept override { return true; }
     virtual bool isCollidable(Vec2 worldPos) override;
 
-    // å·¦é”®ç‚¹å‡»å¤„ç†ï¼ˆæŒ–æ˜ï¼‰
+    // ×ó¼üµã»÷´¦Àí£¨ÍÚ¾ò£©
     virtual MouseEvent onLeftClick(const Vec2& playerPos,
         const Direction direction,
         ItemType objects) override;
@@ -52,7 +52,7 @@ public:
 private:
     static GameMap* _instance;
 
-    // çŸ¿æ´ç‰©å“ç®¡ç†å™¨
+    // ¿ó¶´ÎïÆ·¹ÜÀíÆ÷
     MinesItemManager* _minesItemManager = nullptr;
 };
 
